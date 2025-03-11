@@ -102,6 +102,7 @@ const dynamicSearch = reactive({
   no_polisi: "",
   atas_nama: "",
   no_bpkb: "",
+  no_kontrak:"",
 });
 
 const message = useMessage();
