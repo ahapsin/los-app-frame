@@ -33,7 +33,7 @@
     <n-upload accept="image/png, image/jpeg,image/jpg" @change="beforeUpload" :show-file-list="props.def_preview"
       list-type="image" multiple :show-cancel-button="false" v-show="!props.viewMode">
       <div class="flex flex-col">
-        <n-button tertiary :type="errorCapture ? 'error' : 'success'">
+        <n-button tertiary :type="errorCapture ? 'error' : 'primary'">
           <div class="flex gap-2">
             <n-icon> <upload-icon /> </n-icon>
             {{ props.title }}

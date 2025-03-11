@@ -23,7 +23,7 @@
                     </div>
                     <!-- Data Table -->
                     <div id="drawer-target">
-                        <n-data-table :columns="columns" :data="data" :bordered="true" />
+                        <n-data-table :columns="columns" :data="data" :bordered="true" :max-height="300" />
                     </div>
                     <!-- Pagination -->
                     <n-pagination v-model:page="currentPage" :page-size="pageSize" :page-sizes="pageSizes"
@@ -56,7 +56,7 @@
         </n-tabs>
     </n-card>
     <n-modal v-model:show="showModal" :mask-closable="false">
-        <div class="w-1/2">
+        <div class="w-3/4">
             <FormTransaksi @batal="showModal = false" v-if="typeTransaksi == 'kirim'" @simpan="handleSimpanModal"
                 type="pengiriman" />
             <FormTransaksi @batal="showModal = false" v-if="typeTransaksi == 'minta'" @simpan="handleSimpanModal"
@@ -514,17 +514,19 @@ const props = defineProps({
 // Fetch users with query parameters
 const fetchData = async () => {
     try {
-        const response = await axios.get("https://dev.kspdjaya.id/jaminan", {
-            params: {
-                type: "ondemand",
-                page: currentPage.value,
-                page_size: pageSize.value,
-                search: searchQuery.value,
-                sort_by: sortBy.value,
-                order: order.value
-            }, headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}` // Send token in header
-            }
+        const params = {
+            type: "ondemand",
+            page: currentPage.value,
+            page_size: pageSize.value,
+            search: searchQuery.value,
+            sort_by: sortBy.value,
+            order: order.value
+        }
+        const response = await useApi({
+            method: "GET",
+            api: "jaminan",
+            params: params,
+            token: localStorage.getItem('token'),
         });
         data.value = response.data.data;
         totalItems.value = response.data.total;

@@ -1,7 +1,7 @@
 <script setup>
 import { h, ref, defineEmits } from "vue";
 import { NDataTable, NPagination, NInput, NButton } from "naive-ui";
-import axios from "axios";
+import { useApi } from "../../../helpers/axios";
 
 // Table columns
 const columnsWithSelection = [
@@ -68,6 +68,7 @@ const columns = [
     {
         title: "No Kontrak",
         key: "no_kontrak",
+        width: 100,
         sorter: "default",
         // render(row) {
         //     return h("div", row.no_polisi);
@@ -76,9 +77,11 @@ const columns = [
     {
         title: "Nama Debitur",
         key: "debitur",
+        width: 100,
         sorter: "default",
     },
     {
+        width:200,
         title: "No BPKB",
         key: "BPKB_NUMBER",
         sorter: "default",
@@ -87,6 +90,7 @@ const columns = [
         title: "Status",
         key: "STATUS",
         sorter: "default",
+        width: 100,
     },
     {
         width: 100,
@@ -146,18 +150,21 @@ const props = defineProps({
 // Fetch users with query parameters
 const fetchData = async () => {
     try {
-        const response = await axios.get("https://dev.kspdjaya.id/jaminan", {
-            params: {
-                type: props.type,
-                page: currentPage.value,
-                page_size: pageSize.value,
-                search: searchQuery.value,
-                sort_by: sortBy.value,
-                order: order.value
-            }, headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}` // Send token in header
-            }
+        const params = {
+            type: props.type,
+            page: currentPage.value,
+            page_size: pageSize.value,
+            search: searchQuery.value,
+            sort_by: sortBy.value,
+            order: order.value
+        }
+        const response = await useApi({
+            method: "GET",
+            api: "jaminan",
+            params: params,
+            token: localStorage.getItem('token'),
         });
+
         users.value = response.data.data;
         totalItems.value = response.data.total;
     } catch (error) {
@@ -199,8 +206,8 @@ onMounted(() => {
         </div>
         <!-- Data Table -->
         <div id="drawer-target">
-            <n-data-table :columns="props.selection ? columns : columnsWithSelection" :data="users" :bordered="true"
-                :row-key="(row) => row" :on-update:checked-row-keys="handleChecked" />
+            <n-data-table size="small" :max-height="300" :columns="props.selection ? columns : columnsWithSelection" :data="users"
+                :bordered="true" :row-key="(row) => row" :on-update:checked-row-keys="handleChecked" />
         </div>
         <!-- Pagination -->
         <n-pagination v-model:page="currentPage" :page-size="pageSize" :page-sizes="pageSizes" :item-count="totalItems"
