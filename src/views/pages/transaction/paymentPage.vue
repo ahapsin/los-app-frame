@@ -26,8 +26,8 @@
                     </template>
                     <span class="hidden md:flex">Filter</span>
                 </n-button>
-                <n-date-picker class="w-32" v-model:formatted-value="filterDate" :default-value="Date.now()" format="dd-MM-yyyy" type="date"
-                    />
+                <n-date-picker class="w-32" v-model:formatted-value="filterDate" :default-value="Date.now()"
+                    format="dd-MM-yyyy" type="date" />
             </n-space>
         </template>
         <div>
@@ -52,8 +52,9 @@
             </div>
 
             <n-data-table ref="tableRef" striped size="small" :row-key="(row) => row.loan_number" :columns="columns"
-                :scroll-x="870" :data="showData" :max-height="500" :on-update:checked-row-keys="handleFasilitas"
-                :loading="loadDataPayment" class="p-4" :pagination="paginationReactive" />
+                :scroll-x="870" :data="filterDate ? showData : dataPayment" :max-height="500"
+                :on-update:checked-row-keys="handleFasilitas" :loading="loadDataPayment" class="p-4"
+                :pagination="paginationReactive" />
         </div>
     </n-card>
     <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal" :on-after-leave="onAfterLeave">
@@ -116,8 +117,8 @@
                             </div>
                             <div class="text-lg font-bold hidden md:flex">KWITANSI {{
                                 bodyModal.payment_type ==
-                                'pelunasan' ? 'PELUNASAN' : 'PEMBAYARAN'
-                                }}
+                                    'pelunasan' ? 'PELUNASAN' : 'PEMBAYARAN'
+                            }}
                             </div>
                         </div>
                         <div class="flex justify-between">
@@ -148,8 +149,8 @@
                                 <small class="text-reg">JML. ANGS</small>
                                 <n-text strong class="text-md"> {{
                                     bodyModal.bayar_angsuran.toLocaleString('US') ?
-                                    bodyModal.bayar_angsuran.toLocaleString('US') : 'n/a'
-                                    }}
+                                        bodyModal.bayar_angsuran.toLocaleString('US') : 'n/a'
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -183,8 +184,8 @@
                                 <small class="text-reg">Total Pelunasan</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.total_bayar.toLocaleString('US') ?
-                                    bodyModal.total_bayar.toLocaleString('US') : 'n/a'
-                                    }}
+                                        bodyModal.total_bayar.toLocaleString('US') : 'n/a'
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -195,14 +196,14 @@
                                 <small class="text-reg">Cust. Bayar</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Diskon</small>
                                 <n-text class="text-md font-bold"> {{
                                     (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -229,15 +230,15 @@
                                 <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_denda).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td align="right" class="border pe-2 border-black text-right">
                                     {{
-                                    (angs.diskon_denda).toLocaleString(('US'))
+                                        (angs.diskon_denda).toLocaleString(('US'))
                                     }}
                                 </td>
                                 <!--              <td class="border pe-2 border-black text-right">-->

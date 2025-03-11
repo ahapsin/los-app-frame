@@ -371,8 +371,10 @@ const routes = [
                 name: "inquery jaminan",
                 component: () => import("../views/pages/laporan/LapJaminan.vue"),
             },
+
         ],
     },
+     { path: "/:pathMatch(.*)*",  component: () => import("../views/pages/404Page.vue"), },
 ];
 
 const router = createRouter({
