@@ -2,10 +2,10 @@
     <n-form ref="formJaminan" :model="jaminan" :rules="rulesJaminan" require-mark-placement="right-hanging">
         <div class="md:grid md:grid-cols-2 gap-2">
             <n-form-item label="Status Jaminan" path="status" class="w-full">
-                <n-select filterable placeholder="Pilih Status"  
+                <n-select filterable placeholder="Pilih Status"
                     />
             </n-form-item>
-            <n-form-item label="No Billyet" path="no_billyet" class="w-full">
+            <n-form-item label="No Deposito" path="no_billyet" class="w-full">
                 <n-input placeholder="No Billyet" @input="upCase" v-model:value="jaminan.no_billyet" />
             </n-form-item>
             <n-form-item label="Tanggal Valuta" path="tanggal valuta" class="w-full">
@@ -28,9 +28,9 @@
             <n-form-item label="Atas Nama" path="lokasi" class="w-full">
                 <n-input placeholder="atas nama" @input="upCase" v-model:value="jaminan.atas_nama" />
             </n-form-item>
-            
+
         </div>
-       
+
     </n-form>
 </template>
 <script setup>
