@@ -1,24 +1,23 @@
 <template>
-    <n-scrollbar x-scrollable>
-        <n-space class="bg-sc-50 border rounded-xl p-4 mb-2">
-            <n-steps :current="current" v-model:current="current" :status="currentStatus">
-                <n-step title="Informasi Order" :status="statusInformasiOrder" />
-                <n-step title="Data Pelanggan" :status="statusDataPelanggan" />
-                <n-step title="Data Jaminan" :status="statusDataJaminan" />
-                <n-step title="Data Survey" :status="statusDataSurvey" />
-            </n-steps>
-        </n-space>
-    </n-scrollbar>
-    <!-- card -->
-
-    <n-alert type="warning" v-if="sumJaminan != 0 && order.plafond > sumJaminan / 2">Nilai Plafon <b>{{
-            order.plafond.toLocaleString() }}</b> > Nilai Jaminan {{ (sumJaminan / 2).toLocaleString() }}
-        (50%)</n-alert>
     <n-card :bordered="true" :title="`${current}. ${steps[current - 1]}`" :segmented="{
         content: true,
     }">
-        <!-- container 1 -->
+        <n-scrollbar x-scrollable class="py-4">
+            <n-space class="bg-sc-50 border rounded-xl p-4 mb-2">
+                <n-steps :current="current" v-model:current="current" :status="currentStatus">
+                    <n-step title="Informasi Order" :status="statusInformasiOrder" />
+                    <n-step title="Data Pelanggan" :status="statusDataPelanggan" />
+                    <n-step title="Data Jaminan" :status="statusDataJaminan" />
+                    <n-step title="Data Survey" :status="statusDataSurvey" />
+                </n-steps>
+            </n-space>
+        </n-scrollbar>
+        <!-- card -->
+        <n-alert type="warning" v-if="sumJaminan != 0 && order.plafond > sumJaminan / 2">Nilai Plafon <b>{{
+                order.plafond.toLocaleString() }}</b> > Nilai Jaminan {{ (sumJaminan / 2).toLocaleString() }}
+            (50%)</n-alert>
 
+        <!-- container 1 -->
         <div v-show="current == 1">
             <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging">
                 <div class="md:flex gap-2">
@@ -214,14 +213,14 @@
             <n-alert type="error" v-if="statusDataJaminan === 'error'">minimal memiliki 1 jaminan</n-alert>
             <n-card embedded :segmented="true"
                 :title="`Jumlah Jaminan : ${jaminanStore.listJaminan.length}, Total Nilai : ${sumJaminan.toLocaleString('US')}`">
-              <div class=" flex w-60 gap-2">
-                <n-select v-model:value="jenisJaminan" :options="optJaminan" placeholder="jenis jaminan" />
-                <n-button circle type="primary" @click="addJaminan">
-                  <n-icon>
-                    <add-icon />
-                  </n-icon>
-                </n-button>
-              </div>
+                <div class=" flex w-60 gap-2">
+                    <n-select v-model:value="jenisJaminan" :options="optJaminan" placeholder="jenis jaminan" />
+                    <n-button circle type="primary" @click="addJaminan">
+                        <n-icon>
+                            <add-icon />
+                        </n-icon>
+                    </n-button>
+                </div>
                 <n-card :segmented="true" class="my-2 bg-white rounded-xl border hover:shadow"
                     v-for="(coll) in orderJaminan" :key="coll" :title="coll.type">
                     <template #header-extra>
