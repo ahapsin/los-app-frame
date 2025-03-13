@@ -1,8 +1,8 @@
 <template>
   <n-layout class="h-screen">
-    <n-layout-header style="height: 64px" bordered>
+    <n-layout-header>
       <n-page-header
-          class="sticky bg-scf border-b top-0 z-50 backdrop-blur p-4"
+          class="sticky bg-scf border-b top-0 z-50 backdrop-blur p-2"
       >
         <template #title>
           <n-space align="center">
@@ -40,7 +40,7 @@
         </template>
       </n-page-header>
     </n-layout-header>
-    <n-layout position="absolute" style="top: 70px" has-sider>
+    <n-layout position="absolute" style="top: 60px" has-sider>
       <n-layout-sider
           :width="180"
           :collapsed-width="0"
@@ -52,8 +52,7 @@
       >
         <SideMenu/>
       </n-layout-sider>
-      <n-layout :native-scrollbar="false"
-                :class="`p-2 md:p-4 bg-slate-100`">
+      <n-layout :class="`p-2 md:p-4 bg-slate-100`">
         <RouterView/>
         <slot/>
       </n-layout>

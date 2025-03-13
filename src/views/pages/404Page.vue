@@ -3,13 +3,7 @@
         <n-card class="md:w-fit">
             <div class=" w-fit items-center">
                 <div class="flex w-full items-center justify-around px-10">
-                    <img :src="applogo" class="w-[100px] h-[100px]" />
-                    <div class="w-fit">
-                        <n-icon size="34px" class="animate-pulse" color="#ff0000">
-                            <off-icon />
-                        </n-icon>
-                    </div>
-                    <img :src="app503" class="w-[100px]" />
+                    <img src="https://res.cloudinary.com/dfjruncxv/image/upload/v1741671752/404_mwbzab.png" class="w-[100px] h-[100px]" />
                 </div>
                 <div class="flex flex-col gap-2 px-10 pt-10 items-center">
                     <span class="text-2xl font-bold">404</span>

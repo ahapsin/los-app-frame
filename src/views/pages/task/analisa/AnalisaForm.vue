@@ -3,10 +3,10 @@
     <div class="flex flex-col p-2 w-1/4 justify-between">
       <div class="flex flex-col sticky top-4">
         <div class="flex gap-2">
-          <n-avatar>P</n-avatar>
+          <n-avatar>{{ queryData.nama_cust.at(0) }}</n-avatar>
           <div class="flex flex-col">
-            <small>NO DEBITUR</small>
-            <strong>NAMA DEBITUR</strong>
+            <small>{{ queryData.id }}</small>
+            <strong>{{ queryData.nama_cust }}</strong>
           </div>
         </div>
         <div class="py-4 flex flex-col gap-y-2">
@@ -97,7 +97,7 @@
             </div>
             <div class="w-fit flex-col border items-center flex px-4 border-black">
               <div class="font-bold">FORM ANALISA KREDIT</div>
-              <div class="text-sm flex justify-end font-mono"><small>NO. 21312312312</small></div>
+              <div class="text-sm flex justify-end font-mono"><small>NO. {{ queryData.id }}</small></div>
             </div>
           </div>
           <div>
@@ -105,10 +105,10 @@
               <div class="grid grid-cols-2 gap-2">
                 <div>
                   <div class="font-bold">
-                    Sdr. Hidayat Rahmat
+                    Sdr. {{ queryData.nama_cust }}
                   </div>
                   <div>
-                    Jalan Sumbawa I/20, Kelurahan Merdeka, Kecamatan Sumurbandung, Bandung 40113
+                    {{ queryData.alamat }}
                   </div>
                 </div>
                 <div>
@@ -126,7 +126,7 @@
                     <tr>
                       <td>Plafon</td>
                       <td>:</td>
-                      <td><i>135.000.000</i></td>
+                      <td><i>{{ queryData.plafon.toLocaleString('US') }}</i></td>
                     </tr>
                     <tr>
                       <td>Jangka Waktu</td>
@@ -169,7 +169,11 @@ import {CloseRound as RemoveIcon, AddCircleRound as AddIcon} from "@vicons/mater
 import {useOptAnalisaModalKerja} from "../../../../models/opt_analisa_modal_kerja.js";
 import {useVueToPrint} from "vue-to-print";
 import router from "../../../../router/index.js";
+import { useLoadingBar } from "naive-ui";
 
+const loadingPage = useLoadingBar();
+
+loadingPage.finish();
 const prevModal = ref(false);
 const paramScoring = reactive(useAnalisaModalKerja);
 const optParamScoring = reactive(useOptAnalisaModalKerja);
@@ -180,6 +184,8 @@ const stStep1 = () => {
 }
 
 const bucketParam = ref([]);
+
+const queryData = router.currentRoute.value.query;
 
 const findMatchParameter = (col, val) => {
   let a = _.findIndex(col, function (o) {

@@ -90,9 +90,23 @@ const routes = [
                 path: "apply-credit",
                 name: "Order",
                 component: () => import("../views/pages/task/FpkPage.vue"),
+            },
+            {
+                path: "kunjungan_cust",
+                name: "kunjungan",
+                component: () => import("../views/pages/task/visit/VisitPage.vue"),
+            },
+            {
+                path: "addvisit",
+                name: "addvisit",
+                component: () => import("../views/pages/task/visit/AddVisit.vue"),
             }, {
                 path: "analisa",
                 name: "analisa",
+                component: () => import("../views/pages/task/analisa/AnalisaPage.vue"),
+            }, {
+                path: "addanalisa",
+                name: "addanalisa",
                 component: () => import("../views/pages/task/analisa/AnalisaForm.vue"),
             },
             {
