@@ -13,7 +13,6 @@
                 <div class="flex flex-col gap-y-2">
                     <!-- Search and Filter -->
                     <div class="flex gap-2">
-
                         <n-input v-model:value="searchQuery" placeholder="cari disini..." />
                         <n-button @click="findData" type="primary">Cari</n-button>
                         <json-excel v-if="data.length > 0" :data="data" :name="`jaminan_ohd`" :fields="json_fields">
@@ -23,7 +22,8 @@
                     </div>
                     <!-- Data Table -->
                     <div id="drawer-target">
-                        <n-data-table :columns="columns" :data="data" :bordered="true" :max-height="300" />
+                        <n-data-table :columns="columns" :data="data" :bordered="true" :max-height="300"
+                            :loading="loadData" />
                     </div>
                     <!-- Pagination -->
                     <n-pagination v-model:page="currentPage" :page-size="pageSize" :page-sizes="pageSizes"
@@ -46,7 +46,7 @@
                     </div>
                 </template>
                 <n-data-table :columns="columnsTransactionApproval" :data="dataTransactionApproval" size="small"
-                    :loading="loadTransactionApproval" :pagination="{pageSize:10}" />
+                    :loading="loadTransactionApproval" :pagination="{ pageSize: 10 }" />
             </n-tab-pane>
             <template #suffix>
                 <n-dropdown trigger="hover" :options="options" @select="handleSelect" v-if="addButtonDisplay">
@@ -75,7 +75,7 @@
                                 <th>Jenis</th>
                                 <th>Nama Debitur</th>
                                 <th>No Kontrak</th>
-                                <th>No Jaminan</th>
+                                <th>No BPKB</th>
                                 <th>Lokasi</th>
                                 <th>Status</th>
                             </tr>
@@ -85,7 +85,7 @@
                                 <td>{{ bodyModal.type }}</td>
                                 <td>{{ bodyModal.debitur }}</td>
                                 <td>{{ bodyModal.no_kontrak }}</td>
-                                <td>{{ bodyModal.no_jaminan }}</td>
+                                <td>{{ bodyModal.BPKB_NUMBER }}</td>
                                 <td>{{ bodyModal.posisi_berkas }}</td>
                                 <td>{{ bodyModal.STATUS }}</td>
                             </tr>
@@ -153,7 +153,7 @@
                                 </div>
                             </div>
                             <!-- <n-button type="info" dashed @click="cetakBuktiTerima">Cetak Surat Rilis</n-button> -->
-                            <n-button type="info" dashed @click="modalSuratRilis = true">Cetak Surat Rilis</n-button>
+                            <n-button type="info" dashed @click="modalSuratRilis = true">Preview Surat Rilis</n-button>
                             <n-alert type="warning">
                                 upload dokumen rilis yang sudah dicap dan ditanda tangani pemberi dan penerima
                             </n-alert>
@@ -167,18 +167,20 @@
         </n-card>
     </n-modal>
     <n-modal v-model:show="modalSuratRilis">
-        <n-card class="w-5/6">
-            <div class="bg-white border border-black p-4" ref="buktiTerimaRef">
+        <n-card class="w-5/6" title="Surat Tanda Terima">
+            <template #header-extra>
+                <n-button type="info" @click="cetakBuktiTerima">cetak</n-button>
+            </template>
+            <div class="bg-white border border-black p-8" ref="buktiTerimaRef">
                 <div class="flex gap-2 items-center">
                     <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />
                     <div class="flex flex-col">
                         <span class="text-xl font-bold">{{ apptitle }}</span>
-                        <n-text strong class="text-md"> POS: {{ bodyModal.lokasi }}</n-text>
+                        <n-text strong class="text-md"> POS: {{ bodyModal.pos_pencairan }}</n-text>
                     </div>
                 </div>
                 <div class="mb-4 text-center text-base">
                     <b>SURAT TANDA TERIMA DOKUMEN</b>
-
                 </div>
                 <div class="mb-4">yang bertanda tangan di bawah ini:</div>
                 <div class="mb-4" v-if="modelJenisRilis.jenis === 'atas nama'">
@@ -206,21 +208,14 @@
                             <td width="100px">Nama</td>
                             <td width="25">:</td>
                             <td>
-                                <b class="uppercase">{{ bodyModal.nama_debitur }}</b>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>No Jaminan</td>
-                            <td width="25">:</td>
-                            <td>
-                                <b class="uppercase">{{ bodyModal.no_jaminan }}</b>
+                                <b class="uppercase">{{ bodyModal.debitur }}</b>
                             </td>
                         </tr>
                         <tr>
                             <td>No Kontrak</td>
                             <td width="25">:</td>
                             <td>
-                                <b class="uppercase">{{ bodyModal.order_number }}</b>
+                                <b class="uppercase">{{ bodyModal.no_kontrak }}</b>
                             </td>
                         </tr>
                     </table>
@@ -233,31 +228,31 @@
                 </div>
                 <div class="text-justify pt-2">
                     Jenis Dokumen: <b> </b>
-                    <table v-if="bodyModal.type.toLowerCase() == 'kendaraan'">
+                    <table>
                         <tr>
                             <td>BPKB No</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.no_bpkb }}</td>
+                            <td>{{ bodyModal.BPKB_NUMBER }}</td>
                         </tr>
                         <tr>
                             <td>BPKB atas nama</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.atas_nama }}</td>
+                            <td>{{ bodyModal.ON_BEHALF }}</td>
                         </tr>
                         <tr>
                             <td>Merk/Type/Tahun</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.merk }}/{{ bodyModal.tipe }}/{{ bodyModal.tahun }}</td>
+                            <td>{{ bodyModal.BRAND }}/{{ bodyModal.TYPE }}/{{ bodyModal.PRODUCTION_YEAR }}</td>
                         </tr>
                         <tr>
                             <td>Warna/No.Polisi</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.warna }}/{{ bodyModal.no_polisi }}</td>
+                            <td>{{ bodyModal.COLOR }}/{{ bodyModal.POLICE_NUMBER }}</td>
                         </tr>
                         <tr>
                             <td>No. Rangka/Mesin</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.no_rangka }}/{{ bodyModal.no_mesin }}</td>
+                            <td>{{ bodyModal.CHASIS_NUMBER }}/{{ bodyModal.ENGIN+NUMBER }}</td>
                         </tr>
                         <tr>
                             <td>No. Faktur</td>
@@ -265,7 +260,7 @@
                             <td>{{ bodyModal.no_faktur }}</td>
                         </tr>
                     </table>
-                    <table v-else>
+                    <!-- <table v-else>
                         <tr>
                             <td>No Sertifikat</td>
                             <td width="25">:</td>
@@ -292,7 +287,7 @@
                             <td width="25">:</td>
                             <td></td>
                         </tr>
-                    </table>
+                    </table> -->
                 </div>
 
                 <div class="mb-4">
@@ -315,7 +310,7 @@
                                 </div>
                                 <div v-else>Penerima,
                                     <br /><br /><br />
-                                    <u class="uppercase">{{ bodyModal.nama_debitur }}</u>
+                                    <u class="uppercase">{{ bodyModal.debitur }}</u>
                                 </div>
                             </td>
                         </tr>
@@ -473,11 +468,10 @@ const applogo = import.meta.env.VITE_APP_LOGO;
 const me = useMeStore();
 const message = useMessage();
 const showModal = ref(false);
-const dataTable = ref([]);
 const dataTransaction = ref([]);
 const dataTransactionApproval = ref([]);
 const loadTransactionApproval = ref();
-const loadTable = ref(false);
+const loadData = ref(false);
 // ===
 // Reactive state
 const data = ref([]);
@@ -514,6 +508,7 @@ const props = defineProps({
 // Fetch users with query parameters
 const fetchData = async () => {
     try {
+        loadData.value = true;
         const params = {
             type: "ondemand",
             page: currentPage.value,
@@ -528,8 +523,11 @@ const fetchData = async () => {
             params: params,
             token: localStorage.getItem('token'),
         });
-        data.value = response.data.data;
-        totalItems.value = response.data.total;
+        if (response.ok) {
+            loadData.value = false;
+            data.value = response.data.data;
+            totalItems.value = response.data.total;
+        }
     } catch (error) {
         console.error("Error fetching users:", error);
     }
@@ -987,7 +985,7 @@ const closeModal = () => {
 
 const modalSuratRilis = ref(false);
 const modelJenisRilis = reactive({
-    jenis: null,
+    jenis: 'yang bersangkutan',
     atas_nama: null,
     no_ktp: null,
 });

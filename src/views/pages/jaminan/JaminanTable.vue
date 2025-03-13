@@ -1,5 +1,5 @@
 <script setup>
-import { h, ref, defineEmits } from "vue";
+import { h, ref } from "vue";
 import { NDataTable, NPagination, NInput, NButton } from "naive-ui";
 import { useApi } from "../../../helpers/axios";
 
@@ -81,7 +81,7 @@ const columns = [
         sorter: "default",
     },
     {
-        width:200,
+        width: 200,
         title: "No BPKB",
         key: "BPKB_NUMBER",
         sorter: "default",
@@ -146,10 +146,11 @@ const props = defineProps({
         default: false
     }
 })
-
+const loadData = ref(false);
 // Fetch users with query parameters
 const fetchData = async () => {
     try {
+        loadData.value = true;
         const params = {
             type: props.type,
             page: currentPage.value,
@@ -164,9 +165,11 @@ const fetchData = async () => {
             params: params,
             token: localStorage.getItem('token'),
         });
-
-        users.value = response.data.data;
-        totalItems.value = response.data.total;
+        if (response.ok) {
+            loadData.value = false;
+            users.value = response.data.data;
+            totalItems.value = response.data.total;
+        }
     } catch (error) {
         console.error("Error fetching users:", error);
     }
@@ -206,8 +209,8 @@ onMounted(() => {
         </div>
         <!-- Data Table -->
         <div id="drawer-target">
-            <n-data-table size="small" :max-height="300" :columns="props.selection ? columns : columnsWithSelection" :data="users"
-                :bordered="true" :row-key="(row) => row" :on-update:checked-row-keys="handleChecked" />
+            <n-data-table size="small" :max-height="300" :columns="props.selection ? columns : columnsWithSelection"
+                :data="users" :bordered="true" :row-key="(row) => row" :on-update:checked-row-keys="handleChecked" :loading="loadData"/>
         </div>
         <!-- Pagination -->
         <n-pagination v-model:page="currentPage" :page-size="pageSize" :page-sizes="pageSizes" :item-count="totalItems"
