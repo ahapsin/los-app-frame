@@ -25,7 +25,6 @@
                     <div class="w-full h-[300px] z-0 rounded-md overflow-clip">
                         <Maps_point></Maps_point>
                     </div>
-
                 </n-form-item>
                 <n-form-item label="Lampiran Kunjungan">
                     <file-upload :def_preview="true" title="dokumen pendukung" endpoint="image_upload_prospect"

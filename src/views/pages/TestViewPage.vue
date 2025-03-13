@@ -558,9 +558,9 @@ const order = reactive({
     tujuan_kredit: null,
     plafond: null,
     tenor: 6,
-    bunga: null,
+    bunga: 0,
     bunga_tahunan: computed(() => (order.bunga * 12).toFixed(2)),
-    angsuran: computed(() => ((order.plafond * order.bunga_tahunan) / order.tenor)),
+    angsuran: computed(() => (Math.round((order.plafond*order.bunga/100)*order.tenor+order.plafond)/order.tenor)),
     category: null,
     jenis_angsuran: "bulanan",
 });
