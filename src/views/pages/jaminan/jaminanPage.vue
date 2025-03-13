@@ -147,9 +147,11 @@
                                     <n-form-item label="NO KTP" class="w-full">
                                         <n-input v-model:value="modelJenisRilis.no_ktp" />
                                     </n-form-item>
+
                                     <file-upload title="Surat Kuasa" endpoint="collateral_attachment_rilis"
-                                        :idapp="bodyModal.id" type="doc_rilis"
+                                        :idapp="bodyModal.ID" type="doc_rilis"
                                         :def_value="findDocByType(bodyModal.document_rilis, 'surat Kuasa')" />
+
                                 </div>
                             </div>
                             <!-- <n-button type="info" dashed @click="cetakBuktiTerima">Cetak Surat Rilis</n-button> -->
@@ -158,7 +160,7 @@
                                 upload dokumen rilis yang sudah dicap dan ditanda tangani pemberi dan penerima
                             </n-alert>
                             <file-upload title="Upload bukti rilis" endpoint="collateral_attachment_rilis"
-                                :idapp="bodyModal.id" type="doc_rilis"
+                                :idapp="bodyModal.ID" type="doc_rilis"
                                 :def_value="findDocByType(bodyModal.document_rilis, 'doc_rilis')" />
                         </div>
                     </div>
