@@ -1,12 +1,11 @@
 <template>
-  <n-card title="Laporan Listing Beban" :segmented="true" size="small">
+  <n-card title="Laporan Listing Beban TEST(mode)" :segmented="true" size="small">
     <div>
       <n-space vertical :size="12" class="pt-4">
         <n-space>
-<!--          <n-form-item label="TANGGAL AKHIR">-->
-<!--            <n-date-picker v-model:formatted-value="rangeDate" :default-value="Date.now()" clearable-->
-<!--                           format="yyyy-MM-dd"/>-->
-<!--          </n-form-item>-->
+          <n-form-item label="TANGGAL AKHIR">
+            <n-date-picker v-model:formatted-value="rangeDate" format="MMyyyy" type="month" clearable />
+          </n-form-item>
           <n-form-item label="POS">
             <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
                       value-field="id" :default-value="defBranch" :options="dataBranch"
@@ -93,7 +92,7 @@ const grabListBan = async (e) => {
   let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "POST",
-    api: "listBan",
+    api: "listBanTest",
     data: e,
     token: userToken,
   });

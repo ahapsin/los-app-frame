@@ -3,27 +3,13 @@
         content: true,
         footer: 'soft',
     }" size="small">
-    <template #header>PELUNASAN
-      <!-- <n-icon v-if="width <=620">
-<phone-icon />
-</n-icon>
-<n-icon v-else>
-<desktop-icon />
-</n-icon> -->
+    <template #header>Laporan Pembayaran
     </template>
     <template #header-extra>
       <n-space>
-        <n-button strong type="primary" @click="handleAddPay">
-          <template #icon>
-            <n-icon>
-              <add-icon/>
-            </n-icon>
-          </template>
-          <span class="hidden md:flex">tambah</span>
-        </n-button>
         <n-button strong type="warning" @click="searchField=!searchField">
           <template #icon>
-            <n-icon v-if="searchField">
+            <n-icon v-if="!searchField">
               <filter-icon/>
             </n-icon>
             <n-icon v-else>
@@ -36,38 +22,29 @@
     </template>
     <div>
       <div class="flex gap-2 p-4 bg-sc-50/50 border-b" v-if="searchField">
-        <n-form-item label="NO TRANSAKSI" class="w-full">
-          <n-input v-model:value="dynamicSearch.no_transaksi" type="text" placeholder="NO TRANSAKSI"
-                   clearable/>
-        </n-form-item>
-        <n-form-item label="ATAS NAMA" class="w-full">
-          <n-input v-model:value="dynamicSearch.atas_nama" type="text" placeholder="ATAS NAMA" clearable/>
-        </n-form-item>
-        <n-form-item label="NO KONTRAK" class="w-full">
-          <n-input v-model:value="dynamicSearch.no_kontrak" type="text" placeholder="NO KONTRAK" clearable/>
+
+        <n-form-item label="POS" class="w-full" v-if="me.me.cabang_nama === 'Head Office'">
+          <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
+                    value-field="id" :default-value="defBranch" :options="dataBranch"
+                    v-model:value="selectBranch" />
         </n-form-item>
         <n-form-item label="TANGGAL" class="w-full">
           <n-date-picker placeholder="CARI TANGGAL" v-model:formatted-value="dynamicSearch.dari"
                          :default-value="Date.now()" clearable format="yyyy-MM-dd"
+                         class="w-full"
           />
         </n-form-item>
         <n-form-item class="w-full">
-          <n-button type="primary" secondary @click="handleSearch" class="px-4">
-            <n-icon>
-              <search-icon/>
-            </n-icon>
-            Cari
-          </n-button>
+          <n-button type="primary" @click="handleSearch" class="px-4"> Cari</n-button>
         </n-form-item>
       </div>
-
       <n-data-table ref="tableRef" striped size="small" :row-key="(row) => row.loan_number" :columns="columns"
                     :scroll-x="870" :data="showData" :max-height="500" :on-update:checked-row-keys="handleFasilitas"
                     :loading="loadDataPayment" class="p-4" :pagination="{ pageSize: 10 }"/>
     </div>
   </n-card>
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal" :on-after-leave="onAfterLeave">
-    <n-card title="DETAIL PELUNASAN" :segmented="{
+    <n-card title="Detail Pembayaran" :segmented="{
             content: true,
             footer: 'soft',
         }">
@@ -82,43 +59,10 @@
           </n-space>
         </div>
       </template>
-      <template #footer>
-        <n-space>
-          <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
-                    v-show="bodyModal.STATUS == 'PAID'" :disabled="bodyModal.print_ke > 1500">
-            <n-space>
-              <n-icon>
-                <print-icon/>
-              </n-icon>
-              <p>Sisa Cetak {{ printCount - bodyModal.print_ke }}</p>
-            </n-space>
-          </n-button>
 
-          <n-button type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS == 'PAID'"
-          >
-            <n-space>
-              <n-icon>
-                <upload-icon/>
-              </n-icon>
-              <p>Upload Nota</p>
-            </n-space>
-          </n-button>
-          <n-button v-if="bodyModal.STATUS != 'CANCEL'" type="error"
-                    @click="handleCancelPayment(bodyModal.tgl_transaksi)">
-            Ajukan Batal
-          </n-button>
-          <n-button secondary type="info" @click="uploadState = !uploadState"
-                    v-show="bodyModal.STATUS == 'PAID'" v-else>
-            <n-icon>
-              <file-icon/>
-            </n-icon>
-            Tampilkan Nota
-          </n-button>
-        </n-space>
-      </template>
       <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
         <n-watermark
-            content="KSP DJAYA"
+            :content="apptitle"
             cross
             selectable
             :font-size="16"
@@ -134,7 +78,7 @@
               <div class="flex gap-2 items-center">
                 <img class="h-10 md:h-10" :src="applogo" alt="logo_company"/>
                 <div class="flex flex-col">
-                  <span class="text-xl font-bold">{{apptitle}}</span>
+                  <span class="text-xl font-bold">{{ apptitle }}</span>
                   <n-text strong class="text-md"> POS: {{ bodyModal.cabang }}</n-text>
                 </div>
               </div>
@@ -155,12 +99,12 @@
                 <small class="text-reg">No Transaksi : </small>
                 <n-text class="text-reg font-bold"> {{ bodyModal.no_transaksi }}</n-text>
                 <small class="text-reg">No Kontrak : </small>
-                <n-text class="text-reg font-bold"> {{ bodyModal.cust_code }}</n-text>
+                <n-text class="text-reg font-bold"> {{ bodyModal.no_fasilitas }}</n-text>
               </div>
               <div class="flex flex-col py-4">
                 <small class="text-reg">Terima dari (No Pelanggan) : </small>
                 <n-text class="text-lg font-bold"> {{ bodyModal.nama }}</n-text>
-                <small class="text-reg">({{ bodyModal.no_fasilitas }})</small>
+                <small class="text-reg">({{ bodyModal.cust_code }})</small>
               </div>
             </div>
 
@@ -309,26 +253,31 @@
 import {useApi} from "../../../helpers/axios";
 import {useSearch} from "../../../helpers/searchObject";
 import router from "../../../router";
+
 import {
-  PlusFilled as addIcon,
   FilterAltSharp as filterIcon,
   CloseRound as closeIcon,
-  SearchRound as searchIcon,
   AttachFileFilled as fileIcon,
-  CloudUploadOutlined as uploadIcon,
   LocalPrintshopOutlined as PrintIcon,
 } from "@vicons/material";
 import {useWindowSize} from "@vueuse/core";
-import {NImage, useLoadingBar} from "naive-ui";
-const apptitle = import.meta.env.VITE_APP_TITLE;
-const applogo = import.meta.env.VITE_APP_LOGO;
+import {useLoadingBar} from "naive-ui";
+
 const loadingBar = useLoadingBar();
-import {useMessage, NIcon, NTag, NButton, NInput} from "naive-ui";
+import {useMessage, NIcon, NTag, NButton, NInput, NImage} from "naive-ui";
 import {computed, onMounted, reactive, ref, h} from "vue";
 import {useVueToPrint} from "vue-to-print";
-
+import {useMeStore} from "../../../stores/me.js";
+const dataBranch = ref([]);
+const selectBranch = ref();
+const defBranch = ref('SEMUA CABANG');
+const userToken = localStorage.getItem("token");
+const loadingBranch = ref(false);
+const apptitle = import.meta.env.VITE_APP_TITLE;
+const applogo = import.meta.env.VITE_APP_LOGO;
 const uploadState = ref(false);
 const dynamicSearch = reactive({
+  cabang_id:computed(()=>selectBranch.value),
   no_transaksi: '',
   atas_nama: '',
   no_kontrak: '',
@@ -344,22 +293,32 @@ const {handlePrint} = useVueToPrint({
   content: printReceiptRef,
   documentTitle: "Receipt",
 });
-const printNota = async (e) => {
-  let userToken = localStorage.getItem("token");
-  const bodyPostPrint = {
-    id: e,
-  }
+
+
+
+const getBranch = async () => {
+  loadingBranch.value = true;
   const response = await useApi({
-    method: "POST",
-    data: bodyPostPrint,
-    api: "log_print",
+    method: "GET",
+    api: "cabang",
     token: userToken,
   });
   if (!response.ok) {
-    message.error("error api");
+    message.error("ERROR API");
   } else {
-    handlePrint();
-    showModal.value = false;
+    loadingBranch.value = false;
+
+    if (me.me.cabang_nama != "Head Office") {
+      defBranch.value = me.me.cabang_nama;
+      selectBranch.value = me.me.cabang_id;
+    } else {
+      selectBranch.value = "SEMUA CABANG";
+      dataBranch.value = response.data.response;
+      dataBranch.value.unshift({
+        id: "",
+        nama: "SEMUA CABANG"
+      });
+    }
   }
 }
 const onAfterLeave = () => {
@@ -455,10 +414,13 @@ const createColumns = () => {
             }
         );
       },
-    },
-    {
-      title: "NO TRANSAKSI",
-      width: 150,
+    }, {
+      title: "NO TRX",
+      width: 100,
+      ellipsis:  {
+        tooltip: true,
+      },
+      tooltip: true,
       key: "no_transaksi",
       sorter: "default",
     },
@@ -481,9 +443,14 @@ const createColumns = () => {
       width: 200,
     },
     {
-      title: "METODE BAYAR",
+      title: "METODE",
       width: 100,
       key: "payment_method",
+      sorter: "default",
+    }, {
+      title: "VIA",
+      width: 100,
+      key: "position",
       sorter: "default",
     },
     {
@@ -595,9 +562,10 @@ const getDataPayment = async () => {
   loadDataPayment.value = true;
   let userToken = localStorage.getItem("token");
   const response = await useApi({
-    method: "GET",
-    api: `payment?dari=${dynamicSearch.dari}&notrx=${dynamicSearch.no_transaksi}&nama=${dynamicSearch.atas_nama}&no_kontrak=${dynamicSearch.no_kontrak}&tipe=pelunasan`,
+    method: "POST",
+    api: `lap_pembayaran`,
     token: userToken,
+    data: dynamicSearch,
   });
   if (!response.ok) {
     message.error("ERROR API");
@@ -633,10 +601,14 @@ const getSkalaCredit = async (e) => {
   }
 };
 const handleAddPay = () => {
-  router.push({name: "tambah pelunasan"});
+  router.push({name: "tambah penerimaan"});
 };
 const showData = computed(() => {
   return useSearch(dataPayment.value, searchBox.value);
 });
-onMounted(() => getDataPayment());
+const me = useMeStore();
+onMounted(() => {
+  getBranch();
+  me;
+});
 </script>

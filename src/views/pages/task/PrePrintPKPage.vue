@@ -87,366 +87,366 @@ class="flex gap-2 border-t p-4 justify-end"
               :y-offset="28"
               :rotate="-15"
           >
-          <div class="bg-white max-w-[900px]  p-8" v-show="optPrint.pkPage">
-            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
-            <table border="1" class="mb-10">
-              <tr>
-                <td align="center"><b>PERJANJIAN PEMBERIAN PINJAMAN</b></td>
-              </tr>
-              <tr v-if="pkData.no_perjanjian">
-                <td align="center">
-                  NO.PERJANJIAN : {{ pkData.no_perjanjian }}
-                </td>
-              </tr>
-              <tr>
-                <td heigth="20">&nbsp;</td>
-              </tr>
-              <tr>
-                <td>Yang bertanda tangan dibawah ini :</td>
-              </tr>
-              <tr>
-                <td>
-                  <br/>
+            <div class="bg-white max-w-[900px]  p-8" v-show="optPrint.pkPage">
+              <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
+              <table border="1" class="mb-10">
+                <tr>
+                  <td align="center"><b>PERJANJIAN PEMBERIAN PINJAMAN</b></td>
+                </tr>
+                <tr v-if="pkData.no_perjanjian">
+                  <td align="center">
+                    NO.PERJANJIAN : {{ pkData.no_perjanjian }}
+                  </td>
+                </tr>
+                <tr>
+                  <td heigth="20">&nbsp;</td>
+                </tr>
+                <tr>
+                  <td>Yang bertanda tangan dibawah ini :</td>
+                </tr>
+                <tr>
+                  <td>
+                    <br/>
+                    <table>
+                      <tr>
+                        <td rowspan="3" valign="top" width="20">I.</td>
+                        <td width="150">Nama</td>
+                        <td width="25">:</td>
+                        <td>{{ pihak1.nama }}</td>
+                      </tr>
+                      <tr>
+                        <td>Jabatan</td>
+                        <td width="25">:</td>
+                        <td>{{ pihak1.jabatan }}</td>
+                      </tr>
+                      <tr>
+                        <td valign="top">Alamat Kantor</td>
+                        <td valign="top">:</td>
+                        <td>
+                          <span class="capitalize">{{ pkData.alamat_kantor }}</span>
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td height="10"></td>
+                </tr>
+                <tr>
+                  <td>
+                    <table>
+                      <tr>
+                        <td rowspan="4" valign="top" width="20">II.</td>
+                        <td width="150">Nama</td>
+                        <td width="25">:</td>
+                        <td>{{ pihak2.nama }}</td>
+                      </tr>
+                      <tr>
+                        <td>No. KTP/SIM</td>
+                        <td width="25">:</td>
+                        <td>{{ pihak2.no_identitas }}</td>
+                      </tr>
+                      <tr>
+                        <td>Alamat</td>
+                        <td width="25">:</td>
+                        <td>{{ pihak2.alamat }}</td>
+                      </tr>
+                      <tr>
+                        <td colspan=" 3">
+                          Dalam hal ini bertindak untuk dirinya sendiri, selanjutnya
+                          disebut Pihak Kedua
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <br/>
+                    Dengan ini menerangkan bahwa para pihak sepakat menandatangani
+                    Perjanjian Pemberian Pinjaman, dengan isi, syarat dan ketentuan
+                    sebagai berikut :
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <br/>
+                    Pasal 1
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Pihak pertama memberikan pinjaman pada pihak kedua meliputi
+                    pokok hutang dan margin atas pinjaman menjadi sebesar
+                    {{ pkData.pokok_margin }}
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center"><br/>Pasal 2</td>
+                </tr>
+                <tr>
+                  <td>
+                    Pengembalian pinjaman tersebut akan dibayarkan untuk jangka
+                    {{ pkData.tenor }} BULAN lamanya, dimulai tanggal
+                    {{ pkData.tgl_awal_pk }} berakhir pada tanggal
+                    {{ pkData.tgl_akhir_pk }} dengan jumlah angsuran sebesar
+                    {{ pkData.angsuran }}
+                  </td>
+                </tr>
+                <tr>
+                  <td align="center">
+                    <br/>
+                    Pasal 3
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Guna menjamin pembayaran pinjaman tersebut diatas maka Pihak
+                    Kedua dengan ini menyerahkan jaminan barang miliknya sendiri
+                    berupa KENDARAAN / SERTIFIKAT, dengan dibuktikan diserahkannya Bukti
+                    Kepemilikan dengan spesifikasi sebagai berikut
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <div class="text-justify pt-2" v-for="jaminan in dataJaminan" :key="jaminan">
+                      Jenis Dokumen: <b> {{ jaminan.type.toUpperCase() }}</b>
+                      <table v-if="jaminan.type.toLowerCase() == 'kendaraan'">
+                        <tr>
+                          <td>BPKB No</td>
+                          <td width="25">:</td>
+                          <td>{{ jaminan.atr.no_bpkb }}</td>
+                        </tr>
+                        <tr>
+                          <td>BPKB atas nama</td>
+                          <td width="25">:</td>
+                          <td>{{ jaminan.atr.atas_nama }}</td>
+                        </tr>
+                        <tr>
+                          <td>Merk/Type/Tahun</td>
+                          <td width="25">:</td>
+                          <td>{{ `${jaminan.atr.merk}/${jaminan.atr.tipe}/${jaminan.atr.tahun}` }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Warna/No.Polisi</td>
+                          <td width="25">:</td>
+                          <td>{{ `${jaminan.atr.warna}/${jaminan.atr.no_polisi}` }}</td>
+                        </tr>
+                        <tr>
+                          <td>No. Rangka/Mesin</td>
+                          <td width="25">:</td>
+                          <td>{{ `${jaminan.atr.no_rangka}/${jaminan.atr.no_mesin}` }}</td>
+                        </tr>
+                        <tr>
+                          <td>No. Faktur</td>
+                          <td width="25">:</td>
+                          <td>{{ `${jaminan.atr.no_faktur}` }}</td>
+                        </tr>
+                      </table>
+                      <table v-else>
+                        <tr>
+                          <td>No Sertifikat</td>
+                          <td width="25">:</td>
+                          <td>{{ jaminan.atr.no_sertifikat }}</td>
+                        </tr>
+                        <tr>
+                          <td>Atas Nama</td>
+                          <td width="25">:</td>
+                          <td>{{ jaminan.atr.atas_nama }}</td>
+                        </tr>
+                        <tr>
+                          <td>Status Kepemilikan</td>
+                          <td width="25">:</td>
+                          <td>{{ jaminan.atr.status_kepemilikan }}</td>
+                        </tr>
+                        <tr>
+                          <td>IMB / Luas Tanah / Luas Bangunan</td>
+                          <td width="25">:</td>
+                          <td>{{
+                              `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
+                                                    ${jaminan.atr.luas_bangunan} m2`
+                            }}
+                          </td>
+                        </tr>
+                        <tr>
+                          <td>Lokasi</td>
+                          <td width="25">:</td>
+                          <td>{{ `${jaminan.atr.lokasi}` }}</td>
+                        </tr>
+                      </table>
+                    </div>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <br/>
+                    Apabila pihak kedua tidak bisa memenuhi kewajiban pembayaran
+                    angsuran selama 3 bulan, maka pihak kedua bersedia menyerahkan
+                    jaminan kendaraan sesuai dengan pasal 3 di atas kepada pihak
+                    pertama. Jika Perjanjian Pemberi Pinjaman telah selesai, BPKB
+                    wajib diambil maksimum 90 hari kalender terhitung dari pelunasan
+                    angsuran dan denda terakhir. KSP Djaya tidak bertanggung jawab
+                    atas kerusakan atau kehilangan BPKB.
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <br/>
+                    Demikian Perjanjian Pemberian Pinjaman ini dibuat dan
+                    ditandatangani, tanpa adanya unsur paksaan.<br/>
+                    {{ pkData.kota }}, {{ dayFull.full_date_only }}
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <br/>
+                    <table width="100%">
+                      <tr>
+                        <td>
+                          Pihak Pertama<br/>{{
+                            pkData.cabang
+                          }}<br/><br/><br/><br/>
+                          ( {{ pihak1.nama }} )
+                        </td>
+                        <td>
+                          Pihak Kedua<br/><br/><br/><br/><br/>
+                          ( {{ pihak2.nama }} )
+                        </td>
+                      </tr>
+                    </table>
+                  </td>
+                </tr>
+              </table>
+            </div>
+            <div class="mt-2" v-show="optPrint.tandaTerima">
+              <div class="bg-white max-w-[900px]  p-8">
+                <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
+                <div class="mb-4 text-center text-base">
+                  <b>SURAT TANDA TERIMA DOKUMEN</b>
+                </div>
+                <div class="mb-4">yang bertanda tangan di bawah ini:</div>
+                <div class="mb-4">
                   <table>
                     <tr>
-                      <td rowspan="3" valign="top" width="20">I.</td>
-                      <td width="150">Nama</td>
+                      <td width="100px">Nama</td>
                       <td width="25">:</td>
-                      <td>{{ pihak1.nama }}</td>
+                      <td>
+                        <b class="uppercase">{{ pihak1.nama }}</b>
+                      </td>
                     </tr>
                     <tr>
                       <td>Jabatan</td>
                       <td width="25">:</td>
-                      <td>{{ pihak1.jabatan }}</td>
-                    </tr>
-                    <tr>
-                      <td valign="top">Alamat Kantor</td>
-                      <td valign="top">:</td>
                       <td>
-                        <span class="capitalize">{{ pkData.alamat_kantor }}</span>
+                        <b class="uppercase">{{ pihak1.jabatan }}</b>
                       </td>
-                    </tr>
-                  </table>
-                </td>
-              </tr>
-              <tr>
-                <td height="10"></td>
-              </tr>
-              <tr>
-                <td>
-                  <table>
-                    <tr>
-                      <td rowspan="4" valign="top" width="20">II.</td>
-                      <td width="150">Nama</td>
-                      <td width="25">:</td>
-                      <td>{{ pihak2.nama }}</td>
-                    </tr>
-                    <tr>
-                      <td>No. KTP/SIM</td>
-                      <td width="25">:</td>
-                      <td>{{ pihak2.no_identitas }}</td>
                     </tr>
                     <tr>
                       <td>Alamat</td>
                       <td width="25">:</td>
-                      <td>{{ pihak2.alamat }}</td>
-                    </tr>
-                    <tr>
-                      <td colspan=" 3">
-                        Dalam hal ini bertindak untuk dirinya sendiri, selanjutnya
-                        disebut Pihak Kedua
+                      <td>
+                        <b class="uppercase">{{ pkData.alamat_kantor }}</b>
                       </td>
                     </tr>
                   </table>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <br/>
-                  Dengan ini menerangkan bahwa para pihak sepakat menandatangani
-                  Perjanjian Pemberian Pinjaman, dengan isi, syarat dan ketentuan
-                  sebagai berikut :
-                </td>
-              </tr>
-              <tr>
-                <td align="center">
-                  <br/>
-                  Pasal 1
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Pihak pertama memberikan pinjaman pada pihak kedua meliputi
-                  pokok hutang dan margin atas pinjaman menjadi sebesar
-                  {{ pkData.pokok_margin }}
-                </td>
-              </tr>
-              <tr>
-                <td align="center"><br/>Pasal 2</td>
-              </tr>
-              <tr>
-                <td>
-                  Pengembalian pinjaman tersebut akan dibayarkan untuk jangka
-                  {{ pkData.tenor }} BULAN lamanya, dimulai tanggal
-                  {{ pkData.tgl_awal_pk }} berakhir pada tanggal
-                  {{ pkData.tgl_akhir_pk }} dengan jumlah angsuran sebesar
-                  {{ pkData.angsuran }}
-                </td>
-              </tr>
-              <tr>
-                <td align="center">
-                  <br/>
-                  Pasal 3
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  Guna menjamin pembayaran pinjaman tersebut diatas maka Pihak
-                  Kedua dengan ini menyerahkan jaminan barang miliknya sendiri
-                  berupa KENDARAAN / SERTIFIKAT, dengan dibuktikan diserahkannya Bukti
-                  Kepemilikan dengan spesifikasi sebagai berikut
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <div class="text-justify pt-2" v-for="jaminan in dataJaminan" :key="jaminan">
-                    Jenis Dokumen: <b> {{ jaminan.type.toUpperCase() }}</b>
-                    <table v-if="jaminan.type.toLowerCase() == 'kendaraan'">
-                      <tr>
-                        <td>BPKB No</td>
-                        <td width="25">:</td>
-                        <td>{{ jaminan.atr.no_bpkb }}</td>
-                      </tr>
-                      <tr>
-                        <td>BPKB atas nama</td>
-                        <td width="25">:</td>
-                        <td>{{ jaminan.atr.atas_nama }}</td>
-                      </tr>
-                      <tr>
-                        <td>Merk/Type/Tahun</td>
-                        <td width="25">:</td>
-                        <td>{{ `${jaminan.atr.merk}/${jaminan.atr.tipe}/${jaminan.atr.tahun}` }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Warna/No.Polisi</td>
-                        <td width="25">:</td>
-                        <td>{{ `${jaminan.atr.warna}/${jaminan.atr.no_polisi}` }}</td>
-                      </tr>
-                      <tr>
-                        <td>No. Rangka/Mesin</td>
-                        <td width="25">:</td>
-                        <td>{{ `${jaminan.atr.no_rangka}/${jaminan.atr.no_mesin}` }}</td>
-                      </tr>
-                      <tr>
-                        <td>No. Faktur</td>
-                        <td width="25">:</td>
-                        <td>{{ `${jaminan.atr.no_faktur}` }}</td>
-                      </tr>
-                    </table>
-                    <table v-else>
-                      <tr>
-                        <td>No Sertifikat</td>
-                        <td width="25">:</td>
-                        <td>{{ jaminan.atr.no_sertifikat }}</td>
-                      </tr>
-                      <tr>
-                        <td>Atas Nama</td>
-                        <td width="25">:</td>
-                        <td>{{ jaminan.atr.atas_nama }}</td>
-                      </tr>
-                      <tr>
-                        <td>Status Kepemilikan</td>
-                        <td width="25">:</td>
-                        <td>{{ jaminan.atr.status_kepemilikan }}</td>
-                      </tr>
-                      <tr>
-                        <td>IMB / Luas Tanah / Luas Bangunan</td>
-                        <td width="25">:</td>
-                        <td>{{
-                            `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
-                                                    ${jaminan.atr.luas_bangunan} m2`
-                          }}
-                        </td>
-                      </tr>
-                      <tr>
-                        <td>Lokasi</td>
-                        <td width="25">:</td>
-                        <td>{{ `${jaminan.atr.lokasi}` }}</td>
-                      </tr>
-                    </table>
-                  </div>
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <br/>
-                  Apabila pihak kedua tidak bisa memenuhi kewajiban pembayaran
-                  angsuran selama 3 bulan, maka pihak kedua bersedia menyerahkan
-                  jaminan kendaraan sesuai dengan pasal 3 di atas kepada pihak
-                  pertama. Jika Perjanjian Pemberi Pinjaman telah selesai, BPKB
-                  wajib diambil maksimum 90 hari kalender terhitung dari pelunasan
-                  angsuran dan denda terakhir. KSP Djaya tidak bertanggung jawab
-                  atas kerusakan atau kehilangan BPKB.
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <br/>
-                  Demikian Perjanjian Pemberian Pinjaman ini dibuat dan
-                  ditandatangani, tanpa adanya unsur paksaan.<br/>
-                  {{ pkData.kota }}, {{ dayFull.full_date_only }}
-                </td>
-              </tr>
-              <tr>
-                <td>
-                  <br/>
-                  <table width="100%">
+                </div>
+                <div class="mb-4 text-justify text-sm">
+                  Pada hari ini <b>{{ dayFull.day }}</b> tanggal
+                  <b>{{ dayFull.date }}</b> bulan <b>{{ dayFull.month }}</b> tahun
+                  <b>{{ dayFull.year }}</b>,Dengan ini telah menerima buku kepemilikan kendaraan (BPKB)
+                  dalam keadaan baik dengan rincian sebagai berikut :
+                </div>
+                <div class="text-justify pt-2" v-for="jaminan in dataJaminan" :key="jaminan">
+                  Jenis Dokumen: <b> {{ jaminan.type.toUpperCase() }}</b>
+                  <table v-if="jaminan.type.toLowerCase() == 'kendaraan'">
                     <tr>
-                      <td>
-                        Pihak Pertama<br/>{{
-                          pkData.cabang
-                        }}<br/><br/><br/><br/>
-                        ( {{ pihak1.nama }} )
-                      </td>
-                      <td>
-                        Pihak Kedua<br/><br/><br/><br/><br/>
-                        ( {{ pihak2.nama }} )
-                      </td>
+                      <td>BPKB No</td>
+                      <td width="25">:</td>
+                      <td>{{ jaminan.atr.no_bpkb }}</td>
+                    </tr>
+                    <tr>
+                      <td>BPKB atas nama</td>
+                      <td width="25">:</td>
+                      <td>{{ jaminan.atr.atas_nama }}</td>
+                    </tr>
+                    <tr>
+                      <td>Merk/Type/Tahun</td>
+                      <td width="25">:</td>
+                      <td>{{ `${jaminan.atr.merk}/${jaminan.atr.tipe}/${jaminan.atr.tahun}` }}</td>
+                    </tr>
+                    <tr>
+                      <td>Warna/No.Polisi</td>
+                      <td width="25">:</td>
+                      <td>{{ `${jaminan.atr.warna}/${jaminan.atr.no_polisi}` }}</td>
+                    </tr>
+                    <tr>
+                      <td>No. Rangka/Mesin</td>
+                      <td width="25">:</td>
+                      <td>{{ `${jaminan.atr.no_rangka}/${jaminan.atr.no_mesin}` }}</td>
+                    </tr>
+                    <tr>
+                      <td>No. Faktur</td>
+                      <td width="25">:</td>
+                      <td>{{ `${jaminan.atr.no_faktur}` }}</td>
                     </tr>
                   </table>
-                </td>
-              </tr>
-            </table>
-          </div>
-          <div class="mt-2" v-show="optPrint.tandaTerima">
-            <div class="bg-white max-w-[900px]  p-8">
-              <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
-              <div class="mb-4 text-center text-base">
-                <b>SURAT TANDA TERIMA DOKUMEN</b>
-              </div>
-              <div class="mb-4">yang bertanda tangan di bawah ini:</div>
-              <div class="mb-4">
-                <table>
-                  <tr>
-                    <td width="100px">Nama</td>
-                    <td width="25">:</td>
-                    <td>
-                      <b class="uppercase">{{ pihak1.nama }}</b>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Jabatan</td>
-                    <td width="25">:</td>
-                    <td>
-                      <b class="uppercase">{{ pihak1.jabatan }}</b>
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Alamat</td>
-                    <td width="25">:</td>
-                    <td>
-                      <b class="uppercase">{{ pkData.alamat_kantor }}</b>
-                    </td>
-                  </tr>
-                </table>
-              </div>
-              <div class="mb-4 text-justify text-sm">
-                Pada hari ini <b>{{ dayFull.day }}</b> tanggal
-                <b>{{ dayFull.date }}</b> bulan <b>{{ dayFull.month }}</b> tahun
-                <b>{{ dayFull.year }}</b>,Dengan ini telah menerima buku kepemilikan kendaraan (BPKB)
-                dalam keadaan baik dengan rincian sebagai berikut :
-              </div>
-              <div class="text-justify pt-2" v-for="jaminan in dataJaminan" :key="jaminan">
-                Jenis Dokumen: <b> {{ jaminan.type.toUpperCase() }}</b>
-                <table v-if="jaminan.type.toLowerCase() == 'kendaraan'">
-                  <tr>
-                    <td>BPKB No</td>
-                    <td width="25">:</td>
-                    <td>{{ jaminan.atr.no_bpkb }}</td>
-                  </tr>
-                  <tr>
-                    <td>BPKB atas nama</td>
-                    <td width="25">:</td>
-                    <td>{{ jaminan.atr.atas_nama }}</td>
-                  </tr>
-                  <tr>
-                    <td>Merk/Type/Tahun</td>
-                    <td width="25">:</td>
-                    <td>{{ `${jaminan.atr.merk}/${jaminan.atr.tipe}/${jaminan.atr.tahun}` }}</td>
-                  </tr>
-                  <tr>
-                    <td>Warna/No.Polisi</td>
-                    <td width="25">:</td>
-                    <td>{{ `${jaminan.atr.warna}/${jaminan.atr.no_polisi}` }}</td>
-                  </tr>
-                  <tr>
-                    <td>No. Rangka/Mesin</td>
-                    <td width="25">:</td>
-                    <td>{{ `${jaminan.atr.no_rangka}/${jaminan.atr.no_mesin}` }}</td>
-                  </tr>
-                  <tr>
-                    <td>No. Faktur</td>
-                    <td width="25">:</td>
-                    <td>{{ `${jaminan.atr.no_faktur}` }}</td>
-                  </tr>
-                </table>
-                <table v-else>
-                  <tr>
-                    <td>No Sertifikat</td>
-                    <td width="25">:</td>
-                    <td>{{ jaminan.atr.no_sertifikat }}</td>
-                  </tr>
-                  <tr>
-                    <td>Atas Nama</td>
-                    <td width="25">:</td>
-                    <td>{{ jaminan.atr.atas_nama }}</td>
-                  </tr>
-                  <tr>
-                    <td>Status Kepemilikan</td>
-                    <td width="25">:</td>
-                    <td>{{ jaminan.atr.status_kepemilikan }}</td>
-                  </tr>
-                  <tr>
-                    <td>IMB / Luas Tanah / Luas Bangunan</td>
-                    <td width="25">:</td>
-                    <td>{{
-                        `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
+                  <table v-else>
+                    <tr>
+                      <td>No Sertifikat</td>
+                      <td width="25">:</td>
+                      <td>{{ jaminan.atr.no_sertifikat }}</td>
+                    </tr>
+                    <tr>
+                      <td>Atas Nama</td>
+                      <td width="25">:</td>
+                      <td>{{ jaminan.atr.atas_nama }}</td>
+                    </tr>
+                    <tr>
+                      <td>Status Kepemilikan</td>
+                      <td width="25">:</td>
+                      <td>{{ jaminan.atr.status_kepemilikan }}</td>
+                    </tr>
+                    <tr>
+                      <td>IMB / Luas Tanah / Luas Bangunan</td>
+                      <td width="25">:</td>
+                      <td>{{
+                          `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
                                             ${jaminan.atr.luas_bangunan} m2`
-                      }}
-                    </td>
-                  </tr>
-                  <tr>
-                    <td>Lokasi</td>
-                    <td width="25">:</td>
-                    <td>{{ `${jaminan.atr.lokasi}` }}</td>
-                  </tr>
-                </table>
-              </div>
+                        }}
+                      </td>
+                    </tr>
+                    <tr>
+                      <td>Lokasi</td>
+                      <td width="25">:</td>
+                      <td>{{ `${jaminan.atr.lokasi}` }}</td>
+                    </tr>
+                  </table>
+                </div>
 
-              <div class="mb-4">
-                <!-- Selanjutnya disebut Penjamin<br /> -->
-                Dokumen tersebut telah diterima dalam keadaan baik untuk
-                ditindaklanjuti sebagaimana mestinya
-              </div>
-              <div>
-                <table class="!text-sm w-full">
-                  <tr>
-                    <td class="py-4 pr-4">
-                      Pemberi,
-                      <br/><br/><br/>
-                      <u class="uppercase">{{ pihak2.nama }}</u>
-                    </td>
-                    <td class="py-4 pr-4">
-                      Penerima,
-                      <br/><br/><br/>
-                      <u class="uppercase">{{ pihak1.nama }}</u>
-                    </td>
-                  </tr>
-                </table>
+                <div class="mb-4">
+                  <!-- Selanjutnya disebut Penjamin<br /> -->
+                  Dokumen tersebut telah diterima dalam keadaan baik untuk
+                  ditindaklanjuti sebagaimana mestinya
+                </div>
+                <div>
+                  <table class="!text-sm w-full">
+                    <tr>
+                      <td class="py-4 pr-4">
+                        Pemberi,
+                        <br/><br/><br/>
+                        <u class="uppercase">{{ pihak2.nama }}</u>
+                      </td>
+                      <td class="py-4 pr-4">
+                        Penerima,
+                        <br/><br/><br/>
+                        <u class="uppercase">{{ pihak1.nama }}</u>
+                      </td>
+                    </tr>
+                  </table>
+                </div>
               </div>
             </div>
-          </div>
           </n-watermark>
         </div>
         <div class="mt-2" v-show="optPrint.skalaPage">
@@ -1010,6 +1010,7 @@ const handlePrintAction = async (e) => {
     angsuran: dynamicForm.angsuran,
     flag: e == 0 ? 'yes' : 'no',
   };
+  const userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "post",
     api: "pk",

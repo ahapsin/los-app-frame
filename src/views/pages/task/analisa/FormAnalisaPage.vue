@@ -1,5 +1,10 @@
 <template>
   <n-card title="form isian analisa">
+    <template #header-extra>
+      <n-tag>Modal Kerja</n-tag>
+      <n-tag>Investasi</n-tag>
+      <n-tag>Konsumsi</n-tag>
+    </template>
     <div class="p-2 group border flex justify-between  items-center rounded-lg">
       <div class="flex gap-2">
         <n-avatar>P</n-avatar>
@@ -7,6 +12,7 @@
           <small>NO DEBITUR</small>
           <strong>NAMA DEBITUR</strong>
         </div>
+
       </div>
       <div class="flex gap-2">
         <n-button type="primary" secondary @click="modalSt = true">Preview Form</n-button>

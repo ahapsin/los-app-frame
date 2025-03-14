@@ -4,19 +4,18 @@
     <n-form :model="dynamicForm" ref="formRef">
       <div class="flex flex-col md:flex-row gap-4 items-center pb-8">
         <img class="h-14 md:h-16 " :src="applogo" alt="logo_company">
-        <div class="flex flex-col">
+        <div class="flex flex-col justify-center items-center md:items-start">
           <span class="font-bold">LOAN ORIGINATION SYSTEM</span>
           <span class="md:text-2xl font-bold">{{ apptitle }}</span>
         </div>
       </div>
       <div class=" h-full flex flex-col py-4">
         <n-form-item label="username" path="username" :rule="rules.username">
-          <n-input v-model:value="dynamicForm.username" placeholder="username"/>
+          <n-input v-model:value="dynamicForm.username" placeholder="username" />
         </n-form-item>
         <n-form-item label="password" path="password" :rule="rules.password">
           <n-input type="password" v-model:value="dynamicForm.password" placeholder="Password"
-                   show-password-on="mousedown"
-                   @keyup.enter="handleLogin"/>
+                   show-password-on="mousedown" @keyup.enter="handleLogin" />
         </n-form-item>
         <n-button class="flex w-full" :loading="loading" icon-placement="left" type="primary"
                   @click="handleLogin">
@@ -30,10 +29,10 @@
   </div>
 </template>
 <script setup>
-import {ref, reactive, onMounted} from "vue";
-import {useMessage} from "naive-ui";
+import { ref, reactive, onMounted } from "vue";
+import { useMessage } from "naive-ui";
 import router from '../../router';
-import {useApi} from "../../helpers/axios";
+import { useApi } from "../../helpers/axios";
 import pjson from '../../../package.json';
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
@@ -78,8 +77,11 @@ const handleLogin = async (e) => {
     }
   });
   if (!response.ok) {
-    message.error("login gagal,periksa username dan password anda !");
-    loading.value = false;
+
+    if (response.error.status == 503) { router.push('no-service'); } else {
+      message.error("login gagal,periksa username dan password anda !");
+      loading.value = false;
+    }
   } else {
     message.success("login berhasil");
     loading.value = false;

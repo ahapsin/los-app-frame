@@ -4,7 +4,7 @@
                     @cari="handleCariInqPinjaman" :available="inqView"/>
   </n-card>
   <n-modal v-model:show="modalDetail">
-    <n-card content-style="padding: 0;" class="w-fit">
+    <n-card content-style="padding: 0;" class="w-11/12">
       <n-tabs type="line" :tabs-padding="20" pane-style="padding: 20px;" @before-leave="handleBeforeLeaveModal">
         <n-tab-pane name="Kartu Piutang">
           <n-spin v-if="spinAngsuran"/>
@@ -15,7 +15,7 @@
                 <div class="flex gap-2 items-center">
                   <img class="h-10 md:h-10" :src="applogo" alt="logo_company"/>
                   <div class="flex-col">
-                    <div class="text-xl font-bold">{{apptitle}}</div>
+                    <div class="text-xl font-bold">{{ apptitle }}</div>
                     <div class="small">POS {{ me.me.cabang_nama }}</div>
                   </div>
                 </div>
@@ -65,47 +65,26 @@
                   </tr>
                   <tr class="border-t border-dashed border-black">
                     <td colspan="3">JUMLAH</td>
-
                     <th align="right">
-                      {{
-                        convertToValuesArray(dataDetailAngsuran).reduce((sum, row) => sum +
-                            parseInt(row[3].replace(/,/g, '')), 0).toLocaleString('US')
-                      }}
+                      {{ dataFooter.ttlAmtAngs.toLocaleString() }}
                     </th>
                     <th align="right" colspan="3">
                     </th>
 
                     <th align="right">
-                      {{
-                        convertToValuesArray(dataDetailAngsuran).reduce((sum, row) => sum +
-                            parseInt(row[7].replace(/,/g, '')), 0).toLocaleString('US')
-                      }}
+                      {{ dataFooter.ttlAmtBayar.toLocaleString()}}
                     </th>
                     <th align="right">
-                      {{
-                        convertToValuesArray(dataDetailAngsuran).reduce((sum, row) => sum +
-                            parseInt(row[8].replace(/,/g, '')), 0).toLocaleString('US')
-                      }}
+                      {{ dataFooter.ttlSisaAngs.toLocaleString() }}
                     </th>
                     <th align="right">
-                      {{
-                        convertToValuesArray(dataDetailAngsuran).reduce((sum, row) => sum +
-                            parseInt(row[9].replace(/,/g, '')), 0).toLocaleString('US')
-                      }}
+                      {{ dataFooter.ttlDenda.toLocaleString() }}
                     </th>
                     <th align="right">
-                      {{
-                        convertToValuesArray(dataDetailAngsuran).reduce((sum, row) => sum +
-                            parseInt(row[10].replace(/,/g, '')), 0).toLocaleString('US')
-                      }}
+                      {{ dataFooter.ttlBayarDenda.toLocaleString() }}
                     </th>
                     <th align="right">
-                      {{
-                        convertToValuesArray(dataDetailAngsuran).reduce((sum, row) => sum +
-                            parseInt(row[11].replace(/,/g, '')), 0).toLocaleString('US')
-                      }}
                     </th>
-
                   </tr>
                 </table>
               </div>
@@ -183,7 +162,8 @@
               </thead>
               <tbody>
               <tr v-for="body in dataDetailJaminan" :key="body.id">
-                <td v-for="head in convertObjectToArray(dataDetailJaminan)" class="text-[12px] px-1 border border-black" :key="head.id">
+                <td v-for="head in convertObjectToArray(dataDetailJaminan)" class="text-[12px] px-1 border border-black"
+                    :key="head.id">
                   {{ body[head.title] }}
                 </td>
               </tr>
@@ -201,7 +181,8 @@
               </thead>
               <tbody>
               <tr v-for="body in dataDetailPembayaran" :key="body.id">
-                <td v-for="head in convertObjectToArray(dataDetailPembayaran)" class="text-[12px] px-1 border border-black"
+                <td v-for="head in convertObjectToArray(dataDetailPembayaran)"
+                    class="text-[12px] px-1 border border-black"
                     :key="head.id">{{ body[head.title] }}
                 </td>
               </tr>
@@ -243,6 +224,7 @@ import TabInqPinjaman from "./TabInqPinjaman.vue";
 
 import {useMeStore} from "../../../stores/me.js";
 import {useVueToPrint} from "vue-to-print";
+
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const message = useMessage();
@@ -486,6 +468,7 @@ const getDetailPembayaran = async (e) => {
 
 const dataDetailAngsuran = ref();
 const dataHeaderAngsuran = ref();
+const dataFooter = ref();
 const spinAngsuran = ref(false);
 const getDetailAngsuran = async (e) => {
   spinAngsuran.value = true;
@@ -499,6 +482,7 @@ const getDetailAngsuran = async (e) => {
     message.error("ERROR API ");
   } else {
     spinAngsuran.value = false;
+    dataFooter.value = response.data.total;
     dataHeaderAngsuran.value = response.data.detail;
     dataDetailAngsuran.value = response.data.data_credit;
   }

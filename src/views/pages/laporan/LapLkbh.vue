@@ -6,8 +6,8 @@
     <div>
       <n-space vertical :size="12" class="pt-4">
         <n-space>
-          <n-date-picker v-model:value="rangeDate" :default-value="Date.now()" clearable
-                         start-placeholder="dari" end-placeholder="sampai"/>
+          <n-date-picker v-model:formatted-value="rangeDate" :default-calendar-start-time="Date.now()" clearable
+                         start-placeholder="dari" type="daterange" end-placeholder="sampai" format="yyyy-MM-dd"/>
           <n-select
               v-show="me.me.cabang_nama == 'Head Office'"
               :loading="loadingBranch"
@@ -23,12 +23,11 @@
           <n-button @click="handleSubmit" type="primary">
             Cari
           </n-button>
-          <!--        <json-excel :data="props.data.datas" :name="`LAP_LKBH_${formatDate(props.data.tgl_tarik)}`" :fields="convertObjectToArray(props.data.datas)" :stringifyLongNum="true">-->
-          <!--          <n-button type="primary" secondary>Download</n-button>-->
-          <!--        </json-excel>-->
-          <!--        <n-button @click="downloadCsv" type="info">-->
-          <!--          download-->
-          <!--        </n-button>-->
+          <json-excel :data="dataArusKas.datas" :name="`LAP_LKBH`"
+                      :stringifyLongNum="true">
+            <n-button type="primary" secondary>Download</n-button>
+          </json-excel>
+
         </n-space>
         <div class=" border p-4 border-black" v-if="tarik">
           <div
@@ -42,48 +41,116 @@
             </div>
             <div class="text-md font-bold justify-center pt-4 flex flex-col text-right">
               <n-text>LAPORAN KEUANGAN BERBASI HARIAN (LKBH)</n-text>
-              <n-text class="text-sm">tanggal : {{ formatDate(dataArusKas.tgl_tarik) }}</n-text>
+              <n-text class="text-sm">tanggal : {{ formatDate(dataArusKas.dari) }}-{{ formatDate(dataArusKas.sampai) }}</n-text>
 
             </div>
           </div>
-          <table class="w-full font-mono">
+          <table class="w-full font-mono text-xs" cellspacing="10">
             <thead>
             <tr class="border-b border-t border-black border-dashed">
-              <th class="py-2" colspan="2">NO</th>
-              <th align="left">CABANG</th>
-              <th align="left">TGL</th>
-              <th align="left">USER</th>
-              <th align="left">POSITION</th>
-              <th align="left">NO KONTRAK</th>
-              <th align="left">TERIMA DARI / KE</th>
-              <th align="left">KETERANGAN</th>
-              <th align="right">AMOUNT</th>
+              <th align="left" class="px-2">CABANG</th>
+              <th align="left" class="px-2">TGL</th>
+              <th align="left" class="px-2">USER</th>
+              <th align="left" class="px-2">POSITION</th>
+              <th align="left" class="px-2">NO KONTRAK</th>
+              <th align="left" class="px-2">TERIMA DARI / KE</th>
+              <th align="left" class="px-2">KETERANGAN</th>
+              <th align="right" class="px-2">AMOUNT</th>
             </tr>
             </thead>
             <tbody>
             <tr>
-              <td colspan="6">CASH-IN</td>
+              <th colspan="9">
+                <n-divider title-placement="left">
+                  UANG MASUK ( TUNAI )
+                </n-divider>
+              </th>
             </tr>
             <tr v-for="cashin in cashIn" :key="cashin.id">
-              <td width="20px"></td>
-              <td>{{ cashin.no }}</td>
               <td>{{ cashin.cabang }}</td>
               <td>{{ cashin.tgl }}</td>
               <td>{{ cashin.user }}</td>
               <td>{{ cashin.position }}</td>
               <td>{{ cashin.no_kontrak }}</td>
               <td>{{ cashin.nama_pelanggan }}</td>
-              <td>{{ cashin.keterangan }}</td>
+              <td>
+                <n-ellipsis style="max-width: 240px">
+                  {{ cashin.keterangan }}
+                </n-ellipsis>
+              </td>
+              <td align="right">{{ cashin.metode_pembayaran }}</td>
               <td align="right">{{ cashin.amount.toLocaleString() }}</td>
+            </tr>
+            <tr class="border-b border-black">
+              <th colspan="8" align="left">JUMLAH</th>
+              <th align="right">{{ jumlahKan(cashIn).toLocaleString() }}</th>
             </tr>
             </tbody>
             <tbody>
             <tr>
-              <td colspan="6">CASH-OUT</td>
+              <th colspan="9">
+                <n-divider title-placement="left">
+                  PELUNASAN
+                </n-divider>
+              </th>
+            </tr>
+            <tr v-for="pelunasan in pelunasan" :key="pelunasan.id">
+              <td>{{ pelunasan.cabang }}</td>
+              <td>{{ pelunasan.tgl }}</td>
+              <td>{{ pelunasan.user }}</td>
+              <td>{{ pelunasan.position }}</td>
+              <td>{{ pelunasan.no_kontrak }}</td>
+              <td>{{ pelunasan.nama_pelanggan }}</td>
+              <td>
+                <n-ellipsis style="max-width: 240px">
+                  {{ pelunasan.keterangan }}
+                </n-ellipsis>
+              </td>
+              <td align="right">{{ pelunasan.metode_pembayaran }}</td>
+              <td align="right">{{ pelunasan.amount.toLocaleString() }}</td>
+            </tr>
+            <tr class="border-b border-black">
+              <th colspan="8" align="left">JUMLAH</th>
+              <th align="right">{{ jumlahKan(pelunasan).toLocaleString() }}</th>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr>
+              <th colspan="9">
+                <n-divider title-placement="left">
+                  UANG MASUK ( TRANSFER )
+                </n-divider>
+              </th>
+            </tr>
+            <tr v-for="cashin in cashInTrf" :key="cashin.id">
+              <td>{{ cashin.cabang }}</td>
+              <td>{{ cashin.tgl }}</td>
+              <td>{{ cashin.user }}</td>
+              <td>{{ cashin.position }}</td>
+              <td>{{ cashin.no_kontrak }}</td>
+              <td>{{ cashin.nama_pelanggan }}</td>
+              <td>
+                <n-ellipsis style="max-width: 240px">
+                  {{ cashin.keterangan }}
+                </n-ellipsis>
+              </td>
+              <td align="right">{{ cashin.metode_pembayaran }}</td>
+              <td align="right">{{ cashin.amount.toLocaleString() }}</td>
+            </tr>
+            <tr class="border-b border-black">
+              <th colspan="8" align="left">JUMLAH</th>
+              <th align="right">{{ jumlahKan(cashInTrf).toLocaleString() }}</th>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr>
+              <th colspan="9">
+                <n-divider title-placement="left">
+                  UANG KELUAR ( PENCAIRAN )
+                </n-divider>
+              </th>
             </tr>
             <tr v-for="cashout in cashOut" :key="cashout.id">
-              <td></td>
-              <td>{{ cashout.no }}</td>
               <td>{{ cashout.cabang }}</td>
               <td>{{ cashout.tgl }}</td>
               <td>{{ cashout.user }}</td>
@@ -91,41 +158,31 @@
               <td>{{ cashout.no_kontrak }}</td>
               <td>{{ cashout.nama_pelanggan }}</td>
               <td>{{ cashout.keterangan }}</td>
+              <td></td>
               <td align="right">{{ cashout.amount.toLocaleString() }}</td>
             </tr>
-            </tbody>
-            <tbody>
-            <tr class="border-b border-t border-black border-dashed">
-              <td colspan="9">JUMLAH</td>
-              <th align="right">{{ dataArusKas.ttl_all.toLocaleString() }}</th>
+            <tr class="border-b border-black">
+              <th colspan="8" align="left">JUMLAH</th>
+              <th align="right">{{ jumlahKan(cashOut).toLocaleString() }}</th>
             </tr>
             </tbody>
           </table>
 
         </div>
 
-
-        <!--      <n-data-table-->
-        <!--          ref="tableRef"-->
-        <!--          :get-csv-cell="getCsvCell"-->
-        <!--          size="small"-->
-        <!--          :columns="props.columns"-->
-        <!--          :data="props.data"-->
-        <!--          :loading="props.load"-->
-        <!--          :pagination="paginationRef"-->
-        <!--      />-->
       </n-space>
     </div>
   </n-card>
 </template>
 
 <script setup>
-import {computed, ref} from "vue";
+import {ref, h} from "vue";
 import {useApi} from "../../../helpers/axios.js";
 import {useMeStore} from "../../../stores/me.js";
 import {
-  useMessage, useLoadingBar
+  useMessage, useLoadingBar, NTag,
 } from "naive-ui";
+import JsonExcel from "vue-json-excel3";
 import _ from "lodash";
 
 
@@ -149,6 +206,8 @@ function formatDate(dateString) {
 
 const cashOut = ref([]);
 const cashIn = ref([]);
+const pelunasan = ref([]);
+const cashInTrf = ref([]);
 const getArusKas = async (e) => {
   message.loading('memuat data LKBH');
   loadData.value = true;
@@ -166,10 +225,13 @@ const getArusKas = async (e) => {
     loadData.value = false;
     dataArusKas.value = response.data;
     tarik.value = true;
-    cashOut.value = _.filter(response.data.datas, ['type', "CASH_OUT"]);
-    cashIn.value = _.filter(response.data.datas, ['type', "CASH_IN"]);
+    cashOut.value = _.filter(response.data.datas, {'type': "CASH_OUT"});
+    pelunasan.value = _.filter(response.data.datas, {'type': "PELUNASAN"});
+    cashIn.value = _.filter(response.data.datas, {'type': "CASH_IN", "metode_pembayaran": "cash"});
+    cashInTrf.value = _.filter(response.data.datas, {"type": "CASH_IN", "metode_pembayaran": "transfer"});
   }
 }
+
 const rangeDate = ref();
 const dataBranch = ref([]);
 const selectBranch = ref();
@@ -199,12 +261,17 @@ onMounted(() => {
   loadingBar.finish();
   getBranch();
 });
-const handleSubmit = () => {
+const jumlahKan = (e) => {
+  return e.reduce((sum, item) => sum + parseInt(item.amount, 10), 0);
+}
+const handleSubmit = async () => {
   let a = {
-    dari: rangeDate.value ? rangeDate.value : Date.now(),
+    dari: rangeDate.value[0],
+    sampai: rangeDate.value[1],
     cabang_id: selectBranch.value ? selectBranch.value : null
   }
-  getArusKas(a);
+  console.log(a)
+  await getArusKas(a);
 }
 
 </script>

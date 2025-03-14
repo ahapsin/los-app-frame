@@ -181,7 +181,6 @@ const findDocByType = (c, e) => {
 const columns = [
   {
     title: "TANGGAL",
-
     sorter: "default",
     key: "visit_date",
     render(row) {

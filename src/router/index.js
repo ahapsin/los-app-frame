@@ -9,13 +9,25 @@ const routes = [
         component: () => import("../views/pages/LoginPage.vue"),
     },
     {
+        path: "/no-service",
+        name: "maintenance",
+        component: () => import("../views/pages/503Page.vue"),
+    },
+    {
         path: "/test-view",
         name: "testview",
-        component: () => import("../views/pages/TestView.vue"),
-    },{
+        component: () => import("../views/pages/TestViewPage.vue"),
+    },
+    {
+        path: "/playground",
+        name: "playground",
+        component: () => import("../views/pages/PlaygroundPage.vue"),
+
+    }, {
         path: "/pass-pk",
         name: "pass pk",
         component: () => import("../views/pages/PassPKView.vue"),
+
     },
     {
         path: "/dashboard",
@@ -78,10 +90,24 @@ const routes = [
                 path: "apply-credit",
                 name: "Order",
                 component: () => import("../views/pages/task/FpkPage.vue"),
-            },{
+            },
+            {
+                path: "kunjungan_cust",
+                name: "kunjungan",
+                component: () => import("../views/pages/task/visit/VisitPage.vue"),
+            },
+            {
+                path: "addvisit",
+                name: "addvisit",
+                component: () => import("../views/pages/task/visit/AddVisit.vue"),
+            }, {
                 path: "analisa",
                 name: "analisa",
-                component: () => import("../views/pages/task/analisa/FormAnalisaPage.vue"),
+                component: () => import("../views/pages/task/analisa/AnalisaPage.vue"),
+            }, {
+                path: "addanalisa",
+                name: "addanalisa",
+                component: () => import("../views/pages/task/analisa/AnalisaForm.vue"),
             },
             {
                 path: "apply-credit/:idapplication",
@@ -329,6 +355,14 @@ const routes = [
                 path: "list_ban",
                 name: "Listing Beban",
                 component: () => import("../views/pages/laporan/LapListingBeban.vue"),
+            }, {
+                path: "lap_pembayaran",
+                name: "Laporan Pembayaran",
+                component: () => import("../views/pages/laporan/LapPembayaran.vue"),
+            },{
+                path: "list_ban_test",
+                name: "Listing Beban test",
+                component: () => import("../views/pages/laporan/LapListingBebanTest.vue"),
             },
             {
                 path: "jatuh_tempo",
@@ -351,8 +385,10 @@ const routes = [
                 name: "inquery jaminan",
                 component: () => import("../views/pages/laporan/LapJaminan.vue"),
             },
+
         ],
     },
+     { path: "/:pathMatch(.*)*",  component: () => import("../views/pages/404Page.vue"), },
 ];
 
 const router = createRouter({
