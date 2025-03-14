@@ -134,7 +134,7 @@
               <div class="flex gap-2 items-center">
                 <img class="h-10 md:h-10" :src="applogo" alt="logo_company"/>
                 <div class="flex flex-col">
-                  <span class="text-xl font-bold">{{applogo}}</span>
+                  <span class="text-xl font-bold">{{apptitle}}</span>
                   <n-text strong class="text-md"> POS: {{ bodyModal.cabang }}</n-text>
                 </div>
               </div>
@@ -625,7 +625,7 @@ const getSkalaCredit = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     dataStrukturKredit.value = response.data;
     dataAngsuran.value = true;

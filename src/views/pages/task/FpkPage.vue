@@ -181,7 +181,6 @@ const findDocByType = (c, e) => {
 const columns = [
   {
     title: "TANGGAL",
-
     sorter: "default",
     key: "visit_date",
     render(row) {
@@ -447,7 +446,7 @@ const getData = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(response.error);
   } else {
     loadingBar.finish();
     loadData.value = false;

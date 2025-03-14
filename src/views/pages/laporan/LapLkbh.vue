@@ -6,8 +6,8 @@
     <div>
       <n-space vertical :size="12" class="pt-4">
         <n-space>
-          <n-date-picker v-model:value="rangeDate" :default-value="Date.now()" clearable
-                         start-placeholder="dari" end-placeholder="sampai"/>
+          <n-date-picker v-model:formatted-value="rangeDate" :default-calendar-start-time="Date.now()" clearable
+                         start-placeholder="dari" type="daterange" end-placeholder="sampai" format="yyyy-MM-dd"/>
           <n-select
               v-show="me.me.cabang_nama == 'Head Office'"
               :loading="loadingBranch"
@@ -41,7 +41,7 @@
             </div>
             <div class="text-md font-bold justify-center pt-4 flex flex-col text-right">
               <n-text>LAPORAN KEUANGAN BERBASI HARIAN (LKBH)</n-text>
-              <n-text class="text-sm">tanggal : {{ formatDate(dataArusKas.tgl_tarik) }}</n-text>
+              <n-text class="text-sm">tanggal : {{ formatDate(dataArusKas.dari) }}-{{ formatDate(dataArusKas.sampai) }}</n-text>
 
             </div>
           </div>
@@ -90,6 +90,34 @@
             <tr>
               <th colspan="9">
                 <n-divider title-placement="left">
+                  PELUNASAN
+                </n-divider>
+              </th>
+            </tr>
+            <tr v-for="pelunasan in pelunasan" :key="pelunasan.id">
+              <td>{{ pelunasan.cabang }}</td>
+              <td>{{ pelunasan.tgl }}</td>
+              <td>{{ pelunasan.user }}</td>
+              <td>{{ pelunasan.position }}</td>
+              <td>{{ pelunasan.no_kontrak }}</td>
+              <td>{{ pelunasan.nama_pelanggan }}</td>
+              <td>
+                <n-ellipsis style="max-width: 240px">
+                  {{ pelunasan.keterangan }}
+                </n-ellipsis>
+              </td>
+              <td align="right">{{ pelunasan.metode_pembayaran }}</td>
+              <td align="right">{{ pelunasan.amount.toLocaleString() }}</td>
+            </tr>
+            <tr class="border-b border-black">
+              <th colspan="8" align="left">JUMLAH</th>
+              <th align="right">{{ jumlahKan(pelunasan).toLocaleString() }}</th>
+            </tr>
+            </tbody>
+            <tbody>
+            <tr>
+              <th colspan="9">
+                <n-divider title-placement="left">
                   UANG MASUK ( TRANSFER )
                 </n-divider>
               </th>
@@ -121,7 +149,6 @@
                   UANG KELUAR ( PENCAIRAN )
                 </n-divider>
               </th>
-
             </tr>
             <tr v-for="cashout in cashOut" :key="cashout.id">
               <td>{{ cashout.cabang }}</td>
@@ -179,6 +206,7 @@ function formatDate(dateString) {
 
 const cashOut = ref([]);
 const cashIn = ref([]);
+const pelunasan = ref([]);
 const cashInTrf = ref([]);
 const getArusKas = async (e) => {
   message.loading('memuat data LKBH');
@@ -192,181 +220,16 @@ const getArusKas = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     loadData.value = false;
     dataArusKas.value = response.data;
     tarik.value = true;
     cashOut.value = _.filter(response.data.datas, {'type': "CASH_OUT"});
+    pelunasan.value = _.filter(response.data.datas, {'type': "PELUNASAN"});
     cashIn.value = _.filter(response.data.datas, {'type': "CASH_IN", "metode_pembayaran": "cash"});
     cashInTrf.value = _.filter(response.data.datas, {"type": "CASH_IN", "metode_pembayaran": "transfer"});
   }
-}
-
-
-const columnsLkbh = [
-      {
-        title: "type",
-        key: "type",
-        sorter: "default",
-        width: 100,
-        render(row) {
-          return h(
-              NTag,
-              {
-                style: {
-                  marginRight: '6px'
-                },
-                type: row.type == "CASH_IN" ? "success" : "error",
-                bordered: false
-              },
-              {
-                default: () => row.type === 'CASH_IN' ? 'IN' : 'OUT',
-              }
-          );
-        }
-      },
-      {
-        title: "Tanggal",
-        key:
-            "tgl",
-        sorter:
-            "default",
-        width:
-            100,
-      }
-      ,
-      {
-        title: "Cabang",
-        key:
-            "cabang",
-        sorter:
-            "default",
-        width:
-            100,
-      }
-      ,
-      {
-        title: "No Inv",
-        key:
-            "no_invoice",
-        sorter:
-            "default",
-        width:
-            100,
-        ellipsis:
-            {
-              tooltip: true,
-            }
-        ,
-      }
-      ,
-      {
-        title: "No Kontrak",
-        key:
-            "no_kontrak",
-        sorter:
-            "default",
-        width:
-            100,
-        ellipsis:
-            {
-              tooltip: true,
-            }
-        ,
-      }
-      ,
-      {
-        title: "User",
-        key:
-            "user",
-        sorter:
-            "default",
-        width:
-            100,
-      }
-      ,
-      {
-        title: "Posisi",
-        key:
-            "position",
-        sorter:
-            "default",
-        width:
-            100,
-      }
-      ,
-      {
-        title: "Nama Pelanggan",
-        key:
-            "nama_pelanggan",
-        sorter:
-            "default",
-        width:
-            100,
-      }
-      ,
-      {
-        title: "Metode",
-        key:
-            "metode_pembayaran",
-        sorter:
-            "default",
-        width:
-            100,
-      }
-      ,
-      {
-        title: "Keterangan",
-        key:
-            "keterangan",
-        sorter:
-            "default",
-        ellipsis:
-            {
-              tooltip: true,
-            }
-        ,
-        width: 100,
-      }
-      ,
-      {
-        title: "Nominal",
-        key:
-            "amount",
-        sorter:
-            "default",
-        width:
-            100,
-      }
-      ,
-    ]
-;
-
-const summary = () => {
-  // const totalAge = pageData.reduce(
-  //     (prevValue, row) => prevValue + row.age,
-  //     0
-  // );
-
-  return {
-    name: {
-      value: h(
-          "span",
-          {style: {color: "red"}},
-          () => `Total Age: `
-      ),
-      colSpan: 3 // Span over the other columns
-    }
-  };
-};
-
-const convertObjectToArray = (obj) => {
-  if (!Array.isArray(obj) || obj.length === 0) {
-    return [];
-  }
-  const keys = Object.keys(obj[0]);
-  return keys.map(key => ({title: key, key: key}));
 }
 
 const rangeDate = ref();
@@ -403,9 +266,11 @@ const jumlahKan = (e) => {
 }
 const handleSubmit = async () => {
   let a = {
-    dari: rangeDate.value ? rangeDate.value : Date.now(),
+    dari: rangeDate.value[0],
+    sampai: rangeDate.value[1],
     cabang_id: selectBranch.value ? selectBranch.value : null
   }
+  console.log(a)
   await getArusKas(a);
 }
 

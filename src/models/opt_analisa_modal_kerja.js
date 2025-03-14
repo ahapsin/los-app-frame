@@ -10,7 +10,6 @@ export const useOptAnalisaModalKerja = {
         'cerai mati',
         'cerai hidup'
     ],
-
     kemudahan_opt: [
         'cukup sulit/tidak kooperatif',
         'Cukup mudah dan terbuka'

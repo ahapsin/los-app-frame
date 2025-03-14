@@ -2,58 +2,14 @@
   <div>
     <n-space vertical>
       <n-card :title="`Laporan data Jaminan`" :segmented="true" size="small">
-                <template #header-extra>
-        <!--          <n-space class="!gap-1">-->
-        <!--            <div class="me-1 flex gap-2">-->
-        <!--              <n-date-picker-->
-        <!--                v-model:value="timestamp"-->
-        <!--                type="month"-->
-        <!--                 :default-value="Date.now()"-->
-        <!--                format="y MMM"-->
-        <!--                month-format="MMM"-->
-        <!--                clearable-->
-        <!--              />-->
-        <!--              <n-popover trigger="click" placement="bottom-end">-->
-        <!--                <template #trigger>-->
-        <!--                  <n-button circle>-->
-        <!--                    <n-icon>-->
-        <!--                      <search-icon />-->
-        <!--                    </n-icon>-->
-        <!--                  </n-button>-->
-        <!--                </template>-->
-        <!--                <n-input-->
-        <!--                  autofocus="true"-->
-        <!--                  clearable-->
-        <!--                  placeholder="cari disini.."-->
-        <!--                  v-model:value="searchBox"-->
-        <!--                />-->
-        <!--              </n-popover>-->
-        <!--            </div>-->
-        <!--            <div>-->
-        <!--              <n-button type="primary" secondary>-->
-        <!--                <template #icon>-->
-        <!--                  <n-icon>-->
-        <!--                    <download-icon />-->
-        <!--                  </n-icon>-->
-        <!--                </template>-->
-        <!--                Download-->
-        <!--              </n-button>-->
-        <!--            </div>-->
-        <!--            <div class="md:hidden">-->
-        <!--              <n-button type="primary" @click="handleAdd">-->
-        <!--                <template #icon>-->
-        <!--                  <n-icon>-->
-        <!--                    <add-icon />-->
-        <!--                  </n-icon>-->
-        <!--                </template>-->
-        <!--              </n-button>-->
-        <!--            </div>-->
-        <!--          </n-space>-->
-                  <json-excel v-if="showData.length > 0" :data="showData" :name="`laporan_jaminan_${dynamicSearch.pos}`" :fields="json_fields"
-                              :stringifyLongNum="true">
-                    <n-button type="primary">Download Xls</n-button>
-                  </json-excel>
-                </template>
+        <template #header-extra>
+
+          <json-excel v-if="showData.length > 0" :data="showData" :name="`laporan_jaminan_${dynamicSearch.pos}`"
+                      :fields="json_fields"
+                      :stringifyLongNum="true">
+            <n-button type="primary">Download Xls</n-button>
+          </json-excel>
+        </template>
         <n-space vertical :size="12" class="pt-4">
           <div class="flex flex-col md:flex-row gap-2 pt-4 pr-4 ps-4">
             <n-form-item label="POS" class="w-full">
@@ -95,17 +51,81 @@
           <n-data-table
               :loading="loadTable"
               size="small"
-              :columns="convertObjectToArray(showData)"
+              :columns="columns"
               :data="showData"
               :pagination="pagination"
           />
         </n-space>
       </n-card>
     </n-space>
+    <n-modal v-model:show="showDetailModal" title="Modal">
+      <n-card class="w-2/3">
+        <n-table :bordered="false" :single-line="false" size="small">
+          <thead>
+          <tr>
+            <th>Nama Debitur</th>
+            <th>Order Number</th>
+            <th>No Jaminan</th>
+            <th>Status</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr>
+            <td>{{ bodyModal.nama_debitur }}</td>
+            <td>{{ bodyModal.no_kontrak }}</td>
+            <td>{{ bodyModal.posisi_berkas }}</td>
+            <td>{{ bodyModal.status }}</td>
+          </tr>
+          </tbody>
+        </n-table>
+        <n-table :bordered="false" :single-line="false" size="small">
+          <tbody>
+          <tr>
+            <th>BPKB NO</th>
+            <td>{{ bodyModal.no_bpkb }}</td>
+          </tr>
+          <tr>
+            <th>BPKB Atas Nama</th>
+            <td>{{ bodyModal.atas_nama }}</td>
+          </tr>
+          <tr>
+            <th>Merk/Tipe/Tahun</th>
+            <td>{{ bodyModal.merk }} / {{ bodyModal.tipe }} / {{ bodyModal.tahun }}</td>
+          </tr>
+          <tr>
+            <th>Warna/No Polisi</th>
+            <td>{{ bodyModal.warna }} /{{ bodyModal.no_polisi }}</td>
+          </tr>
+          <tr>
+            <th>No Rangka/No Mesin</th>
+            <td>{{ bodyModal.no_rangka }}/ {{ bodyModal.no_mesin }}</td>
+          </tr>
+          <tr>
+            <th>No Faktur</th>
+            <td>{{ bodyModal.no_faktur }}</td>
+          </tr>
+          <tr>
+            <th>Dokumen</th>
+            <td>
+              <n-image v-for="doc in bodyModal.document" width="64" height="64" :src="doc.PATH"
+                       :key="doc"/>
+            </td>
+          </tr>
+          <tr>
+            <th>Dokumen Rilis</th>
+            <td>
+              <n-image v-for="doc in bodyModal.document_rilis" width="64" height="64" :src="doc.PATH"
+                       :key="doc"/>
+            </td>
+          </tr>
+          </tbody>
+        </n-table>
+      </n-card>
+    </n-modal>
   </div>
 </template>
 <script setup>
-import {ref, onMounted, computed, reactive} from "vue";
+import {ref, onMounted, computed, reactive, h} from "vue";
 import {useApi} from "../../../helpers/axios";
 import {useSearch} from "../../../helpers/searchObject";
 import {useMeStore} from "../../../stores/me";
@@ -175,7 +195,7 @@ const getData = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     dataTable.value = response.data;
     loadTable.value = false;
@@ -191,6 +211,62 @@ const convertObjectToArray = (obj) => {
 const pagination = {
   pageSize: 10,
 };
+const columns = [
+  {
+    title: "Asal Jaminan",
+    key: "pos_pencairan",
+    sorter: "default",
+  },
+  {
+    title: "Lokasi Jaminan",
+    key: "posisi_berkas",
+    sorter: "default",
+  },
+  {
+    title: "No Kontrak",
+    key: "no_kontrak",
+    sorter: "default",
+  },
+  {
+    title: "Nama Debitur",
+    key: "atas_nama",
+    sorter: "default",
+  },
+  {
+    title: "Status",
+    key: "status",
+    sorter: "default",
+  },
+  {
+    width: 100,
+    align: "right",
+    key: "action",
+    render(row) {
+      return h(
+          NButton,
+          {
+            size: "small",
+            secondary: true,
+            round: true,
+            onClick: () => {
+              handleAction(row);
+            },
+          },
+          {
+            default: () => "detail",
+          }
+      );
+    },
+  },
+];
+
+const bodyModal = ref();
+const showDetailModal = ref(false);
+const handleAction = (e) => {
+  showDetailModal.value = true;
+  bodyModal.value = e;
+}
+
 onMounted(() => {
   getBranch();
 });

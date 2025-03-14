@@ -29,10 +29,11 @@ const themeOverrides = {
     borderRadius: "10px",
     textColorBase: appcolor,
     infoColor: appInfoColor,
+    infoColorHover: appInfoColor,
+    infoColorPressed: appInfoColor,
   },
   Button: {
     primaryColor: appcolor,
-
   }
 }
 const isLoading = ref(true);
