@@ -668,7 +668,7 @@ const getDataPelunasan = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-        message.error('ERROR API');
+      console.log(reponse.error);
     } else {
         spinnerShow.value = false;
         dataPelunasan.value = response.data;

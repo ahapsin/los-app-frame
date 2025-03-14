@@ -517,7 +517,7 @@ const getArusKas = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     loadData.value = false;
     dataArusKas.value = response.data;
@@ -537,7 +537,7 @@ const getListBan = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     loadListingBeban.value = false;
     messageReactive.destroy();
@@ -564,7 +564,7 @@ const getInqPinjaman = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     messageReactive.destroy();
     messageReactive = null;

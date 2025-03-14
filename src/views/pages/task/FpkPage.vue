@@ -446,7 +446,7 @@ const getData = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(response.error);
   } else {
     loadingBar.finish();
     loadData.value = false;

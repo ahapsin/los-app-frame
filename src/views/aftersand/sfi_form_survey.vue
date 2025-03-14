@@ -381,7 +381,7 @@ const refAdmin = async (body) => {
         token: userToken,
     });
     if (!response.ok) {
-        message.error('ERROR API');
+        console.log(reponse.error);
     } else {
         loading.value = false;
         skemaAngsuran.value = response.data;

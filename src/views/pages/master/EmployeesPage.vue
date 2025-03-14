@@ -163,7 +163,7 @@ const getData = async () => {
         token: userToken
     });
     if (!response.ok) {
-      message.error('ERROR API');
+      console.log(reponse.error);
     } else {
         dataTable.value = response.data.response;
     }
