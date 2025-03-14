@@ -42,7 +42,6 @@
                 <template #tab>
                     <div class="flex gap-2">
                         <div>Approval</div>
-
                     </div>
                 </template>
                 <n-data-table :columns="columnsTransactionApproval" :data="dataTransactionApproval" size="small"
@@ -438,7 +437,7 @@
 
             <div v-if="bodyModalTrx.status != 'SELESAI'">
                 <n-form-item label="keterangan" class="pt-2">
-                    <n-input type="textarea" v-model:value="bodyApprove.keterangan" />
+                    <n-input type="textarea" v-model:value="bodyApprove.catatan" />
                 </n-form-item>
                 <n-button type="primary" @click="handleApprove">approve</n-button>
             </div>
@@ -626,7 +625,7 @@ const getDataTransaction = async () => {
     });
     if (!response.ok) {
         loadTransaction.value = false;
-        message.error('ERROR API');
+      console.log(reponse.error);
     } else {
         loadTransaction.value = false;
         dataTransaction.value = response.data;
@@ -698,6 +697,14 @@ const columns = [
     {
         title: "Nama Debitur",
         key: "debitur",
+        sorter: "default",
+    },{
+        title: "NO BPKB",
+        key: "BPKB_NUMBER",
+        sorter: "default",
+    },{
+        title: "Atas Nama",
+        key: "ON_BEHALF",
         sorter: "default",
     },
     {

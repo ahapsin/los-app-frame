@@ -3,7 +3,7 @@
     <div class="flex flex-col p-2 w-1/4 justify-between">
       <div class="flex flex-col sticky top-4">
         <div class="flex gap-2">
-          <n-avatar>{{ queryData.nama_cust.at(0) }}</n-avatar>
+          <n-avatar>{{ queryData.nama_cust?.at(0) }}</n-avatar>
           <div class="flex flex-col">
             <small>{{ queryData.id }}</small>
             <strong>{{ queryData.nama_cust }}</strong>
@@ -30,12 +30,10 @@
         />
         <div class="py-2">{{ bucketParam.length ? bucketParam.length : 0 }} parameter dari {{ paramScoring.length }}
         </div>
+        <n-button type="info" tertiary class="shadow" @click="prevModal = true">Preview</n-button>
       </div>
     </div>
     <div class="w-full bg-white min-h-[500px] max-h-[500px] rounded-lg p-4 overflow-auto">
-      <div class="flex sticky bg-yellow-50 top-0 z-50 justify-end rounded-xl p-4" v-if="bucketParam?.length">
-        <n-button type="success" class="shadow" @click="prevModal = true">Preview</n-button>
-      </div>
       <div class="grid  grid-cols-2 gap-4  p-4">
         <n-form-item label="Permohonan nasabah">
           <n-select :options="optObject(optParamScoring.permohonan_nasabah_opt)" placeholder="Silahkan pilih"/>
@@ -45,7 +43,7 @@
         </n-form-item>
       </div>
       <div v-for="(listBucket,i) in bucketParam" :key="listBucket.key">
-        <n-card :title="listBucket.param">
+        <n-card :title="listBucket.param" size="small" :segmented="true">
           <template #header-extra>
             <n-button quaternary circle @click="removeParam(i)">
               <n-icon>
@@ -58,11 +56,22 @@
               <n-input type="textarea" placeholder="Isi disini"
                        v-model:value="itemParam.val"/>
             </n-form-item>
-            <div v-else-if="itemParam.mode.type == 'table'" class="mb-4">
-              <div>
-                <n-data-table :columns="columns" :data="refTable[itemParam.val]" :pagination="pagination"/>
-              </div>
-            </div>
+            <n-card embedded v-else-if="itemParam.mode.type == 'table'" :title="itemParam.title" class="mb-4">
+              <template #header-extra>
+                <div class="flex item-center gap-2">
+                  <n-upload
+                      action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+                      :default-file-list="defaultFileList" @change="fileUpload"
+                      :show-file-list="false"
+                  >
+                    <n-button type="info">Upload File</n-button>
+                  </n-upload>
+
+                  <n-button type="primary" @click="downloadCsv">download header</n-button>
+                </div>
+              </template>
+              <n-data-table ref="tableRef" :data="dataParse?.data" :columns="convertObjectToArray(dataParse?.data)"/>
+            </n-card>
             <n-form-item class="w-full" v-else :label="itemParam.title">
               <n-select
                   v-model:value="itemParam.val" placeholder="Silakan pilih"
@@ -169,7 +178,8 @@ import {CloseRound as RemoveIcon, AddCircleRound as AddIcon} from "@vicons/mater
 import {useOptAnalisaModalKerja} from "../../../../models/opt_analisa_modal_kerja.js";
 import {useVueToPrint} from "vue-to-print";
 import router from "../../../../router/index.js";
-import { useLoadingBar } from "naive-ui";
+import {useLoadingBar} from "naive-ui";
+import Papa from "papaparse";
 
 const loadingPage = useLoadingBar();
 
@@ -185,7 +195,14 @@ const stStep1 = () => {
 
 const bucketParam = ref([]);
 
-const queryData = router.currentRoute.value.query;
+const queryData = {
+  id: "CFA-0001",
+  tgl: "22-08-1994",
+  nama_cust: "Hinata",
+  no_hp: "088878987978",
+  plafon: 12000000000,
+  alamat: "lemahwungkuk rt 12 rw 2 kab.burau"
+};
 
 const findMatchParameter = (col, val) => {
   let a = _.findIndex(col, function (o) {
@@ -204,6 +221,20 @@ const removeParam = (e) => {
   bucketParam.value.splice(e, 1);
 }
 const currentStatus = ref("process");
+const tableRef = ref(null);
+const downloadCsv = (e) =>
+    tableRef.value?.downloadCsv({fileName: e});
+const uploadedFile = ref();
+const dataParse = ref();
+const fileUpload = (e) => {
+  uploadedFile.value = e.file.file;
+  Papa.parse(uploadedFile.value, {
+    complete: function (results) {
+      dataParse.value = results;
+    }
+  });
+}
+
 
 const modelArray = (e) => Object.keys(e).map(key => key);
 const tableAnalisaModel = [

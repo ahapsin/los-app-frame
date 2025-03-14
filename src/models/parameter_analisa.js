@@ -378,6 +378,14 @@ const useAnalisaModalKerja = [{
                 },
                 val: "rek_tabungan",
             },
+            catatan_table_rekening: {
+                title: "catatan table rekening tabungan",
+                mode: {
+                    type: "area",
+                    options: [],
+                },
+                val: null,
+            },
             tabel_kegiatan_transaksi: {
                 title: "rekapitulasi kegiatan transaksi",
                 mode: {
@@ -389,7 +397,7 @@ const useAnalisaModalKerja = [{
             catatan_table_kegiatan_transaksi: {
                 title: "catatan table kegiatan transaksi",
                 mode: {
-                    type: "table",
+                    type: "area",
                     options: [],
                 },
                 val: null,
@@ -405,7 +413,7 @@ const useAnalisaModalKerja = [{
             catatan_table_fasilitas: {
                 title: "catatan table fasilitas",
                 mode: {
-                    type: "table",
+                    type: "area",
                     options: [],
                 },
                 val: null,

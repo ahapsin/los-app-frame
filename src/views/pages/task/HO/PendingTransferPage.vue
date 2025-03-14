@@ -343,7 +343,7 @@ const getDataPayment = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     loadingBar.finish();
     loadDataPayment.value = false;

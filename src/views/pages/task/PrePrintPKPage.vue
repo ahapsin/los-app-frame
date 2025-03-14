@@ -48,29 +48,33 @@ title="PK"
 v-show="prosesPK"
 class="flex gap-2 border-t p-4 justify-end"
 ></div> -->
-    <div class="sticky flex bottom-0 w-full" v-if="colCheck">
-      <CollateralCheck :coll_data="payloadCheck()" @coll_val="handleCollCheck"/>
-    </div>
-    <div class="sticky b bg-white flex gap-2 top-0 w-full justify-end p-2" v-if="prosesPK">
-      <n-button :type="pkData.flag == 1 ? 'warning' : 'primary'" class="gap-2" @click="handlePrintAction(pkData.flag)">
-        <n-icon>
-          <print-icon/>
-        </n-icon>
-        {{ pkData.flag == 1 ? "Cetak Ulang Order" : "Cetak Order" }}
-      </n-button>
-      <n-button v-if="pkData.flag === 1 && tgl_cetaks == pkData.tgl_awal_pk" type="error" class="gap-2"
-                @click="confModal = true">
-        <n-icon>
-          <cancel-icon/>
-        </n-icon>
-        Batal Order
-      </n-button>
-      <n-button v-else-if="pkData.flag !== 1" type="info" class="gap-2" @click="confModalRevisi = true">
-        <n-icon>
-          <edit-icon/>
-        </n-icon>
-        Revisi Order
-      </n-button>
+
+    <div class="sticky b bg-white z-50 flex gap-2 top-0 w-full justify-end p-2" v-if="prosesPK">
+      <div class="sticky  flex bottom-0 w-full" v-if="pkData.no_perjanjian === ''">
+        <CollateralCheck :coll_data="payloadCheck()" @coll_val="handleCollCheck"/>
+      </div>
+      <div v-else>
+        <n-button :type="pkData.flag == 1 ? 'warning' : 'primary'" class="gap-2"
+                  @click="handlePrintAction(pkData.flag)">
+          <n-icon>
+            <print-icon/>
+          </n-icon>
+          {{ pkData.flag == 1 ? "Cetak Ulang Order" : "Cetak Order" }}
+        </n-button>
+        <n-button v-if="pkData.flag === 1 && tgl_cetaks == pkData.tgl_awal_pk" type="error" class="gap-2"
+                  @click="confModal = true">
+          <n-icon>
+            <cancel-icon/>
+          </n-icon>
+          Batal Order
+        </n-button>
+        <n-button v-else-if="pkData.flag !== 1" type="info" class="gap-2" @click="confModalRevisi = true">
+          <n-icon>
+            <edit-icon/>
+          </n-icon>
+          Revisi Order
+        </n-button>
+      </div>
     </div>
     <div class="flex bg-slate-100 justify-center overflow-auto p-2" v-show="prosesPK">
       <div class="flex flex-col min-w-[900px] p-10" ref="pk">
@@ -938,7 +942,7 @@ const getPrePK = async () => {
   });
   if (!response.ok) {
     prosesPK.value = false;
-    message.error('error API');
+    console.log(response.error);
   } else {
     prosesPK.value = true;
     pkData.value = response.data;
@@ -1018,7 +1022,7 @@ const handlePrintAction = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(response.error);
   } else {
     router.push({name: "Order"});
     handlePrint();
@@ -1081,7 +1085,7 @@ const handleCancel = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error("ERROR API");
+    console.log(response.error);
     router.push({name: 'Pengajuan Kredit'})
   } else {
     message.success("pengajuan batal order berhasil....");
