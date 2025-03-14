@@ -243,6 +243,78 @@ const useAnalisaModalKerja = [{
         },
     },
     {
+        key: 6,
+        param: "aspek bisnis",
+        paramlist: {
+            jenis_barang: {
+                title: "jenis barang yang dipasarkan ",
+                mode: {
+                    type: "select",
+                    options: [
+                        'lokal',
+                        'ekspor'
+                    ],
+                },
+                val: null,
+            },
+            daerah_pemasaran: {
+                title: "daerah pemasaran",
+                mode: {
+                    type: "select",
+                    options: [
+                        'lokal',
+                        'ekspor'
+                    ],
+                },
+                val: null,
+            },
+            ketergantungan_buyer: {
+                title: "ketergantungan pada buyer tertentu",
+                mode: {
+                    type: "select",
+                    options: [
+                        'sangat tergantung ( < 3 buyers )',
+                        'Cukup Tergantung ( 3 - 5 buyers )',
+                        'Tidak tergantung ( >5 buyers )'
+                    ],
+                },
+                val: null,
+            },
+            tingkat_persaingan: {
+                title: "tingkat persaingan",
+                mode: {
+                    type: "select",
+                    options: [
+                        'kurang ketat',
+                        'cukup ketat',
+                        'sangat ketat'
+                    ],
+                },
+                val: null,
+            },
+            strategi_pasar: {
+                title: "strategi pasar",
+                mode: {
+                    type: "select",
+                    options: [
+                        'Rata rata pasar',
+                        '> harga pasar',
+                        '< harga pasar'
+                    ],
+                },
+                val: null,
+            },
+            keterangan: {
+                title: "keterangan / penjelasan",
+                mode: {
+                    type: "area",
+                    options: [],
+                },
+                val: null,
+            },
+        },
+    },
+    {
         key: 3,
         param: "pola usaha",
         paramlist: {
@@ -271,7 +343,7 @@ const useAnalisaModalKerja = [{
                 val: null,
             },
             keterangan: {
-                title: "kketerangan / penjelasan",
+                title: "keterangan / penjelasan",
                 mode: {
                     type: "area",
                     options: [],
@@ -306,6 +378,14 @@ const useAnalisaModalKerja = [{
                 },
                 val: "rek_tabungan",
             },
+            catatan_table_rekening: {
+                title: "catatan table rekening tabungan",
+                mode: {
+                    type: "area",
+                    options: [],
+                },
+                val: null,
+            },
             tabel_kegiatan_transaksi: {
                 title: "rekapitulasi kegiatan transaksi",
                 mode: {
@@ -317,7 +397,7 @@ const useAnalisaModalKerja = [{
             catatan_table_kegiatan_transaksi: {
                 title: "catatan table kegiatan transaksi",
                 mode: {
-                    type: "table",
+                    type: "area",
                     options: [],
                 },
                 val: null,
@@ -333,7 +413,7 @@ const useAnalisaModalKerja = [{
             catatan_table_fasilitas: {
                 title: "catatan table fasilitas",
                 mode: {
-                    type: "table",
+                    type: "area",
                     options: [],
                 },
                 val: null,

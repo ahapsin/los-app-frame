@@ -454,7 +454,7 @@ const getData = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     loadData.value = false;
     dataTable.value = response.data;
@@ -469,7 +469,7 @@ const handlePositiveClick = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     message.success("berhasil update");
     gertData();

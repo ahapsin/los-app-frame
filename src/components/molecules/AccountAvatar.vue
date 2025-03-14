@@ -1,24 +1,18 @@
 <template>
   <div class="flex items-center gap-4 cursor-pointer">
-    <n-badge @click="approvalCenter" v-if="dataUser?.nama == 'ho'">
-      <n-icon size="25" color="#0e7a0d">
-        <NotifIcon/>
-      </n-icon>
-    </n-badge>
     <n-dropdown trigger="hover" :options="options">
       <div class="flex items-center gap-4">
                 <span class="flex flex-col items-end">
-
-                  <n-text type="primary" class="hidden md:flex"><strong>{{ dataUser?.nama }}</strong></n-text>
+                  <n-text type="primary"><strong>{{ dataUser?.nama }}</strong></n-text>
                     <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small>
                 </span>
-        <n-avatar round size="medium" class="aspect-square" :src="dataUser
+        <n-avatar round size="small" class="aspect-square" :src="dataUser
                     ? dataUser.PHOTO_URL
                     : 'https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-vert.png'
                     ">
           {{ dataUser?.nama.at(0) }}
-
         </n-avatar>
+
       </div>
     </n-dropdown>
 
@@ -38,8 +32,8 @@ import {
 import {useApi} from "../../helpers/axios";
 import {useMeStore} from "../../stores/me";
 import {useTaskStore} from "../../stores/task";
-import {useWindowSize} from "@vueuse/core";
-const { width } = useWindowSize();
+import {useCollateralStore} from "../../stores/collateral.js";
+
 const message = useMessage();
 
 const dataUser = ref();
@@ -93,6 +87,7 @@ const options = [
 ];
 const me = useMeStore();
 const task = useTaskStore();
+const coll = useCollateralStore();
 const approvalCenter = () => {
   router.push({name: "approval-center"})
 }
@@ -118,6 +113,22 @@ const GetMe = async () => {
     task.storeTask(response.data.response);
   }
 };
+
+// const getDataColl = async () => {
+//   let userToken = localStorage.getItem("token");
+//
+//   const response = await useApi({
+//     method: "GET",
+//     api: "jaminan",
+//     token: userToken,
+//   });
+//   if (!response.ok) {
+//     console.log(response);
+//   } else {
+//     coll.storeCollateral(response.data);
+//   }
+// };
+
 const GetPayment = async () => {
   let userToken = localStorage.getItem("token");
   const response = await useApi({

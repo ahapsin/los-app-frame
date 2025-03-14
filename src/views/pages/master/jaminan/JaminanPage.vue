@@ -5,8 +5,12 @@
 
         <n-space vertical :size="12" class="pt-4">
           <div class="flex flex-col md:flex-row gap-2 pt-4 pr-4 ps-4">
+            <n-form-item label="NO KONTRAK" class="w-full">
+              <n-input v-model:value="dynamicSearch.no_kontrak" type="text" placeholder="NO KONTRAK"
+                       clearable/>
+            </n-form-item>
             <n-form-item label="ATAS NAMA" class="w-full">
-              <n-input v-model:value="dynamicSearch.atas_nama" type="text" placeholder="NO ORDER"
+              <n-input v-model:value="dynamicSearch.atas_nama" type="text" placeholder="ATAS NAMA"
                        clearable/>
             </n-form-item>
             <n-form-item label="NO POLISI" class="w-full">
@@ -60,6 +64,9 @@
         <n-form-item label="NO STNK" path="nama" class="w-full">
           <n-input placeholder="NO STNK" v-model:value="bodyModal.no_stnk"/>
         </n-form-item>
+        <n-form-item label="NO FAKTUR" path="nama" class="w-full">
+          <n-input placeholder="No Faktur" v-model:value="bodyModal.no_faktur"/>
+        </n-form-item>
         <n-form-item label="TANGGAL STNK" class="w-full">
           <n-date-picker v-model:formatted-value="bodyModal.tgl_stnk" :default-value="Date.now()" clearable
                          format="yyyy-MM-dd"
@@ -95,6 +102,7 @@ const dynamicSearch = reactive({
   no_polisi: "",
   atas_nama: "",
   no_bpkb: "",
+  no_kontrak:"",
 });
 
 const message = useMessage();
@@ -103,6 +111,9 @@ const dataTable = ref();
 
 const columns = [
   {
+    title: "NO KONTRAK",
+    key: "loan_number"
+  },{
     title: "ATAS NAMA",
     key: "atas_nama"
   },
@@ -174,11 +185,11 @@ const getData = async () => {
   let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: 'GET',
-    api: `collateral?atas_nama=${dynamicSearch.atas_nama}&no_polisi=${dynamicSearch.no_polisi}&no_bpkb=${dynamicSearch.no_bpkb}`,
+    api: `collateral?atas_nama=${dynamicSearch.atas_nama}&no_polisi=${dynamicSearch.no_polisi}&no_bpkb=${dynamicSearch.no_bpkb}&no_kontrak=${dynamicSearch.no_kontrak}`,
     token: userToken
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     dataTable.value = response.data;
   }
