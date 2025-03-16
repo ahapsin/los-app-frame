@@ -1,6 +1,19 @@
 <template>
-  <n-card>
-    <n-scrollbar x-scrollable>
+  <div>
+    <div class="sticky top-0 z-50  items-center gap-2 justify-between  bg-white ">
+      <div class="flex items-center justify-between p-2">
+        <n-button quaternary circle @click="router.back()">
+          <n-icon>
+            <back-icon/>
+          </n-icon>
+        </n-button>
+        <div class="text-lg font-semibold">Form Survey</div>
+        <div>
+
+        </div>
+      </div>
+    </div>
+    <n-scrollbar x-scrollable class="sticky top-0 z-50 bg-white">
       <n-space class="bg-sc-50 border rounded-xl p-4 mb-2">
         <n-steps :current="current" v-model:current="current" :status="currentStatus">
           <n-step title="Informasi Order" :status="statusInformasiOrder"/>
@@ -21,12 +34,12 @@
         }">
       <!-- container 1 -->
       <div v-show="current == 1">
-        <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging">
+        <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging" :disabled="props.viewMode">
           <div class="md:flex gap-2">
             <n-form-item label="Plafond" path="plafond" class="w-full">
               <n-input-number :parse="parse" :format="format" :min="999999" v-model:value="order.plafond"
                               placeholder="plafond" :show-button="false" class="flex !w-full"
-                              />
+              />
             </n-form-item>
             <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
               <n-select filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
@@ -44,7 +57,8 @@
                 <n-input-number class="w-full" :show-button="false" v-model:value="order.bunga" :min="0" :max="100">
                   <template #suffix>% /bulan</template>
                 </n-input-number>
-                <n-input :show-button="false" pacleholder="tahunan" class="w-full" v-model:value="order.bunga_tahunan" :min="1" :max="100"
+                <n-input :show-button="false" pacleholder="tahunan" class="w-full" v-model:value="order.bunga_tahunan"
+                         :min="1" :max="100"
                          readonly>
                   <template #suffix>% / tahun</template>
                 </n-input>
@@ -61,9 +75,9 @@
           </div>
         </n-form>
       </div>
-      <div v-show="current === 2">
+      <div v-show="current === 2" >
         <n-form ref="formPelanggan" :model="pelanggan" :rules="rulesPelanggan"
-                require-mark-placement="right-hanging">
+                require-mark-placement="right-hanging" :disabled="props.viewMode">
           <div class="md:flex gap-2">
             <n-form-item label="No KTP" path="no_ktp" class="w-full">
               <n-input :show-button="false" :allow-input="onlyAllowNumber" placeholder="NO KTP"
@@ -125,12 +139,12 @@
 
           <div class="flex flex-col md:flex-row gap-2">
             <file-upload title="KTP" :def_value="findDocByType(pelanggan.dokumen_indentitas, 'ktp')"
-                         endpoint="image_upload_prospect" type="ktp" :idapp="dynamicForm.id"/>
+                         endpoint="image_upload_prospect" type="ktp" :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
             <file-upload title="KK" :def_value="findDocByType(pelanggan.dokumen_indentitas, 'kk')"
-                         endpoint="image_upload_prospect" type="kk" :idapp="dynamicForm.id"/>
+                         endpoint="image_upload_prospect" type="kk" :idapp="dynamicForm.id":view-mode="props.viewMode"/>
             <file-upload title="KTP Pasangan" endpoint="image_upload_prospect" type="ktp_pasangan"
                          :def_value="findDocByType(pelanggan.dokumen_indentitas, 'ktp_pasangan')"
-                         :idapp="dynamicForm.id"/>
+                         :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
           </div>
         </n-form>
       </div>
@@ -138,9 +152,9 @@
         <n-alert type="error" v-if="statusDataJaminan === 'error'">minimal memiliki 1 jaminan</n-alert>
         <n-card embedded :segmented="true"
                 :title="`Jumlah Jaminan : ${jaminanStore.listJaminan.length}, Total Nilai : ${sumJaminan.toLocaleString('US')}`">
-          <div class=" flex w-60 gap-2">
-            <n-select v-model:value="jenisJaminan" :options="optJaminan" placeholder="jenis jaminan"/>
-            <n-button circle type="primary" @click="addJaminan">
+          <div class=" flex w-60 gap-2" v-if="!props.viewMode">
+            <n-select v-model:value="jenisJaminan" :options="optJaminan" placeholder="jenis jaminan" :disabled="props.viewMode"/>
+            <n-button circle type="primary" @click="addJaminan" >
               <n-icon>
                 <add-icon/>
               </n-icon>
@@ -148,7 +162,7 @@
           </div>
           <n-card :segmented="true" class="my-2 bg-white rounded-xl border hover:shadow"
                   v-for="(coll) in orderJaminan" :key="coll" :title="coll.type">
-            <template #header-extra>
+            <template #header-extra v-if="!props.viewMode">
               <div class="flex gap-2">
                 <n-button type="warning" @click="viewModal(coll)" secondary>
                   <n-icon>
@@ -205,15 +219,15 @@
                       <file-upload :reff="coll.counter_id" title="No Rangka"
                                    endpoint="image_upload_prospect" :type="`no_rangka`"
                                    :idapp="dynamicForm.id"
-                                   :def_value="findDocByType(coll.atr.document, 'no_rangka')"/>
+                                   :def_value="findDocByType(coll.atr.document, 'no_rangka')" :view-mode="props.viewMode"/>
                       <file-upload :reff="coll.counter_id" title="No Mesin"
                                    :def_value="findDocByType(coll.atr.document, 'no_mesin')"
                                    endpoint="image_upload_prospect" :type="`no_mesin`"
-                                   :idapp="dynamicForm.id"/>
+                                   :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
                       <file-upload :reff="coll.counter_id" title="STNK"
                                    :def_value="findDocByType(coll.atr.document, 'stnk')"
                                    endpoint="image_upload_prospect" :type="`stnk`"
-                                   :idapp="dynamicForm.id"/>
+                                   :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
                     </div>
                   </div>
                   <n-divider title-placement="left" class="uppercase"> Upload Dokumen {{ coll.type }}
@@ -221,24 +235,24 @@
                   <div v-if="coll.type == 'kendaraan'" class="flex flex-col md:flex-row gap-2">
                     <file-upload title="Depan" endpoint="image_upload_prospect" :type="`depan`"
                                  :idapp="dynamicForm.id" :reff="coll.counter_id"
-                                 :def_value="findDocByType(coll.atr.document, 'depan')"/>
+                                 :def_value="findDocByType(coll.atr.document, 'depan')" :view-mode="props.viewMode"/>
                     <file-upload title="Belakang" :reff="coll.counter_id"
                                  :def_value="findDocByType(coll.atr.document, 'belakang')"
                                  endpoint="image_upload_prospect" :type="`belakang`"
-                                 :idapp="dynamicForm.id"/>
+                                 :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
                     <file-upload title="Kanan" :reff="coll.counter_id"
                                  endpoint="image_upload_prospect"
                                  :def_value="findDocByType(coll.atr.document, 'kanan')" :type="`kanan`"
-                                 :idapp="dynamicForm.id"/>
+                                 :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
                     <file-upload title="Kiri" :reff="coll.counter_id"
                                  endpoint="image_upload_prospect" :type="`kiri`"
                                  :def_value="findDocByType(coll.atr.document, 'kiri')"
-                                 :idapp="dynamicForm.id"/>
+                                 :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
                   </div>
-                  <div v-else class="flex flex-col w-full">
+                  <div v-else class="flex flex-col w-full" >
                     <file-upload :title="`dokumen`" :def_preview="true" :multi="true"
                                  :data_multi="coll.atr.document" endpoint="image_upload_prospect"
-                                 :type="`sertifikat`" :reff="coll.counter_id" :idapp="dynamicForm.id"/>
+                                 :type="`sertifikat`" :reff="coll.counter_id" :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
                   </div>
                 </div>
               </div>
@@ -271,7 +285,7 @@
         </n-card>
       </n-modal>
       <div v-show="current === 4">
-        <n-form ref="formSurvey" :model="survey" :rules="rulesSurvey" require-mark-placement="right-hanging">
+        <n-form ref="formSurvey" :model="survey" :rules="rulesSurvey" require-mark-placement="right-hanging" :disabled="props.viewMode">
           <div class="flex gap-4">
             <n-form-item label="Tanggal survey" path="tgl_survey" class="w-full">
               <n-date-picker placeholder="Tanggal Survey" class="w-full"
@@ -330,7 +344,7 @@
           </n-form-item>
           <n-divider title-placement="left"> Dokumen Pendukung</n-divider>
           <file-upload :def_preview="true" title="dokumen pendukung" endpoint="image_upload_prospect"
-                       type="other" :idapp="dynamicForm.id"/>
+                       type="other" :idapp="dynamicForm.id" :view-mode="props.viewMode"/>
         </n-form>
       </div>
       <template #action>
@@ -351,22 +365,23 @@
             </template>
             Selanjutnya
           </n-button>
-          <n-button :loading="loading" icon-placement="left" type="primary" @click="handleValid('send')"
-                    v-else>
+          <n-button  :loading="loading" icon-placement="left" type="primary" @click="handleValid('send')"
+                    v-else-if="!props.viewMode">
             kirim ke admin
           </n-button>
-          <n-button type="info" @click="handleSave()">
+          <n-button type="info" @click="handleSave()" v-if="!props.viewMode">
             simpan
           </n-button>
         </n-flex>
       </template>
     </n-card>
-  </n-card>
+  </div>
 </template>
 <script setup>
 import {ref, reactive, onMounted, toRef} from "vue";
 import {v4 as uuidv4} from "uuid";
 import {
+  ArrowBackIosNewRound as BackIcon,
   ArrowBackOutlined as ArrowBack,
   AddFilled as AddIcon,
   EditOutlined as EditIcon,
@@ -374,7 +389,7 @@ import {
   ArrowForwardOutlined as ArrowForward,
 
 } from "@vicons/material";
-import {useMessage} from "naive-ui";
+import {NButton, NIcon, useMessage} from "naive-ui";
 import {useWindowSize} from "@vueuse/core";
 
 import _ from "lodash";
@@ -427,7 +442,12 @@ const formPelanggan = ref(null);
 
 const showModal = ref(false);
 
-
+const props = defineProps({
+  viewMode: {
+    type: Boolean,
+    default: false
+  },
+});
 const anyJaminan = ref([]);
 const receivedData = ref(null);
 
@@ -522,7 +542,7 @@ const order = reactive({
   plafond: null,
   tenor: 6,
   bunga: 0,
-  bunga_tahunan: computed(() => (order.bunga * 12).toFixed(2)),
+  bunga_tahunan: computed(() => (parseInt(order.bunga) * 12).toFixed(2)),
   angsuran: computed(() => (Math.ceil(Math.round((order.plafond * order.bunga / 100) * order.tenor + order.plafond) / order.tenor / 1000) * 1000)),
   category: null,
   jenis_angsuran: "bulanan",
@@ -540,7 +560,7 @@ const initPelanggan = {
   kota: "",
   kecamatan: "",
   kelurahan: "",
-  dokumen_indentitas:[],
+  dokumen_indentitas: [],
 };
 const pelanggan = reactive({...initPelanggan});
 var dt = new Date();
@@ -726,14 +746,16 @@ const endForm = () => {
     }
   });
 }
+const baseRoute = useRoute();
+const idApp = baseRoute.params.idsurvey;
 const handleSave = async (type) => {
   if (type === 'send') {
     dynamicForm.flag = true
   }
   loading.value = true;
   const response = await useApi({
-    method: "POST",
-    api: "kunjungan",
+    method: idApp ? "PUT" : "POST",
+    api: idApp ? `kunjungan/${idApp}` : "kunjungan",
     data: dynamicForm,
     token: userToken,
   });
@@ -842,10 +864,9 @@ const tenor = [6, 12, 18, 24, 36, 48, 60].map((i) => ({
   label: `${i} Bulan`
 }))
 const isRtl = true;
-const baseRoute = useRoute();
-const idApp = baseRoute.params.idsurvey;
+
 const dok_identitas = ref({
-  dokumen_indentitas:[]
+  dokumen_indentitas: []
 });
 const onlyAllowNumber = (value) => !value || /^\d+$/.test(value);
 const getData = () =>
@@ -874,7 +895,7 @@ const getData = () =>
       }
     });
 onMounted(() => {
-  if(idApp){
+  if (idApp) {
     getData(idApp);
   }
   jaminanStore.initJaminan();
