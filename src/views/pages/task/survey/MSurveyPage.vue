@@ -1,45 +1,42 @@
 <template>
   <div class="relative">
-    <div class="sticky shadow top-0 z-50 flex items-center gap-2 justify-between p-2  bg-white ">
-      <n-button quaternary circle>
+    <div class="sticky top-0 z-50 flex items-center gap-2 justify-between p-2  bg-white ">
+      <n-button quaternary circle @click="router.back()">
         <n-icon>
           <back-icon/>
         </n-icon>
       </n-button>
       <div class="text-lg font-semibold">Data Survey</div>
       <div>
-        <n-space class="!gap-1">
-          <div class="me-1">
-            <n-popover trigger="click" placement="bottom-end">
-              <template #trigger>
-                <n-button :circle="width <= 520 ? true : false">
-                  <n-icon>
-                    <search-icon/>
-                  </n-icon>
-                  <span v-if="width >= 520">Cari</span>
-                </n-button>
-              </template>
-              <n-space vertical>
-                <n-input autofocus="true" clearable placeholder="cari disini.."
-                         v-model:value="searchBox"/>
-                <n-date-picker :default-value="[Date.now(), Date.now()]"
-                               :update-value-on-close="updateValueOnClose" type="daterange"
-                               @update:value="onConfirmDate"/>
-              </n-space>
-            </n-popover>
-          </div>
-
-        </n-space>
+        <n-button quaternary circle @click="router.push('new-survey')">
+          <n-icon size="20">
+            <add-icon/>
+          </n-icon>
+        </n-button>
       </div>
     </div>
-
+    <div class="p-2  bg-white">
+      <n-input placeholder="cari" size="large" v-model:value="searchBox" clearable/>
+    </div>
     <div class="p-2 flex flex-col gap-2">
-      <n-card v-for="data in dataTable" :key="data.id" :title="data.nama_debitur">
-        <template #header-extra>
-          <n-tag>{{data.status}}</n-tag>
-        </template>
-        {{data.alamat}}
+
+      <n-card v-if="loadData">
+        <n-skeleton text :repeat="2" /> <n-skeleton text style="width: 60%" />
       </n-card>
+      <div @click="" class="p-4 flex flex-col gap-4 bg-white rounded-lg border" v-else v-for="data in showData" :key="data.id" :title="data.nama_debitur">
+        <div class="flex justify-between">
+          <div class="font-bold flex flex-col">
+            <span>{{data.nama_debitur}}</span>
+          <small>{{data.visit_date}}</small>
+          </div>
+          <div class="font-bold" :style="`color:${appAccentColor}`">{{data.plafond.toLocaleString()}}</div>
+        </div>
+        <div class="flex justify-between">
+          <div class="font-sm">{{data.alamat}}</div>
+          <div class="font-bold"><n-tag type="warning" size="small" round>{{data.status}}</n-tag></div>
+        </div>
+        {{data.alamat}}
+      </div>
     </div>
   </div>
 </template>
@@ -59,7 +56,7 @@ import {
 import {
   ArrowBackIosNewRound as BackIcon,
   MoreVertFilled as MoreIcon,
-  AddCircleOutlineRound as AddIcon,
+  AddFilled as AddIcon,
   SearchOutlined as SearchIcon,
   FileDownloadOutlined as DownloadIcon,
 } from "@vicons/material";
