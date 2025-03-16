@@ -52,7 +52,7 @@
       >
         <SideMenu/>
       </n-layout-sider>
-      <n-layout :class="`p-2 md:p-4 bg-slate-100`">
+      <n-layout :class="`md:p-4 bg-slate-100`">
         <RouterView/>
         <slot/>
       </n-layout>
