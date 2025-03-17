@@ -1,7 +1,7 @@
 {
   "name": "los-app",
   "private": true,
-  "version": "4.0 (Delightful)",
+  "version": "4.2 (Delightful)",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -15,6 +15,7 @@
     "@vueuse/core": "^10.10.0",
     "axios": "^1.7.2",
     "js-sha256": "^0.11.0",
+    "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
     "oh-vue-icons": "^1.0.0-rc3",
     "papaparse": "^5.4.1",

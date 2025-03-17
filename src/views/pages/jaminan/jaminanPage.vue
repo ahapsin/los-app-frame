@@ -1,58 +1,61 @@
 <template>
-    <n-tabs size="medium" @update:value="handleUpdateValue" class="card-tabs" default-value="jaminan" animated
-        type="card" pane-wrapper-style="margin: 0 -4px" @before-leave="handleSwitchTab"
-        pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
-        <n-tab-pane name="jaminan" tab="Jaminan">
-            <template #tab>
-                <div>
-                    Jaminan
-                </div>
-            </template>
-            <div class="flex w-full mb-2 justify-between px-4">
-                <n-statistic label="Jaminan tersedia di POS">
-                    <n-spin size="small" :show="loadTable">
-                        {{ showData.length }}
-                    </n-spin>
-                </n-statistic>
-                <div class="flex gap-2">
-                    <n-popover trigger="click" placement="bottom-end">
-                        <template #trigger>
-                            <n-button circle>
-                                <n-icon>
-                                    <search-icon />
-                                </n-icon>
-                            </n-button>
-                        </template>
-                        <n-space vertical>
-                            <n-input clearable placeholder="Cari No Kontrak / Nama Debitur" v-model:value="searchBox" />
-                        </n-space>
-                    </n-popover>
-                    <json-excel v-if="showData.length > 0" :data="showData" :name="`laporan_jaminan`"
-                        :fields="json_fields" :stringifyLongNum="true">
-                        <n-button type="primary">Download Xls</n-button>
-                    </json-excel>
-                </div>
-            </div>
+    <n-card>
+        <n-tabs size="medium" @update:value="handleUpdateValue" class="card-tabs" default-value="jaminan" animated
+            type="card" pane-wrapper-style="margin: 0 -4px" @before-leave="handleSwitchTab"
+            pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
+            <n-tab-pane name="jaminan" tab="Jaminan">
+                <template #tab>
+                    <div>
+                        Jaminan
+                    </div>
+                </template>
 
-            <n-data-table :columns="columns" :data="showData" :loading="loadTable" size="small"
-                :pagination="{ pageSize: 10 }" />
-        </n-tab-pane>
-        <n-tab-pane name="transaksi" tab="Transaksi">
-            <n-data-table :columns="columnsTransaction" :data="dataTransaction" size="small"
-                :loading="loadTransaction" />
-        </n-tab-pane>
-        <n-tab-pane name="approval" tab="approval">
-            <n-data-table :columns="columnsTransactionApproval" :data="dataTransactionApproval" size="small"
-                :loading="loadTransactionApproval" />
-        </n-tab-pane>
-        <template #suffix>
-            <n-dropdown trigger="hover" :options="options" @select="handleSelect" v-if="addButtonDisplay">
-                <n-button type="primary">Tambah Transaksi</n-button>
-            </n-dropdown>
-        </template>
-    </n-tabs>
+                <div class="flex flex-col gap-y-2">
+                    <!-- Search and Filter -->
+                    <div class="flex gap-2">
+                        <n-input v-model:value="searchQuery" placeholder="cari disini..." />
+                        <n-button @click="findData" type="primary">Cari</n-button>
+                        <json-excel v-if="data.length > 0" :data="data" :name="`jaminan_ohd`" :fields="json_fields">
+                            <n-button type="primary">Download Xls</n-button>
+                        </json-excel>
+
+                    </div>
+                    <!-- Data Table -->
+                    <div id="drawer-target">
+                        <n-data-table :columns="columns" :data="data" :bordered="true" :max-height="300"
+                            :loading="loadData" />
+                    </div>
+                    <!-- Pagination -->
+                    <n-pagination v-model:page="currentPage" :page-size="pageSize" :page-sizes="pageSizes"
+                        :item-count="totalItems" @update:page="fetchData" v-model:page-size="pageSize" show-size-picker>
+                        <template #prefix>
+                            Jumlah Jaminan: {{ totalItems }}
+                        </template>
+                    </n-pagination>
+                </div>
+            </n-tab-pane>
+            <n-tab-pane name="transaksi" tab="Transaksi">
+                <n-data-table :columns="columnsTransaction" :data="dataTransaction" size="small"
+                    :loading="loadTransaction" />
+            </n-tab-pane>
+            <n-tab-pane name="approval" tab="approval">
+                <template #tab>
+                    <div class="flex gap-2">
+                        <div>Approval</div>
+                    </div>
+                </template>
+                <n-data-table :columns="columnsTransactionApproval" :data="dataTransactionApproval" size="small"
+                    :loading="loadTransactionApproval" :pagination="{ pageSize: 10 }" />
+            </n-tab-pane>
+            <template #suffix>
+                <n-dropdown trigger="hover" :options="options" @select="handleSelect" v-if="addButtonDisplay">
+                    <n-button type="primary">Tambah Transaksi</n-button>
+                </n-dropdown>
+            </template>
+        </n-tabs>
+    </n-card>
     <n-modal v-model:show="showModal" :mask-closable="false">
-        <div class="w-1/2">
+        <div class="w-3/4">
             <FormTransaksi @batal="showModal = false" v-if="typeTransaksi == 'kirim'" @simpan="handleSimpanModal"
                 type="pengiriman" />
             <FormTransaksi @batal="showModal = false" v-if="typeTransaksi == 'minta'" @simpan="handleSimpanModal"
@@ -71,7 +74,7 @@
                                 <th>Jenis</th>
                                 <th>Nama Debitur</th>
                                 <th>No Kontrak</th>
-                                <th>No Jaminan</th>
+                                <th>No BPKB</th>
                                 <th>Lokasi</th>
                                 <th>Status</th>
                             </tr>
@@ -79,46 +82,36 @@
                         <tbody>
                             <tr>
                                 <td>{{ bodyModal.type }}</td>
-                                <td>{{ bodyModal.nama_debitur }}</td>
-                                <td>{{ bodyModal.order_number }}</td>
-                                <td>{{ bodyModal.no_jaminan }}</td>
-                                <td>{{ bodyModal.lokasi }}</td>
-                                <td>{{ bodyModal.status_jaminan }}</td>
+                                <td>{{ bodyModal.debitur }}</td>
+                                <td>{{ bodyModal.no_kontrak }}</td>
+                                <td>{{ bodyModal.BPKB_NUMBER }}</td>
+                                <td>{{ bodyModal.posisi_berkas }}</td>
+                                <td>{{ bodyModal.STATUS }}</td>
                             </tr>
                         </tbody>
                     </n-table>
                     <n-table :bordered="false" :single-line="false" size="small">
                         <tbody>
                             <tr>
-                                <th>BPKB NO</th>
-                                <td>{{ bodyModal.no_bpkb }}</td>
-                            </tr>
-                            <tr>
                                 <th>BPKB Atas Nama</th>
-                                <td>{{ bodyModal.atas_nama }}</td>
+                                <td>{{ bodyModal.ON_BEHALF }}</td>
                             </tr>
                             <tr>
                                 <th>Merk/Tipe/Tahun</th>
-                                <td>{{ bodyModal.merk }} / {{ bodyModal.tipe }} / {{ bodyModal.tahun }}</td>
+                                <td>{{ bodyModal.BRAND }} / {{ bodyModal.TYPE }} / {{ bodyModal.PRODUCTION_YEAR
+                                    }}</td>
                             </tr>
                             <tr>
                                 <th>Warna/No Polisi</th>
-                                <td>{{ bodyModal.warna }} /{{ bodyModal.no_polisi }}</td>
+                                <td>{{ bodyModal.COLOR }} /{{ bodyModal.POLICE_NUMBER }}</td>
                             </tr>
                             <tr>
                                 <th>No Rangka/No Mesin</th>
-                                <td>{{ bodyModal.no_rangka }}/ {{ bodyModal.no_mesin }}</td>
+                                <td>{{ bodyModal.CHASIS_NUMBER }}/ {{ bodyModal.ENGINE_NUMBER }}</td>
                             </tr>
                             <tr>
                                 <th>No Faktur</th>
-                                <td>{{ bodyModal.no_faktur }}</td>
-                            </tr>
-                            <tr>
-                                <th>Dokumen</th>
-                                <td>
-                                    <n-image v-for="doc in bodyModal.document" width="64" height="64" :src="doc.PATH"
-                                        :key="doc" />
-                                </td>
+                                <td>{{ bodyModal.INVOICE_NUMBER }}</td>
                             </tr>
                         </tbody>
                     </n-table>
@@ -153,18 +146,20 @@
                                     <n-form-item label="NO KTP" class="w-full">
                                         <n-input v-model:value="modelJenisRilis.no_ktp" />
                                     </n-form-item>
+
                                     <file-upload title="Surat Kuasa" endpoint="collateral_attachment_rilis"
-                                        :idapp="bodyModal.id" type="doc_rilis"
+                                        :idapp="bodyModal.ID" type="doc_rilis"
                                         :def_value="findDocByType(bodyModal.document_rilis, 'surat Kuasa')" />
+
                                 </div>
                             </div>
                             <!-- <n-button type="info" dashed @click="cetakBuktiTerima">Cetak Surat Rilis</n-button> -->
-                            <n-button type="info" dashed @click="modalSuratRilis = true">Cetak Surat Rilis</n-button>
+                            <n-button type="info" dashed @click="modalSuratRilis = true">Preview Surat Rilis</n-button>
                             <n-alert type="warning">
                                 upload dokumen rilis yang sudah dicap dan ditanda tangani pemberi dan penerima
                             </n-alert>
                             <file-upload title="Upload bukti rilis" endpoint="collateral_attachment_rilis"
-                                :idapp="bodyModal.id" type="doc_rilis"
+                                :idapp="bodyModal.ID" type="doc_rilis"
                                 :def_value="findDocByType(bodyModal.document_rilis, 'doc_rilis')" />
                         </div>
                     </div>
@@ -173,18 +168,20 @@
         </n-card>
     </n-modal>
     <n-modal v-model:show="modalSuratRilis">
-        <n-card class="w-5/6">
-            <div class="bg-white border border-black p-4" ref="buktiTerimaRef">
+        <n-card class="w-5/6" title="Surat Tanda Terima">
+            <template #header-extra>
+                <n-button type="info" @click="cetakBuktiTerima">cetak</n-button>
+            </template>
+            <div class="bg-white border border-black p-8" ref="buktiTerimaRef">
                 <div class="flex gap-2 items-center">
                     <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />
                     <div class="flex flex-col">
                         <span class="text-xl font-bold">{{ apptitle }}</span>
-                        <n-text strong class="text-md"> POS: {{ bodyModal.lokasi }}</n-text>
+                        <n-text strong class="text-md"> POS: {{ bodyModal.pos_pencairan }}</n-text>
                     </div>
                 </div>
                 <div class="mb-4 text-center text-base">
                     <b>SURAT TANDA TERIMA DOKUMEN</b>
-
                 </div>
                 <div class="mb-4">yang bertanda tangan di bawah ini:</div>
                 <div class="mb-4" v-if="modelJenisRilis.jenis === 'atas nama'">
@@ -212,21 +209,14 @@
                             <td width="100px">Nama</td>
                             <td width="25">:</td>
                             <td>
-                                <b class="uppercase">{{ bodyModal.nama_debitur }}</b>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>No Jaminan</td>
-                            <td width="25">:</td>
-                            <td>
-                                <b class="uppercase">{{ bodyModal.no_jaminan }}</b>
+                                <b class="uppercase">{{ bodyModal.debitur }}</b>
                             </td>
                         </tr>
                         <tr>
                             <td>No Kontrak</td>
                             <td width="25">:</td>
                             <td>
-                                <b class="uppercase">{{ bodyModal.order_number }}</b>
+                                <b class="uppercase">{{ bodyModal.no_kontrak }}</b>
                             </td>
                         </tr>
                     </table>
@@ -239,31 +229,31 @@
                 </div>
                 <div class="text-justify pt-2">
                     Jenis Dokumen: <b> </b>
-                    <table v-if="bodyModal.type.toLowerCase() == 'kendaraan'">
+                    <table>
                         <tr>
                             <td>BPKB No</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.no_bpkb }}</td>
+                            <td>{{ bodyModal.BPKB_NUMBER }}</td>
                         </tr>
                         <tr>
                             <td>BPKB atas nama</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.atas_nama }}</td>
+                            <td>{{ bodyModal.ON_BEHALF }}</td>
                         </tr>
                         <tr>
                             <td>Merk/Type/Tahun</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.merk }}/{{ bodyModal.tipe }}/{{ bodyModal.tahun }}</td>
+                            <td>{{ bodyModal.BRAND }}/{{ bodyModal.TYPE }}/{{ bodyModal.PRODUCTION_YEAR }}</td>
                         </tr>
                         <tr>
                             <td>Warna/No.Polisi</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.warna }}/{{ bodyModal.no_polisi }}</td>
+                            <td>{{ bodyModal.COLOR }}/{{ bodyModal.POLICE_NUMBER }}</td>
                         </tr>
                         <tr>
                             <td>No. Rangka/Mesin</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.no_rangka }}/{{ bodyModal.no_mesin }}</td>
+                            <td>{{ bodyModal.CHASIS_NUMBER }}/{{ bodyModal.ENGIN+NUMBER }}</td>
                         </tr>
                         <tr>
                             <td>No. Faktur</td>
@@ -271,7 +261,7 @@
                             <td>{{ bodyModal.no_faktur }}</td>
                         </tr>
                     </table>
-                    <table v-else>
+                    <!-- <table v-else>
                         <tr>
                             <td>No Sertifikat</td>
                             <td width="25">:</td>
@@ -298,7 +288,7 @@
                             <td width="25">:</td>
                             <td></td>
                         </tr>
-                    </table>
+                    </table> -->
                 </div>
 
                 <div class="mb-4">
@@ -321,7 +311,7 @@
                                 </div>
                                 <div v-else>Penerima,
                                     <br /><br /><br />
-                                    <u class="uppercase">{{ bodyModal.nama_debitur }}</u>
+                                    <u class="uppercase">{{ bodyModal.debitur }}</u>
                                 </div>
                             </td>
                         </tr>
@@ -447,7 +437,7 @@
 
             <div v-if="bodyModalTrx.status != 'SELESAI'">
                 <n-form-item label="keterangan" class="pt-2">
-                    <n-input type="textarea" v-model:value="bodyApprove.keterangan" />
+                    <n-input type="textarea" v-model:value="bodyApprove.catatan" />
                 </n-form-item>
                 <n-button type="primary" @click="handleApprove">approve</n-button>
             </div>
@@ -471,33 +461,92 @@ import { useVueToPrint } from "vue-to-print";
 import { useMeStore } from "../../../stores/me.js";
 import _ from "lodash";
 import JsonExcel from "vue-json-excel3";
+import JaminanTable from "./JaminanTable.vue";
+import axios from 'axios';
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const me = useMeStore();
 const message = useMessage();
 const showModal = ref(false);
-const dataTable = ref([]);
 const dataTransaction = ref([]);
 const dataTransactionApproval = ref([]);
 const loadTransactionApproval = ref();
-const loadTable = ref(false);
-const getData = async () => {
-    loadTable.value = true;
-    let userToken = localStorage.getItem("token");
-    const response = await useApi({
-        method: "GET",
-        api: "jaminan",
-        token: userToken,
-    });
-    if (!response.ok) {
-        loadTable.value = false;
-        message.error("ERROR API");
-    } else {
-        loadTable.value = false;
-        dataTable.value = response.data;
+const loadData = ref(false);
+// ===
+// Reactive state
+const data = ref([]);
+const currentPage = ref(1);
+const pageSize = ref(10);
+const pageSizes = [{
+    label: '10 per halaman',
+    value: 10
+},
+{
+    label: '20 per halaman',
+    value: 20
+},
+{
+    label: '50 per halaman',
+    value: 50
+},
+{
+    label: '100 per halaman',
+    value: 100
+}];
+const totalItems = ref(0);
+const searchQuery = ref(""); // Search input
+const sortBy = ref("name");
+const order = ref("asc");
+const props = defineProps({
+    type: null,
+    selection: {
+        type: Boolean,
+        default: false
+    }
+})
+
+// Fetch users with query parameters
+const fetchData = async () => {
+    try {
+        loadData.value = true;
+        const params = {
+            type: "ondemand",
+            page: currentPage.value,
+            page_size: pageSize.value,
+            search: searchQuery.value,
+            sort_by: sortBy.value,
+            order: order.value
+        }
+        const response = await useApi({
+            method: "GET",
+            api: "jaminan",
+            params: params,
+            token: localStorage.getItem('token'),
+        });
+        if (response.ok) {
+            loadData.value = false;
+            data.value = response.data.data;
+            totalItems.value = response.data.total;
+        }
+    } catch (error) {
+        console.error("Error fetching users:", error);
     }
 };
+const findData = () => {
+    currentPage.value = 1;
+    fetchData();
+}
+// Watch for changes & fetch new data
+// watchEffect(() => {
+//   fetchUsers();
+// });
+const jamainanSelected = ref();
+const handleChecked = (e) => {
+    jamainanSelected.value = e;
+}
+
+//---
 
 
 const buktiTerimaRef = ref(null);
@@ -514,8 +563,9 @@ const handleApprove = async () => {
         message.error("error");
 
     } else {
-        message.success("berhasil");
-        modalTrx.value = false;
+        message.success("berhasil diapprove");
+        modalTrxApproval.value = false;
+        getDataTransactionApproval();
     }
 
 }
@@ -575,7 +625,7 @@ const getDataTransaction = async () => {
     });
     if (!response.ok) {
         loadTransaction.value = false;
-        message.error('ERROR API');
+      console.log(reponse.error);
     } else {
         loadTransaction.value = false;
         dataTransaction.value = response.data;
@@ -617,7 +667,7 @@ const options = [
 
 const searchBox = ref();
 const showData = computed(() => {
-    return useSearch(dataTable.value, searchBox.value);
+    return useSearch(data.value, searchBox.value);
 });
 const typeTransaksi = ref();
 const handleSelect = (e) => {
@@ -635,13 +685,8 @@ const handleUpdateValue = (e) => {
 }
 const columns = [
     {
-        title: "Jenis",
-        key: "type",
-        sorter: "default",
-    },
-    {
         title: "No Kontrak",
-        key: "order_number",
+        key: "no_kontrak",
         sorter: "default",
     },
     {
@@ -651,22 +696,30 @@ const columns = [
     },
     {
         title: "Nama Debitur",
-        key: "nama_debitur",
+        key: "debitur",
+        sorter: "default",
+    },{
+        title: "NO BPKB",
+        key: "BPKB_NUMBER",
+        sorter: "default",
+    },{
+        title: "Atas Nama",
+        key: "ON_BEHALF",
         sorter: "default",
     },
     {
         title: "Asal Jaminan",
-        key: "asal_lokasi",
+        key: "pos_pencairan",
         sorter: "default",
     },
     {
         title: "Lokasi Jaminan",
-        key: "lokasi",
+        key: "posisi_berkas",
         sorter: "default",
     },
     {
         title: "Status",
-        key: "status_jaminan",
+        key: "STATUS",
         sorter: "default",
     },
     {
@@ -936,12 +989,12 @@ const detailTrxApproval = (e) => {
     modalTrxApproval.value = true;
 }
 const closeModal = () => {
-    getData();
+    fetchData("ondemand");
 }
 
 const modalSuratRilis = ref(false);
 const modelJenisRilis = reactive({
-    jenis: null,
+    jenis: 'yang bersangkutan',
     atas_nama: null,
     no_ktp: null,
 });
@@ -953,7 +1006,7 @@ const optJenisRilis = ["yang bersangkutan", "atas nama"].map((e) => ({
 const handleSwitchTab = (t) => {
     switch (t) {
         case "jaminan":
-            getData();
+            fetchData("ondemand");
             return true;
         case "transaksi":
             getDataTransaction();
@@ -966,7 +1019,7 @@ const handleSwitchTab = (t) => {
     }
 }
 onMounted(() => {
-    getData();
+    fetchData("ondemand");
 });
 
 

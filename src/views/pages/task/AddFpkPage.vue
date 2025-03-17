@@ -1436,7 +1436,7 @@ const refAdmin = async (body) => {
         token: userToken,
     });
     if (!response.ok) {
-      message.error('ERROR API');
+      console.log(reponse.error);
     } else {
         loading.value = false;
         skemaAngsuran.value = response.data;
@@ -1487,7 +1487,7 @@ const handleChange = async () => {
         token: userToken,
     });
     if (!response.ok) {
-      message.error('ERROR API');
+      console.log(reponse.error);
     } else {
         loading.value = false;
         Object.assign(calcCredit, response.data);

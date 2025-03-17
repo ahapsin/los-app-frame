@@ -102,6 +102,7 @@ const dynamicSearch = reactive({
   no_polisi: "",
   atas_nama: "",
   no_bpkb: "",
+  no_kontrak:"",
 });
 
 const message = useMessage();
@@ -188,7 +189,7 @@ const getData = async () => {
     token: userToken
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     dataTable.value = response.data;
   }

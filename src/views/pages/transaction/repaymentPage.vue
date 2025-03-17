@@ -625,7 +625,7 @@ const getSkalaCredit = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     dataStrukturKredit.value = response.data;
     dataAngsuran.value = true;

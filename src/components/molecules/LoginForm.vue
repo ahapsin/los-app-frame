@@ -4,7 +4,7 @@
     <n-form :model="dynamicForm" ref="formRef">
       <div class="flex flex-col md:flex-row gap-4 items-center pb-8">
         <img class="h-14 md:h-16 " :src="applogo" alt="logo_company">
-        <div class="flex flex-col">
+        <div class="flex flex-col justify-center items-center md:items-start">
           <span class="font-bold">LOAN ORIGINATION SYSTEM</span>
           <span class="md:text-2xl font-bold">{{ apptitle }}</span>
         </div>
