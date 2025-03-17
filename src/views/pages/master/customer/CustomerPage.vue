@@ -1,41 +1,36 @@
 <template>
-  <n-space vertical>
-    <n-card :title="`Tabel ${$route.name}`">
-      <template #header-extra>
-        <n-space class="!gap-1">
-          <div class="me-1">
+    <n-space vertical>
+        <n-card :title="`Tabel ${$route.name}`">
 
-            <n-space>
-              <n-input
-                  :autofocus="true"
-                  clearable
-                  placeholder="cari disini.."
-                  v-model:value="searchBox"
-              />
-              <n-button type="primary" @click="handleSearch">cari</n-button>
-            </n-space>
-
-          </div>
-          <!-- <div class="hidden md:flex">
+            <template #header-extra>
+                <n-space class="!gap-1">
+                    <div class="me-1">
+                        <n-space>
+                            <n-input :autofocus="true" clearable placeholder="cari disini.."
+                                v-model:value="searchBox" />
+                            <n-button type="primary" @click="handleSearch">cari</n-button>
+                        </n-space>
+                    </div>
+                    <!-- <div class="hidden md:flex">
                             <n-button>
                                 <template #icon>
                                     <n-icon>
                                         <download-icon />
                                     </n-icon>
                                 </template>
-                                <strong class="hidden md:!block">download</strong>
-                            </n-button>
-                        </div> -->
-          <div class="md:hidden">
-            <n-button>
-              <template #icon>
-                <n-icon>
-                  <download-icon/>
-                </n-icon>
-              </template>
-            </n-button>
-          </div>
-          <!-- <div class="hidden md:flex">
+<strong class="hidden md:!block">download</strong>
+</n-button>
+</div> -->
+                    <div class="md:hidden">
+                        <n-button>
+                            <template #icon>
+                                <n-icon>
+                                    <download-icon />
+                                </n-icon>
+                            </template>
+                        </n-button>
+                    </div>
+                    <!-- <div class="hidden md:flex">
                             <n-button type="primary" @click="handleAdd">
                                 <template #icon>
                                     <n-icon>
@@ -45,118 +40,108 @@
                                 <strong>tambah</strong>
                             </n-button>
                         </div> -->
-          <div class="md:hidden">
-            <n-button type="primary" @click="handleAdd">
-              <template #icon>
-                <n-icon>
-                  <add-icon/>
-                </n-icon>
-              </template>
-            </n-button>
-          </div>
-        </n-space>
-      </template>
-      <n-space vertical :size="12" class="pt-4">
-        <n-data-table
-            remote
-            :loading="loadingPage"
-            size="small"
-            :columns="columns"
-            :data="dataTable"
+                    <div class="md:hidden">
+                        <n-button type="primary" @click="handleAdd">
+                            <template #icon>
+                                <n-icon>
+                                    <add-icon />
+                                </n-icon>
+                            </template>
+                        </n-button>
+                    </div>
+                </n-space>
+            </template>
+            <n-space vertical :size="12" class="pt-4">
+                <n-data-table remote :loading="loadingPage" size="small" :columns="columns" :data="dataTable" />
+                <n-pagination @update:page="handlePageChange" v-model:page="pageLocation" :page-count="countItem" />
+            </n-space>
+        </n-card>
+    </n-space>
+    <n-modal v-model:show="modalDetailCustomer">
 
-        />
-        <n-pagination
-            @update:page="handlePageChange"
-            v-model:page="pageLocation"
+        <n-card class="w-4/6 max-h-[500px] overflow-x-auto ">
 
-            :page-count="countItem"
-        />
-      </n-space>
-    </n-card>
-  </n-space>
-  <n-modal v-model:show="modalDetailCustomer">
-    <n-card class="w-11/12 max-h-[500px] overflow-x-auto ">
-      <n-spin :show="spinPelanggan">
-        <n-scrollbar trigger="none">
-          <n-form ref="formPelanggan" :model="dataPelanggan" :rules="rulesPelanggan"
-                  :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
-                  :disabled="formDisable" label-width="auto">
-            <div class="flex w-full gap-2">
-              <n-form-item label="Nama" path="nama" class="w-full">
-                <n-input placeholder="nama" v-model:value="dataPelanggan.nama"
-                         @input="$event => (dataPelanggan.nama = $event.toUpperCase())"/>
-              </n-form-item>
-              <n-form-item label="Nama Panggilan" path="nama_panggilan" class="w-full">
-                <n-input placeholder="nama panggilan" v-model:value="dataPelanggan.nama_panggilan"
-                         @input="$event => (dataPelanggan.nama_panggilan = $event.toUpperCase())"/>
-              </n-form-item>
-            </div>
-            <div class="flex w-full gap-2">
-              <n-form-item label="Jenis kelamin" path="jenis_kelamin" class="w-full">
-                <n-select filterable placeholder="Jenis Kelamin" :options="optJenisKelamin"
-                          v-model:value="dataPelanggan.jenis_kelamin"/>
-              </n-form-item>
-              <n-form-item label="Tempat Lahir" path="tempat_lahir" class="w-full">
-                <n-input placeholder="tempat lahir" v-model:value="dataPelanggan.tempat_lahir"
-                         @input="$event => (dataPelanggan.tempat_lahir = $event.toUpperCase())"/>
-              </n-form-item>
-              <n-form-item label="Tanggal lahir" path="tgl_lahir" class="w-full">
-                <n-date-picker placeholder="Tanggal Lahir" v-model:formatted-value="dataPelanggan.tgl_lahir"
-                               value-format="yyyy-MM-dd" format="dd-MM-yyyy" type="date"
-                               @update:value="handleTanggalLahir" class="w-full"/>
-                <span
-                    class="absolute text-xs text-orange-500 top-6 bg-orange-50 w-full p-0.5 mt-2 animate-pulse"
-                    v-show="notifUsia">{{ noteUsia }}</span>
-              </n-form-item>
-              <n-form-item label="Status Kawin" path="status_kawin" class="w-full">
-                <n-input-group>
-                  <n-select filterable placeholder="Status Kawin" :options="optStatusKawin"
-                            v-model:value="dataPelanggan.status_kawin"/>
-                </n-input-group>
-              </n-form-item>
-            </div>
-            <div class="flex w-full gap-2">
-              <n-form-item label="Tipe Identitas" path="tipe_identitas" class="w-full">
-                <n-select filterable placeholder="Jenis Identitas" :options="optJenisIdentitas"
-                          v-model:value="dataPelanggan.tipe_identitas"/>
-              </n-form-item>
-              <n-form-item label="No Identitas" path="no_identitas" class="w-full">
-                <n-input :allow-input="onlyAllowNumber" class="w-full" placeholder="No Identitas" show-count
-                         :maxlength="16" v-model:value="dataPelanggan.no_identitas">
-                </n-input>
-              </n-form-item>
-              <n-form-item label="No KK" path="no_kk" class="w-full">
-                <n-input :allow-input="onlyAllowNumber" placeholder="No Kartu Keluarga"
-                         v-model:value="dataPelanggan.no_kk" show-count :maxlength="16"/>
-              </n-form-item>
-            </div>
-          </n-form>
-          <n-form ref="formPelangganPekerjaan" :model="dataPekerjaan" :rules="rulesPekerjaan" :disabled="formDisable"
-                  :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
-                  label-width="auto">
-            <div class="flex gap-4">
-              <n-form-item label="Sektor" path="pekerjaan_id" class="w-full">
-                <n-select filterable placeholder="pekerjaan" :options="optPekerjaan"
-                          v-model:value="dataPekerjaan.pekerjaan_id"/>
-              </n-form-item>
-              <n-form-item label="Pendidikan" path="pendidikan" class="w-full">
-                <n-select filterable placeholder="pendidikan" :options="optPendidikan"
-                          v-model:value="dataPekerjaan.pendidikan"/>
-              </n-form-item>
-            </div>
-            <div class="flex gap-2">
+            <n-spin :show="spinPelanggan">
+                <n-tabs type="line" animated @before-leave="handleBeforeLeave">
+                    <n-tab-pane name="customer" tab="Info Customer">
+                        <n-scrollbar trigger="none">
 
-              <n-form-item label="Telepon Selullar " path="telepon_selular" class="w-full">
-                <n-dynamic-input v-model:value="telpKonsumen" :min="1"/>
-              </n-form-item>
-
-            </div>
-            <n-divider title-placement="left">
+                            <n-form ref="formPelanggan" :model="dataPelanggan" :rules="rulesPelanggan"
+                                :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
+                                :disabled="formDisable" label-width="auto">
+                                <div class="flex w-full gap-2">
+                                    <n-form-item label="Nama" path="nama" class="w-full">
+                                        <n-input placeholder="nama" v-model:value="dataPelanggan.nama" />
+                                    </n-form-item>
+                                    <n-form-item label="Nama Panggilan" path="nama_panggilan" class="w-full">
+                                        <n-input placeholder="nama panggilan"
+                                            v-model:value="dataPelanggan.nama_panggilan"/>
+                                    </n-form-item>
+                                </div>
+                                <div class="flex w-full gap-2">
+                                    <n-form-item label="Jenis kelamin" path="jenis_kelamin" class="w-full">
+                                        <n-select filterable placeholder="Jenis Kelamin" :options="optJenisKelamin"
+                                            v-model:value="dataPelanggan.jenis_kelamin" readonly />
+                                    </n-form-item>
+                                    <n-form-item label="Tempat Lahir" path="tempat_lahir" class="w-full">
+                                        <n-input placeholder="tempat lahir" v-model:value="dataPelanggan.tempat_lahir"
+                                            @input="$event => (dataPelanggan.tempat_lahir = $event.toUpperCase())"
+                                            readonly />
+                                    </n-form-item>
+                                    <n-form-item label="Tanggal lahir" path="tgl_lahir" class="w-full">
+                                        <n-date-picker placeholder="Tanggal Lahir"
+                                            v-model:formatted-value="dataPelanggan.tgl_lahir" value-format="yyyy-MM-dd"
+                                            format="dd-MM-yyyy" type="date" @update:value="handleTanggalLahir"
+                                            class="w-full" readonly />
+                                        <span
+                                            class="absolute text-xs text-orange-500 top-6 bg-orange-50 w-full p-0.5 mt-2 animate-pulse"
+                                            v-show="notifUsia">{{ noteUsia }}</span>
+                                    </n-form-item>
+                                    <n-form-item label="Status Kawin" path="status_kawin" class="w-full">
+                                        <n-input-group>
+                                            <n-select filterable placeholder="Status Kawin" :options="optStatusKawin"
+                                                v-model:value="dataPelanggan.status_kawin" readonly />
+                                        </n-input-group>
+                                    </n-form-item>
+                                </div>
+                                <div class="flex w-full gap-2">
+                                    <n-form-item label="Tipe Identitas" path="tipe_identitas" class="w-full">
+                                        <n-select filterable placeholder="Jenis Identitas" :options="optJenisIdentitas"
+                                            v-model:value="dataPelanggan.tipe_identitas" readonly />
+                                    </n-form-item>
+                                    <n-form-item label="No Identitas" path="no_identitas" class="w-full">
+                                        <n-input :allow-input="onlyAllowNumber" class="w-full"
+                                            placeholder="No Identitas" show-count :maxlength="16"
+                                            v-model:value="dataPelanggan.no_identitas" readonly>
+                                        </n-input>
+                                    </n-form-item>
+                                    <n-form-item label="No KK" path="no_kk" class="w-full">
+                                        <n-input :allow-input="onlyAllowNumber" placeholder="No Kartu Keluarga"
+                                            v-model:value="dataPelanggan.no_kk" show-count :maxlength="16" readonly />
+                                    </n-form-item>
+                                </div>
+                            </n-form>
+                            <n-form ref="formPelangganPekerjaan" :model="dataPekerjaan" :rules="rulesPekerjaan"
+                                :disabled="formDisable" :label-placement="width <= 920 ? 'top' : 'top'"
+                                require-mark-placement="right-hanging" label-width="auto">
+                                <div class="flex gap-4">
+                                    <n-form-item label="Sektor" path="pekerjaan_id" class="w-full">
+                                        <n-select filterable placeholder="pekerjaan" :options="optPekerjaan"
+                                            v-model:value="dataPekerjaan.pekerjaan_id" readonly />
+                                    </n-form-item>
+                                    <n-form-item label="Pendidikan" path="pendidikan" class="w-full">
+                                        <n-select filterable placeholder="pendidikan" :options="optPendidikan"
+                                            v-model:value="dataPekerjaan.pendidikan" readonly />
+                                    </n-form-item>
+                                </div>
+                                <div class="flex gap-2">
+                                </div>
+                                <!-- <n-divider title-placement="left">
               <n-space>Informasi Alamat Identitas
               </n-space>
-            </n-divider>
-          </n-form>
-          <n-dynamic-input
+            </n-divider> -->
+                            </n-form>
+                            <!-- <n-dynamic-input
               :min="1"
               v-model:value="alamat_identitas">
             <template #default="{ alamat_identitas }">
@@ -183,9 +168,9 @@
                                      v-model:kodepos="alamatIdentitas.kode_pos"/>
               </div>
             </template>
-          </n-dynamic-input>
+          </n-dynamic-input> -->
 
-          <n-divider title-placement="left">
+                            <!-- <n-divider title-placement="left">
             Informasi Alamat Tagih
           </n-divider>
           <n-dynamic-input
@@ -215,34 +200,51 @@
                                      v-model:kodepos="alamatTagih.kode_pos"/>
               </div>
             </template>
-          </n-dynamic-input>
-            <n-button @click="handleSubmit" type="primary">
-              Ubah
-            </n-button>
-        </n-scrollbar>
-      </n-spin>
-    </n-card>
-  </n-modal>
+          </n-dynamic-input> -->
+                            <n-button @click="handleUpdateData(dataDetailPelanggan.id)" type="primary">
+                                Ubah
+                            </n-button>
+                        </n-scrollbar>
+                    </n-tab-pane>
+                    <n-tab-pane name="phonebook" tab="Phonebook">
+                        <div class="flex gap-2 ">
+                            <n-form-item label="NO Handphone">
+                                <n-input v-model:value="refNoHp" />
+                            </n-form-item>
+                            <n-form-item label="Alias">
+                                <n-input v-model:value="refAlias" />
+                            </n-form-item>
+                            <n-form-item>
+                                <n-button type="primary"
+                                    @click="handleAddPhoneBook(dataDetailPelanggan.id)">tambah</n-button>
+                            </n-form-item>
+                        </div>
+                        <n-data-table :columns="columnPhonebook" :data="dataPhonebook" :pagination="{ pageSize: 5 }" />
+                    </n-tab-pane>
+                </n-tabs>
+            </n-spin>
+        </n-card>
+    </n-modal>
 </template>
 <script setup>
-import {ref, onMounted, h, computed} from "vue";
-import {useApi} from "../../../../helpers/axios";
+import { ref, onMounted, h, computed } from "vue";
+import { useApi } from "../../../../helpers/axios";
 import router from "../../../../router";
 import {
-  useDialog,
-  useMessage,
-  NDropdown,
-  NIcon,
+    useDialog,
+    useMessage,
+    NDropdown,
+    NIcon,
 
-  NButton,
-  useLoadingBar,
+    NButton,
+    useLoadingBar,
 } from "naive-ui";
 import {
-  AddCircleOutlineRound as AddIcon,
-  FileDownloadOutlined as DownloadIcon,
+    AddCircleOutlineRound as AddIcon,
+    FileDownloadOutlined as DownloadIcon,
 } from "@vicons/material";
 import {
-  ListAltOutlined as DetailIcon,
+    ListAltOutlined as DetailIcon,
 } from "@vicons/material";
 
 const message = useMessage();
@@ -251,106 +253,174 @@ const dataTable = ref([]);
 const searchBox = ref();
 const formDisable = ref(false);
 const telpKonsumen = ref([]);
-const columns = [
-  {
-    title: "No Pelanggan",
-    key: "CUST_CODE",
-    sorter: "default",
-  },
-  {
-    title: "Nama",
-    key: "NAME",
-    sorter: "default",
-  },
-  {
-    title: "Tanggal Lahir",
-    key: "BIRTHDATE",
-    sorter: "default",
-  },
-  {
-    title: "Nama Ibu Kandung",
-    sorter: "default",
-    key: "MOTHER_NAME",
-  },
-  {
-    title: "",
-    align: "right",
-    key: "more",
-    render(row, index) {
-      return h(
-          NDropdown,
-          {
-            options: options,
-            size: "small",
-            onSelect: (e) => {
-              if (e === "hapus") {
-                handleConfirm(row, index);
-              }
-              if (e === "detail") {
-                handleDetail(row);
-              }
-              if (e === "edit") {
-                handleUpdate(row);
-              }
-            },
-          },
-          {
-            default: () => h(
-                NButton,
-                {
-                  size: "small",
-                },
-                {default: () => "Action"}
-            ),
-          }
-      );
-    },
-  },
-];
-const model_alamat_identitas = {
-  alamat: null,
-  rt: null,
-  rw: null,
-  provinsi: null,
-  kota: null,
-  kecamatan: null,
-  desa: null,
-  kodepos: null,
+
+const handleBeforeLeave = async (t) => {
+    switch (t) {
+        case "phonebook":
+            await getPhonebook();
+            return true;
+        default:
+            return true;
+    }
 }
-const alamat_identitas = ref([{
-  alamat: null,
-  rt: null,
-  rw: null,
-  provinsi: null,
-  kota: null,
-  kecamatan: null,
-  desa: null,
-  kodepos: null,
-}]);
+const dataPhonebook = ref();
+const loadPhonebook = ref(false);
+const getPhonebook = async (e) => {
+    loadPhonebook.value = true;
+    const response = await useApi({
+        method: "GET",
+        api: `phone_book/${dataDetailPelanggan.value.id}`,
+        token: localStorage.getItem("token"),
+    });
+    if (!response.ok) {
+        loadPhonebook.value = false;
+        console.log('error')
+    } else {
+        loadPhonebook.value = false;
+        dataPhonebook.value = response.data.phone;
+    }
+}
+
+const refAlias = ref();
+const refNoHp = ref();
+const handleAddPhoneBook = async (e) => {
+    const body = {
+        customer_id: e,
+        alias: refAlias.value,
+        no_hp: refNoHp.value,
+    }
+    loadPhonebook.value = true;
+    const response = await useApi({
+        method: "POST",
+        api: `phone_book`,
+        data: body,
+        token: localStorage.getItem("token"),
+    });
+    if (!response.ok) {
+        loadPhonebook.value = false;
+        console.log('error')
+    } else {
+        loadPhonebook.value = false;
+    }
+}
+
+const handleUpdateData = async (e) => {
+    console.log(e)
+    const body={
+        id:e,
+        nama:dataPelanggan.value.nama,
+        nama_panggilan:dataPelanggan.value.nama_panggilan,
+    }
+    loadPhonebook.value = true;
+    const response = await useApi({
+        method: "PUT",
+        api: `customer/${body.id}}`,
+        data: body,
+        token: localStorage.getItem("token"),
+    });
+    if (!response.ok) {
+        console.log('error')
+    } else {
+        message.success('berhasil ubah data');
+    }
+}
+const columnPhonebook = [
+    {
+        title: "PHONE NUMBER",
+        key: "PHONE_NUMBER",
+        sorter: "default",
+    },
+    {
+        title: "ALIAS",
+        key: "ALIAS",
+        sorter: "default",
+    },
+    {
+        title: "CREATED AT",
+        key: "CREATED_AT",
+        sorter: "default",
+    },
+];
+const columns = [
+    {
+        title: "No Pelanggan",
+        key: "CUST_CODE",
+        sorter: "default",
+    },
+    {
+        title: "Nama",
+        key: "NAME",
+        sorter: "default",
+    },
+    {
+        title: "Tanggal Lahir",
+        key: "BIRTHDATE",
+        sorter: "default",
+    },
+    {
+        title: "Nama Ibu Kandung",
+        sorter: "default",
+        key: "MOTHER_NAME",
+    },
+    {
+        title: "",
+        align: "right",
+        key: "more",
+        render(row, index) {
+            return h(
+                NDropdown,
+                {
+                    options: options,
+                    size: "small",
+                    onSelect: (e) => {
+                        if (e === "hapus") {
+                            handleConfirm(row, index);
+                        }
+                        if (e === "detail") {
+                            handleDetail(row);
+                        }
+                        if (e === "edit") {
+                            handleUpdate(row);
+                        }
+                    },
+                },
+                {
+                    default: () => h(
+                        NButton,
+                        {
+                            size: "small",
+                        },
+                        { default: () => "Action" }
+                    ),
+                }
+            );
+        },
+    },
+];
 const handleConfirm = (row, index) => {
-  dialog.warning({
-    title: "Confirm",
-    content: "Apakah anda yakin ingin menghapus data ?",
-    positiveText: "Ya",
-    negativeText: "Batal",
-    onPositiveClick: async () => {
-      let userToken = localStorage.getItem("token");
-      const response = await useApi({
-        method: "DELETE",
-        api: `cabang/${row.id}`,
-        token: userToken,
-      });
-      if (!response.ok) {
-        message.error("api transaction error");
-      } else {
-        dataTable.value.splice(index, 1);
-        message.success("Data berhasil dihapus");
-      }
-    },
-    onNegativeClick: () => {
-      message.error("Batal hapus data !");
-    },
-  });
+    dialog.warning({
+        title: "Confirm",
+        content: "Apakah anda yakin ingin menghapus data ?",
+        positiveText: "Ya",
+        negativeText: "Batal",
+        onPositiveClick: async () => {
+            let userToken = localStorage.getItem("token");
+            const response = await useApi({
+                method: "DELETE",
+                api: `cabang/${row.id}`,
+                token: userToken,
+            });
+            if (!response.ok) {
+                message.error("api transaction error");
+            } else {
+                dataTable.value.splice(index, 1);
+                message.success("Data berhasil dihapus");
+            }
+        },
+        onNegativeClick: () => {
+            message.error("Batal hapus data !");
+        },
+    });
 };
 const modalDetailCustomer = ref(false);
 const dataDetailPelanggan = ref();
@@ -360,32 +430,32 @@ const alamatIdentitas = ref([]);
 const alamatTagih = ref([]);
 const spinPelanggan = ref(false);
 const handleDetail = async (e) => {
-  modalDetailCustomer.value = true;
-  spinPelanggan.value = true;
-  let userToken = localStorage.getItem("token");
-  const response = await useApi({
-    method: "GET",
-    api: `customerReport/${e.ID}`,
-    token: userToken,
-  });
-  if (!response.ok) {
-    message.error("ERROR API");
-  } else {
-    Object.assign(dataPelanggan.value, response.data.pelanggan);
-    Object.assign(dataPekerjaan.value, response.data.pekerjaan);
-    Object.assign(alamatIdentitas.value, response.data.alamat_identitas);
-    Object.assign(alamatTagih.value, response.data.alamat_tagih);
-    dataDetailPelanggan.value = response.data;
-    spinPelanggan.value = false;
-    telpKonsumen.value.push(dataPekerjaan.value.telepon_selular);
+    modalDetailCustomer.value = true;
+    spinPelanggan.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `customerReport/${e.ID}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        Object.assign(dataPelanggan.value, response.data.pelanggan);
+        Object.assign(dataPekerjaan.value, response.data.pekerjaan);
+        Object.assign(alamatIdentitas.value, response.data.alamat_identitas);
+        Object.assign(alamatTagih.value, response.data.alamat_tagih);
+        dataDetailPelanggan.value = response.data;
+        spinPelanggan.value = false;
+        telpKonsumen.value.push(dataPekerjaan.value.telepon_selular);
 
-  }
+    }
 }
 const handleUpdate = (evt) => {
-  router.push(`/master/branch-action/${evt.id}`);
+    router.push(`/master/branch-action/${evt.id}`);
 };
 const handleAdd = () => {
-  router.push("/master/branch-action");
+    router.push("/master/branch-action");
 };
 const loadingBar = useLoadingBar();
 const countItem = ref();
@@ -393,55 +463,55 @@ const pageLocation = ref(1);
 
 const loadingPage = ref(false);
 const getData = async (e) => {
-  loadingPage.value = true;
-  let userToken = localStorage.getItem("token");
-  const response = await useApi({
-    method: "GET",
-    api: e ? `customer?page=${e}&search=${searchBox.value ? searchBox.value : ''}` : `customer`,
-    token: userToken,
-  });
-  if (!response.ok) {
-    message.error("ERROR API TRANSACTION");
-  } else {
-    loadingBar.finish();
-    loadingPage.value = false;
-    dataTable.value = response.data.data;
-    countItem.value = response.data.total;
-    pageLocation.value = response.data.current_page;
-  }
+    loadingPage.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: e ? `customer?page=${e}&search=${searchBox.value ? searchBox.value : ''}` : `customer`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API TRANSACTION");
+    } else {
+        loadingBar.finish();
+        loadingPage.value = false;
+        dataTable.value = response.data.data;
+        countItem.value = response.data.total;
+        pageLocation.value = response.data.current_page;
+    }
 };
 
 const renderIcon = (icon) => {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon),
-    });
-  };
+    return () => {
+        return h(NIcon, null, {
+            default: () => h(icon),
+        });
+    };
 };
 const options = [
-  {
-    label: "Detail",
-    key: "detail",
-    icon: renderIcon(DetailIcon),
-  },
+    {
+        label: "Detail",
+        key: "detail",
+        icon: renderIcon(DetailIcon),
+    },
 ];
 const paginationRef = reactive({
-  pageSize: 10,
-  itemCount: computed(() => countItem.value),
-  showSizePicker: true,
-  onChange: (page) => {
-    paginationRef.page = page;
-  },
-  onUpdatePageSize: (pageSize) => {
-    paginationRef.pageSize = pageSize;
-    paginationRef.page = 1;
-  }
+    pageSize: 10,
+    itemCount: computed(() => countItem.value),
+    showSizePicker: true,
+    onChange: (page) => {
+        paginationRef.page = page;
+    },
+    onUpdatePageSize: (pageSize) => {
+        paginationRef.pageSize = pageSize;
+        paginationRef.page = 1;
+    }
 });
 const handleSearch = (page) => {
-  getData(page);
+    getData(page);
 }
 const handlePageChange = (page) => {
-  getData(page);
+    getData(page);
 }
 onMounted(() => getData());
 // const showData = computed(() => {
