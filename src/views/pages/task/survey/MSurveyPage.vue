@@ -1,6 +1,6 @@
 <template>
   <div class="relative">
-    <div class="sticky top-0 z-50  items-center gap-2 justify-between  bg-white ">
+    <div class="sticky top-0 z-50 px-4 items-center gap-2 justify-between  bg-white ">
       <div class="flex items-center justify-between p-2 border-b">
         <div class="text-lg font-semibold">Data Survey</div>
         <div>
@@ -11,16 +11,28 @@
           </n-button>
         </div>
       </div>
+      <div class="p-2  bg-white" v-if="showData.length <0">
+        <n-input placeholder="cari" size="large" v-model:value="searchBox" clearable/>
+      </div>
     </div>
-    <div class="p-2  bg-white">
-      <n-input placeholder="cari" size="large" v-model:value="searchBox" clearable/>
-    </div>
+
     <div class="p-2 flex flex-col gap-2">
 
       <n-card v-if="loadData">
         <n-skeleton text :repeat="2"/>
         <n-skeleton text style="width: 60%"/>
       </n-card>
+      <div v-if="!loadData && showData.length == 0">
+        <div>
+          <n-alert>
+            <template #icon>
+              <n-icon>
+                <nodata-icon/>
+              </n-icon>
+            </template>
+            Data tidak ada</n-alert>
+        </div>
+      </div>
       <div class="overflow-clip flex flex-col gap-4 bg-white rounded-lg border" v-else v-for="data in showData"
            :key="data.id" :title="data.nama_debitur">
         <div class="flex justify-between px-4 pt-4">
@@ -46,17 +58,7 @@
           </n-button>
         </div>
       </div>
-      <div v-if="showData.length == 0">
-        <div>
-          <n-alert>
-            <template #icon>
-              <n-icon>
-                <nodata-icon/>
-              </n-icon>
-            </template>
-            Data tidak ada</n-alert>
-        </div>
-      </div>
+
     </div>
   </div>
   <!--  <div class="fixed flex justify-around  bottom-0 p-2 items-center bg-sfc w-full">-->
@@ -255,13 +257,14 @@ const handleConfirm = (row, index) => {
   });
 };
 const handleDetail = (evt) => {
-  if (evt.status_code === "WADM") {
-    router.push({name: "detail survey", params: {idsurvey: evt.id}});
-  } else if (evt.status_code === "CROR") {
-    router.push({name: "Detail Kredit", params: {idapplication: evt.id}});
-  } else {
-    router.push({name: "detail survey", params: {idsurvey: evt.id}});
-  }
+  console.log(evt);
+  // if (evt.status_code === "WADM") {
+  //   router.push({name: "detail survey", params: {idsurvey: evt.id}});
+  // } else if (evt.status_code === "CROR") {
+  //   router.push({name: "Detail Kredit", params: {idapplication: evt.id}});
+  // } else {
+  //   router.push({name: "detail survey", params: {idsurvey: evt.id}});
+  // }
 };
 const handleEdit = (evt) => {
   router.push({name: "edit survey", params: {idsurvey: evt.id}});

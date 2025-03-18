@@ -1,31 +1,35 @@
 <template>
   <div class="relative">
-    <div class="sticky top-0 z-50  items-center gap-2 justify-between  bg-white ">
+    <div class="sticky top-0 z-50 px-4  items-center gap-2 justify-between  bg-white ">
       <div class="flex items-center justify-between p-2 border-b">
         <div class="text-lg font-semibold">Data Order</div>
-        <div>
-<!--          <n-button quaternary circle @click="router.push('new-survey')">-->
-<!--            <n-icon size="20">-->
-<!--              <add-icon/>-->
-<!--            </n-icon>-->
-<!--          </n-button>-->
-        </div>
       </div>
     </div>
-    <div class="p-2  bg-white">
+    <div class="p-2 px-4 bg-white">
       <n-input placeholder="cari" size="large" v-model:value="searchBox" clearable/>
     </div>
     <div class="p-2 flex flex-col gap-2">
-
       <n-card v-if="loadData">
         <n-skeleton text :repeat="2"/>
         <n-skeleton text style="width: 60%"/>
       </n-card>
+      <div v-if="!loadData && showData.length == 0">
+        <div>
+          <n-alert>
+            <template #icon>
+              <n-icon>
+                <nodata-icon/>
+              </n-icon>
+            </template>
+            Data tidak ada
+          </n-alert>
+        </div>
+      </div>
       <div class="overflow-clip flex flex-col gap-4 bg-white rounded-lg border" v-else v-for="data in showData"
            :key="data.id" :title="data.nama_debitur">
         <div class="flex justify-between px-4 pt-4">
           <div class="font-bold flex flex-col">
-            <span class="text-pr">#{{ data.order_number }}</span>
+            <span :style="`color:${app_base_color}`">#{{ data.order_number }}</span>
             <span>{{ data.nama_debitur }}</span>
             <small>{{ data.visit_date }}</small>
           </div>
@@ -40,28 +44,67 @@
           </div>
         </div>
         <div class="bg-sf flex gap-2 p-2">
-          <n-button type="primary" @click="handleDetail(data)">detail</n-button>
-          <n-button v-if="data.status_code === 'DRSVY'" type="info" @click="handleEdit(data)">Ubah</n-button>
-          <n-button >Upload</n-button>
-          <n-button type="error" @click="handleConfirm(data)"
+<!--          if (status === "CROR") {-->
+<!--          return "Update Order";-->
+<!--          }-->
+<!--          if (status === "REORADM") {-->
+<!--          return "Update Order";-->
+<!--          }-->
+          <n-button size="small" type="primary" @click="handleDetail(data)">detail</n-button>
+          <n-button size="small" type="info" v-if="data.status_code === 'CROR'" @click="handleEdit(data)">Ubah</n-button>
+          <n-button size="small" @click="uploadBerkas(data)">Upload</n-button>
+          <n-button size="small" type="error" @click="handleConfirm(data)"
                     v-if="data.status_code === 'DRSVY'">Hapus
           </n-button>
         </div>
       </div>
-      <div v-if="showData.length == 0">
-        <div>
-          <n-alert>
-            <template #icon>
-              <n-icon>
-                <nodata-icon/>
-              </n-icon>
-            </template>
-            Data tidak ada</n-alert>
-        </div>
-      </div>
+
     </div>
   </div>
+  <n-modal class="w-11/12" title="Upload Berkas Pencairan" v-model:show="showModal" :mask-closable="false">
+    <n-card :bordered="false" aria-modal="true">
+      <n-grid :cols="1">
+        <n-gi>
+          <div class="flex">
+            <label class="w-24">No Order</label><span>
+                            <n-text strong> {{ selectedData.order_number }}</n-text></span>
+          </div>
+          <div class="flex">
+            <label class="w-24">Nama </label><span>
+                            <n-text strong> {{ selectedData.nama_debitur }}</n-text></span>
+          </div>
+          <div class="flex">
+            <label class="w-24">Plafond</label><span>
+                            <n-text strong>
+                                {{ selectedData.plafond.toLocaleString("US") }}</n-text></span>
+          </div>
+        </n-gi>
+        <n-gi>
+          <div class="flex">
+            <label class="w-24">Alamat</label><span>
+                            <n-text strong> {{ selectedData.alamat }}</n-text></span>
+          </div>
+          <div class="flex">
+            <label class="w-24">No Hp</label><span>
+                            <n-text strong> {{ selectedData.hp }}</n-text></span>
+          </div>
+        </n-gi>
+      </n-grid>
+      <n-divider/>
+      <div class="flex flex-col gap-2">
+        <file-upload  class="w-full" title="Surat Pernyataan" endpoint="image_upload_prospect" :type="`sp`"
+                     :idapp="selectedData.id" :def_value="findDocByType(selectedData.attachment, 'sp')"/>
+        <file-upload title="PK" endpoint="image_upload_prospect" :type="`pk`" :idapp="selectedData.id"
+                     :def_value="findDocByType(selectedData.attachment, 'pk')"/>
+        <file-upload title="Dokumentasi" endpoint="image_upload_prospect" :type="`dok`" :idapp="selectedData.id"
+                     :def_value="findDocByType(selectedData.attachment, 'dok')"/>
+      </div>
 
+      <div class="pt-4 flex justify-end">
+        <n-button @click="handleSelesai" secondary type="primary" round>Selesai</n-button>
+      </div>
+    </n-card>
+  </n-modal>
 </template>
 <script setup>
 import {ref, onMounted, h, computed, reactive} from "vue";
@@ -71,7 +114,6 @@ import router from "../../../../router/index.js";
 import {
   useDialog,
   useMessage,
-  NDropdown,
   NIcon,
   NTag,
   NButton,
@@ -85,107 +127,30 @@ import {
   ListAltOutlined as DetailIcon,
 } from "@vicons/material";
 import {useLoadingBar} from "naive-ui";
-import {useWindowSize} from "@vueuse/core";
+import _ from "lodash";
 
 const applogo = import.meta.env.VITE_APP_LOGO;
+const app_base_color = import.meta.env.VITE_APP_BASE_COLOR;
 const loadingBar = useLoadingBar();
 const message = useMessage();
 const dialog = useDialog();
 const loadData = ref(false);
 const dataTable = ref([]);
-const tableRef = ref();
-const downloadCsv = () =>
-    tableRef.value?.downloadCsv({fileName: "export-data-survey"});
+const showModal = ref(false);
 
-
-const {width} = useWindowSize();
-const columns = [
-  {
-    title: "Tanggal",
-    sorter: "default",
-    key: "visit_date",
-  },
-  {
-    title: "Nama",
-    sorter: "default",
-    key: "nama_debitur",
-    fixed: "left",
-    ellipsis: {
-      tooltip: true,
-    },
-  },
-  {
-    title: "Plafond",
-    sorter: "default",
-    align: 'right',
-    key: "plafond",
-    render(row) {
-      return h("div", format(row.plafond));
-    },
-  },
-  {
-    title: "Tipe",
-    sorter: "default",
-    align: 'right',
-    key: "jenis_angsuran",
-    render(row) {
-      return h("div", row.jenis_angsuran);
-    },
-  },
-  {
-    title: "Status",
-    sorter: "default",
-    key: "status",
-    render(row) {
-      return h(
-          NTag,
-          {
-            round: true,
-            type: statusTag(row.status_code),
-            size: "small",
-          },
-          {default: () => statusLabel(row.status)}
-      );
-    },
-  },
-  {
-    title: "",
-    align: "right",
-    key: "more",
-    fixed: "left",
-    render(row, index) {
-      return h(
-          NDropdown,
-          {
-            options: options(row),
-            size: "small",
-            onSelect: (e) => {
-              if (e === "hapus") {
-                handleConfirm(row, index);
-              }
-              if (e === "detail") {
-                handleDetail(row);
-              }
-              if (e === "edit") {
-                handleEdit(row);
-              }
-            },
-          },
-          {
-            default: () => h(
-                NButton,
-                {
-                  round: true,
-                  type: statusTag(row.status_code),
-                  size: "small",
-                },
-                {default: () => "Action"}
-            ),
-          }
-      );
-    },
-  },
-];
+const selectedData = ref();
+const uploadBerkas = (e) => {
+  showModal.value = true;
+  selectedData.value = e;
+}
+const handleSelesai = () => {
+  getData();
+  showModal.value = false;
+};
+const findDocByType = (c, e) => {
+  const docPath = ref(_.find(c, {TYPE: e}));
+  if (docPath.value) return docPath.value.PATH;
+};
 const searchBox = ref();
 const statusTag = (e) => {
   if (e === "DRSVY") {
@@ -209,14 +174,6 @@ const statusTag = (e) => {
   if (e === "REORKPS") {
     return "error";
   }
-};
-const statusLabel = (e) => {
-  let upLabel = e;
-  return upLabel.toUpperCase();
-};
-const format = (e) => {
-  const toNum = parseInt(e);
-  return toNum.toLocaleString("en-US");
 };
 
 const dynamicSearch = reactive({
@@ -260,12 +217,11 @@ const handleDetail = (evt) => {
     router.push({name: "detail survey", params: {idsurvey: evt.id}});
   }
 };
+
 const handleEdit = (evt) => {
   router.push({name: "edit survey", params: {idsurvey: evt.id}});
 };
-const handleAdd = () => {
-  router.push("/task/new-survey");
-};
+
 const getData = async () => {
   loadData.value = true;
   let userToken = localStorage.getItem("token");
@@ -286,40 +242,6 @@ const getData = async () => {
 const showData = computed(() => {
   return useSearch(dataTable.value, searchBox.value?.toLowerCase());
 });
-const renderIcon = (icon) => {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon),
-    });
-  };
-};
-const options = (e) => {
-  let status = e.status_code;
-  if (status === "DRSVY") {
-    return [
-      {
-        label: "Edit",
-        key: "edit",
-        icon: renderIcon(EditIcon),
-      },
-      {
-        label: "Hapus",
-        key: "hapus",
-        icon: renderIcon(DeleteIcon),
-      },
-    ];
-  } else {
-    return [
-      {
-        label: "Detail",
-        key: "detail",
-        icon: renderIcon(DetailIcon),
-      },
-    ];
-  }
-};
-const pagination = {
-  pageSize: 10,
-};
+
 onMounted(() => getData());
 </script>
