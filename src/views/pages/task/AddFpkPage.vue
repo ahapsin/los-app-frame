@@ -652,20 +652,20 @@
                             </n-form-item>
                             <n-form-item label="Biaya Admin" path="biaya_admin" class="w-full">
                                 <div class="flex gap-2 w-full">
-                                    <n-input-number v-model:value="ekstra.biaya_admin" type="text" class="w-full"
+                                    <!-- <n-input-number v-model:value="ekstra.biaya_admin" type="text" class="w-full"
                                         :parse="parse" :format="format" :show-button="false">
                                         <template #suffix> %</template>
-                                    </n-input-number>
+                                    </n-input-number> -->
                                     <n-input-number v-model:value="ekstra.total_admin" type="text" class="w-full"
-                                        readonly :parse="parse" :format="format" :show-button="false">
+                                        :parse="parse" :format="format" :show-button="false">
                                     </n-input-number>
                                 </div>
                             </n-form-item>
-                            <n-form-item label="Nilai yang diterima" path="nilai_yang_diterima">
+                            <!-- <n-form-item label="Nilai yang diterima" path="nilai_yang_diterima">
                                 <n-input-number :parse="parse" :format="format" readonly
                                     :placeholder="calcCredit.pokok_pembayaran" :show-button="false" class="flex !w-full"
                                     @update:value="handlePlafond" :loading="loading"
-                                    v-model:value="ekstra.nilai_yang_diterima" />
+                                    v-model:value="ekstra.nilai_yang_diterima" /> -->
                                 <!-- <div class="absolute top-9 flex bg-yellow-50 gap-2 text-xs px-2" v-show="dataTaksasi.nilai != '' &&
   calcCredit.nilai_yang_diterima > dataTaksasi.nilai
   ">
