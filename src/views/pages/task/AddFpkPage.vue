@@ -672,7 +672,7 @@
                     <n-icon color="#FF9100"> <warning-icon /> </n-icon>Plafon >
                     Harga Pasar
                 </div> -->
-                            </n-form-item>
+                            <!-- </n-form-item> -->
                         </div>
                     </div>
                 </n-form>
