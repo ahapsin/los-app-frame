@@ -65,7 +65,6 @@
                 <n-tabs type="line" animated @before-leave="handleBeforeLeave">
                     <n-tab-pane name="customer" tab="Info Customer">
                         <n-scrollbar trigger="none">
-
                             <n-form ref="formPelanggan" :model="dataPelanggan" :rules="rulesPelanggan"
                                 :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
                                 :disabled="formDisable" label-width="auto">
@@ -216,7 +215,7 @@
                             </n-form-item>
                             <n-form-item>
                                 <n-button type="primary"
-                                    @click="handleAddPhoneBook(dataDetailPelanggan.id)">tambah</n-button>
+                                    @click="handleAddPhoneBook(dataDetailPelanggan.id)" :disabled="refNoHp ==''">tambah</n-button>
                             </n-form-item>
                         </div>
                         <n-data-table :columns="columnPhonebook" :data="dataPhonebook" :pagination="{ pageSize: 5 }" />
@@ -301,6 +300,10 @@ const handleAddPhoneBook = async (e) => {
         console.log('error')
     } else {
         loadPhonebook.value = false;
+        refAlias.value="",
+        refNoHp.value="",
+        message.success('berhasil tambah buku telepon');
+        getPhonebook();
     }
 }
 
@@ -326,7 +329,7 @@ const handleUpdateData = async (e) => {
 }
 const columnPhonebook = [
     {
-        title: "PHONE NUMBER",
+        title: "NO TELEPON",
         key: "PHONE_NUMBER",
         sorter: "default",
     },
@@ -336,8 +339,13 @@ const columnPhonebook = [
         sorter: "default",
     },
     {
-        title: "CREATED AT",
+        title: "TANGGAL BUAT",
         key: "CREATED_AT",
+        sorter: "default",
+    },
+    {
+        title: "DIBUAT OLEH",
+        key: "CREATED_BY",
         sorter: "default",
     },
 ];
