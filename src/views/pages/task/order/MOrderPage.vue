@@ -2,13 +2,13 @@
   <div class="relative">
     <div class="sticky top-0 z-50  items-center gap-2 justify-between  bg-white ">
       <div class="flex items-center justify-between p-2 border-b">
-        <div class="text-lg font-semibold">Data Survey</div>
+        <div class="text-lg font-semibold">Data Order</div>
         <div>
-          <n-button quaternary circle @click="router.push('new-survey')">
-            <n-icon size="20">
-              <add-icon/>
-            </n-icon>
-          </n-button>
+<!--          <n-button quaternary circle @click="router.push('new-survey')">-->
+<!--            <n-icon size="20">-->
+<!--              <add-icon/>-->
+<!--            </n-icon>-->
+<!--          </n-button>-->
         </div>
       </div>
     </div>
@@ -25,6 +25,7 @@
            :key="data.id" :title="data.nama_debitur">
         <div class="flex justify-between px-4 pt-4">
           <div class="font-bold flex flex-col">
+            <span class="text-pr">#{{ data.order_number }}</span>
             <span>{{ data.nama_debitur }}</span>
             <small>{{ data.visit_date }}</small>
           </div>
@@ -41,6 +42,7 @@
         <div class="bg-sf flex gap-2 p-2">
           <n-button type="primary" @click="handleDetail(data)">detail</n-button>
           <n-button v-if="data.status_code === 'DRSVY'" type="info" @click="handleEdit(data)">Ubah</n-button>
+          <n-button >Upload</n-button>
           <n-button type="error" @click="handleConfirm(data)"
                     v-if="data.status_code === 'DRSVY'">Hapus
           </n-button>
@@ -59,16 +61,10 @@
       </div>
     </div>
   </div>
-  <!--  <div class="fixed flex justify-around  bottom-0 p-2 items-center bg-sfc w-full">-->
-  <!--    <n-icon size="23" @click="router.push('dashboard')">-->
-  <!--      <home-icon />-->
-  <!--    </n-icon>-->
-  <!--    <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />-->
-  <!--    <n-avatar circle>a</n-avatar>-->
-  <!--  </div>-->
+
 </template>
 <script setup>
-import {ref, onMounted, h, computed} from "vue";
+import {ref, onMounted, h, computed, reactive} from "vue";
 import {useApi} from "../../../../helpers/axios.js";
 import {useSearch} from "../../../../helpers/searchObject.js";
 import router from "../../../../router/index.js";
@@ -82,12 +78,6 @@ import {
 } from "naive-ui";
 import {
   DirectionsRunOutlined as NodataIcon,
-  ArrowBackIosNewRound as BackIcon,
-  MoreVertFilled as MoreIcon,
-  AddFilled as AddIcon,
-  HomeFilled as HomeIcon,
-  SearchOutlined as SearchIcon,
-  FileDownloadOutlined as DownloadIcon,
 } from "@vicons/material";
 import {
   EditOutlined as EditIcon,
@@ -228,6 +218,13 @@ const format = (e) => {
   const toNum = parseInt(e);
   return toNum.toLocaleString("en-US");
 };
+
+const dynamicSearch = reactive({
+  no_order: null,
+  atas_nama: null,
+  tanggal: null
+});
+
 const handleConfirm = (row, index) => {
   dialog.warning({
     title: "Confirm",
@@ -274,7 +271,7 @@ const getData = async () => {
   let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "GET",
-    api: "kunjungan",
+    api: `kunjungan_admin?no_order=${dynamicSearch.no_order == null ? '' : dynamicSearch.no_order}&nama=${dynamicSearch.atas_nama == null ? '' : dynamicSearch.atas_nama}&tgl_order=${dynamicSearch.tanggal == null ? '' : dynamicSearch.tanggal}`,
     token: userToken,
   });
   if (!response.ok) {
