@@ -652,11 +652,7 @@
                             </n-form-item>
                             <n-form-item label="Biaya Admin" path="biaya_admin" class="w-full">
                                 <div class="flex gap-2 w-full">
-                                    <!-- <n-input-number v-model:value="ekstra.biaya_admin" type="text" class="w-full"
-                                        :parse="parse" :format="format" :show-button="false">
-                                        <template #suffix> %</template>
-                                    </n-input-number> -->
-                                    <n-input-number v-model:value="ekstra.total_admin" type="text" class="w-full"
+                                    <n-input-number v-model:value="ekstra.biaya_admin" type="text" class="w-full"
                                         :parse="parse" :format="format" :show-button="false">
                                     </n-input-number>
                                 </div>
@@ -1259,7 +1255,6 @@ const ekstra = reactive({
     bunga: 0,
     bunga_tahunan: computed(() => (parseInt(ekstra.bunga) * 12).toFixed(2)),
     biaya_admin: 0,
-    total_admin: computed(() => ekstra.pokok_pembayaran * ekstra.biaya_admin / 100),
     nilai_yang_diterima: computed(() => ekstra.pokok_pembayaran - ekstra.total_admin),
     pokok_pembayaran: 0,
     flat_rate: 0,
