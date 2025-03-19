@@ -290,8 +290,8 @@ class="flex gap-2 border-t p-4 justify-end"
                     jaminan kendaraan sesuai dengan pasal 3 di atas kepada pihak
                     pertama. Jika Perjanjian Pemberi Pinjaman telah selesai, BPKB
                     wajib diambil maksimum 90 hari kalender terhitung dari pelunasan
-                    angsuran dan denda terakhir. KSP Djaya tidak bertanggung jawab
-                    atas kerusakan atau kehilangan BPKB.
+                    angsuran dan denda terakhir. {{ apptitle }} tidak bertanggung jawab
+                    atas kerusakan atau kehilangan BPKB / SERTIFIKAT.
                   </td>
                 </tr>
                 <tr>
@@ -343,7 +343,7 @@ class="flex gap-2 border-t p-4 justify-end"
                       <td>Jabatan</td>
                       <td width="25">:</td>
                       <td>
-                        <b class="uppercase">{{ pihak1.jabatan }}</b>
+                        <b class="uppercase">MANAGER OPERASIONAL</b>
                       </td>
                     </tr>
                     <tr>
@@ -509,7 +509,7 @@ class="flex gap-2 border-t p-4 justify-end"
               <b>Pemberi Pinjaman.</b>
             </div>
             <div class="mb-4 text-justify text-sm">
-              Yang bersama-sama dengan <b>KSP DJAYA</b>, telah, sepakat dan
+              Yang bersama-sama dengan <b>{{ apptitle }}</b>, telah, sepakat dan
               mengikatkan diri dan karenanya menjadi para pihak dalam Perjanjian
               PINJAMAN Konsumen
               <b> No.{{ dynamicForm.order_number }}</b> berikut kelengkapan dan
@@ -521,7 +521,7 @@ class="flex gap-2 border-t p-4 justify-end"
             </div>
             <div class="mb-4 text-justify text-sm">
               Penerima Pinjaman dan pemberi jaminan dengan ini mengikuti program
-              yang ditawarkan (<b>KSP DJAYA</b>) selanjutnya disebut Penerima
+              yang ditawarkan (<b>{{ apptitle }}</b>) selanjutnya disebut Penerima
               Pinjaman / Penerima Jaminan ) yaitu "Kredit Tanpa Perlindungan
               Asuransi " dengan menyetujui setiap dan seluruh syarat dan
               ketentuannya, berikut di bawah ini yang merupakan syarat dan
@@ -541,7 +541,7 @@ class="flex gap-2 border-t p-4 justify-end"
             <div class="mb-4 text-justify text-sm ps-8">
               2. Dengan mengikuti program
               <b>"Kredit Tanpa Perlindungan Asuransi "</b> ini, sesuai penawaran
-              yang diberikan (<b>KSP DJAYA</b>) maka segala resiko rusak, hilang
+              yang diberikan (<b>{{ apptitle }}</b>) maka segala resiko rusak, hilang
               atau musnahnya barang karena sebab apapun juga sepenuhnya menjadi
               tanggung jawab dan beban penerima Pinjaman / pemberi Jaminan,
               sehingga dengan rusak, hilang atau musnahnya barang tidak
@@ -743,7 +743,7 @@ class="flex gap-2 border-t p-4 justify-end"
               <b> {{ dayFull.full_date_only }} </b><br/>
               beserta seluruh lampiran, penambahan dan / atau pengurangannya (
               selanjutnya disebut Perjanjian ) oleh dan antara
-              <b>KSP Djaya</b> berkedudukan di Haurgeulis
+              <b>{{ apptitle }}</b> berkedudukan di Haurgeulis
               <br/>
               ( selanjutnya secara sendiri-sendiri atau bersama disebut<b>
               Pemberi Pinjaman</b>
@@ -927,6 +927,8 @@ const dataPasangan = ref([]);
 const dataPenjamin = ref([]);
 const message = useMessage();
 const noPerjanjian = ref();
+
+const apptitle = import.meta.env.VITE_APP_TITLE;
 
 const getPrePK = async () => {
   prosesPK.value = false;
