@@ -1,60 +1,74 @@
 <template>
-    <div class="relative">
-        <div class="sticky top-0 z-50  items-center gap-2 justify-between  bg-white ">
-            <div class="flex items-center justify-between p-2 border-b">
-                <n-button quaternary circle @click="router.back()">
-                    <n-icon>
-                        <back-icon />
-                    </n-icon>
-                </n-button>
-                <div class="text-lg font-semibold">Data Survey</div>
-                <div>
-                    <n-button quaternary circle @click="router.push('new-survey')">
-                        <n-icon size="20">
-                            <add-icon />
-                        </n-icon>
-                    </n-button>
-                </div>
-            </div>
+  <div class="relative">
+    <div class="sticky top-0 z-50 px-4 items-center gap-2 justify-between  bg-white ">
+      <div class="flex items-center justify-between p-2 border-b">
+        <div class="text-lg font-semibold">Data Survey</div>
+        <div>
+          <n-button quaternary circle @click="router.push('new-survey')">
+            <n-icon size="20">
+              <add-icon/>
+            </n-icon>
+          </n-button>
         </div>
-        <div class="p-2  bg-white">
-            <n-input placeholder="cari" size="large" v-model:value="searchBox" clearable />
-        </div>
-        <div class="p-2 flex flex-col gap-2">
+      </div>
+      <div class="p-2  bg-white" v-if="showData.length <0">
+        <n-input placeholder="cari" size="large" v-model:value="searchBox" clearable/>
+      </div>
+    </div>
 
-            <n-card v-if="loadData">
-                <n-skeleton text :repeat="2" /> <n-skeleton text style="width: 60%" />
-            </n-card>
-            <div class="overflow-clip flex flex-col gap-4 bg-white rounded-lg border" v-else v-for="data in showData"
-                :key="data.id" :title="data.nama_debitur">
-                <div class="flex justify-between px-4 pt-4">
-                    <div class="font-bold flex flex-col">
-                        <span>{{data.nama_debitur}}</span>
-                        <small>{{data.visit_date}}</small>
-                    </div>
-                    <div class="font-bold" :style="`color:${appAccentColor}`">{{data.plafond.toLocaleString()}}</div>
-                </div>
-                <div class="flex justify-between px-4">
-                    <div class="font-sm">{{data.alamat}}</div>
-                    <div class="font-bold"><n-tag :type="statusTag(data.status_code)" size="small"
-                            round>{{data.status}}</n-tag></div>
-                </div>
-                <div class="bg-sf flex gap-2 p-2">
-                    <n-button type="primary" @click="handleDetail(data)">detail</n-button>
-                    <n-button v-if="data.status_code === 'DRSVY'" type="info" @click="handleEdit(data)">Ubah</n-button>
-                    <n-button type="error" @click="handleConfirm(data)"
-                        v-if="data.status_code === 'DRSVY'">Hapus</n-button>
-                </div>
-            </div>
+    <div class="p-2 flex flex-col gap-2">
+
+      <n-card v-if="loadData">
+        <n-skeleton text :repeat="2"/>
+        <n-skeleton text style="width: 60%"/>
+      </n-card>
+      <div v-if="!loadData && showData.length == 0">
+        <div>
+          <n-alert>
+            <template #icon>
+              <n-icon>
+                <nodata-icon/>
+              </n-icon>
+            </template>
+            Data tidak ada</n-alert>
         </div>
+      </div>
+      <div class="overflow-clip flex flex-col gap-4 bg-white rounded-lg border" v-else v-for="data in showData"
+           :key="data.id" :title="data.nama_debitur">
+        <div class="flex justify-between px-4 pt-4">
+          <div class="font-bold flex flex-col">
+            <span>{{ data.nama_debitur }}</span>
+            <small>{{ data.visit_date }}</small>
+          </div>
+          <div class="font-bold" :style="`color:${appAccentColor}`">{{ data.plafond.toLocaleString() }}</div>
+        </div>
+        <div class="flex justify-between px-4">
+          <div class="font-sm">{{ data.alamat }}</div>
+          <div class="font-bold">
+            <n-tag :type="statusTag(data.status_code)" size="small"
+                   round>{{ data.status }}
+            </n-tag>
+          </div>
+        </div>
+        <div class="bg-sf flex gap-2 p-2">
+          <n-button type="primary" @click="handleDetail(data)">detail</n-button>
+          <n-button v-if="data.status_code === 'DRSVY'" type="info" @click="handleEdit(data)">Ubah</n-button>
+          <n-button type="error" @click="handleConfirm(data)"
+                    v-if="data.status_code === 'DRSVY'">Hapus
+          </n-button>
+        </div>
+      </div>
+
     </div>
-    <div class="fixed flex justify-around  bottom-0 p-2 items-center bg-sfc w-full">
-        <n-icon size="23" @click="router.push('dashboard')">
-            <home-icon />
-        </n-icon>
-        <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />
-        <n-avatar circle>a</n-avatar>
-    </div>
+  </div>
+  <!--  <div class="fixed flex justify-around  bottom-0 p-2 items-center bg-sfc w-full">-->
+  <!--    <n-icon size="23" @click="router.push('dashboard')">-->
+  <!--      <home-icon />-->
+  <!--    </n-icon>-->
+  <!--    <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />-->
+  <!--    <n-avatar circle>a</n-avatar>-->
+  <!--  </div>-->
+
 </template>
 <script setup>
 import {ref, onMounted, h, computed} from "vue";
@@ -70,6 +84,7 @@ import {
   NButton,
 } from "naive-ui";
 import {
+  DirectionsRunOutlined as NodataIcon,
   ArrowBackIosNewRound as BackIcon,
   MoreVertFilled as MoreIcon,
   AddFilled as AddIcon,
@@ -243,13 +258,16 @@ const handleConfirm = (row, index) => {
   });
 };
 const handleDetail = (evt) => {
-  if (evt.status_code === "WADM") {
-    router.push({name: "detail survey", params: {idsurvey: evt.id}});
-  } else if (evt.status_code === "CROR") {
-    router.push({name: "Detail Kredit", params: {idapplication: evt.id}});
-  } else {
-    router.push({name: "detail survey", params: {idsurvey: evt.id}});
-  }
+
+  console.log(evt);
+  // if (evt.status_code === "WADM") {
+  //   router.push({name: "detail survey", params: {idsurvey: evt.id}});
+  // } else if (evt.status_code === "CROR") {
+  //   router.push({name: "Detail Kredit", params: {idapplication: evt.id}});
+  // } else {
+  //   router.push({name: "detail survey", params: {idsurvey: evt.id}});
+  // }
+
 };
 const handleEdit = (evt) => {
   router.push({name: "edit survey", params: {idsurvey: evt.id}});
@@ -275,7 +293,9 @@ const getData = async () => {
 };
 
 const showData = computed(() => {
-  return useSearch(dataTable.value, searchBox.value);
+
+  return useSearch(dataTable.value, searchBox.value?.toLowerCase());
+
 });
 const renderIcon = (icon) => {
   return () => {
@@ -314,3 +334,4 @@ const pagination = {
 };
 onMounted(() => getData());
 </script>
+

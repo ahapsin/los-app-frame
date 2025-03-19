@@ -1,7 +1,7 @@
 <template>
     <n-card>
         <n-tabs size="medium" @update:value="handleUpdateValue" class="card-tabs" default-value="jaminan" animated
-            type="card" pane-wrapper-style="margin: 0 -4px" @before-leave="handleSwitchTab"
+            type="line" pane-wrapper-style="margin: 0 -4px" @before-leave="handleSwitchTab"
             pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
             <n-tab-pane name="jaminan" tab="Jaminan">
                 <template #tab>
@@ -115,7 +115,17 @@
                             </tr>
                         </tbody>
                     </n-table>
-
+                    <n-text v-show="false">{{ refStatus = bodyModal.STATUS }}</n-text>
+                    <n-collapse class="p-2 bg-yellow-50">
+                        <n-collapse-item title="Update Status Jaminan" name="1">
+                            <div class="flex gap-2">
+                                <n-select :options="optStatus" v-model:value="refStatus" />
+                                <n-input-number :show-button="false" v-if="refStatus === 'JUAL'" v-model:value="refNilaiJual" class="w-full"
+                                    :parse="parse" :format="format" placeholder="nilai jual"></n-input-number>
+                                <n-button type="primary" @click="handleUpdateStatus(bodyModal.ID)">Simpan</n-button>
+                            </div>
+                        </n-collapse-item>
+                    </n-collapse>
                 </n-tab-pane>
                 <n-tab-pane name="rilis" tab="Rilis Jaminan">
                     <n-result v-if="bodyModal.status_kontrak == 'active' && bodyModal.status_jaminan != 'RILIS'"
@@ -164,6 +174,7 @@
                         </div>
                     </div>
                 </n-tab-pane>
+
             </n-tabs>
         </n-card>
     </n-modal>
@@ -253,7 +264,7 @@
                         <tr>
                             <td>No. Rangka/Mesin</td>
                             <td width="25">:</td>
-                            <td>{{ bodyModal.CHASIS_NUMBER }}/{{ bodyModal.ENGIN+NUMBER }}</td>
+                            <td>{{ bodyModal.CHASIS_NUMBER }}/{{ bodyModal.ENGIN + NUMBER }}</td>
                         </tr>
                         <tr>
                             <td>No. Faktur</td>
@@ -625,7 +636,7 @@ const getDataTransaction = async () => {
     });
     if (!response.ok) {
         loadTransaction.value = false;
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         loadTransaction.value = false;
         dataTransaction.value = response.data;
@@ -658,10 +669,6 @@ const options = [
     {
         label: 'Permintaan',
         key: 'minta',
-    },
-    {
-        label: 'Update Jaminan',
-        key: 'update'
     }
 ];
 
@@ -698,11 +705,11 @@ const columns = [
         title: "Nama Debitur",
         key: "debitur",
         sorter: "default",
-    },{
+    }, {
         title: "NO BPKB",
         key: "BPKB_NUMBER",
         sorter: "default",
-    },{
+    }, {
         title: "Atas Nama",
         key: "ON_BEHALF",
         sorter: "default",
@@ -952,6 +959,15 @@ const columnsJaminanApprove = [
         sorter: "default",
     }
 ];
+const parse = (input) => {
+    const nums = input.replace(/,/g, "").trim();
+    if (/^\d+(\.(\d+)?)?$/.test(nums)) return Number(nums);
+    return nums === "" ? null : Number.NaN;
+};
+const format = (value) => {
+    if (value === null) return "";
+    return value.toLocaleString("en-US");
+};
 const bodyModal = ref();
 const bodyModalTrx = ref();
 const showDetailModal = ref(false);
@@ -960,6 +976,32 @@ const modalTrxApproval = ref(false);
 const handleAction = (e) => {
     showDetailModal.value = true;
     bodyModal.value = e;
+}
+const refStatus=ref();
+const refNilaiJual=ref();
+const optStatus = ["NORMAL", "TITIP", "SITA", "JUAL"].map((v) => ({
+    label: v,
+    value: v,
+}));
+
+const handleUpdateStatus = (e) => {
+    const body={
+        collateral_id:e,
+        status:refStatus.value,
+        harga:refNilaiJual.value,
+    }
+    const response = useApi({
+        method:'POST',
+        api:"collateral_status",
+        token:localStorage.getItem("token"),
+        data:body,
+    });
+    if(!response.ok){
+        message.error("gagal update status jaminan");
+    }else{
+        message.success('ok');
+    }
+
 }
 
 const detailTrx = (e) => {

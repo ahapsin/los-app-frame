@@ -59,9 +59,10 @@
 </template>
 <script setup>
 import {ref, onMounted, h, computed} from "vue";
-import {useApi} from "../../../helpers/axios";
-import {useSearch} from "../../../helpers/searchObject";
-import router from "../../../router";
+import {useApi} from "../../../../helpers/axios.js";
+import {useSearch} from "../../../../helpers/searchObject";
+import router from "../../../../router";
+
 import {
   useDialog,
   useMessage,
@@ -271,7 +272,8 @@ const getData = async () => {
 };
 
 const showData = computed(() => {
-  return useSearch(dataTable.value, searchBox.value);
+  return useSearch(dataTable.value, searchBox.value?.toLowerCase());
+
 });
 const renderIcon = (icon) => {
   return () => {
