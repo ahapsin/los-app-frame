@@ -853,7 +853,6 @@ import {useApi} from "../../../helpers/axios";
 import router from "../../../router";
 import {useVueToPrint} from "vue-to-print";
 // import CollateralCheck from "../../../components/atoms/CollateralCheck.vue";
-const apptitle = import.meta.env.VITE_APP_TITLE;
 const prosesPK = ref(false);
 const pageData = ref([]);
 const pk = ref();
