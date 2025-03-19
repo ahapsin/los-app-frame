@@ -136,7 +136,7 @@ const getMenu = useApi({
         message.error("error koneksi api");
     } else {
         getMenuData.value = Array.from(res.data.response).map((v, i) => ({
-            label: v.menu_name,
+            label: `${v.parent?v.parent:'Parent'}->${v.menu_name}`,
             value: v.id,
         }));
     }

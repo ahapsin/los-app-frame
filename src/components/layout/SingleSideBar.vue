@@ -1,16 +1,30 @@
 <template>
   <n-layout class="h-screen">
-    <n-layout-header style="height: 64px" bordered>
+
+    <n-layout-header>
       <n-page-header
-          class="sticky bg-sc-50 border-b top-0 z-50 backdrop-blur p-4"
+          class="sticky bg-scf border-b top-0 z-50 backdrop-blur p-2"
       >
         <template #title>
           <n-space align="center">
             <n-button
                 circle
                 quaternary
+                @click="router.back()"
+                v-if="route.name !== 'landing' && route.name !== 'dashboard'"
+            >
+              <template #icon>
+                <n-icon>
+                  <back-icon/>
+                </n-icon>
+              </template>
+            </n-button>
+            <n-button
+                circle
+                quaternary
                 @click="sideMenu.sideEffect = !sideMenu.sideEffect"
                 color="#424242"
+                v-if="width > 450"
             >
               <template #icon>
                 <n-icon v-if="sideMenu.sideEffect">
@@ -27,7 +41,7 @@
                 alt="logo_company"
             />
             <div class="flex flex-col items-left justify-center">
-              <span>{{ apptitle }}</span>
+              <n-ellipsis style="max-width: 150px">{{ apptitle }}</n-ellipsis>
               <span class="text-[10px]">v. {{ appVersion }}</span>
             </div>
           </n-space>
@@ -40,7 +54,7 @@
         </template>
       </n-page-header>
     </n-layout-header>
-    <n-layout position="absolute" style="top: 70px" has-sider>
+    <n-layout position="absolute" style="top: 60px" has-sider>
       <n-layout-sider
           :width="180"
           :collapsed-width="0"
@@ -52,8 +66,7 @@
       >
         <SideMenu/>
       </n-layout-sider>
-      <n-layout :native-scrollbar="false"
-                :class="`p-2 md:p-4 bg-gradient-to-t from-slate-100`">
+      <n-layout :class="`md:p-4 bg-slate-100`">
         <RouterView/>
         <slot/>
       </n-layout>
@@ -69,13 +82,17 @@
 <script setup>
 import {ref, onMounted} from "vue";
 import {
+  ChevronLeft as BackIcon,
   LayoutSidebarLeftCollapse as CloseIcon,
   LayoutSidebarRightCollapse as BurgerIcon,
 } from "@vicons/tabler";
 import {useSidebar} from "../../stores/sidebar";
 import {useWindowSize} from "@vueuse/core";
 import pjson from '../../../package.json';
+import router from "../../router";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
 const applogo = import.meta.env.VITE_APP_LOGO;
 const appbase = import.meta.env.VITE_APP_BASE_COLOR;
 const appbackdrop = import.meta.env.VITE_APP_BACKDROP;

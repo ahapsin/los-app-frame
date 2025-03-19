@@ -17,7 +17,6 @@
 <script setup>
 import {ref, onMounted} from "vue";
 import LoadingScreen from "../src/components/organism/LoadingScreen.vue";
-import {darkTheme} from "naive-ui";
 
 const appcolor = import.meta.env.VITE_APP_BASE_COLOR;
 const appInfoColor = import.meta.env.VITE_APP_INFO_COLOR;
@@ -29,10 +28,11 @@ const themeOverrides = {
     borderRadius: "10px",
     textColorBase: appcolor,
     infoColor: appInfoColor,
+    infoColorHover: appInfoColor,
+    infoColorPressed: appInfoColor,
   },
   Button: {
     primaryColor: appcolor,
-
   }
 }
 const isLoading = ref(true);
