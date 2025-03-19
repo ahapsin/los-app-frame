@@ -68,6 +68,7 @@
   <!--    <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />-->
   <!--    <n-avatar circle>a</n-avatar>-->
   <!--  </div>-->
+
 </template>
 <script setup>
 import {ref, onMounted, h, computed} from "vue";
@@ -257,6 +258,7 @@ const handleConfirm = (row, index) => {
   });
 };
 const handleDetail = (evt) => {
+
   console.log(evt);
   // if (evt.status_code === "WADM") {
   //   router.push({name: "detail survey", params: {idsurvey: evt.id}});
@@ -265,6 +267,7 @@ const handleDetail = (evt) => {
   // } else {
   //   router.push({name: "detail survey", params: {idsurvey: evt.id}});
   // }
+
 };
 const handleEdit = (evt) => {
   router.push({name: "edit survey", params: {idsurvey: evt.id}});
@@ -290,7 +293,9 @@ const getData = async () => {
 };
 
 const showData = computed(() => {
+
   return useSearch(dataTable.value, searchBox.value?.toLowerCase());
+
 });
 const renderIcon = (icon) => {
   return () => {
@@ -329,3 +334,4 @@ const pagination = {
 };
 onMounted(() => getData());
 </script>
+

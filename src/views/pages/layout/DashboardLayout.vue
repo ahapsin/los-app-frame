@@ -1,4 +1,5 @@
 <template>
+
   <SingleSideBar />
 </template>
 <script setup>

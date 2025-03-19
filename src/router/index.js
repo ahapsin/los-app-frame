@@ -9,6 +9,11 @@ const routes = [
         component: () => import("../views/pages/LoginPage.vue"),
     },
     {
+        path: "/visit",
+        name: "visit",
+        component: () => import("../views/pages/task/survey/MSurveyPage.vue"),
+    },
+    {
         path: "/no-service",
         name: "maintenance",
         component: () => import("../views/pages/503Page.vue"),
@@ -152,12 +157,12 @@ const routes = [
             {
                 path: "detail-survey/:idsurvey",
                 name: "detail survey",
-                component: () => import("../views/pages/task/DetailSurveyPage.vue"),
+                component: () => import("../views/pages/task/survey/DetailSurveyPage.vue"),
             },
             {
                 path: "survey/:idsurvey",
                 name: "edit survey",
-                component: () => import("../views/pages/task/EditSurveyPage.vue"),
+                component: () => import("../views/pages/task/AddSurveyPage.vue"),
             },
             {
                 path: "Approval",
