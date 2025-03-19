@@ -17,7 +17,6 @@
 <script setup>
 import {ref, onMounted} from "vue";
 import LoadingScreen from "../src/components/organism/LoadingScreen.vue";
-import {darkTheme} from "naive-ui";
 
 const appcolor = import.meta.env.VITE_APP_BASE_COLOR;
 const appInfoColor = import.meta.env.VITE_APP_INFO_COLOR;
