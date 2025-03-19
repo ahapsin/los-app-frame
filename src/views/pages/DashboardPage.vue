@@ -29,6 +29,7 @@ const findAccessMenu = (e) => {
 }
 
 const OrderBoard = defineAsyncComponent(() => import("./board/OrderBoard.vue"));
+const SurveyBoard = defineAsyncComponent(() => import("./board/SurveyBoard.vue"));
 const PaymentBoard = defineAsyncComponent(() => import("./board/PaymentBoard.vue"));
 const JaminanBoard = defineAsyncComponent(() => import("./board/JaminanBoard.vue"));
 
