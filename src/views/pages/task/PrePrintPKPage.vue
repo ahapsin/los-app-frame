@@ -4,6 +4,7 @@
         footer: 'soft',
     }">
         <div class="flex flex-col md:flex-row w-full gap-2">
+
             <n-form ref="formRef" inline :disabled="pageData.flag == 1 ? true : false">
                 <n-form-item label="Order Number" path="nama">
                     <n-input placeholder="nama" v-model:value="idApp" disabled />
@@ -84,7 +85,7 @@ class="flex gap-2 border-t p-4 justify-end"
                         <div ref="pkPageRef" class="bg-white max-w-[900px]  p-8" v-show="optPrint.pkPage">
                             <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`"
                                 :cabang="pkData.cabang" />
-                            <table border="1" class="mb-10">
+                            <table border="1" class="mb-10 text-justify">
                                 <tr>
                                     <td align="center"><b>PERJANJIAN PEMBERIAN PINJAMAN</b></td>
                                 </tr>
@@ -299,9 +300,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                         <table width="100%">
                                             <tr>
                                                 <td>
-                                                    Pihak Pertama<br />{{
-                                                    pkData.cabang
-                                                    }}<br /><br /><br /><br />
+                                                    Pihak Pertama<br /><br /><br /><br /><br />
                                                     ( {{ pihak1.nama }} )
                                                 </td>
                                                 <td>
@@ -666,8 +665,39 @@ class="flex gap-2 border-t p-4 justify-end"
                                 </div>
                                 <div class="mb-4">yang bertanda tangan di bawah ini:</div>
                                 <div class="grid grid-flow-col">
+                                    <table>
+                                        <tr>
+                                            <td width="100px">Nama</td>
+                                            <td width="25">:</td>
+                                            <td>
+                                                <!-- <b class="uppercase">{{ pihak2.nama }}</b> -->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Pekerjaan</td>
+                                            <td width="25">:</td>
+                                            <td>
+                                                <!-- <b class="uppercase">({{ dataPelanggan.pekerjaan_id }})
+                                                    {{ dataPelanggan.pekerjaan }}</b> -->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Alamat</td>
+                                            <td width="25">:</td>
+                                            <td>
+                                                <!-- <b class="uppercase">{{ pihak2.alamat }}</b> -->
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td>Nomor KTP</td>
+                                            <td width="25">:</td>
+                                            <td>
+                                                <!-- <b class="uppercase">{{ pihak2.no_identitas }}</b> -->
+                                            </td>
+                                        </tr>
+                                    </table>
                                     <div class="mb-4" v-for="(penjamin, i) in dataPenjamin" :key="penjamin">
-                                        <table>
+                                        <!-- <table>
                                             <tr>
                                                 <td width="100px">Nama</td>
                                                 <td width="25">:</td>
@@ -696,7 +726,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                                     <b class="uppercase">{{ penjamin.no_identitas }}</b>
                                                 </td>
                                             </tr>
-                                        </table>
+                                        </table> -->
                                         Selanjutnya disebut <b>Penjamin {{ i + 1 }}</b>
                                     </div>
                                 </div>
