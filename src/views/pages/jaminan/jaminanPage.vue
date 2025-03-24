@@ -44,6 +44,22 @@
                         <div>Approval</div>
                     </div>
                 </template>
+                <div class="flex gap-2 p-4 bg-sc-50/50 border-b">
+                    <n-form-item label="NO SURAT" class="w-full">
+                        <n-input v-model:value="dynamicSearch.no_transaksi" type="text" placeholder="NO SURAT"
+                            clearable />
+                    </n-form-item>
+                    <n-form-item label="STATUS" class="w-full">
+                        <n-select :options="optStatusSurat" v-model:value="dynamicSearch.status" />
+                    </n-form-item>
+                    <n-form-item label="TANGGAL" class="w-full">
+                        <n-date-picker placeholder="CARI TANGGAL" v-model:formatted-value="dynamicSearch.tgl"
+                            :default-value="Date.now()" clearable format="yyyy-MM-dd" />
+                    </n-form-item>
+                    <n-form-item class="w-full">
+                        <n-button type="primary" @click="getDataTransactionApproval" class="px-4"> Cari</n-button>
+                    </n-form-item>
+                </div>
                 <n-data-table :columns="columnsTransactionApproval" :data="dataTransactionApproval" size="small"
                     :loading="loadTransactionApproval" :pagination="{ pageSize: 10 }" />
             </n-tab-pane>
@@ -120,8 +136,9 @@
                         <n-collapse-item title="Update Status Jaminan" name="1">
                             <div class="flex gap-2">
                                 <n-select :options="optStatus" v-model:value="refStatus" />
-                                <n-input-number :show-button="false" v-if="refStatus === 'JUAL'" v-model:value="refNilaiJual" class="w-full"
-                                    :parse="parse" :format="format" placeholder="nilai jual"></n-input-number>
+                                <n-input-number :show-button="false" v-if="refStatus === 'JUAL'"
+                                    v-model:value="refNilaiJual" class="w-full" :parse="parse" :format="format"
+                                    placeholder="nilai jual"></n-input-number>
                                 <n-button type="primary" @click="handleUpdateStatus(bodyModal.ID)">Simpan</n-button>
                             </div>
                         </n-collapse-item>
@@ -648,6 +665,7 @@ const getDataTransactionApproval = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
+        params: dynamicSearch,
         api: "jaminan_list_approval",
         token: userToken,
     });
@@ -923,6 +941,12 @@ const columnsJaminan = [
         sorter: "default",
     }
 ];
+
+const dynamicSearch = reactive({
+    status: 'SENDING',
+    tgl:null,
+    no_surat:null,
+});
 const columnsJaminanApprove = [
     {
         key: "id",
@@ -977,28 +1001,32 @@ const handleAction = (e) => {
     showDetailModal.value = true;
     bodyModal.value = e;
 }
-const refStatus=ref();
-const refNilaiJual=ref();
+const refStatus = ref();
+const refNilaiJual = ref();
 const optStatus = ["NORMAL", "TITIP", "SITA", "JUAL"].map((v) => ({
+    label: v,
+    value: v,
+}));
+const optStatusSurat = ["SELESAI", "REQUEST", "SENDING", "CANCEL"].map((v) => ({
     label: v,
     value: v,
 }));
 
 const handleUpdateStatus = (e) => {
-    const body={
-        collateral_id:e,
-        status:refStatus.value,
-        harga:refNilaiJual.value,
+    const body = {
+        collateral_id: e,
+        status: refStatus.value,
+        harga: refNilaiJual.value,
     }
     const response = useApi({
-        method:'POST',
-        api:"collateral_status",
-        token:localStorage.getItem("token"),
-        data:body,
+        method: 'POST',
+        api: "collateral_status",
+        token: localStorage.getItem("token"),
+        data: body,
     });
-    if(!response.ok){
+    if (!response.ok) {
         message.error("gagal update status jaminan");
-    }else{
+    } else {
         message.success('ok');
     }
 
