@@ -9,7 +9,6 @@
                         Jaminan
                     </div>
                 </template>
-
                 <div class="flex flex-col gap-y-2">
                     <!-- Search and Filter -->
                     <div class="flex gap-2">
@@ -35,6 +34,22 @@
                 </div>
             </n-tab-pane>
             <n-tab-pane name="transaksi" tab="Transaksi">
+                <div class="flex gap-2 p-4 bg-sc-50/50 border-b">
+                    <n-form-item label="NO SURAT" class="w-full">
+                        <n-input v-model:value="dynamicSearch.no_transaksi" type="text" placeholder="NO SURAT"
+                            clearable />
+                    </n-form-item>
+                    <n-form-item label="STATUS" class="w-full">
+                        <n-select :options="optStatusSurat" v-model:value="dynamicSearch.status" />
+                    </n-form-item>
+                    <n-form-item label="TANGGAL" class="w-full">
+                        <n-date-picker placeholder="CARI TANGGAL" v-model:formatted-value="dynamicSearch.tgl"
+                            :default-value="Date.now()" clearable format="yyyy-MM-dd" />
+                    </n-form-item>
+                    <n-form-item class="w-full">
+                        <n-button type="primary" @click="getDataTransaction" class="px-4"> Cari</n-button>
+                    </n-form-item>
+                </div>
                 <n-data-table :columns="columnsTransaction" :data="dataTransaction" size="small"
                     :loading="loadTransaction" />
             </n-tab-pane>
@@ -648,6 +663,7 @@ const getDataTransaction = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
+        params:dynamicSearch,
         api: "jaminan_transaction",
         token: userToken,
     });
@@ -944,8 +960,8 @@ const columnsJaminan = [
 
 const dynamicSearch = reactive({
     status: 'SENDING',
-    tgl:null,
-    no_surat:null,
+    tgl: null,
+    no_surat: null,
 });
 const columnsJaminanApprove = [
     {
