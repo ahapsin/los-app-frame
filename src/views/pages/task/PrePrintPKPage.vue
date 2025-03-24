@@ -4,7 +4,6 @@
         footer: 'soft',
     }">
         <div class="flex flex-col md:flex-row w-full gap-2">
-
             <n-form ref="formRef" inline :disabled="pageData.flag == 1 ? true : false">
                 <n-form-item label="Order Number" path="nama">
                     <n-input placeholder="nama" v-model:value="idApp" disabled />
@@ -82,7 +81,8 @@ class="flex gap-2 border-t p-4 justify-end"
                 <div ref="areaPrintRef">
                     <n-watermark :content="apptitle" cross selectable :font-size="16" :line-height="16" :width="192"
                         :height="128" :x-offset="12" :y-offset="28" :rotate="-15">
-                        <div ref="pkPageRef" class="bg-white max-w-[900px]  p-8" v-show="optPrint.pkPage">
+                        <div ref="pkPageRef" class="bg-white max-w-[210mm] min-h-[297mm] p-8 text-xs"
+                            v-show="optPrint.pkPage">
                             <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`"
                                 :cabang="pkData.cabang" />
                             <table border="1" class="mb-10 text-justify">
@@ -221,7 +221,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                                     <td width="25">:</td>
                                                     <td>{{
                                                         `${jaminan.atr.merk}/${jaminan.atr.tipe}/${jaminan.atr.tahun}`
-                                                        }}
+                                                    }}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -262,7 +262,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                                     <td>{{
                                                         `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
                                                         ${jaminan.atr.luas_bangunan} m2`
-                                                        }}
+                                                    }}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -314,7 +314,7 @@ class="flex gap-2 border-t p-4 justify-end"
                             </table>
                         </div>
                         <div class="mt-2" v-show="optPrint.tandaTerima">
-                            <div class="bg-white max-w-[900px] min-h-[1040px] h-[1040px] max-h-[1040px] p-8">
+                            <div class="bg-white max-w-[210mm] max-h-[297mm] min-h-[297mm] p-8 text-xs">
                                 <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`"
                                     :cabang="pkData.cabang" />
                                 <div class="mb-4 text-center text-base">
@@ -410,7 +410,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                             <td>{{
                                                 `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
                                                 ${jaminan.atr.luas_bangunan} m2`
-                                                }}
+                                            }}
                                             </td>
                                         </tr>
                                         <tr>
@@ -445,11 +445,12 @@ class="flex gap-2 border-t p-4 justify-end"
                             </div>
                         </div>
                         <div class="mt-2" v-show="optPrint.ktpaPage">
-                            <div class="bg-white max-w-[900px] min-h-[1040px] h-[1040px] max-h-[1040px] p-8">
+                            <div class="bg-white max-w-[210mm] max-h-[297mm] min-h-[297mm] p-8 ">
                                 <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`"
                                     :cabang="pkData.cabang" />
                                 <div class="mb-4 text-center text-base">
                                     <b>SYARAT DAN KETENTUTAN KHUSUS PROGRAM
+                                        <br />
                                         <b>" KREDIT TANPA PERLINDUNGAN ASURANSI "</b></b>
                                 </div>
                                 <div class="mb-4 text-justify text-sm">
@@ -462,7 +463,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                     <b> {{ dataPelanggan.pekerjaan }}</b> Bertempat tinggal di
                                     <b>{{ pihak2.alamat }} </b> Pemegang kartu identitas (<b>{{
                                         dataPelanggan.tipe_identitas
-                                        }}</b>) nomor <b>{{ dataPelanggan.no_identitas }}</b> Dalam hal ini
+                                    }}</b>) nomor <b>{{ dataPelanggan.no_identitas }}</b> Dalam hal ini
                                     bertindak untuk dan atas nama <b>{{ pihak2.nama }}</b> Selanjutnya
                                     disebut <b>Penerima Pinjaman.</b>
                                 </div>
@@ -550,7 +551,7 @@ class="flex gap-2 border-t p-4 justify-end"
                             </div>
                         </div>
                         <div class="mt-2" v-show="optPrint.pasanganPage">
-                            <div class="bg-white max-w-[900px] min-h-[1040px] h-[1040px] max-h-[1040px] p-8">
+                            <div class="bg-white max-w-[210mm] max-h-[297mm] min-h-[297mm] p-8">
                                 <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`"
                                     :cabang="pkData.cabang" />
                                 <div class="mb-4 text-center text-base">
@@ -565,7 +566,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                             <td>
                                                 <b class="uppercase">{{
                                                     upCase(dataPasangan.nama_pasangan)
-                                                    }}</b>
+                                                }}</b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -574,7 +575,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                             <td>
                                                 <b class="uppercase">{{
                                                     upCase(dataPasangan.pekerjaan_pasangan)
-                                                    }}</b>
+                                                }}</b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -583,7 +584,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                             <td>
                                                 <b class="uppercase">{{
                                                     upCase(dataPasangan.alamat_pasangan)
-                                                    }}</b>
+                                                }}</b>
                                             </td>
                                         </tr>
                                     </table>
@@ -657,7 +658,7 @@ class="flex gap-2 border-t p-4 justify-end"
                             </div>
                         </div>
                         <div class="mt-2" v-show="optPrint.penjaminPage">
-                            <div class="bg-white max-w-[900px] min-h-[1040px] h-[1040px] max-h-[1040px] p-8">
+                            <div class="bg-white max-w-[210mm] max-h-[297mm] min-h-[297mm] p-8 ">
                                 <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`"
                                     :cabang="pkData.cabang" />
                                 <div class="mb-4 text-center text-base">
@@ -809,7 +810,7 @@ class="flex gap-2 border-t p-4 justify-end"
                             </div>
                         </div>
                         <div class="mt-2" v-show="optPrint.skalaPage">
-                            <div class="bg-white max-w-[900px] p-8">
+                            <div class="bg-white max-w-[210mm] min-h-[297mm] p-8 ">
                                 <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`"
                                     :cabang="pkData.cabang" />
                                 <div class="mb-4 bg-white">Tabel Skala Angsuran</div>
@@ -837,6 +838,7 @@ class="flex gap-2 border-t p-4 justify-end"
                         </div>
                     </n-watermark>
                 </div>
+
             </div>
         </div>
     </n-card>
