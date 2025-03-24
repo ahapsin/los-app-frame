@@ -81,7 +81,7 @@ class="flex gap-2 border-t p-4 justify-end"
                 <div ref="areaPrintRef">
                     <n-watermark :content="apptitle" cross selectable :font-size="16" :line-height="16" :width="192"
                         :height="128" :x-offset="12" :y-offset="28" :rotate="-15">
-                        <div ref="pkPageRef" class="bg-white max-w-[210mm] min-h-[297mm] p-8 text-xs"
+                        <div ref="pkPageRef" class="bg-white max-w-[210mm] min-h-[295mm] p-8 text-[12px]"
                             v-show="optPrint.pkPage">
                             <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`"
                                 :cabang="pkData.cabang" />
@@ -300,11 +300,11 @@ class="flex gap-2 border-t p-4 justify-end"
                                         <table width="100%">
                                             <tr>
                                                 <td>
-                                                    Pihak Pertama<br /><br /><br /><br /><br />
+                                                    Pihak Pertama<br /><br /><br /><br /><br /><br/>
                                                     ( {{ pihak1.nama }} )
                                                 </td>
                                                 <td>
-                                                    Pihak Kedua<br /><br /><br /><br /><br />
+                                                    Pihak Kedua<br /><br /><br /><br /><br /><br/>
                                                     ( {{ pihak2.nama }} )
                                                 </td>
                                             </tr>
@@ -349,8 +349,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                 <div class="mb-4 text-justify text-sm">
                                     Pada hari ini <b>{{ dayFull.day }}</b> tanggal
                                     <b>{{ dayFull.date }}</b> bulan <b>{{ dayFull.month }}</b> tahun
-                                    <b>{{ dayFull.year }}</b>,Dengan ini telah menerima buku kepemilikan kendaraan
-                                    (BPKB)
+                                    <b>{{ dayFull.year }}</b>,Dengan ini telah menerima bukti kepemilikan kendaraan / sertifikat
                                     dalam keadaan baik dengan rincian sebagai berikut :
                                 </div>
                                 <div class="text-justify pt-2" v-for="jaminan in dataJaminan" :key="jaminan">
@@ -431,12 +430,12 @@ class="flex gap-2 border-t p-4 justify-end"
                                         <tr>
                                             <td class="py-4 pr-4">
                                                 Pemberi,
-                                                <br /><br /><br />
+                                                <br /><br /><br /><br/>
                                                 <u class="uppercase">{{ pihak2.nama }}</u>
                                             </td>
                                             <td class="py-4 pr-4">
                                                 Penerima,
-                                                <br /><br /><br />
+                                                <br /><br /><br /><br/>
                                                 <u class="uppercase">{{ pihak1.nama }}</u>
                                             </td>
                                         </tr>
@@ -816,7 +815,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                 <div class="mb-4 bg-white">Tabel Skala Angsuran</div>
                                 <div vertical class="bg-white flex w-full">
                                     <table class="tblprint">
-                                        <tr>
+                                        <tr :style="`background-color: ${app_base}; color:#ffffff;`">
                                             <th>Angsuran ke</th>
                                             <th align="left">Tanggal</th>
                                             <th align="left">POKOK</th>
@@ -855,7 +854,7 @@ class="flex gap-2 border-t p-4 justify-end"
 </template>
 <style scoped>
 table.tblprint>tr>th {
-    padding: 2px 0px 10px 4px;
+    padding: 2px 0px 2px 4px;
     border: 1px solid;
 }
 
@@ -864,7 +863,7 @@ table.tblprint {
 }
 
 table.tblprint>tr>td {
-    padding: 2px 0px 10px 4px;
+    padding: 2px 2px 2px 4px;
     border: 1px solid;
 }
 
@@ -889,6 +888,7 @@ const pkData = ref([]);
 const struktur = ref([]);
 const pihak1 = ref([]);
 const pihak2 = ref([]);
+const app_base = import.meta.env.VITE_APP_ACCENT_COLOR;
 // page controller
 const optPrint = reactive({
     pkPage: true,
