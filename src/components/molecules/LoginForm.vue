@@ -1,5 +1,5 @@
 <template>
-  <div class="w-full bg-white h-full p-10 md:rounded-xl shadow-xl">
+  <div class="w-full bg-white h-fit p-10 md:rounded-xl shadow-xl">
     <n-form :model="dynamicForm" ref="formRef">
       <div class="flex flex-col md:flex-row gap-4 items-center pb-8">
         <img class="h-14 md:h-16 " :src="applogo" alt="logo_company">
