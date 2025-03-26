@@ -12,7 +12,7 @@
           </n-statistic>
           <div class=" flex w-60 gap-2">
             <n-select v-model:value="jenisJaminan" :options="optJaminan" placeholder="jenis jaminan"/>
-            <n-button circle type="primary" @click="addJaminan">
+            <n-button circle type="primary" @click="addJaminan" v-if="jenisJaminan != 'kta'">
               <n-icon>
                 <add-icon/>
               </n-icon>

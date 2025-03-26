@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    <LoadingScreen class="absolute" :isLoading="isLoading"/>
-    <main v-if="!isLoading">
+<!--    <LoadingScreen class="absolute" :isLoading="isLoading"/>-->
+<!--    <main v-if="!isLoading">-->
       <n-config-provider :theme-overrides="themeOverrides">
         <n-message-provider>
           <n-dialog-provider>
@@ -11,7 +11,7 @@
           </n-dialog-provider>
         </n-message-provider>
       </n-config-provider>
-    </main>
+<!--    </main>-->
   </div>
 </template>
 <script setup>
