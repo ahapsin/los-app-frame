@@ -1,6 +1,7 @@
 import "./style.css";
-import * as HIIcons from "oh-vue-icons/icons/hi";
+import * as BIIcons from "oh-vue-icons/icons/bi";
 import * as RIcons from "oh-vue-icons/icons/ri";
+
 
 import 'leaflet/dist/leaflet.css';
 
@@ -11,10 +12,10 @@ import { createApp } from "vue";
 import { createPinia } from "pinia";
 import router from "./router";
 
+const Bi = Object.values({ ...BIIcons });
 const Ri = Object.values({ ...RIcons });
-const Hi = Object.values({ ...HIIcons });
 
-addIcons(...Hi, ...Ri);
+addIcons(...Bi,...Ri);
 
 const app = createApp(App);
 const pinia = createPinia();
