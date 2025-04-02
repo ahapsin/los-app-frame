@@ -7,9 +7,19 @@
         <taksasi-select-state v-model:brand="jaminan.merk" v-model:tipe="jaminan.tipe" v-model:tahun="jaminan.tahun"
             v-model:pasar="jaminan.nilai" />
     </div>
-    <n-form ref="formJaminan" :model="jaminan" require-mark-placement="right-hanging">
-        <div class="md:flex gap-2">
-            <n-form-item label="No Polisi" path="no_polisi" class="w-full">
+    <n-form ref="formJaminan" :model="jaminan" require-mark-placement="right-hanging" :rules="rulesJaminan">
+        <div class="grid grid-cols-2 gap-2">
+            <n-form-item label="Ketersediaan Jaminan" path="kondisiJaminan" class="w-full">
+              <n-radio-group v-model:value="kesediaanJaminan" name="radiogroup">
+              <n-radio
+                  v-for="axis in axisJaminan"
+                  :key="axis.value"
+                  :value="axis.value"
+                  :label="axis.label"
+              />
+              </n-radio-group>
+            </n-form-item>
+          <n-form-item label="No Polisi" path="no_polisi" class="w-full">
                 <n-input placeholder="No Polisi" @input="$event => (jaminan.no_polisi = $event.toUpperCase())"
                     v-model:value="jaminan.no_polisi" :disabled="props.viewMode" />
             </n-form-item>
@@ -60,7 +70,27 @@ const props = defineProps({
     viewMode:Boolean,
 });
 
+const rulesJaminan = {
+  no_polisi: {
+    trigger: "blur",
+    required: true,
+    message: " harus diisi",
+  },
+}
+
 const jaminan = reactive(props.def_data ? props.def_data.atr : {});
+
+const axisJaminan=[{
+  value: "ada",
+  label: "Tersedia"
+},{
+  value: "dealer",
+  label: "di Dealer"
+},
+];
+
+const kesediaanJaminan = ref('ada');
+
 const tahunJaminanValidate = computed(() => {
       let tahun = new Date().getFullYear();
       let diff = tahun - jaminan.tahun;

@@ -11,6 +11,14 @@ const routes = [
         path: "/signin",
         name: "signin",
         component: () => import("../views/SigninPage.vue"),
+    }, {
+        path: "/prospek",
+        name: "prospek",
+        component: () => import("../views/ProspekPage.vue"),
+    }, {
+        path: "/buat-prospek",
+        name: "buat-prospek",
+        component: () => import("../views/prospek/FormProsepek.vue"),
     },
     {
         path: "/visit",
