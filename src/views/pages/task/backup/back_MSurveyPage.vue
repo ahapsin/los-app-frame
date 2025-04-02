@@ -1,68 +1,80 @@
 <template>
-  <div>
-    <n-space vertical>
-      <n-card title="Data Pelanggan" :segmented="{
-                content: true,
-                footer: 'soft',
-            }">
-        <template #header-extra>
-          <n-space class="!gap-1">
-            <div class="me-1">
-              <n-popover trigger="click" placement="bottom-end">
-                <template #trigger>
-                  <n-button :circle="width <= 520 ? true : false">
-                    <n-icon>
-                      <search-icon/>
-                    </n-icon>
-                    <span v-if="width >= 520">Cari</span>
-                  </n-button>
-                </template>
-                <n-space vertical>
-                  <n-input autofocus="true" clearable placeholder="cari disini.."
-                           v-model:value="searchBox"/>
-                  <n-date-picker :default-value="[Date.now(), Date.now()]"
-                                 :update-value-on-close="updateValueOnClose" type="daterange"
-                                 @update:value="onConfirmDate"/>
-                </n-space>
-              </n-popover>
-            </div>
-            <div>
-              <n-button type="primary" secondary @click="downloadCsv"
-                        :circle="width <= 520 ? true : false">
-                <template #icon>
-                  <n-icon>
-                    <download-icon/>
-                  </n-icon>
-                </template>
-                <span v-if="width >= 520">Download</span>
-              </n-button>
-            </div>
-            <div>
-              <n-button type="primary" strong @click="handleAdd" :circle="width <= 520 ? true : false">
-                <template #icon>
-                  <n-icon>
-                    <add-icon/>
-                  </n-icon>
-                </template>
-                <span v-if="width >= 520">Tambah</span>
-              </n-button>
-            </div>
-          </n-space>
-        </template>
-        <n-space vertical :size="12" class="pt-4">
-          <n-data-table striped ref="tableRef" :scroll-x="500" size="small" :columns="columns"
-                        :data="showData" :pagination="pagination" :loading="loadData"/>
-        </n-space>
+  <div class="relative">
+    <div class="sticky top-0 z-50 px-4 items-center gap-2 justify-between  bg-white ">
+      <div class="flex items-center justify-between p-2 border-b">
+        <div class="text-lg font-semibold">Data Survey</div>
+        <div>
+          <n-button quaternary circle @click="router.push('new-survey')">
+            <n-icon size="20">
+              <add-icon/>
+            </n-icon>
+          </n-button>
+        </div>
+      </div>
+      <div class="p-2  bg-white" v-if="showData.length <0">
+        <n-input placeholder="cari" size="large" v-model:value="searchBox" clearable/>
+      </div>
+    </div>
+
+    <div class="p-2 flex flex-col gap-2">
+
+      <n-card v-if="loadData">
+        <n-skeleton text :repeat="2"/>
+        <n-skeleton text style="width: 60%"/>
       </n-card>
-    </n-space>
+      <div v-if="!loadData && showData.length == 0">
+        <div>
+          <n-alert>
+            <template #icon>
+              <n-icon>
+                <nodata-icon/>
+              </n-icon>
+            </template>
+            Data tidak ada</n-alert>
+        </div>
+      </div>
+      <div class="overflow-clip flex flex-col gap-4 bg-white rounded-lg border" v-else v-for="data in showData"
+           :key="data.id" :title="data.nama_debitur">
+        <div class="flex justify-between px-4 pt-4">
+          <div class="font-bold flex flex-col">
+            <span>{{ data.nama_debitur }}</span>
+            <small>{{ data.visit_date }}</small>
+          </div>
+          <div class="font-bold" :style="`color:${appAccentColor}`">{{ data.plafond.toLocaleString() }}</div>
+        </div>
+        <div class="flex justify-between px-4">
+          <div class="font-sm">{{ data.alamat }}</div>
+          <div class="font-bold">
+            <n-tag :type="statusTag(data.status_code)" size="small"
+                   round>{{ data.status }}
+            </n-tag>
+          </div>
+        </div>
+        <div class="bg-sf flex gap-2 p-2">
+          <n-button type="primary" @click="handleDetail(data)">detail</n-button>
+          <n-button v-if="data.status_code === 'DRSVY'" type="info" @click="handleEdit(data)">Ubah</n-button>
+          <n-button type="error" @click="handleConfirm(data)"
+                    v-if="data.status_code === 'DRSVY'">Hapus
+          </n-button>
+        </div>
+      </div>
+
+    </div>
   </div>
+  <!--  <div class="fixed flex justify-around  bottom-0 p-2 items-center bg-sfc w-full">-->
+  <!--    <n-icon size="23" @click="router.push('dashboard')">-->
+  <!--      <home-icon />-->
+  <!--    </n-icon>-->
+  <!--    <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />-->
+  <!--    <n-avatar circle>a</n-avatar>-->
+  <!--  </div>-->
+
 </template>
 <script setup>
 import {ref, onMounted, h, computed} from "vue";
 import {useApi} from "../../../../helpers/axios.js";
-import {useSearch} from "../../../../helpers/searchObject";
-import router from "../../../../router";
-
+import {useSearch} from "../../../../helpers/searchObject.js";
+import router from "../../../../router/index.js";
 import {
   useDialog,
   useMessage,
@@ -72,7 +84,11 @@ import {
   NButton,
 } from "naive-ui";
 import {
-  AddCircleOutlineRound as AddIcon,
+  DirectionsRunOutlined as NodataIcon,
+  ArrowBackIosNewRound as BackIcon,
+  MoreVertFilled as MoreIcon,
+  AddFilled as AddIcon,
+  HomeFilled as HomeIcon,
   SearchOutlined as SearchIcon,
   FileDownloadOutlined as DownloadIcon,
 } from "@vicons/material";
@@ -84,6 +100,7 @@ import {
 import {useLoadingBar} from "naive-ui";
 import {useWindowSize} from "@vueuse/core";
 
+const applogo = import.meta.env.VITE_APP_LOGO;
 const loadingBar = useLoadingBar();
 const message = useMessage();
 const dialog = useDialog();
@@ -191,16 +208,16 @@ const statusTag = (e) => {
     return "primary";
   }
   if (e === "APKPS") {
-    return "primary";
+    return "success";
   }
   if (e === "WAKPS") {
     return "info";
   }
   if (e === "WADM") {
-    return "info";
+    return "warning";
   }
   if (e === "APHO") {
-    return "primary";
+    return "success";
   }
   if (e === "REORKPS") {
     return "error";
@@ -232,6 +249,7 @@ const handleConfirm = (row, index) => {
       } else {
         dataTable.value.splice(index, 1);
         message.success("Data berhasil dihapus");
+        getData();
       }
     },
     onNegativeClick: () => {
@@ -240,6 +258,7 @@ const handleConfirm = (row, index) => {
   });
 };
 const handleDetail = (evt) => {
+
   if (evt.status_code === "WADM") {
     router.push({name: "detail survey", params: {idsurvey: evt.id}});
   } else if (evt.status_code === "CROR") {
@@ -247,13 +266,12 @@ const handleDetail = (evt) => {
   } else {
     router.push({name: "detail survey", params: {idsurvey: evt.id}});
   }
+
 };
 const handleEdit = (evt) => {
   router.push({name: "edit survey", params: {idsurvey: evt.id}});
 };
-const handleAdd = () => {
-  router.push("/task/new-survey");
-};
+
 const getData = async () => {
   loadData.value = true;
   let userToken = localStorage.getItem("token");
@@ -272,6 +290,7 @@ const getData = async () => {
 };
 
 const showData = computed(() => {
+
   return useSearch(dataTable.value, searchBox.value?.toLowerCase());
 
 });
@@ -307,8 +326,6 @@ const options = (e) => {
     ];
   }
 };
-const pagination = {
-  pageSize: 10,
-};
+
 onMounted(() => getData());
 </script>

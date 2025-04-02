@@ -1,5 +1,6 @@
 <template>
   <n-layout class="h-screen">
+
     <n-layout-header>
       <n-page-header
           class="sticky bg-scf border-b top-0 z-50 backdrop-blur p-2"
@@ -9,8 +10,21 @@
             <n-button
                 circle
                 quaternary
+                @click="router.back()"
+                v-if="route.name !== 'landing' && route.name !== 'dashboard'"
+            >
+              <template #icon>
+                <n-icon>
+                  <back-icon/>
+                </n-icon>
+              </template>
+            </n-button>
+            <n-button
+                circle
+                quaternary
                 @click="sideMenu.sideEffect = !sideMenu.sideEffect"
                 color="#424242"
+                v-if="width > 450"
             >
               <template #icon>
                 <n-icon v-if="sideMenu.sideEffect">
@@ -68,13 +82,17 @@
 <script setup>
 import {ref, onMounted} from "vue";
 import {
+  ChevronLeft as BackIcon,
   LayoutSidebarLeftCollapse as CloseIcon,
   LayoutSidebarRightCollapse as BurgerIcon,
 } from "@vicons/tabler";
 import {useSidebar} from "../../stores/sidebar";
 import {useWindowSize} from "@vueuse/core";
 import pjson from '../../../package.json';
+import router from "../../router";
+import {useRoute} from "vue-router";
 
+const route = useRoute();
 const applogo = import.meta.env.VITE_APP_LOGO;
 const appbase = import.meta.env.VITE_APP_BASE_COLOR;
 const appbackdrop = import.meta.env.VITE_APP_BACKDROP;

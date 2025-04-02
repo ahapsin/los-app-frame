@@ -154,58 +154,51 @@
         </n-tab-pane>
         <n-tab-pane name="Jaminan">
           <n-spin :show="spinJaminan">
-            <table class="font-mono">
-              <thead>
-              <th v-for="head in convertObjectToArray(dataDetailJaminan)" class="py-2 px-1 border border-black"
-                  :key="head.id">{{ head.title }}
-              </th>
-              </thead>
-              <tbody>
-              <tr v-for="body in dataDetailJaminan" :key="body.id">
-                <td v-for="head in convertObjectToArray(dataDetailJaminan)" class="text-[12px] px-1 border border-black"
-                    :key="head.id">
-                  {{ body[head.title] }}
-                </td>
-              </tr>
-              </tbody>
-            </table>
+            <div class="grid grid-rows-4 grid-flow-col gap-4 font-mono" v-if="dataDetailJaminan">
+              <div class="flex flex-col" v-for="list in ObjectValue(dataDetailJaminan)"
+                   :key="list.id">
+                <small class="text-reg">{{ list.title.toUpperCase() }}</small>
+                <n-text strong class="text-md border-b"> {{ list.value ? list.value : 'N/A' }}</n-text>
+              </div>
+            </div>
+
           </n-spin>
         </n-tab-pane>
-        <n-tab-pane name="Pembayaran">
-          <n-spin :show="spinPembayaran">
-            <table class="font-mono">
-              <thead>
-              <th v-for="head in convertObjectToArray(dataDetailPembayaran)" class="py-2 border border-black"
-                  :key="head.id">{{ head.title }}
-              </th>
-              </thead>
-              <tbody>
-              <tr v-for="body in dataDetailPembayaran" :key="body.id">
-                <td v-for="head in convertObjectToArray(dataDetailPembayaran)"
-                    class="text-[12px] px-1 border border-black"
-                    :key="head.id">{{ body[head.title] }}
-                </td>
-              </tr>
-              </tbody>
-            </table>
-          </n-spin>
-        </n-tab-pane>
-        <n-tab-pane name="Tunggakan">
-          <table class="font-mono">
-            <thead>
-            <th v-for="head in convertObjectToArray(dataDetailTunggakan)" class="py-2 border border-black"
-                :key="head.id">{{ head.title }}
-            </th>
-            </thead>
-            <tbody>
-            <tr v-for="body in dataDetailTunggakan" :key="body.id">
-              <td v-for="head in convertObjectToArray(dataDetailTunggakan)" class="border border-black"
-                  :key="head.id">{{ body[head.title] }}
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </n-tab-pane>
+<!--        <n-tab-pane name="Pembayaran">-->
+<!--          <n-spin :show="spinPembayaran">-->
+<!--            <table class="font-mono">-->
+<!--              <thead>-->
+<!--              <th v-for="head in convertObjectToArray(dataDetailPembayaran)" class="py-2 border border-black"-->
+<!--                  :key="head.id">{{ head.title }}-->
+<!--              </th>-->
+<!--              </thead>-->
+<!--              <tbody>-->
+<!--              <tr v-for="body in dataDetailPembayaran" :key="body.id">-->
+<!--                <td v-for="head in convertObjectToArray(dataDetailPembayaran)"-->
+<!--                    class="text-[12px] px-1 border border-black"-->
+<!--                    :key="head.id">{{ body[head.title] }}-->
+<!--                </td>-->
+<!--              </tr>-->
+<!--              </tbody>-->
+<!--            </table>-->
+<!--          </n-spin>-->
+<!--        </n-tab-pane>-->
+<!--        <n-tab-pane name="Tunggakan">-->
+<!--          <table class="font-mono">-->
+<!--            <thead>-->
+<!--            <th v-for="head in convertObjectToArray(dataDetailTunggakan)" class="py-2 border border-black"-->
+<!--                :key="head.id">{{ head.title }}-->
+<!--            </th>-->
+<!--            </thead>-->
+<!--            <tbody>-->
+<!--            <tr v-for="body in dataDetailTunggakan" :key="body.id">-->
+<!--              <td v-for="head in convertObjectToArray(dataDetailTunggakan)" class="border border-black"-->
+<!--                  :key="head.id">{{ body[head.title] }}-->
+<!--              </td>-->
+<!--            </tr>-->
+<!--            </tbody>-->
+<!--          </table>-->
+<!--        </n-tab-pane>-->
       </n-tabs>
     </n-card>
   </n-modal>
@@ -298,6 +291,13 @@ const convertObjectToArray = (obj) => {
   return keys.map(key => ({title: key, key: key}));
 }
 
+const ObjectValue = (obj) => {
+  if (!Array.isArray(obj) || obj.length === 0) {
+    return [];
+  }
+  const keys = Object.entries(obj[0]);
+  return keys.map(([key, value]) => ({title: key, value: value}));
+}
 function convertToValuesArray(dataArray) {
   if (dataArray) {
     return dataArray.map(item => Object.values(item));

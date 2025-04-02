@@ -1,24 +1,28 @@
 <template>
-  <div class="w-full">
+  <div class="w-full bg-white h-full md:h-fit p-10 md:rounded-xl shadow-xl">
 
-    <n-form :model="dynamicForm" ref="formRef">
-      <div class="flex flex-col md:flex-row gap-4 items-center pb-8">
-        <img class="h-14 md:h-16 " :src="applogo" alt="logo_company">
+    <n-form ref="formRef" :model="dynamicForm">
+      <div class="flex md:flex-row gap-4 items-center pb-8">
+        <img :src="applogo" alt="logo_company" class="h-14 md:h-16 ">
         <div class="flex flex-col justify-center items-center md:items-start">
           <span class="font-bold">LOAN ORIGINATION SYSTEM</span>
           <span class="md:text-2xl font-bold">{{ apptitle }}</span>
         </div>
       </div>
-      <div class=" h-full flex flex-col py-4">
-        <n-form-item label="username" path="username" :rule="rules.username">
-          <n-input v-model:value="dynamicForm.username" placeholder="username" />
+      <quote-section class="flex md:hidden"/>
+      <n-alert v-show="alertStatus" title="Login Gagal" type="warning">
+        Periksa kembali username dan password anda
+      </n-alert>
+      <div class="h-full flex flex-col py-4">
+        <n-form-item :rule="rules.username" label="username" path="username">
+          <n-input v-model:value="dynamicForm.username" placeholder="username" size="large"/>
         </n-form-item>
-        <n-form-item label="password" path="password" :rule="rules.password">
-          <n-input type="password" v-model:value="dynamicForm.password" placeholder="Password"
-                   show-password-on="mousedown" @keyup.enter="handleLogin" />
+        <n-form-item :rule="rules.password" label="password" path="password">
+          <n-input v-model:value="dynamicForm.password" placeholder="Password" show-password-on="mousedown"
+                   size="large" type="password" @keyup.enter="handleLogin"/>
         </n-form-item>
-        <n-button class="flex w-full" :loading="loading" icon-placement="left" type="primary"
-                  @click="handleLogin">
+        <n-button :loading="loading" class="flex w-full" icon-placement="left" size="large"
+                  type="primary" @click="handleLogin">
           Login
         </n-button>
         <div class="flex justify-center mt-4 text-sm">
@@ -29,10 +33,10 @@
   </div>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { useMessage } from "naive-ui";
+import {onMounted, reactive, ref} from "vue";
+import {useMessage} from "naive-ui";
 import router from '../../router';
-import { useApi } from "../../helpers/axios";
+import {useApi} from "../../helpers/axios";
 import pjson from '../../../package.json';
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
@@ -58,6 +62,8 @@ const rules = {
     trigger: ['input', 'blur']
   }
 }
+
+const alertStatus = ref(false);
 const handleLogin = async (e) => {
   e.preventDefault(e);
 
@@ -77,10 +83,12 @@ const handleLogin = async (e) => {
     }
   });
   if (!response.ok) {
-
-    if (response.error.status == 503) { router.push('no-service'); } else {
-      message.error("login gagal,periksa username dan password anda !");
+    if (response.error.status == 503) {
+      router.push('no-service');
+    } else {
+      // message.error("login gagal,periksa username dan password anda !");
       loading.value = false;
+      alertStatus.value = true;
     }
   } else {
     message.success("login berhasil");
