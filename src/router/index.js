@@ -7,6 +7,23 @@ const routes = [
         path: "/",
         name: "landing",
         component: () => import("../views/pages/LoginPage.vue"),
+    }, {
+        path: "/signin",
+        name: "signin",
+        component: () => import("../views/SigninPage.vue"),
+    }, {
+        path: "/prospek",
+        name: "prospek",
+        component: () => import("../views/ProspekPage.vue"),
+    }, {
+        path: "/buat-prospek",
+        name: "buat-prospek",
+        component: () => import("../views/prospek/FormProsepek.vue"),
+    },
+    {
+        path: "/visit",
+        name: "visit",
+        component: () => import("../views/pages/task/survey/MSurveyPage.vue"),
     },
     {
         path: "/no-service",
@@ -359,7 +376,7 @@ const routes = [
                 path: "lap_pembayaran",
                 name: "Laporan Pembayaran",
                 component: () => import("../views/pages/laporan/LapPembayaran.vue"),
-            },{
+            }, {
                 path: "list_ban_test",
                 name: "Listing Beban test",
                 component: () => import("../views/pages/laporan/LapListingBebanTest.vue"),
@@ -388,7 +405,7 @@ const routes = [
 
         ],
     },
-     { path: "/:pathMatch(.*)*",  component: () => import("../views/pages/404Page.vue"), },
+    {path: "/:pathMatch(.*)*", component: () => import("../views/pages/404Page.vue"),},
 ];
 
 const router = createRouter({
@@ -397,28 +414,12 @@ const router = createRouter({
 });
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
-router.beforeEach((to, from) => {
-    document.title = to.meta?.title ?? apptitle
+router.beforeEach(async (to, from, next) => {
+    document.title = to.meta?.title ?? apptitle;
+
+    if (to.name !== 'signin' && !localStorage.getItem('token')) next({name: 'signin'})
+    else next()
 })
 
-// router.beforeEach((to)=>{
-// });
-// router.beforeEach((to, from, next) => {
-//   const isAuthenticated = () => {
-//     if (localStorage.getItem("token")) {
-//       return true;
-//     }
-//     return false;
-//   };
-//   if (to.matched.some((record) => record.meta.requiresAuth)) {
-//     if (!isAuthenticated) {
-//       next("/login");
-//     } else {
-//       next();
-//     }
-//   } else {
-//     next();
-//   }
-// });
 
 export default router;

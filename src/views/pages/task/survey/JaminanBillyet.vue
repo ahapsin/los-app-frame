@@ -2,7 +2,7 @@
     <n-form ref="formJaminan" :model="jaminan" :rules="rulesJaminan" require-mark-placement="right-hanging">
         <div class="md:grid md:grid-cols-2 gap-2">
             <n-form-item label="Status Jaminan" path="status" class="w-full">
-                <n-select filterable placeholder="Pilih Status"
+                <n-select filterable placeholder="Pilih Status" v-model:value="jaminan.status_bilyet"
                     />
             </n-form-item>
             <n-form-item label="No Deposito" path="no_billyet" class="w-full">

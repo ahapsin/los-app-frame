@@ -4,9 +4,9 @@
       <n-space vertical :size="12" class="pt-4">
         <n-space>
           <n-form-item label="TANGGAL AKHIR">
-            <n-date-picker v-model:formatted-value="rangeDate" format="MMyyyy" type="month" clearable />
+            <n-date-picker v-model:formatted-value="rangeDate" format="MMyyyy" type="month" clearable/>
           </n-form-item>
-          <n-form-item label="POS">
+          <n-form-item label="POS" v-if="me.me.cabang_nama === 'Head Office'">
             <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
                       value-field="id" :default-value="defBranch" :options="dataBranch"
                       v-model:value="selectBranch"/>
@@ -45,7 +45,6 @@ const me = useMeStore();
 const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
-const defBranch = ref('SEMUA CABANG');
 const userToken = localStorage.getItem("token");
 const loadingBranch = ref(false);
 const getBranch = async () => {
@@ -60,8 +59,7 @@ const getBranch = async () => {
   } else {
     loadingBranch.value = false;
 
-    if (me.me.cabang_nama != "Head Office") {
-      defBranch.value = me.me.cabang_nama;
+    if (me.me?.cabang_nama != "Head Office") {
       selectBranch.value = me.me.cabang_id;
     } else {
       selectBranch.value = "SEMUA CABANG";
@@ -116,9 +114,8 @@ const convertObjectToArray = (obj) => {
   return keys.map(key => ({title: key, key: key}));
 }
 onMounted(() => {
-  loadingBar.finish();
+      loadingBar.finish();
       getBranch();
-      me;
     }
 )
 ;

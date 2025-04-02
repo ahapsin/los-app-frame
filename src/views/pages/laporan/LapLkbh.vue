@@ -220,7 +220,7 @@ const getArusKas = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     loadData.value = false;
     dataArusKas.value = response.data;

@@ -3,7 +3,7 @@
     <n-dropdown trigger="hover" :options="options">
       <div class="flex items-center gap-4">
                 <span class="flex flex-col items-end">
-                  <n-text type="primary"><strong>{{ dataUser?.nama }}</strong></n-text>
+                  <n-text type="primary" class="text-primary hidden md:flex uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
                     <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small>
                 </span>
         <n-avatar round size="small" class="aspect-square" :src="dataUser
@@ -23,7 +23,6 @@ import {ref, h, onMounted} from "vue";
 import router from "../../router";
 import {useMessage, NIcon} from "naive-ui";
 import {
-  NotificationsRound as NotifIcon,
   AccountCircleOutlined as Account,
   LockOutlined as Locked,
   LogOutOutlined as SignOut,
@@ -35,11 +34,11 @@ import {useTaskStore} from "../../stores/task";
 import {useCollateralStore} from "../../stores/collateral.js";
 
 const message = useMessage();
-
+const me = useMeStore();
 const dataUser = ref();
 const options = [
   {
-    label: "Akun",
+    label: `Akun`,
     icon() {
       return h(NIcon, null, {
         default: () => h(Account),
@@ -85,7 +84,7 @@ const options = [
     },
   },
 ];
-const me = useMeStore();
+
 const task = useTaskStore();
 const coll = useCollateralStore();
 const approvalCenter = () => {
