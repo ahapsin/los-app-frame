@@ -2,7 +2,7 @@
   <div class="grid md:grid-cols-2 gap-2">
     <n-form-item
       label="Brand / Merk"
-      path="provinsi"
+      path="merk"
       value-field="value"
       label-field="label"
       class="w-full"
@@ -16,7 +16,7 @@
         :loading="loadingBrand"
       />
     </n-form-item>
-    <n-form-item label="Tipe" path="Tipe" class="w-full">
+    <n-form-item label="Tipe" path="tipe" class="w-full">
       <n-select
         filterable
         placeholder="Pilih Tipe"

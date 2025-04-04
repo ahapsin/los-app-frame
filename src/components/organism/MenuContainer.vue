@@ -20,15 +20,14 @@
     <div class="grid grid-cols gap-4" v-else>
       <div v-for="colMenu in _.filter(menu.list, (o) => o.menuitem.labelmenu != 'home')" :key="colMenu.id">
         <div class="font-bold text-md">{{ colMenu.menuitem.labelmenu }}</div>
-        <div class="grid grid-cols-4 md:grid-cols-10 gap-2">
+        <div class="grid grid-cols-4 md:grid-cols-5 gap-2">
           <div class="flex flex-col " v-for="colSubMenu in colMenu.menuitem.submenu" :key="colSubMenu.id">
             <router-link :to="`${colMenu.menuitem.routename}${colSubMenu.subroute}`">
-              <div
-                  class="flex flex-col  cursor-pointer rounded-xl w-16 md:w-20 h-16 md:h-20 justify-center items-center ">
-                <div class="w-10 h-10 flex items-center justify-center">
+              <div class="flex flex-col  cursor-pointer rounded-xl  border  h-24 gap-4  justify-center items-center ">
+                <div class="w-10 h-10 flex items-center justify-center  rounded-full text-white" :style="`background-color:${appbase} ;`">
                   <v-icon :name="colSubMenu.leading[0] ? colSubMenu.leading[0] : 'ri-apps-2-line'"/>
                 </div>
-                <n-text class="px-2  text-xs text-center">{{ colSubMenu.sublabel }}</n-text>
+                <n-ellipsis class="px-2  text-xs text-center">{{ colSubMenu.sublabel }}</n-ellipsis>
               </div>
             </router-link>
           </div>
@@ -40,6 +39,7 @@
 <script setup>
 import _ from "lodash";
 import {useMenuStore} from "../../stores/menu.js";
+const appbase = import.meta.env.VITE_APP_BASE_COLOR;
 
 const menu = useMenuStore();
 onMounted(() => menu.fetchData());

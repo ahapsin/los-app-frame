@@ -1,5 +1,6 @@
-import {defineStore} from 'pinia';
 import {computed, ref} from 'vue';
+
+import {defineStore} from 'pinia';
 import {useApi} from "../helpers/axios.js";
 import {useValidator} from "../utils/validator.js";
 
@@ -143,6 +144,29 @@ export const useSurveyStore = defineStore('surveys', () => {
 
     }
 
+    const surveyRules = {
+        lama_kerja: {
+            required: true,
+            trigger: "blur",
+            message: "lama bekerja wajib diisi",
+        },
+        pendapatan_pelanggan: {
+            required: true,
+            trigger: "blur",
+            message: "pendapatan pelanggan wajib diisi",
+        },
+        pengeluaran: {
+            required: true,
+            trigger: "blur",
+            message: "pengeluaran wajib diisi",
+        },
+        catatan_survey: {
+            required: true,
+            trigger: "blur",
+            message: "catatan survey wajib diisi",
+        },
+    }
+
     return {
         surveys,
         loading,
@@ -151,6 +175,7 @@ export const useSurveyStore = defineStore('surveys', () => {
         createSurvey,
         orderRules,
         pelangganRules,
+        surveyRules,
         groupedByDate,
     };
 });

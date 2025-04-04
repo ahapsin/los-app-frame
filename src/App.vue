@@ -16,7 +16,6 @@
 </template>
 <script setup>
 import {ref, onMounted} from "vue";
-import LoadingScreen from "../src/components/organism/LoadingScreen.vue";
 
 const appcolor = import.meta.env.VITE_APP_BASE_COLOR;
 const appInfoColor = import.meta.env.VITE_APP_INFO_COLOR;
@@ -25,7 +24,7 @@ const themeOverrides = {
   common: {
     primaryColor: appcolor,
     primaryColorHover: appAccentColor,
-    borderRadius: "10px",
+    borderRadius: "5px",
     textColorBase: appcolor,
     infoColor: appInfoColor,
     infoColorHover: appInfoColor,

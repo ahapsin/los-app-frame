@@ -1,5 +1,10 @@
 <template>
   <div class="bg-white h-screen">
-    <slot></slot>
+    <div class="">
+      <slot name="appbar"/>
+    </div>
+    <div>
+      <slot></slot>
+    </div>
   </div>
 </template>
