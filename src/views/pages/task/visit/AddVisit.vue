@@ -73,13 +73,13 @@ import SelectStateRegion from "../../../../components/molecules/SelectStateRegio
 import FileUpload from "../../../../components/atoms/FileUpload.vue";
 import {reactive} from "vue";
 import Maps_point from "../../../aftersand/maps_point.vue";
-import AnalisaPage from "../analisa/AnalisaPage.vue";
+
 import AnalisaForm from "../analisa/AnalisaForm.vue";
 import CreditTab from "./CreditTab.vue";
 import DebiturTab from "./DebiturTab.vue";
-import PenjaminTab from "./PenjaminTab.vue";
+// import PenjaminTab from "..//PenjaminTab.vue";
 import JaminanTab from "./JaminanTab.vue";
-import FormAnalisaPage from "../analisa/FormAnalisaPage.vue";
+
 
 
 const progres = useLoadingBar();
