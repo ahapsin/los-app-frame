@@ -6,4 +6,8 @@ const findDocByType = (c, e) => {
     if (docPath.value) return docPath.value.PATH;
 };
 
-export {findDocByType}
+const formatKey = (key) => {
+    return key.replace(/_/g, ' ').replace(/\b\w/g, (char) => char.toUpperCase());
+  }
+
+export {findDocByType,formatKey}

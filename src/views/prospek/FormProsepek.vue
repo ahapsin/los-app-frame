@@ -4,13 +4,15 @@
       <template #suffix>
         <div class="flex gap-2">
           <n-button type="warning" secondary>Simpan</n-button>
-          <n-button type="primary">Kirim</n-button>
+          <n-button type="primary" @click="handleKirim">Kirim</n-button>
         </div>
       </template>
     </HAppBar>
-    <div class="p-4 sticky top-0 z-50" v-if="notice">
-      <n-alert title="notice" closable type="warning" class="shadow">
-        asdasd
+    <div class="p-4 sticky top-14 z-50" v-if="!notice">
+      <n-alert title="Peringatan" type="warning" class="shadow">
+        <ul>
+          <li>asd</li>
+        </ul>
       </n-alert>
     </div>
     <div class="p-2 bg-pr text-white">1. Data Order</div>
@@ -85,11 +87,25 @@
     </div>
     <div class="flex items-center justify-between p-2 bg-pr text-white">
       <div>3. Data Jaminan</div>
-      <n-button size="small" type="warning" @click="tambahJaminan">tambah</n-button>
+      <n-button size="small" type="warning" @click="drawTambahJaminan">tambah</n-button>
     </div>
     <!-- fotm data jaminan -->
     <div class="bg-white p-4">
-      Tidak ada Data jaminan
+      <n-alert type="info" v-if="jaminanList.length === 0">minimal memiliki 1 jaminan</n-alert>
+      <n-card v-for="jaminan, i in jaminanList" :key="jaminan" :title="`Jaminan ${i + 1}`">
+        <template #header-extra>
+          <n-space>
+            <n-button secondary type="info" circle><v-icon name="bi-pencil"/></n-button>
+            <n-button secondary type="error" circle><v-icon name="bi-trash"/></n-button>
+          </n-space>
+        </template>
+        <n-image v-for="i in 2" width="100" :key="i"
+          src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg" />
+        <div v-for="(val, key) in jaminan" :key="key" class="flex justify-between">
+          <span>{{ formatKey(key) }}</span>
+          <span class="font-bold">{{ val.toLocaleString() }}</span>
+        </div>
+      </n-card>
     </div>
     <div class="p-2 bg-pr text-white">4. Data Survey</div>
     <!-- form data survey -->
@@ -142,7 +158,7 @@
     <n-drawer v-model:show="showDrawer" placement="bottom" resizable :default-height="500">
       <n-drawer-content title="Tambah Jaminan" closable>
         <!-- form data order -->
-        <n-form ref="refFormOrder" :model="modelJaminan" :rules="rulesJaminan">
+        <n-form ref="refFormJaminan" :model="modelJaminan" :rules="rulesJaminan">
           <n-form-item label="Jenis Jaminan" path="jenis_jaminan">
             <n-select v-model:value="modelJaminan.jenis_jaminan" :options="optJaminan" />
           </n-form-item>
@@ -179,37 +195,70 @@
               <n-input v-model:value="modelJaminan.no_faktur" class="w-full" />
             </n-form-item>
             <n-form-item label="Warna" path="warna">
-              <n-input v-model:value="modelJaminan.no_faktur" class="w-full" />
+              <n-input v-model:value="modelJaminan.warna" class="w-full" />
             </n-form-item>
             <n-form-item label="Tanggal Berlaku STNK" path="tgl_stnk">
               <n-date-picker v-model:formatted-value="modelJaminan.tgl_stnk" class="w-full" format="dd-MM-yyyy"
                 type="date" value-format="yyyy-MM-dd" />
             </n-form-item>
           </div>
+          <div v-if="modelJaminan.jenis_jaminan === 'sertifikat'">
+            <n-form-item label="No Sertifikat" path="no_sertifikat">
+              <n-input v-model:value="modelJaminan.no_sertifikat" class="w-full" />
+            </n-form-item>
+            <n-form-item label="Status Kepemilikan" path="status_kepemilikan">
+              <n-input v-model:value="modelJaminan.status_kepemilikan" class="w-full" />
+            </n-form-item>
+            <n-form-item label="IMB" path="imb">
+              <n-input v-model:value="modelJaminan.imb" class="w-full" />
+            </n-form-item>
+            <n-form-item label="Luas Tanah" path="luas_tanah">
+              <n-input v-model:value="modelJaminan.luas_tanah" :allow-input="justNumber" class="w-full" />
+            </n-form-item>
+            <n-form-item label="Luas Bangunan" path="luas_bangunan">
+              <n-input v-model:value="modelJaminan.luas_bangunan" :allow-input="justNumber" class="w-full" />
+            </n-form-item>
+            <n-form-item label="Lokasi" path="lokasi">
+              <n-input v-model:value="modelJaminan.lokasi" class="w-full" />
+            </n-form-item>
+            <n-form-item label="Atas Nama" path="atas_nama">
+              <n-input v-model:value="modelJaminan.atas_nama" class="w-full" />
+            </n-form-item>
+            <n-form-item label="Nilai Jaminan" path="nilai_jaminan">
+              <n-input v-model:value="modelJaminan.nilai_jaminan" class="w-full" />
+            </n-form-item>
+          </div>
+          {{ dynamicForm }}||
+          {{ modelJaminan }}
         </n-form>
         <template #footer>
-          <n-button class="w-full" type="primary">Tambah</n-button>
+          <n-button class="w-full" type="primary" @click="tambahJaminan">Tambah</n-button>
         </template>
       </n-drawer-content>
     </n-drawer>
   </HScaffold>
 </template>
 <script setup>
-import { ref } from "vue";
+import { reactive, ref } from "vue";
 import { format, parse } from "../../utils/parse.js";
 import { v4 as uuidv4 } from "uuid";
-import { findDocByType } from "../../utils/helpers.js";
+import { findDocByType, formatKey } from "../../utils/helpers.js";
 import { useSurveyStore } from "../../stores/survey.js";
 import { justNumber } from "../../utils/validator.js";
 import HScaffold from "../../components/molecules/HScaffold.vue";
 import HAppBar from "../../components/molecules/HAppBar.vue";
+import { useMessage } from "naive-ui";
 
 const refFormOrder = ref();
 const refFormPelanggan = ref();
 const refFormSurvey = ref();
+const refFormJaminan = ref();
+const notice = ref();
 const showDrawer = ref(false);
+const uuid = uuidv4();
 
 const surveyStore = useSurveyStore();
+const message = useMessage();
 
 //model
 const modelOrder = ref({
@@ -252,26 +301,14 @@ const modelSurvey = ref({
 });
 
 const modelJaminan = ref({
-  jenis_jaminan: null,
+  id: uuid,
   kondisi_jaminan: 'ada',
-  merk: null,
-  tipe: null,
-  tahun: null,
-  nilai: null,
-  no_polisi: null,
-  warna: null,
-  tgl_stnk: null,
-  no_bpkb: null,
-  alamat_bpkb: null,
-  atas_nama_bpkb: null,
-  no_rangka: null,
-  no_mesin: null,
-  no_faktur: null
 });
 
-const uuid = uuidv4();
 
-const dynamicForm = ref({
+const jaminanList = ref([{ "id": "lx91c8zxp", "kondisi_jaminan": "didealer", "jenis_jaminan": "kendaraan", "merk": "YAMAHA", "tipe": "YM0031 - FINO - FINO", "tahun": "2010", "nilai": 6500000, "no_polisi": "no", "no_rangka": "no", "no_mesin": "no", "no_faktur": "no", "warna": "no", "tgl_stnk": "2025-04-07" }]);
+
+const dynamicForm = reactive({
   id: uuid,
 })
 
@@ -308,8 +345,27 @@ const optJaminan = [{
 }];
 
 // method
-const tambahJaminan = () => {
+const drawTambahJaminan = () => {
   showDrawer.value = !showDrawer.value;
+  modelJaminan.value.id = Math.random().toString(36).substr(2, 9);
+  ;
+}
+
+const tambahJaminan = () => {
+  refFormJaminan.value?.validate((errors) => {
+    if (errors) {
+      message.error('periksa kembali isian anda');
+    } else {
+      jaminanList.value.push(modelJaminan.value);
+      showDrawer.value = false;
+    }
+  });
+}
+
+const handleKirim = () => {
+  refFormOrder.value?.validate();
+  refFormPelanggan.value?.validate();
+  refFormSurvey.value?.validate();
 }
 
 //rules
@@ -342,47 +398,87 @@ const rulesJaminan = {
   no_bpkb: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "No BPKB wajib diisi",
   },
   alamat_bpkb: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "alamat BPKB wajib diisi",
   },
   atas_nama_bpkb: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "atas nama BPKB wajib diisi",
   },
   no_rangka: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "no rangka wajib diisi",
   },
   no_mesin: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "no mesin wajib diisi",
   },
   no_faktur: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "no faktur wajib diisi",
   },
   no_polisi: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "no polisi wajib diisi",
   },
   warna: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "warna jaminan wajib diisi",
   },
   tgl_stnk: {
     required: true,
     trigger: "blur",
-    message: "kondisi jaminan wajib diisi",
+    message: "tanggal stnk wajib diisi",
+  },
+  no_sertifikat: {
+    required: true,
+    trigger: "blur",
+    message: "no sertifikat wajib diisi",
+  },
+  status_kepemilikan: {
+    required: true,
+    trigger: "blur",
+    message: "status kepemilikan wajib diisi",
+  },
+  imb: {
+    required: true,
+    trigger: "blur",
+    message: "imb wajib diisi",
+  },
+  luas_tanah: {
+    required: true,
+    trigger: "blur",
+    message: "luas tanah wajib diisi",
+  },
+  luas_bangunan: {
+    required: true,
+    trigger: "blur",
+    message: "luas bangunan wajib diisi",
+  },
+  lokasi: {
+    required: true,
+    trigger: "blur",
+    message: "lokasi wajib diisi",
+  },
+  atas_nama: {
+    required: true,
+    trigger: "blur",
+    message: "atas nama wajib diisi",
+  },
+  nilai_jaminan: {
+    required: true,
+    trigger: "blur",
+    message: "nilai jaminan wajib diisi",
   },
 };
 

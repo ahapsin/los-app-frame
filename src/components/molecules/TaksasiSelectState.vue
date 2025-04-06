@@ -114,7 +114,7 @@ const props = defineProps({
 });
 
 const getBrand = async () => {
-  loadingBrand.value = false;
+  loadingBrand.value = true;
 
   let userToken = localStorage.getItem("token");
   const response = await useApi({
@@ -280,7 +280,5 @@ const format = (value) => {
 };
 onMounted(() => {
   getBrand();
-  getTipe();
-  getTahun();
 });
 </script>

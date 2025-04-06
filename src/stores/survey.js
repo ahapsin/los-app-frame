@@ -103,43 +103,43 @@ export const useSurveyStore = defineStore('surveys', () => {
         }, nama_pelanggan: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "nama pelanggan wajib diisi",
         }, no_hp: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "no hp wajib diisi",
         }, alamat: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "alamat wajib diisi",
         }, rt: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "rt wajib diisi",
         }, rw: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "rw wajib diisi",
         }, provinsi: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "provinsi wajib diisi",
         }, kota: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "kota wajib diisi",
         }, kecamatan: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "kecamatan wajib diisi",
         }, desa: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "desa wajib diisi",
         }, kode_pos: {
             required: true,
             trigger: "blur",
-            message: "tujuan kredit wajib diisi",
+            message: "kode pos wajib diisi",
         },
 
     }
