@@ -19,59 +19,64 @@
     <!-- form data order -->
     <div class="bg-white p-4">
       <n-form ref="refFormOrder" :model="modelOrder" :rules="surveyStore.orderRules">
-        <n-form-item clearable label="Plafond" path="plafond">
-          <n-input-number v-model:value="modelOrder.plafond" @blur="getAngsuran" :format :parse :show-button="false" class="w-full" />
-        </n-form-item>
-        <n-form-item label="Jenis Angsuran" path="jenis">
-          <n-select v-model:value="modelOrder.jenis" :options="optJenisAngsuran" @update:value="handleUpdateJenis" />
-        </n-form-item>
-        <n-form-item label="Tenor" path="tenor">
-          <n-select v-model:value="modelOrder.tenor"
-            :options="modelOrder.jenis === 'BULANAN' ? optTenor : optTenorMusiman" @update:value="getAngsuran" />
-        </n-form-item>
-        <n-form-item label="Angsuran" path="angsuran">
-          <n-input-number :parse :format readonly v-model:value="modelOrder.angsuran" :show-button="false"
-            class="w-full" />
-        </n-form-item>
-        <n-form-item label="Tujuan Kredit" path="tujuan_kredit">
-          <n-select v-model:value="modelOrder.tujuan_kredit" :options="optTujuanKredit" class="w-full" />
-        </n-form-item>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <n-form-item clearable label="Plafond" path="plafond">
+            <n-input-number v-model:value="modelOrder.plafond" @blur="getAngsuran" :format :parse :show-button="false"
+              class="w-full" />
+          </n-form-item>
+          <n-form-item label="Jenis Angsuran" path="jenis">
+            <n-select v-model:value="modelOrder.jenis" :options="optJenisAngsuran" @update:value="handleUpdateJenis" />
+          </n-form-item>
+          <n-form-item label="Tenor" path="tenor">
+            <n-select v-model:value="modelOrder.tenor"
+              :options="modelOrder.jenis === 'BULANAN' ? optTenor : optTenorMusiman" @update:value="getAngsuran" />
+          </n-form-item>
+          <n-form-item label="Angsuran" path="angsuran">
+            <n-input-number :parse :format readonly v-model:value="modelOrder.angsuran" :show-button="false"
+              class="w-full" />
+          </n-form-item>
+          <n-form-item label="Tujuan Kredit" path="tujuan_kredit">
+            <n-select v-model:value="modelOrder.tujuan_kredit" :options="optTujuanKredit" class="w-full" />
+          </n-form-item>
+        </div>
       </n-form>
     </div>
     <div class="p-2 bg-pr text-white">2. Data Pelanggan</div>
     <!-- form data pelanggan -->
     <div class="bg-white p-4">
       <n-form ref="refFormPelanggan" :model="modelPelanggan" :rules="surveyStore.pelangganRules">
-        <n-form-item label="No KTP" path="no_ktp">
-          <n-input v-model:value="modelPelanggan.no_ktp" :allow-input="justNumber" class="w-full" maxlength="16"
-            show-count />
-        </n-form-item>
-        <n-form-item label="Kategori Kredit" path="kategori">
-          <n-input v-model:value="modelPelanggan.kategori" class="w-full" />
-        </n-form-item>
-        <n-form-item label="No KK" path="no_kk">
-          <n-input v-model:value="modelPelanggan.no_kk" :allow-input="justNumber" class="w-full" maxlength="16"
-            show-count />
-        </n-form-item>
-        <n-form-item label="Nama Pelanggan" path="nama_pelanggan">
-          <n-input v-model:value="modelPelanggan.nama" class="w-full" />
-        </n-form-item>
-        <n-form-item label="Tanggal Lahir" path="tgl_lahir">
-          <n-date-picker v-model:formatted-value="modelPelanggan.tgl_lahir" class="w-full" format="dd-MM-yyyy"
-            placeholder="Tanggal Lahir" type="date" value-format="yyyy-MM-dd" @update:value="handleTanggalLahir" />
-        </n-form-item>
-        <n-form-item label="No Handphone" path="no_hp">
-          <n-input v-model:value="modelPelanggan.no_hp" class="w-full" />
-        </n-form-item>
-        <n-form-item label="Alamat" path="alamat">
-          <n-input v-model:value="modelPelanggan.alamat" class="w-full" />
-        </n-form-item>
-        <n-form-item label="RT" path="rt">
-          <n-input v-model:value="modelPelanggan.rt" class="w-full" />
-        </n-form-item>
-        <n-form-item label="RW" path="rw">
-          <n-input v-model:value="modelPelanggan.rw" class="w-full" />
-        </n-form-item>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <n-form-item label="No KTP" path="no_ktp">
+            <n-input v-model:value="modelPelanggan.no_ktp" :allow-input="justNumber" class="w-full" maxlength="16"
+              show-count />
+          </n-form-item>
+          <n-form-item label="Kategori Kredit" path="kategori">
+            <n-input v-model:value="modelPelanggan.kategori" class="w-full" />
+          </n-form-item>
+          <n-form-item label="No KK" path="no_kk">
+            <n-input v-model:value="modelPelanggan.no_kk" :allow-input="justNumber" class="w-full" maxlength="16"
+              show-count />
+          </n-form-item>
+          <n-form-item label="Nama Pelanggan" path="nama_pelanggan">
+            <n-input v-model:value="modelPelanggan.nama" class="w-full" />
+          </n-form-item>
+          <n-form-item label="Tanggal Lahir" path="tgl_lahir">
+            <n-date-picker v-model:formatted-value="modelPelanggan.tgl_lahir" class="w-full" format="dd-MM-yyyy"
+              placeholder="Tanggal Lahir" type="date" value-format="yyyy-MM-dd" @update:value="handleTanggalLahir" />
+          </n-form-item>
+          <n-form-item label="No Handphone" path="no_hp">
+            <n-input v-model:value="modelPelanggan.no_hp" class="w-full" />
+          </n-form-item>
+          <n-form-item label="Alamat" path="alamat">
+            <n-input v-model:value="modelPelanggan.alamat" class="w-full" />
+          </n-form-item>
+          <n-form-item label="RT" path="rt">
+            <n-input v-model:value="modelPelanggan.rt" class="w-full" />
+          </n-form-item>
+          <n-form-item label="RW" path="rw">
+            <n-input v-model:value="modelPelanggan.rw" class="w-full" />
+          </n-form-item>
+        </div>
         <select-state-region v-model:desa="modelPelanggan.kelurahan" v-model:kecamatan="modelPelanggan.kecamatan"
           v-model:kodepos="modelPelanggan.kode_pos" v-model:kota="modelPelanggan.kota"
           v-model:provinsi="modelPelanggan.provinsi" />
@@ -100,11 +105,19 @@
             <n-button secondary type="error" circle><v-icon name="bi-trash" /></n-button>
           </n-space>
         </template>
-        <n-image v-for="i in 2" width="100" :key="i"
-          src="https://static.vecteezy.com/system/resources/previews/012/003/110/non_2x/information-not-found-concept-illustration-flat-design-eps10-modern-graphic-element-for-landing-page-empty-state-ui-infographic-icon-vector.jpg" />
-        <div v-for="(val, key) in jaminan" :key="key" class="flex justify-between">
-          <span>{{ formatKey(key) }}</span>
-          <span class="font-bold">{{ val.toLocaleString() }}</span>
+        <n-image v-for="attach in jaminan.attachment" width="100" :key="attach"
+          :src="attach.url" />
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <div v-for="(val, key) in jaminan" :key="key" class="flex md:flex-col text-start justify-between">
+            <div v-if="key != 'attachment'">
+              <div class="bg-sfc p-1">{{ formatKey(key) }}</div>
+              <div class="font-bold p-1 h-full">{{ val.toLocaleString() }}</div>
+            </div>
+            <div v-else>
+              <div class="bg-sfc p-1">{{ formatKey(key) }}</div>
+              <div class="font-bold p-1 h-full">{{ val.length }}</div>
+            </div>
+          </div>
         </div>
       </n-card>
     </div>
@@ -112,53 +125,57 @@
     <!-- form data survey -->
     <div class="bg-white p-4">
       <n-form ref="refFormSurvey" :model="modelSurvey" :rules="surveyStore.surveyRules">
-        <n-form-item label="Tanggal Survey" path="tgl_survey">
-          <n-date-picker v-model:formatted-value="modelSurvey.tgl_survey" class="w-full" format="dd-MM-yyyy" type="date"
-            :default-value="Date.now()" value-format="yyyy-MM-dd" @update:value="handleTanggalLahir" />
-        </n-form-item>
-        <n-form-item label="Pekerjaan" path="pekerjaan">
-          <n-input v-model:value="modelSurvey.pekerjaan" :allow-input="justNumber" class="w-full" maxlength="16"
-            show-count />
-        </n-form-item>
-        <n-form-item label="Lama Bekerja" path="lama_kerja">
-          <n-input v-model:value="modelSurvey.lama_kerja" :allow-input="justNumber" class="w-full">
-            <template #suffix>bulan</template>
-          </n-input>
-        </n-form-item>
-        <n-form-item label="Pendapatan Pelanggan" path="pendapatan_pelanggan">
-          <n-input-number :show-button="false" :parse :format v-model:value="modelSurvey.pendapatan_pelanggan"
-            :allow-input="justNumber" class="w-full">
-            <template #suffix>/ bulan</template>
-          </n-input-number>
-        </n-form-item>
-        <n-form-item label="Pendapatan Pasangan" path="pendapatan_pasangan">
-          <n-input-number :show-button="false" :parse :format v-model:value="modelSurvey.pendapatan_pasangan"
-            :allow-input="justNumber" class="w-full">
-            <template #suffix>/ bulan</template>
-          </n-input-number>
-        </n-form-item>
-        <n-form-item label="Pendapatan Lainnya" path="pendapatan_lainnya">
-          <n-input-number :show-button="false" :parse :format v-model:value="modelSurvey.pendaptan_lainnya"
-            :allow-input="justNumber" class="w-full">
-            <template #suffix>/ bulan</template>
-          </n-input-number>
-        </n-form-item>
-        <n-form-item label="Pengeluaraan" path="pengeluaran">
-          <n-input-number :show-button="false" :parse :format v-model:value="modelSurvey.pengeluaran"
-            :allow-input="justNumber" class="w-full">
-            <template #suffix>/ bulan</template></n-input-number>
-        </n-form-item>
-        <n-form-item label="Catatan Survey" path="catatan_survey">
-          <n-input type="textarea" v-model:value="modelSurvey.catatan_survey" :allow-input="justNumber" class="w-full"
-            maxlength="1000" show-count />
-        </n-form-item>
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-2">
+          <n-form-item label="Tanggal Survey" path="tgl_survey">
+            <n-date-picker v-model:formatted-value="modelSurvey.tgl_survey" class="w-full" format="dd-MM-yyyy"
+              type="date" :default-value="Date.now()" value-format="yyyy-MM-dd" @update:value="handleTanggalLahir" />
+          </n-form-item>
+          <n-form-item label="Pekerjaan" path="pekerjaan">
+            <n-input v-model:value="modelSurvey.pekerjaan" :allow-input="justNumber" class="w-full" maxlength="16"
+              show-count />
+          </n-form-item>
+          <n-form-item label="Lama Bekerja" path="lama_kerja">
+            <n-input v-model:value="modelSurvey.lama_kerja" :allow-input="justNumber" class="w-full">
+              <template #suffix>bulan</template>
+            </n-input>
+          </n-form-item>
+          <n-form-item label="Pendapatan Pelanggan" path="pendapatan_pelanggan">
+            <n-input-number :show-button="false" :parse :format v-model:value="modelSurvey.pendapatan_pelanggan"
+              :allow-input="justNumber" class="w-full">
+              <template #suffix>/ bulan</template>
+            </n-input-number>
+          </n-form-item>
+          <n-form-item label="Pendapatan Pasangan" path="pendapatan_pasangan">
+            <n-input-number :show-button="false" :parse :format v-model:value="modelSurvey.pendapatan_pasangan"
+              :allow-input="justNumber" class="w-full">
+              <template #suffix>/ bulan</template>
+            </n-input-number>
+          </n-form-item>
+          <n-form-item label="Pendapatan Lainnya" path="pendapatan_lainnya">
+            <n-input-number :show-button="false" :parse :format v-model:value="modelSurvey.pendaptan_lainnya"
+              :allow-input="justNumber" class="w-full">
+              <template #suffix>/ bulan</template>
+            </n-input-number>
+          </n-form-item>
+          <n-form-item label="Pengeluaraan" path="pengeluaran">
+            <n-input-number :show-button="false" :parse :format v-model:value="modelSurvey.pengeluaran"
+              :allow-input="justNumber" class="w-full">
+              <template #suffix>/ bulan</template></n-input-number>
+          </n-form-item>
+          <n-form-item label="Catatan Survey" path="catatan_survey">
+            <n-input type="textarea" v-model:value="modelSurvey.catatan_survey" :allow-input="justNumber" class="w-full"
+              maxlength="1000" show-count />
+          </n-form-item>
+        </div>
       </n-form>
     </div>
 
     <!-- drawer -->
-    <n-drawer v-model:show="showDrawer" placement="bottom" resizable :default-height="500">
+    <n-drawer v-model:show="showDrawer" :placement="width > 390 ? 'right' : 'bottom'" resizable :default-height="500"
+      width="300">
       <n-drawer-content title="Tambah Jaminan" closable>
         <!-- form data order -->
+         {{ modelJaminan }}
         <n-form ref="refFormJaminan" :model="modelJaminan" :rules="rulesJaminan">
           <n-form-item label="Jenis Jaminan" path="jenis_jaminan">
             <n-select v-model:value="modelJaminan.jenis_jaminan" :options="optJaminan" />
@@ -202,13 +219,14 @@
               <n-date-picker v-model:formatted-value="modelJaminan.tgl_stnk" class="w-full" format="dd-MM-yyyy"
                 type="date" value-format="yyyy-MM-dd" />
             </n-form-item>
-            <file-upload title="No Rangka" endpoint="image_upload_prospect" type="ktp" :idapp="dynamicForm.id" @fallback="handleImageFallback"/>
-            <file-upload title="No Mesin" endpoint="image_upload_prospect" type="no_mesin" :idapp="dynamicForm.id"/>
-            <file-upload title="STNK" endpoint="image_upload_prospect" type="stnk" :idapp="dynamicForm.id"/>
-            <file-upload title="Depan" endpoint="image_upload_prospect" type="depan" :idapp="dynamicForm.id"/>
-            <file-upload title="Belakang" endpoint="image_upload_prospect" type="belakang" :idapp="dynamicForm.id"/>
-            <file-upload title="Kanan" endpoint="image_upload_prospect" type="kanan" :idapp="dynamicForm.id"/>
-            <file-upload title="Kiri" endpoint="image_upload_prospect" type="kiri" :idapp="dynamicForm.id"/>
+            <file-upload title="No Rangka" endpoint="image_upload_prospect" type="no_rangka" :idapp="dynamicForm.id"
+              @fallback="handleImageFallback" />
+            <file-upload title="No Mesin" endpoint="image_upload_prospect" type="no_mesin" :idapp="dynamicForm.id" />
+            <file-upload title="STNK" endpoint="image_upload_prospect" type="stnk" :idapp="dynamicForm.id" />
+            <file-upload title="Depan" endpoint="image_upload_prospect" type="depan" :idapp="dynamicForm.id" />
+            <file-upload title="Belakang" endpoint="image_upload_prospect" type="belakang" :idapp="dynamicForm.id" />
+            <file-upload title="Kanan" endpoint="image_upload_prospect" type="kanan" :idapp="dynamicForm.id" />
+            <file-upload title="Kiri" endpoint="image_upload_prospect" type="kiri" :idapp="dynamicForm.id" />
           </div>
           <div v-if="modelJaminan.jenis_jaminan === 'sertifikat'">
             <n-form-item label="No Sertifikat" path="no_sertifikat">
@@ -255,6 +273,7 @@ import HScaffold from "../../components/molecules/HScaffold.vue";
 import HAppBar from "../../components/molecules/HAppBar.vue";
 import { useMessage } from "naive-ui";
 import { useApi } from "../../helpers/axios.js";
+import { useWindowSize } from "@vueuse/core";
 
 const refFormOrder = ref();
 const refFormPelanggan = ref();
@@ -263,6 +282,7 @@ const refFormJaminan = ref();
 const notice = ref();
 const showDrawer = ref(false);
 const uuid = uuidv4();
+const { width } = useWindowSize();
 
 const surveyStore = useSurveyStore();
 const message = useMessage();
@@ -310,6 +330,7 @@ const modelSurvey = ref({
 const modelJaminan = ref({
   id: uuid,
   kondisi_jaminan: 'ada',
+  attachment: [],
 });
 
 
@@ -398,8 +419,14 @@ const handleKirim = () => {
   refFormSurvey.value?.validate();
 }
 
-const handleImageFallback = (e)=>{
-  console.log(e)
+const handleImageFallback = (e) => {
+  const res = e.data.response;
+  const type = e.type;
+  const doc = {
+    url: res,
+    type_doc: type
+  }
+  modelJaminan.value.attachment.push(doc);
 }
 
 //rules

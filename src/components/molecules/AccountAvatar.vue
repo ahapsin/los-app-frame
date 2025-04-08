@@ -1,21 +1,21 @@
 <template>
-  <div class="flex items-center gap-4 cursor-pointer">
+  <div class="flex items-center gap-4 p-1 cursor-pointer border rounded-full">
     <n-dropdown trigger="hover" :options="options">
-      <div class="flex items-center gap-4">
-                <span class="flex flex-col items-end">
-                  <n-text type="primary" class="text-primary hidden md:flex uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
-                    <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small>
-                </span>
+      <div class="flex items-center gap-2">
         <n-avatar round size="small" class="aspect-square" :src="dataUser
                     ? dataUser.PHOTO_URL
                     : 'https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-vert.png'
                     ">
           {{ dataUser?.nama.at(0) }}
         </n-avatar>
+                <span class="flex flex-col items-end">
+                  <n-text type="primary" class="text-primary uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
+                    <!-- <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small> -->
+                </span>
+        
 
       </div>
     </n-dropdown>
-
   </div>
 </template>
 <script setup>

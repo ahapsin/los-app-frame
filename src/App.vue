@@ -23,7 +23,7 @@ const appAccentColor = import.meta.env.VITE_APP_ACCENT_COLOR;
 const themeOverrides = {
   common: {
     primaryColor: appcolor,
-    primaryColorHover: appAccentColor,
+    primaryColorHover: appcolor,
     borderRadius: "5px",
     textColorBase: appcolor,
     infoColor: appInfoColor,

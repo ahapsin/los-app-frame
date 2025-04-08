@@ -1,9 +1,8 @@
 import "./style.css";
+import 'leaflet/dist/leaflet.css';
+
 import * as BIIcons from "oh-vue-icons/icons/bi";
 import * as RIcons from "oh-vue-icons/icons/ri";
-
-
-import 'leaflet/dist/leaflet.css';
 
 import { OhVueIcon, addIcons } from "oh-vue-icons";
 

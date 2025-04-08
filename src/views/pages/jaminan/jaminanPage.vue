@@ -1,4 +1,5 @@
 <template>
+  <HAppBar :title="$route.name" class="shadow bg-white sticky top-0 z-50"></HAppBar>
   <n-card>
     <n-tabs size="medium" @update:value="handleUpdateValue" class="card-tabs" default-value="jaminan" animated
             type="segment" pane-wrapper-style="margin: 0 -4px" @before-leave="handleSwitchTab"

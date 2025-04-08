@@ -1,5 +1,5 @@
 <template>
-  <div class="grid md:grid-cols-2 gap-2">
+  <div class="grid gap-2">
     <n-form-item
       label="Brand / Merk"
       path="merk"

@@ -3,10 +3,9 @@
 
     <n-form ref="formRef" :model="dynamicForm">
       <div class="flex md:flex-row gap-4 items-center pb-8">
-        <img :src="applogo" alt="logo_company" class="h-14 md:h-16 ">
+        <img :src="appLogoClient" alt="logo_company" class="h-14 md:h-16 ">
         <div class="flex flex-col justify-center items-center md:items-start">
-          <span class="font-bold">LOAN ORIGINATION SYSTEM</span>
-          <span class="md:text-2xl font-bold">{{ apptitle }}</span>
+          <span class="md:text-2xl font-bold">{{ appTitleClient }}</span>
         </div>
       </div>
       <quote-section class="flex md:hidden"/>
@@ -39,8 +38,8 @@ import router from '../../router';
 import {useApi} from "../../helpers/axios";
 import pjson from '../../../package.json';
 
-const apptitle = import.meta.env.VITE_APP_TITLE;
-const applogo = import.meta.env.VITE_APP_LOGO;
+const appTitleClient = import.meta.env.VITE_APP_TITLE_CLIENT;
+const appLogoClient = import.meta.env.VITE_APP_LOGO_CLIENT;
 const appVersion = pjson.version;
 const dynamicForm = reactive({
   username: "",

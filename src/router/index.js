@@ -198,8 +198,9 @@ const routes = [
             },
             {
                 path: "new-survey",
-                name: "tambah survey",
-                component: () => import("../views/pages/task/AddSurveyPage.vue"),
+                name: "Survey Baru",
+                component: import("../views/prospek/FormProsepek.vue"),
+                // component: () => import("../views/pages/transaction/"),
             },
         ],
     },

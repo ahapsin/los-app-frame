@@ -61,7 +61,7 @@
 import {ref, onMounted, h, computed} from "vue";
 import {useApi} from "../../../../helpers/axios.js";
 import {useSearch} from "../../../../helpers/searchObject";
-import router from "../../../../router";
+import router from "../../../../router/index.js";
 
 import {
   useDialog,

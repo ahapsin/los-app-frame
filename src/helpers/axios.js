@@ -1,7 +1,6 @@
 import axios from "axios";
 import router from "../router/index.js";
 
-
 export async function useApi({...args}) {
     try {
         const response = await axios({
