@@ -13,10 +13,8 @@
       <n-select v-model:value="props.kecamatan" :options="col_kec" filterable label-field="text"
                 placeholder="Pilih Kecamatan" value-field="id" @blur="kecUpdate" @update:value="kecChanged"/>
     </n-form-item>
-    <n-form-item v-if="col_desa.length <= 0 " class="w-full" label="Desa" path="desa">
-      <n-input v-model:value="props.desa" placeholder="Kelurahan / Desa" @update:value="desaPostUp"/>
-    </n-form-item>
-    <n-form-item v-else class="w-full" label="Desa" path="desa">
+   
+    <n-form-item class="w-full" label="Desa" path="desa">
       <n-select v-model:value="props.desa" :options="col_desa" filterable label-field="text" placeholder="Pilih Desa"
                 tag
                 value-field="id" @click="desaUpdate" @update:value="desaChanged"/>

@@ -137,7 +137,7 @@ const handleImagePost = () => {
       json: bodyForm,
     })
     .then((json) => {
-      emit('fallback',json.json.response);
+      emit('fallback',{data:json.json,type:props.type});
       message.success(`upload ${props.title} berhasil`);
     })
     .catch(() => {

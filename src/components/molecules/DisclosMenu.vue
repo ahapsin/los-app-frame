@@ -1,7 +1,14 @@
 <template>
   <div class="flex flex-col gap-1">
     <div v-for="menu in props.menus" :key="menu.menuid" @click="!open">
-      <Disclosure v-slot="{ open }" as="div">
+      <div><small class="text-pr">{{ menu.menuitem.labelmenu.toUpperCase() }}</small></div>
+      <div v-for="submenu in menu.menuitem.submenu" class="py-1" :key="submenu">
+        <div class="flex gap-2 hover:bg-pr hover:text-white rounded-xl p-2">
+          <v-icon :name="submenu.leading[0]"/>
+          <div>{{ submenu.sublabel }}</div>
+        </div>
+      </div>
+      <!-- <Disclosure v-slot="{ open }" as="div">
         <DisclosureButton
             v-if="menu.menuitem.submenu.length == 0"
             class="rounded-xl w-full flex"
@@ -116,7 +123,7 @@
             </div>
           </DisclosurePanel>
         </div>
-      </Disclosure>
+      </Disclosure> -->
     </div>
   </div>
 </template>

@@ -20,20 +20,21 @@
     <div class="bg-white p-4">
       <n-form ref="refFormOrder" :model="modelOrder" :rules="surveyStore.orderRules">
         <n-form-item clearable label="Plafond" path="plafond">
-          <n-input-number v-model:value="modelOrder.plafond" :format :parse :show-button="false" class="w-full" />
+          <n-input-number v-model:value="modelOrder.plafond" @blur="getAngsuran" :format :parse :show-button="false" class="w-full" />
         </n-form-item>
         <n-form-item label="Jenis Angsuran" path="jenis">
           <n-select v-model:value="modelOrder.jenis" :options="optJenisAngsuran" @update:value="handleUpdateJenis" />
         </n-form-item>
         <n-form-item label="Tenor" path="tenor">
           <n-select v-model:value="modelOrder.tenor"
-            :options="modelOrder.jenis === 'BULANAN' ? optTenor : optTenorMusiman" />
+            :options="modelOrder.jenis === 'BULANAN' ? optTenor : optTenorMusiman" @update:value="getAngsuran" />
         </n-form-item>
         <n-form-item label="Angsuran" path="angsuran">
-          <n-input v-model:value="modelOrder.angsuran" :show-button="false" class="w-full" />
+          <n-input-number :parse :format readonly v-model:value="modelOrder.angsuran" :show-button="false"
+            class="w-full" />
         </n-form-item>
         <n-form-item label="Tujuan Kredit" path="tujuan_kredit">
-          <n-input v-model:value="modelOrder.tujuan_kredit" :show-button="false" class="w-full" />
+          <n-select v-model:value="modelOrder.tujuan_kredit" :options="optTujuanKredit" class="w-full" />
         </n-form-item>
       </n-form>
     </div>
@@ -95,8 +96,8 @@
       <n-card v-for="jaminan, i in jaminanList" :key="jaminan" :title="`Jaminan ${i + 1}`">
         <template #header-extra>
           <n-space>
-            <n-button secondary type="info" circle><v-icon name="bi-pencil"/></n-button>
-            <n-button secondary type="error" circle><v-icon name="bi-trash"/></n-button>
+            <n-button secondary type="info" circle><v-icon name="bi-pencil" /></n-button>
+            <n-button secondary type="error" circle><v-icon name="bi-trash" /></n-button>
           </n-space>
         </template>
         <n-image v-for="i in 2" width="100" :key="i"
@@ -201,6 +202,13 @@
               <n-date-picker v-model:formatted-value="modelJaminan.tgl_stnk" class="w-full" format="dd-MM-yyyy"
                 type="date" value-format="yyyy-MM-dd" />
             </n-form-item>
+            <file-upload title="No Rangka" endpoint="image_upload_prospect" type="ktp" :idapp="dynamicForm.id" @fallback="handleImageFallback"/>
+            <file-upload title="No Mesin" endpoint="image_upload_prospect" type="no_mesin" :idapp="dynamicForm.id"/>
+            <file-upload title="STNK" endpoint="image_upload_prospect" type="stnk" :idapp="dynamicForm.id"/>
+            <file-upload title="Depan" endpoint="image_upload_prospect" type="depan" :idapp="dynamicForm.id"/>
+            <file-upload title="Belakang" endpoint="image_upload_prospect" type="belakang" :idapp="dynamicForm.id"/>
+            <file-upload title="Kanan" endpoint="image_upload_prospect" type="kanan" :idapp="dynamicForm.id"/>
+            <file-upload title="Kiri" endpoint="image_upload_prospect" type="kiri" :idapp="dynamicForm.id"/>
           </div>
           <div v-if="modelJaminan.jenis_jaminan === 'sertifikat'">
             <n-form-item label="No Sertifikat" path="no_sertifikat">
@@ -228,8 +236,6 @@
               <n-input v-model:value="modelJaminan.nilai_jaminan" class="w-full" />
             </n-form-item>
           </div>
-          {{ dynamicForm }}||
-          {{ modelJaminan }}
         </n-form>
         <template #footer>
           <n-button class="w-full" type="primary" @click="tambahJaminan">Tambah</n-button>
@@ -248,6 +254,7 @@ import { justNumber } from "../../utils/validator.js";
 import HScaffold from "../../components/molecules/HScaffold.vue";
 import HAppBar from "../../components/molecules/HAppBar.vue";
 import { useMessage } from "naive-ui";
+import { useApi } from "../../helpers/axios.js";
 
 const refFormOrder = ref();
 const refFormPelanggan = ref();
@@ -344,6 +351,11 @@ const optJaminan = [{
   value: "sertifikat",
 }];
 
+const optTujuanKredit = ["KONSUMSI", "INVESTASI"].map((v) => ({
+  label: v,
+  value: v
+}));
+
 // method
 const drawTambahJaminan = () => {
   showDrawer.value = !showDrawer.value;
@@ -362,10 +374,32 @@ const tambahJaminan = () => {
   });
 }
 
+const getAngsuran = async () => {
+  // inisialisasi untuk getAngsuran
+  const bodyOrder = {
+    plafond: modelOrder.value?.plafond,
+    jenis_angsuran: modelOrder.value?.jenis,
+    tenor: modelOrder.value?.tenor,
+  }
+  const res = await useApi({
+    method: "POST",
+    data: bodyOrder,
+    api: "fee",
+    token: localStorage.getItem('token'),
+  });
+  if (res.ok) {
+    modelOrder.value.angsuran = res.data.angsuran;
+  }
+}
+
 const handleKirim = () => {
   refFormOrder.value?.validate();
   refFormPelanggan.value?.validate();
   refFormSurvey.value?.validate();
+}
+
+const handleImageFallback = (e)=>{
+  console.log(e)
 }
 
 //rules

@@ -75,10 +75,6 @@ export const useSurveyStore = defineStore('surveys', () => {
             required: true,
             trigger: "blur",
             message: "tenor wajib diisi",
-        }, angsuran: {
-            required: true,
-            trigger: "blur",
-            message: "angsuran wajib diisi",
         }, tujuan_kredit: {
             required: true,
             trigger: "blur",
