@@ -1,37 +1,52 @@
 <template>
-  <div class="flex items-center gap-4 p-1 cursor-pointer border rounded-full">
+  <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
+    <div class="flex gap-2">
+      <n-badge :value="9">
+        <n-button type="primary" tertiary circle>
+          <template #icon>
+            <v-icon name="bi-chat" />
+          </template>
+        </n-button>
+      </n-badge>
+      <n-badge :value="4">
+        <n-button type="primary" tertiary circle>
+          <template #icon>
+            <v-icon name="bi-bell" />
+          </template>
+        </n-button>
+      </n-badge>
+    </div>
+    <div></div>
     <n-dropdown trigger="hover" :options="options">
       <div class="flex items-center gap-2">
+        <span class="flex flex-col items-end">
+          <n-text type="primary" class="text-primary uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
+          <!-- <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small> -->
+        </span>
         <n-avatar round size="small" class="aspect-square" :src="dataUser
-                    ? dataUser.PHOTO_URL
-                    : 'https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-vert.png'
-                    ">
+          ? dataUser.PHOTO_URL
+          : 'https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-vert.png'
+          ">
           {{ dataUser?.nama.at(0) }}
         </n-avatar>
-                <span class="flex flex-col items-end">
-                  <n-text type="primary" class="text-primary uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
-                    <!-- <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small> -->
-                </span>
-        
-
       </div>
     </n-dropdown>
   </div>
 </template>
 <script setup>
-import {ref, h, onMounted} from "vue";
+import { ref, h, onMounted } from "vue";
 import router from "../../router";
-import {useMessage, NIcon} from "naive-ui";
+import { useMessage, NIcon } from "naive-ui";
 import {
   AccountCircleOutlined as Account,
   LockOutlined as Locked,
   LogOutOutlined as SignOut,
 } from "@vicons/material";
 
-import {useApi} from "../../helpers/axios";
-import {useMeStore} from "../../stores/me";
-import {useTaskStore} from "../../stores/task";
-import {useCollateralStore} from "../../stores/collateral.js";
+import { useApi } from "../../helpers/axios";
+import { useMeStore } from "../../stores/me";
+import { useTaskStore } from "../../stores/task";
+import { useCollateralStore } from "../../stores/collateral.js";
 
 const message = useMessage();
 const me = useMeStore();
@@ -88,13 +103,13 @@ const options = [
 const task = useTaskStore();
 const coll = useCollateralStore();
 const approvalCenter = () => {
-  router.push({name: "approval-center"})
+  router.push({ name: "approval-center" })
 }
 const handleAccount = () => {
-  router.push({name: "myaccount"});
+  router.push({ name: "myaccount" });
 };
 const handleChangePassword = () => {
-  router.push({name: "changepassword"});
+  router.push({ name: "changepassword" });
 };
 
 const GetMe = async () => {

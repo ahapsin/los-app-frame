@@ -17,11 +17,12 @@ export const useMenuStore = defineStore("menu", () => {
     });
     return x[0];
   });
+
   const fetchData = async () => {
     loading.value = true;
     const response = await useApi({
       method: "get",
-      api: 'menu-sub-list',
+      api: "menu-sub-list",
       token: token,
     });
     if (!response.ok) {

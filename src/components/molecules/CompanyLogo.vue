@@ -5,6 +5,6 @@
     </div>
 </template>
 <script setup>
-const appLogo = import.meta.env.VITE_APP_LOGO;
+const appLogo = import.meta.env.VITE_APP_LOGO_CLIENT;
 const appTitle = import.meta.env.VITE_APP_TITLE;
 </script>

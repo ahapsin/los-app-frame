@@ -1,5 +1,6 @@
 <template>
   <n-card>
+    <pre>{{ menu.list }}</pre>
     <div v-if="menu.loading">
       <div class="flex flex-col gap-2">
         <n-skeleton height="10px" width="100px" round/>

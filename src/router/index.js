@@ -115,7 +115,7 @@ const routes = [
             },
             {
                 path: "addvisit",
-                name: "addvisit",
+                name: "Nasabah",
                 component: () => import("../views/pages/task/visit/AddVisit.vue"),
             }, {
                 path: "analisa",

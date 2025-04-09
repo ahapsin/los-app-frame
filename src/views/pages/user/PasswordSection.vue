@@ -1,43 +1,27 @@
 <template>
-
-    <n-form
-      ref="formRef"
-      :model="dynamicForm"
-      :rules="rules"
-      :label-placement="top"
-      require-mark-placement="right-hanging"
-    >
-    <div class="grid grid-cols-1 md:grid-cols-4 p-2 gap-2">
+  <n-form ref="formRef" :model="dynamicForm" :rules="rules" :label-placement="top"
+    require-mark-placement="right-hanging">
+    <div class="p-2 bg-red-100 rounded-xl border border-red-400">
+      <div class="grid grid-cols-1 md:grid-cols-4 p-2 gap-2">
         <n-form-item path="old" label="Password Lama" required>
-          <n-input
-            type="password"
-            show-password-on="mousedown"
-            v-model:value="dynamicForm.old"
-            placeholder="password lama"
-          />
+          <n-input type="password" show-password-on="mousedown" v-model:value="dynamicForm.old"
+            placeholder="password lama" />
         </n-form-item>
         <n-form-item path="baru" label="Password Baru" required>
-          <n-input
-            type="password"
-            v-model:value="dynamicForm.new"
-            show-password-on="mousedown"
-            placeholder="password baru"
-          />
+          <n-input type="password" v-model:value="dynamicForm.new" show-password-on="mousedown"
+            placeholder="password baru" />
         </n-form-item>
         <n-form-item path="conf" label="Konfirmasi Password Baru" required>
-          <n-input
-            type="password"
-            v-model:value="dynamicForm.conf"
-            show-password-on="mousedown"
-            placeholder="konfirmasi password baru"
-            @blur="handleConf"
-          />
+          <n-input type="password" v-model:value="dynamicForm.conf" show-password-on="mousedown"
+            placeholder="konfirmasi password baru" @blur="handleConf" />
         </n-form-item>
-        <n-form-item>
-          <n-button class="flex w-full md:w-fit" type="primary" @click="handleUpdate" :disabled="dynamicForm.conf != dynamicForm.new">update</n-button>
+        <n-form-item class="w-full">
+          <n-button class="flex w-full md:w-fit" type="primary" @click="handleUpdate"
+            :disabled="dynamicForm.conf != dynamicForm.new">update</n-button>
         </n-form-item>
       </div>
-    </n-form>
+    </div>
+  </n-form>
 
 </template>
 <script setup>

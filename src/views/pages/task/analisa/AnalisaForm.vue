@@ -1,9 +1,9 @@
 <template>
-  <div class="flex p-1 border bg-slate-50 shadow rounded-lg">
+  <div class="flex p-1 border  rounded-lg">
     <div class="flex flex-col p-2 w-1/4 justify-between">
       <div class="flex flex-col sticky top-4">
         <div class="flex gap-2">
-          <n-avatar>{{ queryData.nama_cust?.at(0) }}</n-avatar>
+          <n-avatar circle>{{ queryData.nama_cust?.at(0) }}</n-avatar>
           <div class="flex flex-col">
             <small>{{ queryData.id }}</small>
             <strong>{{ queryData.nama_cust }}</strong>
@@ -11,23 +11,18 @@
         </div>
         <div class="py-4 flex flex-col gap-y-2">
           <n-button @click="addParam(param)" type="primary" quaternary :key="param.id" v-for="param in paramScoring"
-                    class="w-full justify-start p-2  flex  cursor-pointer hover:bg-slate-200 rounded" :disabled="false">
-            <n-icon size="large">
-              <add-icon/>
-            </n-icon>
-            <div>{{ param.param }}
-            </div>
+            class="w-full justify-start p-2  flex  cursor-pointer hover:bg-slate-200 rounded" :disabled="false">
+            <template #icon>
+              <v-icon name="bi-folder-plus" />
+            </template>
+            {{ param.param.toUpperCase() }}
           </n-button>
         </div>
       </div>
 
       <div class="p-4">
-        <n-progress
-            type="line"
-            :show-indicator="false"
-            status="info"
-            :percentage="100/paramScoring.length*(bucketParam.length ? bucketParam.length : 0)"
-        />
+        <n-progress type="line" :show-indicator="false" status="info"
+          :percentage="100 / paramScoring.length * (bucketParam.length ? bucketParam.length : 0)" />
         <div class="py-2">{{ bucketParam.length ? bucketParam.length : 0 }} parameter dari {{ paramScoring.length }}
         </div>
         <n-button type="info" tertiary class="shadow" @click="prevModal = true">Preview</n-button>
@@ -36,46 +31,41 @@
     <div class="w-full bg-white min-h-[500px] max-h-[500px] rounded-lg p-4 overflow-auto">
       <div class="grid  grid-cols-2 gap-4  p-4">
         <n-form-item label="Permohonan nasabah">
-          <n-select :options="optObject(optParamScoring.permohonan_nasabah_opt)" placeholder="Silahkan pilih"/>
+          <n-select :options="optObject(optParamScoring.permohonan_nasabah_opt)" placeholder="Silahkan pilih" />
         </n-form-item>
         <n-form-item label="Status nasabah">
-          <n-select :options="optObject(optParamScoring.status_nasabah_opt)" placeholder="Silahkan pilih"/>
+          <n-select :options="optObject(optParamScoring.status_nasabah_opt)" placeholder="Silahkan pilih" />
         </n-form-item>
       </div>
-      <div v-for="(listBucket,i) in bucketParam" :key="listBucket.key">
+      <div v-for="(listBucket, i) in bucketParam" :key="listBucket.key">
         <n-card :title="listBucket.param" size="small" :segmented="true">
           <template #header-extra>
             <n-button quaternary circle @click="removeParam(i)">
               <n-icon>
-                <remove-icon/>
+                <remove-icon />
               </n-icon>
             </n-button>
           </template>
           <div v-for="itemParam in listBucket.paramlist" :key="itemParam.key">
             <n-form-item class="w-full" v-if="itemParam.mode.type == 'area'" :label="itemParam.title">
-              <n-input type="textarea" placeholder="Isi disini"
-                       v-model:value="itemParam.val"/>
+              <n-input type="textarea" placeholder="Isi disini" v-model:value="itemParam.val" />
             </n-form-item>
             <n-card embedded v-else-if="itemParam.mode.type == 'table'" :title="itemParam.title" class="mb-4">
               <template #header-extra>
                 <div class="flex item-center gap-2">
-                  <n-upload
-                      action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
-                      :default-file-list="defaultFileList" @change="fileUpload"
-                      :show-file-list="false"
-                  >
+                  <n-upload action="https://www.mocky.io/v2/5e4bafc63100007100d8b70f"
+                    :default-file-list="defaultFileList" @change="fileUpload" :show-file-list="false">
                     <n-button type="info">Upload File</n-button>
                   </n-upload>
 
                   <n-button type="primary" @click="downloadCsv">download header</n-button>
                 </div>
               </template>
-              <n-data-table ref="tableRef" :data="dataParse?.data" :columns="convertObjectToArray(dataParse?.data)"/>
+              <n-data-table ref="tableRef" :data="dataParse?.data" :columns="convertObjectToArray(dataParse?.data)" />
             </n-card>
             <n-form-item class="w-full" v-else :label="itemParam.title">
-              <n-select
-                  v-model:value="itemParam.val" placeholder="Silakan pilih"
-                  :options="optObject(itemParam.mode.options)"/>
+              <n-select v-model:value="itemParam.val" placeholder="Silakan pilih"
+                :options="optObject(itemParam.mode.options)" />
             </n-form-item>
           </div>
         </n-card>
@@ -86,22 +76,12 @@
   </div>
   <n-modal v-model:show="prevModal">
     <n-card class="w-4/6">
-      <n-watermark
-          ref="printAreaRef"
-          cross
-          selectable
-          :font-size="16"
-          :line-height="16"
-          :width="192"
-          :height="128"
-          :x-offset="12"
-          :y-offset="28"
-          :rotate="-10"
-          class="p-4">
+      <n-watermark ref="printAreaRef" cross selectable :font-size="16" :line-height="16" :width="192" :height="128"
+        :x-offset="12" :y-offset="28" :rotate="-10" class="p-4">
         <div class="flex flex-col gap-y-4">
           <div class="flex justify-between">
             <div class="flex items-center gap-2">
-              <img :src="applogo" class="w-[32px] h-[34px]"/>
+              <img :src="applogo" class="w-[32px] h-[34px]" />
               <div class="text-xl font-bold">{{ apptitle }}</div>
             </div>
             <div class="w-fit flex-col border items-center flex px-4 border-black">
@@ -147,10 +127,10 @@
               </div>
             </div>
           </div>
-          <div class="" v-for="(param,k) in _.sortBy(bucketParam, [function(o) { return o.key; }])" :key="param.key">
+          <div class="" v-for="(param, k) in _.sortBy(bucketParam, [function (o) { return o.key; }])" :key="param.key">
             <div class="text-md font-bold">{{ k + 1 }}. {{ param.param.toUpperCase() }}</div>
             <div class="grid grid-flow-dense grid-cols-2 gap-2 border border-black p-2">
-              <div v-for="(list,i,n) in param.paramlist" :key="list.id">
+              <div v-for="(list, i, n) in param.paramlist" :key="list.id">
                 <div class="px-1">{{ n + 1 }}. {{ list.title }}</div>
                 <div class="border p-1.5 bg-slate-50"><i>{{ list.val }}</i></div>
               </div>
@@ -168,17 +148,17 @@
 </template>
 <script setup>
 import _ from "lodash";
-import {h} from "vue";
-import {NInput, NButton, NDatePicker} from "naive-ui";
+import { h } from "vue";
+import { NInput, NButton, NDatePicker } from "naive-ui";
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
-import {useAnalisaModalKerja} from "../../../../models/parameter_analisa.js";
-import {CloseRound as RemoveIcon, AddCircleRound as AddIcon} from "@vicons/material";
-import {useOptAnalisaModalKerja} from "../../../../models/opt_analisa_modal_kerja.js";
-import {useVueToPrint} from "vue-to-print";
+import { useAnalisaModalKerja } from "../../../../models/parameter_analisa.js";
+import { CloseRound as RemoveIcon, AddCircleRound as AddIcon } from "@vicons/material";
+import { useOptAnalisaModalKerja } from "../../../../models/opt_analisa_modal_kerja.js";
+import { useVueToPrint } from "vue-to-print";
 import router from "../../../../router/index.js";
-import {useLoadingBar} from "naive-ui";
+import { useLoadingBar } from "naive-ui";
 import Papa from "papaparse";
 
 const loadingPage = useLoadingBar();
@@ -223,7 +203,7 @@ const removeParam = (e) => {
 const currentStatus = ref("process");
 const tableRef = ref(null);
 const downloadCsv = (e) =>
-    tableRef.value?.downloadCsv({fileName: e});
+  tableRef.value?.downloadCsv({ fileName: e });
 const uploadedFile = ref();
 const dataParse = ref();
 const fileUpload = (e) => {
@@ -328,7 +308,7 @@ const optObject = (e) => {
 }
 const columns = createColumns();
 const printAreaRef = ref(null);
-const {handlePrint} = useVueToPrint({
+const { handlePrint } = useVueToPrint({
   content: printAreaRef,
   documentTitle: "form analisa",
 });
@@ -342,7 +322,7 @@ const convertObjectToArray = (obj) => {
     return [];
   }
   const keys = Object.keys(obj[0]);
-  return keys.map(key => ({title: key, key: key}));
+  return keys.map(key => ({ title: key, key: key }));
 }
 
 onMounted(() => {
