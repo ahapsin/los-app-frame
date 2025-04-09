@@ -18,12 +18,14 @@
           <n-form-item>
             <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan" -->
             <!-- :name="`Listing_Beban_${selectBranch}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false"> -->
-            <n-button type="primary" secondary @click="exportToExcel">Download</n-button>
+            <n-button type="primary" secondary @click="exportToExcel" :disabled="ctrDownload">Download</n-button>
             <!-- </json-excel> -->
           </n-form-item>
         </n-space>
+        <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch"
+          v-if="!ctrDownload" @blur="searchData"/>
         <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x :scroll-x="10000"
-          :min-row-height="48" virtual-scroll-header :columns="convertObjectToArray(dataListBan)" :data="dataListBan"
+          :min-row-height="48" virtual-scroll-header :columns="convertObjectToArray(dataListBan)" :data="showData"
           :pagination="{ pageSize: 10 }" :loading="loadingData" />
       </n-space>
     </div>
@@ -37,6 +39,7 @@ import { useMeStore } from "../../../stores/me";
 import { useApi } from "../../../helpers/axios.js";
 
 import * as XLSX from "xlsx";
+import { useSearch } from "../../../helpers/searchObject";
 
 const tableRef = ref();
 const me = useMeStore();
@@ -102,6 +105,7 @@ const dataListBan = ref([]);
 const loadingData = ref(false);
 const timer = ref(60);
 const disbaledButton = ref(false);
+const ctrDownload = ref(true);
 const grabListBan = async (e) => {
 
   loadingData.value = true;
@@ -132,6 +136,7 @@ const grabListBan = async (e) => {
     disbaledButton.value = false;
     dataListBan.value = response.data;
     loadingData.value = false;
+    ctrDownload.value = false;
   }
 
 }
@@ -154,7 +159,15 @@ const exportToExcel = () => {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "listing beban");
   // Write the workbook to an Excel file
-  XLSX.writeFile(wb, `listing_beban_${selectedBranch.value.nama}_${rangeDate.value}_${periodeTarikan.value}.xls`);
+  XLSX.writeFile(wb, `listing_beban_${selectedBranch.value.nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
+}
+const boxSearch = ref();
+const stack = ref()
+const showData = computed(() => {
+  return useSearch(dataListBan.value, stack.value);
+});
+const searchData = ()=>{
+  stack.value = boxSearch.value;
 }
 
 onMounted(() => {
