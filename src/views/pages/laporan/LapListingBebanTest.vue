@@ -17,7 +17,7 @@
           </n-form-item>
           <n-form-item>
             <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
-              :name="`Listing Beban_${selectBranch}_${rangeDate} `" :stringifyLongNum="false">
+              :name="`Listing_Beban_${selectBranch}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false">
               <n-button type="primary" secondary>Download</n-button>
             </json-excel>
           </n-form-item>
@@ -31,7 +31,7 @@
 </template>
 <script setup>
 import { ref, onMounted } from "vue";
-
+import moment from "moment";
 import JsonExcel from "vue-json-excel3";
 import { useLoadingBar, useMessage } from "naive-ui";
 import { useMeStore } from "../../../stores/me";
@@ -42,6 +42,17 @@ const me = useMeStore();
 const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
+const periodeTarikan = computed(() => {
+  const range = moment(rangeDate.value, 'MMYYYY').format('YYYYMM');
+  const rangeMonth = moment(rangeDate.value, 'MMYYYY').format('MM');
+  const current = moment().format('MM');
+  if (rangeMonth === current) {
+    return moment().format('DD-MM-YYYY');
+  } else {
+    return moment(range).endOf('month').format('DD-MM-YY')
+  }
+}
+);
 const userToken = localStorage.getItem("token");
 const loadingBranch = ref(false);
 const getBranch = async () => {
