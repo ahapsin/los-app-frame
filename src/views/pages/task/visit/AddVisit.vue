@@ -77,7 +77,7 @@ import AnalisaPage from "../analisa/AnalisaPage.vue";
 import AnalisaForm from "../analisa/AnalisaForm.vue";
 import CreditTab from "./CreditTab.vue";
 import DebiturTab from "./DebiturTab.vue";
-import PenjaminTab from "./PenjaminTab.vue";
+// import PenjaminTab from "./PenjaminTab.vue";
 import JaminanTab from "./JaminanTab.vue";
 import FormAnalisaPage from "../analisa/FormAnalisaPage.vue";
 

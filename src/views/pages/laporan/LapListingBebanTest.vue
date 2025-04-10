@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Laporan Listing Beban TEST(mode)" :segmented="true" size="small">
+  <n-card title="Laporan Listing Beban" :segmented="true" size="small">
     <div>
       <n-space vertical :size="12" class="pt-4">
         <n-space>
@@ -22,8 +22,8 @@
             <!-- </json-excel> -->
           </n-form-item>
         </n-space>
-        <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch"
-          v-if="!ctrDownload" @blur="searchData"/>
+        <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
+          @blur="searchData" />
         <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x :scroll-x="10000"
           :min-row-height="48" virtual-scroll-header :columns="convertObjectToArray(dataListBan)" :data="showData"
           :pagination="{ pageSize: 10 }" :loading="loadingData" />
@@ -96,7 +96,7 @@ const loadingBar = useLoadingBar();
 const handleSubmit = () => {
   let a = {
     dari: rangeDate.value,
-    cabang_id: selectedBranch.value.id
+    cabang_id: selectedBranch.value?.id ? selectedBranch.value.id : me.me.cabang_id,
   }
   messageReactive = message.loading('memuat data listing beban', { duration: 0 });
   grabListBan(a);
@@ -150,7 +150,7 @@ const convertObjectToArray = (obj) => {
 
 const exportToExcel = () => {
   const headTable = [
-    { pos: selectedBranch.value.nama, bulan: periodeTarikan.value },
+    { pos: selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama, bulan: periodeTarikan.value },
   ];
   const bodyTable = dataListBan.value;
   const ws = XLSX.utils.json_to_sheet(headTable);
@@ -159,14 +159,14 @@ const exportToExcel = () => {
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "listing beban");
   // Write the workbook to an Excel file
-  XLSX.writeFile(wb, `listing_beban_${selectedBranch.value.nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
+  XLSX.writeFile(wb, `listing_beban_${selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
 }
 const boxSearch = ref();
 const stack = ref()
 const showData = computed(() => {
   return useSearch(dataListBan.value, stack.value);
 });
-const searchData = ()=>{
+const searchData = () => {
   stack.value = boxSearch.value;
 }
 
