@@ -3,7 +3,7 @@
     <HAppBar title="Survey Baru" class="shadow bg-white sticky top-0 z-50">
       <template #suffix>
         <div class="flex gap-2">
-          <n-button type="warning" secondary>Simpan</n-button>
+          <n-button type="warning" secondary @click="handleSimpan">Simpan</n-button>
           <n-button type="primary" @click="handleKirim">Kirim</n-button>
         </div>
       </template>
@@ -97,7 +97,7 @@
     </div>
     <!-- fotm data jaminan -->
     <div class="bg-white p-4">
-      <n-alert type="info" v-if="jaminanList.length === 0">minimal memiliki 1 jaminan</n-alert>
+      <n-alert type="warning" v-if="jaminanList.length === 0">minimal memiliki 1 jaminan</n-alert>
       <n-card v-for="jaminan, i in jaminanList" :key="jaminan" :title="`Jaminan ${i + 1}`">
         <template #header-extra>
           <n-space>
@@ -334,10 +334,12 @@ const modelJaminan = ref({
 });
 
 
-const jaminanList = ref([{ "id": "lx91c8zxp", "kondisi_jaminan": "didealer", "jenis_jaminan": "kendaraan", "merk": "YAMAHA", "tipe": "YM0031 - FINO - FINO", "tahun": "2010", "nilai": 6500000, "no_polisi": "no", "no_rangka": "no", "no_mesin": "no", "no_faktur": "no", "warna": "no", "tgl_stnk": "2025-04-07" }]);
+//const jaminanList = ref([{ "id": "lx91c8zxp", "kondisi_jaminan": "didealer", "jenis_jaminan": "kendaraan", "merk": "YAMAHA", "tipe": "YM0031 - FINO - FINO", "tahun": "2010", "nilai": 6500000, "no_polisi": "no", "no_rangka": "no", "no_mesin": "no", "no_faktur": "no", "warna": "no", "tgl_stnk": "2025-04-07" }]);
+const jaminanList = ref([]);
 
 const dynamicForm = reactive({
   id: uuid,
+  ...modelSurvey.value,
 })
 
 const optJenisAngsuran = ["BULANAN", "MUSIMAN"].map((v) => ({
@@ -413,11 +415,17 @@ const getAngsuran = async () => {
   }
 }
 
+const handleSimpan = ()=>{
+  Object.assign(dynamicForm, modelSurvey.value);
+  surveyStore.createSurvey(dynamicForm);
+}
+
 const handleKirim = () => {
   refFormOrder.value?.validate();
   refFormPelanggan.value?.validate();
   refFormSurvey.value?.validate();
 }
+
 
 const handleImageFallback = (e) => {
   const res = e.data.response;
