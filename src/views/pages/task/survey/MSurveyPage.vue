@@ -259,22 +259,19 @@ const handleConfirm = (row, index) => {
 };
 const handleDetail = (evt) => {
 
-  console.log(evt);
-  // if (evt.status_code === "WADM") {
-  //   router.push({name: "detail survey", params: {idsurvey: evt.id}});
-  // } else if (evt.status_code === "CROR") {
-  //   router.push({name: "Detail Kredit", params: {idapplication: evt.id}});
-  // } else {
-  //   router.push({name: "detail survey", params: {idsurvey: evt.id}});
-  // }
+  if (evt.status_code === "WADM") {
+    router.push({name: "detail survey", params: {idsurvey: evt.id}});
+  } else if (evt.status_code === "CROR") {
+    router.push({name: "Detail Kredit", params: {idapplication: evt.id}});
+  } else {
+    router.push({name: "detail survey", params: {idsurvey: evt.id}});
+  }
 
 };
 const handleEdit = (evt) => {
   router.push({name: "edit survey", params: {idsurvey: evt.id}});
 };
-const handleAdd = () => {
-  router.push("/task/new-survey");
-};
+
 const getData = async () => {
   loadData.value = true;
   let userToken = localStorage.getItem("token");
@@ -329,9 +326,6 @@ const options = (e) => {
     ];
   }
 };
-const pagination = {
-  pageSize: 10,
-};
+
 onMounted(() => getData());
 </script>
-

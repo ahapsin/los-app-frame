@@ -7,6 +7,10 @@ const routes = [
         path: "/",
         name: "landing",
         component: () => import("../views/pages/LoginPage.vue"),
+    }, {
+        path: "/signin",
+        name: "signin",
+        component: () => import("../views/SigninPage.vue"),
     },
     {
         path: "/visit",
@@ -157,12 +161,12 @@ const routes = [
             {
                 path: "detail-survey/:idsurvey",
                 name: "detail survey",
-                component: () => import("../views/pages/task/survey/DetailSurveyPage.vue"),
+                component: () => import("../views/pages/task/DetailSurveyPage.vue"),
             },
             {
                 path: "survey/:idsurvey",
                 name: "edit survey",
-                component: () => import("../views/pages/task/AddSurveyPage.vue"),
+                component: () => import("../views/pages/task/EditSurveyPage.vue"),
             },
             {
                 path: "Approval",
@@ -359,12 +363,12 @@ const routes = [
             {
                 path: "list_ban",
                 name: "Listing Beban",
-                component: () => import("../views/pages/laporan/LapListingBeban.vue"),
+                component: () => import("../views/pages/laporan/LapListingBebanTest.vue"),
             }, {
                 path: "lap_pembayaran",
                 name: "Laporan Pembayaran",
                 component: () => import("../views/pages/laporan/LapPembayaran.vue"),
-            },{
+            }, {
                 path: "list_ban_test",
                 name: "Listing Beban test",
                 component: () => import("../views/pages/laporan/LapListingBebanTest.vue"),
@@ -393,7 +397,7 @@ const routes = [
 
         ],
     },
-     { path: "/:pathMatch(.*)*",  component: () => import("../views/pages/404Page.vue"), },
+    {path: "/:pathMatch(.*)*", component: () => import("../views/pages/404Page.vue"),},
 ];
 
 const router = createRouter({
@@ -402,28 +406,12 @@ const router = createRouter({
 });
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
-router.beforeEach((to, from) => {
-    document.title = to.meta?.title ?? apptitle
+router.beforeEach(async (to, from, next) => {
+    document.title = to.meta?.title ?? apptitle;
+
+    if (to.name !== 'signin' && !localStorage.getItem('token')) next({name: 'signin'})
+    else next()
 })
 
-// router.beforeEach((to)=>{
-// });
-// router.beforeEach((to, from, next) => {
-//   const isAuthenticated = () => {
-//     if (localStorage.getItem("token")) {
-//       return true;
-//     }
-//     return false;
-//   };
-//   if (to.matched.some((record) => record.meta.requiresAuth)) {
-//     if (!isAuthenticated) {
-//       next("/login");
-//     } else {
-//       next();
-//     }
-//   } else {
-//     next();
-//   }
-// });
 
 export default router;

@@ -1,7 +1,7 @@
 {
   "name": "los-app",
   "private": true,
-  "version": "4.3 (Delightful)",
+  "version": "4.5 (Delightful)",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -17,6 +17,7 @@
     "js-sha256": "^0.11.0",
     "leaflet": "^1.9.4",
     "lodash": "^4.17.21",
+    "moment": "^2.30.1",
     "oh-vue-icons": "^1.0.0-rc3",
     "papaparse": "^5.4.1",
     "pinia": "^2.2.2",
@@ -26,7 +27,8 @@
     "vue-json-csv": "^2.1.0",
     "vue-json-excel3": "^1.0.30",
     "vue-router": "^4.3.2",
-    "vue-to-print": "^1.3.1"
+    "vue-to-print": "^1.3.1",
+    "xlsx": "^0.18.5"
   },
   "devDependencies": {
     "@eslint/js": "^9.11.1",

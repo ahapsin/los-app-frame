@@ -393,7 +393,7 @@
                     </n-form-item>
                     <n-divider title-placement="left"> Dokumen Pendukung </n-divider>
                     <file-upload :def_preview="true" title="dokumen pendukung" endpoint="image_upload_prospect"
-                        type="other" :idapp="dynamicForm.id" />
+                        type="other" :idapp="idApp" />
                 </n-form>
             </div>
             <template #action>
