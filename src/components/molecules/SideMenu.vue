@@ -1,5 +1,5 @@
 <template>
-        <div>
+        <div class="p-4">
                 <DisclosMenu :menus="listMenu.response">
                 </DisclosMenu>
                 <!-- <pre>{{ listMenu.response }}</pre> -->

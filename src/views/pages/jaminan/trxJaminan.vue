@@ -3,28 +3,26 @@
         content: true,
         footer: 'soft'
     }" :title="`Form ${props.type} jaminan`" id="drawer-target" class="overflow-hidden">
-    <template #header-extra>
-        <n-button secondary type="info">
-          {{dynamicForm.bpkb?.length}} jaminan dipilih
-        </n-button>
-    </template>
     <n-form ref="formRef" :model="dynamicForm" :rules="rules" :label-placement="width <= 920 ? 'top' : 'left'"
             require-mark-placement="right-hanging" :size="size" label-width="auto">
+
       <n-space vertical :size="12" class="mb-4">
-        <n-input clearable placeholder="cari disini.." v-model:value="searchBox"/>
-        <n-data-table striped size="small" :row-key="(row) => row" :columns="columns" :data="showData"
-                      :max-height="300" :on-update:checked-row-keys="handleChecked" :loading="loadData"/>
+        <!--        <n-input clearable placeholder="cari disini.." v-model:value="searchBox"/>-->
+        <JaminanTable :type="props.type === 'pengiriman' ? 'ondemand' : 'onGoing'" @check="handleCheck"/>
+        <!--        <n-data-table striped size="small" :row-key="(row) => row" :columns="columns"-->
+        <!--                      :data="showData"-->
+        <!--                      :max-height="300" :on-update:checked-row-keys="handleChecked" :pagination="{pageSize:10}"/>-->
       </n-space>
       <n-space>
-        <n-form-item label="Tujuan" path="cabang" v-if="props.type === 'pengiriman'">
-          <n-select filterable placeholder="Pilih Cabang" :options="branchData"
+        <n-form-item label="Tujuan" path="tujuan" v-if="props.type === 'pengiriman'">
+          <n-select filterable placeholder="Pilih Cabang" :options="branchData.listExclude"
                     v-model:value="dynamicForm.tujuan" value-field="id" label-field="nama"/>
         </n-form-item>
-        <n-form-item label="Kurir" path="cabang" v-if="props.type === 'pengiriman'">
+        <n-form-item label="Kurir" path="kurir" v-if="props.type === 'pengiriman'">
           <n-input filterable placeholder="Kurir" v-model:value="dynamicForm.kurir"/>
         </n-form-item>
       </n-space>
-      <n-form-item label="Catatan" path="cabang">
+      <n-form-item label="Catatan" path="catatan">
         <n-input type="textarea" v-model:value="dynamicForm.catatan"/>
       </n-form-item>
     </n-form>
@@ -40,8 +38,8 @@
           Batal
         </n-button>
         <!-- <n-button type="info" @click="handlePrint" v-show="printAfter">
-            Cetak
-        </n-button> -->
+    Cetak
+</n-button> -->
       </n-space>
     </template>
   </n-card>
@@ -50,59 +48,44 @@
       <n-table :bordered="false" :single-line="false" size="small">
         <thead>
         <tr>
-          <th>Jenis</th>
           <th>Nama Debitur</th>
-          <th>Order Number</th>
-          <th>No Jaminan</th>
+          <th>No Kontrak</th>
+          <th>No BPKB</th>
           <th>Lokasi</th>
           <th>Status</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-          <td>{{ bodyModalTrx.type }}</td>
-          <td>{{ bodyModalTrx.nama_debitur }}</td>
-          <td>{{ bodyModalTrx.order_number }}</td>
-          <td>{{ bodyModalTrx.no_jaminan }}</td>
+          <td>{{ bodyModalTrx.debitur }}</td>
+          <td>{{ bodyModalTrx.no_kontrak }}</td>
+          <td>{{ bodyModalTrx.BPKB_NUMBER }}</td>
           <td>{{ bodyModalTrx.lokasi }}</td>
-          <td>{{ bodyModalTrx.status_jaminan }}</td>
+          <td>{{ bodyModalTrx.STATUS }}</td>
         </tr>
         </tbody>
       </n-table>
       <n-table :bordered="false" :single-line="false" size="small">
         <tbody>
         <tr>
-          <th>BPKB NO</th>
-          <td>{{ bodyModalTrx.no_bpkb }}</td>
-        </tr>
-        <tr>
           <th>BPKB Atas Nama</th>
-          <td>{{ bodyModalTrx.atas_nama }}</td>
+          <td>{{ bodyModalTrx.ON_BEHALF }}</td>
         </tr>
         <tr>
           <th>Merk/Tipe/Tahun</th>
-          <td>{{ bodyModalTrx.merk }} / {{ bodyModalTrx.tipe }} / {{ bodyModalTrx.tahun }}</td>
+          <td>{{ bodyModalTrx.BRAND }} / {{ bodyModalTrx.TYPE }} / {{ bodyModalTrx.PRODUCTION_YEAR }}</td>
         </tr>
         <tr>
           <th>Warna/No Polisi</th>
-          <td>{{ bodyModalTrx.warna }} /{{ bodyModalTrx.no_polisi }}</td>
+          <td>{{ bodyModalTrx.COLOR }} /{{ bodyModalTrx.POLICE_NUMBER }}</td>
         </tr>
         <tr>
           <th>No Rangka/No Mesin</th>
-          <td>{{ bodyModalTrx.no_rangka }}/ {{ bodyModalTrx.no_mesin }}</td>
+          <td>{{ bodyModalTrx.CHASIS_NUMBER }}/ {{ bodyModalTrx.ENGINE_NUMBER }}</td>
         </tr>
         <tr>
           <th>No Faktur</th>
-          <td>{{ bodyModalTrx.no_faktur }}</td>
-        </tr>
-        <tr>
-          <th>Dokumen</th>
-          <td>
-            <div class="flex gap-2">
-              <n-image v-for="doc in bodyModalTrx.document" width="64" height="64" :src="doc.PATH"
-                       :key="doc" class="w-14 h-14 rounded-lg"/>
-            </div>
-          </td>
+          <td>{{ bodyModalTrx.INVOICE_NUMBER }}</td>
         </tr>
         </tbody>
       </n-table>
@@ -111,32 +94,41 @@
 </template>
 <script setup>
 import {NButton, useMessage} from 'naive-ui';
-import {ref, reactive, onMounted, computed} from 'vue';
+import _ from "lodash";
+import {ref, reactive, h, computed} from 'vue';
 import {
   ListAltRound as ListIcon,
 } from "@vicons/material";
+import {useApi} from "../../../helpers/axios";
+import {useSearch} from "../../../helpers/searchObject";
 import {useWindowSize} from '@vueuse/core';
 
-const {width,} = useWindowSize();
-import {useApi} from '../../../helpers/axios';
-// import { usePDF } from "vue3-pdfmake";
+const {width} = useWindowSize();
 import router from '../../../router';
 import {useRoute} from 'vue-router';
-import {useSearch} from '../../../helpers/searchObject';
-import _ from 'lodash';
-import {useMeStore} from '../../../stores/me';
+
+import {useCollateralStore} from "../../../stores/collateral.js";
+import {useBranchStore} from "../../../stores/branch.js";
+import JaminanTable from "./JaminanTable.vue";
 
 const emit = defineEmits();
 const props = defineProps({
   type: String,
 });
 
-const dynamicForm = reactive({
+const branchData = useBranchStore();
+
+
+const dynamicForm = ref({
   jaminan: null,
+  bpkb: null,
   tujuan: null,
   catatan: null,
   type: props.type == "pengiriman" ? "send" : 'request'
 });
+const handleCheck = (e) => {
+  dynamicForm.value.bpkb = e;
+}
 const loading = ref(false);
 
 
@@ -152,11 +144,20 @@ const handleCancel = () => {
 
 
 const rules = {
-  no_ktp: {
+  tujuan: {
     trigger: "blur",
-    min: 16,
-    message: 'No identitas minimal 16 karakter'
-  }
+    required: true,
+    message: 'Tujuan harus dipilih salah satu'
+  },
+  kurir: {
+    trigger: "blur",
+    required: true,
+    message: 'Kurir harus diisi yaa'
+  }, catatan: {
+    trigger: "blur",
+    required: true,
+    message: 'Catatan harus diisi'
+  },
 }
 
 const columns = [
@@ -164,18 +165,14 @@ const columns = [
     type: "selection",
     disabled(row) {
       return (
-          row.status_jaminan === "SENDING"
+          row.STATUS === "SENDING"
       );
     },
   },
-  {
-    title: "Jenis",
-    key: "type",
-    sorter: "default",
-  },
+
   {
     title: "No Kontrak",
-    key: "order_number",
+    key: "no_kontrak",
     sorter: "default",
     // render(row) {
     //     return h("div", row.no_polisi);
@@ -183,17 +180,22 @@ const columns = [
   },
   {
     title: "Nama Debitur",
-    key: "nama_debitur",
+    key: "debitur",
     sorter: "default",
   },
   {
-    title: "No Jaminan",
-    key: "no_jaminan",
+    title: "No BPKB",
+    key: "BPKB_NUMBER",
+    sorter: "default",
+  },
+  {
+    title: "Posisi Berkas",
+    key: "posisi_berkas",
     sorter: "default",
   },
   {
     title: "Status",
-    key: "status_jaminan",
+    key: "STATUS",
     sorter: "default",
   },
   {
@@ -218,20 +220,8 @@ const columns = [
     },
   },
 ]
-const dataBPKB = ref([]);
 
-const response = async () => await useApi({
-  method: 'get',
-  api: `jaminan`,
-  token: userToken
-}).then(res => {
-  if (res.ok) {
-    dataBPKB.value = res.data;
-    message.loading("memuat data BPKB");
-  } else {
-    message.error("error");
-  }
-});
+const collData = useCollateralStore();
 const searchBox = ref();
 const modalTrx = ref(false);
 const bodyModalTrx = ref();
@@ -239,28 +229,24 @@ const detailTrx = (e) => {
   bodyModalTrx.value = e;
   modalTrx.value = true;
 }
-
-const bpkbToArray = (objects) => {
-  try {
-    return objects.map((obj, i) => [
-      i + 1,
-      obj.no_polisi,
-      obj.no_rangka,
-      // obj.no_mesin,
-      obj.no_bpkb,
-      // obj.no_stnk
-    ]);
-  } catch (error) {
-    return [error];
-  }
-}
-const colHeader = ['No', 'No BPKB', 'No Polisi', 'No Rangka'];
+const formRef = ref(null)
 const handleSave = async () => {
+  console.log(dynamicForm);
+  await formRef.value?.validate((errors) => {
+    if (errors) {
+      message.error("periksa kembali isian anda");
+    } else {
+      prosesSave();
+    }
+  });
   printAfter.value = true;
+
+}
+const prosesSave = async () => {
   const response = await useApi({
     method: 'POST',
     api: 'jaminan_transaction',
-    data: dynamicForm,
+    data: dynamicForm.value,
     token: userToken
   });
 
@@ -277,8 +263,8 @@ const handleSave = async () => {
 const handleSavePerminataan = async () => {
   printAfter.value = true;
   const bodyData = {
-    collateral_id: dynamicForm.bpkb,
-    catatan: dynamicForm.catatan,
+    collateral_id: dynamicForm.value.bpkb,
+    catatan: dynamicForm.value.catatan,
   }
   const response = await useApi({
     method: 'POST',
@@ -297,113 +283,27 @@ const handleSavePerminataan = async () => {
     loading.value = false;
   }
 }
-const handleChecked = (e) => {
-  dynamicForm.bpkb = e;
-}
-const dataBpkb = ref([]);
-const loadData = ref(true);
-useApi({
-  method: 'GET',
-  api: props.type == 'pengiriman' ? `forpostjaminan` : `forgetjaminan`,
-  token: userToken
-}).then(res => {
-  if (!res.ok) {
-    loadData.value = false;
-    console.log(res);
-    message.error("error koneksi api");
-  } else {
-    loadData.value= false;
-    dataBpkb.value = res.data;
-  }
-});
-const me = useMeStore();
-const branchData = ref([]);
-const branch = async () => {
-  useApi({
+const getBranchData = async () => {
+  const response = await useApi({
     method: 'GET',
-    api: `cabang`,
+    api: 'cabang',
     token: userToken
-  }).then(res => {
-    if (!res.ok) {
-      console.log(res);
-      message.error("error koneksi api");
-    } else {
-      let branchDataApi = _.filter(res.data.response, (o) => o.id != me.me.cabang_id);
-      branchData.value = branchDataApi;
-    }
-  })
-};
+  });
+
+  if (!response.ok) {
+    console.log(response);
+  } else {
+    branchData.storeBranch(response.data.response);
+  }
+}
+
+onMounted(() => getBranchData())
 const showData = computed(() => {
-  let data = _.filter(dataBpkb.value, (o) => o.lokasi != 'HO');
+  let data = _.filter(props.type == 'pengiriman' ? collData.onDemand : collData.onGoing, {});
   return useSearch(data, searchBox.value);
 });
 
-
-// const pdfmake = usePDF({
-//     autoInstallVFS: true,
-// });
 const printAfter = ref(false);
-// const handlePrint = () => {
-//     const dataBPKB = bpkbToArray(dynamicForm.bpkb);
-//     dataBPKB.unshift(colHeader);
-//     pdfmake.createPdf({
-//         info: {
-//             title: `Surat keterangan serah terima BPKB`,
-//             author: "ahapsin",
-//         },
-//         content: [
-//             kopSurat,
-//             {
-//                 text: "SURAT TANDA TERIMA DOKUMEN",
-//                 style: "header",
-//                 alignment: "center",
-//             },
-//             {
-//                 text: `daftar list bpkb `,
-//                 margin: [0, 20, 0, 0],
-//             },
-//             {
-//                 table: {
-//                     widths: [20, '*', '*', '*'],
-//                     body: dataBPKB,
-//                 },
-//                 margin: [0, 20, 0, 0],
-//             },
-//         ],
-//         styles: {
-//             header: {
-//                 fontSize: 12,
-//                 bold: true,
-//                 margin: [0, 0, 0, 0],
-//             },
-//             subheader: {
-//                 fontSize: 16,
-//                 bold: true,
-//                 margin: [0, 10, 0, 5],
-//             },
-//             tableExample: {
-//                 margin: [0, 5, 0, 15],
-//             },
-//             tableHeader: {
-//                 bold: true,
-//                 fontSize: 10,
-//                 color: "black",
-//             },
-//         },
-//         defaultStyle: {
-//             fontSize: 10,
-//         },
-//     }).print();
-
-// }
 
 
-onMounted(() => {
-  branch();
-  if (param) {
-    response();
-  }
-  ;
-
-});
 </script>

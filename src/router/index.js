@@ -7,6 +7,23 @@ const routes = [
         path: "/",
         name: "landing",
         component: () => import("../views/pages/LoginPage.vue"),
+    }, {
+        path: "/signin",
+        name: "signin",
+        component: () => import("../views/SigninPage.vue"),
+    }, {
+        path: "/prospek",
+        name: "prospek",
+        component: () => import("../views/ProspekPage.vue"),
+    }, {
+        path: "/buat-prospek",
+        name: "buat-prospek",
+        component: () => import("../views/prospek/FormProsepek.vue"),
+    },
+    {
+        path: "/visit",
+        name: "visit",
+        component: () => import("../views/pages/task/survey/MSurveyPage.vue"),
     },
     {
         path: "/no-service",
@@ -17,10 +34,17 @@ const routes = [
         path: "/test-view",
         name: "testview",
         component: () => import("../views/pages/TestViewPage.vue"),
+    },
+    {
+        path: "/playground",
+        name: "playground",
+        component: () => import("../views/pages/PlaygroundPage.vue"),
+
     }, {
         path: "/pass-pk",
         name: "pass pk",
         component: () => import("../views/pages/PassPKView.vue"),
+
     },
     {
         path: "/dashboard",
@@ -83,9 +107,23 @@ const routes = [
                 path: "apply-credit",
                 name: "Order",
                 component: () => import("../views/pages/task/FpkPage.vue"),
+            },
+            {
+                path: "kunjungan_cust",
+                name: "kunjungan",
+                component: () => import("../views/pages/task/visit/VisitPage.vue"),
+            },
+            {
+                path: "addvisit",
+                name: "Nasabah",
+                component: () => import("../views/pages/task/visit/AddVisit.vue"),
             }, {
                 path: "analisa",
                 name: "analisa",
+                component: () => import("../views/pages/task/analisa/AnalisaPage.vue"),
+            }, {
+                path: "addanalisa",
+                name: "addanalisa",
                 component: () => import("../views/pages/task/analisa/AnalisaForm.vue"),
             },
             {
@@ -160,8 +198,9 @@ const routes = [
             },
             {
                 path: "new-survey",
-                name: "tambah survey",
-                component: () => import("../views/pages/task/AddSurveyPage.vue"),
+                name: "Survey Baru",
+                component: import("../views/prospek/FormProsepek.vue"),
+                // component: () => import("../views/pages/transaction/"),
             },
         ],
     },
@@ -338,7 +377,7 @@ const routes = [
                 path: "lap_pembayaran",
                 name: "Laporan Pembayaran",
                 component: () => import("../views/pages/laporan/LapPembayaran.vue"),
-            },{
+            }, {
                 path: "list_ban_test",
                 name: "Listing Beban test",
                 component: () => import("../views/pages/laporan/LapListingBebanTest.vue"),
@@ -364,8 +403,10 @@ const routes = [
                 name: "inquery jaminan",
                 component: () => import("../views/pages/laporan/LapJaminan.vue"),
             },
+
         ],
     },
+    {path: "/:pathMatch(.*)*", component: () => import("../views/pages/404Page.vue"),},
 ];
 
 const router = createRouter({
@@ -374,28 +415,12 @@ const router = createRouter({
 });
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
-router.beforeEach((to, from) => {
-    document.title = to.meta?.title ?? apptitle
+router.beforeEach(async (to, from, next) => {
+    document.title = to.meta?.title ?? apptitle;
+
+    if (to.name !== 'signin' && !localStorage.getItem('token')) next({name: 'signin'})
+    else next()
 })
 
-// router.beforeEach((to)=>{
-// });
-// router.beforeEach((to, from, next) => {
-//   const isAuthenticated = () => {
-//     if (localStorage.getItem("token")) {
-//       return true;
-//     }
-//     return false;
-//   };
-//   if (to.matched.some((record) => record.meta.requiresAuth)) {
-//     if (!isAuthenticated) {
-//       next("/login");
-//     } else {
-//       next();
-//     }
-//   } else {
-//     next();
-//   }
-// });
 
 export default router;

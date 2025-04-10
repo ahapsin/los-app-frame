@@ -212,7 +212,7 @@ const getDataCustomer = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     dataCustomer.value = response.data;
   }
@@ -240,7 +240,7 @@ const getCreditCustomer = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     creditCustomer.value = response.data;
   }

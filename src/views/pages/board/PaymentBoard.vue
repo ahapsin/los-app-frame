@@ -61,18 +61,22 @@ const getData = async () => {
 }
 const options =[
     {
-        label: "Pembayaran",
-        key: "pembayaran",
+        label: "Tambah Pembayaran",
+        key: "tambah penerimaan",
     },
     {
-        label: "Pelunasan",
-        key: "pelunasan",
+        label: "Tambah Pelunasan",
+        key: "tambah pelunasan",
     },
     {
         label: "Detail",
-        key: "detail",
+        key: "pembayaran",
     },
 ];
+
+const handleSelect = (key) => {
+  router.push({ name: key});
+}
 const createdSuccess = computed(() => _.filter(data.value, { 'STATUS': 'PAID' }));
 const pendingPayment = computed(() => _.filter(data.value, { 'STATUS': 'PENDING' }));
 const sumPaidPayment = computed(() => createdSuccess.value.reduce((sum, i) => sum + i.jumlah_uang, 0));

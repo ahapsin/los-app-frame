@@ -1,49 +1,59 @@
 <template>
-  <div class="flex items-center gap-4 cursor-pointer">
-    <n-badge @click="approvalCenter" v-if="dataUser?.nama == 'ho'">
-      <n-icon size="25" color="#0e7a0d">
-        <NotifIcon/>
-      </n-icon>
-    </n-badge>
+  <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
+    <div class="flex gap-2">
+      <n-badge :value="9">
+        <n-button type="primary" tertiary circle>
+          <template #icon>
+            <v-icon name="bi-chat" />
+          </template>
+        </n-button>
+      </n-badge>
+      <n-badge :value="4">
+        <n-button type="primary" tertiary circle>
+          <template #icon>
+            <v-icon name="bi-bell" />
+          </template>
+        </n-button>
+      </n-badge>
+    </div>
+    <div></div>
     <n-dropdown trigger="hover" :options="options">
-      <div class="flex items-center gap-4">
-                <span class="flex flex-col items-end">
-                  <n-text type="primary"><strong>{{ dataUser?.nama }}</strong></n-text>
-                    <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small>
-                </span>
-        <n-avatar round size="medium" class="aspect-square" :src="dataUser
-                    ? dataUser.PHOTO_URL
-                    : 'https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-vert.png'
-                    ">
+      <div class="flex items-center gap-2">
+        <span class="flex flex-col items-end">
+          <n-text type="primary" class="text-primary uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
+          <!-- <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small> -->
+        </span>
+        <n-avatar round size="small" class="aspect-square" :src="dataUser
+          ? dataUser.PHOTO_URL
+          : 'https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-vert.png'
+          ">
           {{ dataUser?.nama.at(0) }}
         </n-avatar>
-
       </div>
     </n-dropdown>
-
   </div>
 </template>
 <script setup>
-import {ref, h, onMounted} from "vue";
+import { ref, h, onMounted } from "vue";
 import router from "../../router";
-import {useMessage, NIcon} from "naive-ui";
+import { useMessage, NIcon } from "naive-ui";
 import {
-  NotificationsRound as NotifIcon,
   AccountCircleOutlined as Account,
   LockOutlined as Locked,
   LogOutOutlined as SignOut,
 } from "@vicons/material";
 
-import {useApi} from "../../helpers/axios";
-import {useMeStore} from "../../stores/me";
-import {useTaskStore} from "../../stores/task";
+import { useApi } from "../../helpers/axios";
+import { useMeStore } from "../../stores/me";
+import { useTaskStore } from "../../stores/task";
+import { useCollateralStore } from "../../stores/collateral.js";
 
 const message = useMessage();
-
+const me = useMeStore();
 const dataUser = ref();
 const options = [
   {
-    label: "Akun",
+    label: `Akun`,
     icon() {
       return h(NIcon, null, {
         default: () => h(Account),
@@ -89,16 +99,17 @@ const options = [
     },
   },
 ];
-const me = useMeStore();
+
 const task = useTaskStore();
+const coll = useCollateralStore();
 const approvalCenter = () => {
-  router.push({name: "approval-center"})
+  router.push({ name: "approval-center" })
 }
 const handleAccount = () => {
-  router.push({name: "myaccount"});
+  router.push({ name: "myaccount" });
 };
 const handleChangePassword = () => {
-  router.push({name: "changepassword"});
+  router.push({ name: "changepassword" });
 };
 
 const GetMe = async () => {
@@ -116,6 +127,22 @@ const GetMe = async () => {
     task.storeTask(response.data.response);
   }
 };
+
+// const getDataColl = async () => {
+//   let userToken = localStorage.getItem("token");
+//
+//   const response = await useApi({
+//     method: "GET",
+//     api: "jaminan",
+//     token: userToken,
+//   });
+//   if (!response.ok) {
+//     console.log(response);
+//   } else {
+//     coll.storeCollateral(response.data);
+//   }
+// };
+
 const GetPayment = async () => {
   let userToken = localStorage.getItem("token");
   const response = await useApi({
