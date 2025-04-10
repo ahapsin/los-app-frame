@@ -28,20 +28,20 @@
     </n-collapse> -->
     <n-spin :show="suspense">
         <slot name="addition"></slot>
-        <n-space vertical class="rounded-2xl p-4 sticky top-0 bg-white border z-50">
-            <n-steps :current="current" v-model:current="current" :status="currentStatus">
-                <n-step title="Pelanggan" :status="statusInformasiPelanggan" />
-                <n-step title="Order" :status="statusInformasiOrder" />
-                <n-step title="Tambahan" />
-                <n-step title="Ekstra" :status="statusEkstra" />
-            </n-steps>
-        </n-space>
         <n-alert class="mt-2" type="warning"
             v-if="sumJaminan != 0 && calcCredit.nilai_yang_diterima > sumJaminan / 2">Nilai
             Plafon <b>{{ calcCredit.nilai_yang_diterima.toLocaleString() }}</b> > Nilai Jaminan {{
                 (sumJaminan / 2).toLocaleString() }} (50%)</n-alert>
         <n-flex class="pt-2">
-            <n-card v-show="current == 1" title="Informasi pelanggan" :segmented="{
+            <n-card>
+                <n-steps :current="current" v-model:current="current" :status="currentStatus">
+                    <n-step title="Pelanggan" :status="statusInformasiPelanggan" />
+                    <n-step title="Order" :status="statusInformasiOrder" />
+                    <n-step title="Tambahan" />
+                    <n-step title="Ekstra" :status="statusEkstra" />
+                </n-steps>
+            </n-card>
+            <n-card size="small" v-show="current == 1" title="Informasi pelanggan" :segmented="{
                 content: true,
                 footer: 'soft',
             }">
@@ -392,7 +392,7 @@
                                 <div class="pb-2"
                                     v-if="coll.type == 'KENDARAAN' && coll.atr.tahun && tahunJaminanValidate(coll.atr.tahun) > 10">
                                     <n-alert type="warning">usia KENDARAAN <b>{{ tahunJaminanValidate(coll.atr.tahun)
-                                            }}</b>
+                                    }}</b>
                                         tahun</n-alert>
                                 </div>
                                 <div class="pt-2">
