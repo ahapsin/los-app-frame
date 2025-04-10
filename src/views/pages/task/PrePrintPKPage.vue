@@ -50,10 +50,19 @@ class="flex gap-2 border-t p-4 justify-end"
 ></div> -->
 
     <div class="sticky b bg-white z-50 flex gap-2 top-0 w-full justify-end p-2" v-if="prosesPK">
-      <div class="sticky  flex bottom-0 w-full" v-if="pkData.no_perjanjian === ''">
+      <!-- <div class="sticky  flex bottom-0 w-full" v-if="pkData.no_perjanjian === ''">
         <CollateralCheck :coll_data="payloadCheck()" @coll_val="handleCollCheck"/>
-      </div>
-      <div v-else>
+      </div> -->
+      <div class="w-full" v-if="pageData.order_validation?.length != 0">
+            <n-alert :title="`${pkData.order_validation?.length} Catatan`" type="warning"
+                class="shadow">
+                <div class="text-red-500" v-for="messageValidation in pkData.order_validation"
+                    :key="messageValidation">
+                    {{ messageValidation }}
+                </div>
+            </n-alert>
+        </div>
+      <div v-else class="flex gap-2">
         <n-button :type="pkData.flag == 1 ? 'warning' : 'primary'" class="gap-2"
                   @click="handlePrintAction(pkData.flag)">
           <n-icon>

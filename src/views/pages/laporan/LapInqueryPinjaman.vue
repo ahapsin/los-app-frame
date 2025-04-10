@@ -564,7 +564,7 @@ const getInqPinjaman = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    console.log(reponse.error);
+    console.log(response.error);
   } else {
     messageReactive.destroy();
     messageReactive = null;

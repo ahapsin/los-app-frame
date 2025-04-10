@@ -1,5 +1,5 @@
 <template>
-    <blacklist-alert :pesan="bl_pesan" />
+    <!-- <blacklist-alert :pesan="bl_pesan" /> -->
     <div class="flex gap-2 mb-2" v-if="approval.kapos">
         <n-alert class="w-full shadow bg-white" title="KAPOS" v-if="approval.kapos">
             <template #icon>
@@ -19,6 +19,7 @@
         </n-alert>
     </div>
 
+
     <!-- <n-collapse>
         <n-collapse-item title="page data" name="5">
       <div>
@@ -28,6 +29,15 @@
     </n-collapse> -->
     <n-spin :show="suspense">
         <slot name="addition"></slot>
+        <div class="sticky sticky-top top-0 z-50" v-if="pageData.order_validation?.length != 0">
+            <n-alert :title="`${pageData.order_validation?.length} Catatan`" type="warning"
+                class="animate-pulse shadow">
+                <div class="text-red-500" v-for="messageValidation in pageData.order_validation"
+                    :key="messageValidation">
+                    {{ messageValidation }}
+                </div>
+            </n-alert>
+        </div>
         <n-alert class="mt-2" type="warning"
             v-if="sumJaminan != 0 && calcCredit.nilai_yang_diterima > sumJaminan / 2">Nilai
             Plafon <b>{{ calcCredit.nilai_yang_diterima.toLocaleString() }}</b> > Nilai Jaminan {{
@@ -192,6 +202,9 @@
                                 :view-mode="props.viewMode" />
                             <file-upload title="KTP Pasangan" :def_value="findDocByType(dok_identitas, 'ktp_pasangan')"
                                 endpoint="image_upload_prospect" type="ktp_pasangan" :idapp="pageData.survey_id"
+                                :view-mode="props.viewMode" />
+                                <file-upload title="Foto dengan KTP" :def_value="findDocByType(dok_identitas, 'selfie')"
+                                endpoint="image_upload_prospect" type="selfie" :idapp="pageData.survey_id"
                                 :view-mode="props.viewMode" />
                         </n-space>
                     </n-space>
@@ -392,7 +405,7 @@
                                 <div class="pb-2"
                                     v-if="coll.type == 'KENDARAAN' && coll.atr.tahun && tahunJaminanValidate(coll.atr.tahun) > 10">
                                     <n-alert type="warning">usia KENDARAAN <b>{{ tahunJaminanValidate(coll.atr.tahun)
-                                    }}</b>
+                                            }}</b>
                                         tahun</n-alert>
                                 </div>
                                 <div class="pt-2">
