@@ -2,7 +2,7 @@
     <n-card>
         Hi,<b>{{ me.me.nama }} 👋</b>
     </n-card>
-  <MenuContainer class="mt-2" v-if="width <= 390"/>
+  <MenuContainer class="mt-2" v-if="width <= 600"/>
 <n-scrollbar x-scrollable class="h-fit ">
     <div class="grid grid-flow-col md:grid-cols-3 gap-2 mt-2">
         <OrderBoard v-if="findAccessMenu('Order')" class="w-screen md:w-full shadow"/>
