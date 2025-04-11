@@ -1,40 +1,40 @@
 <template>
   <n-card :segmented="{
-        content: true,
-        footer: 'soft',
-    }">
+    content: true,
+    footer: 'soft',
+  }">
     <div class="flex flex-col md:flex-row w-full gap-2">
       <n-form ref="formRef" inline :disabled="pageData.flag == 1 ? true : false">
         <n-form-item label="Order Number" path="nama">
-          <n-input placeholder="nama" v-model:value="idApp" disabled/>
+          <n-input placeholder="nama" v-model:value="idApp" disabled />
         </n-form-item>
         <n-form-item label="Tanggal Awal Angsuran" path="order">
 
           <n-date-picker placeholder="tanggal awal angsuran" v-model:formatted-value="pkData.tgl_awal_pk"
-                         value-format="yyyy-MM-dd" format="dd-MM-yyyy" type="date" :disabled="pkData.flag == 1"
-                         @update:formatted-value="getPrePK" :is-date-disabled="dateAvailable"/>
+            value-format="yyyy-MM-dd" format="dd-MM-yyyy" type="date" :disabled="pkData.flag == 1"
+            @update:formatted-value="getPrePK" :is-date-disabled="dateAvailable" />
         </n-form-item>
         <n-form-item label="Halaman" path="nama_panggilan">
           <!-- <n-checkbox label="Semua Halaman" v-model:checked="optAllPage" checked /> -->
           <n-grid cols="2 6" class="bg-slate-100 p-2 rounded">
             <n-grid-item>
-              <n-checkbox value="pk" label="Perjanjian Kredit" checked disabled/>
+              <n-checkbox value="pk" label="Perjanjian Kredit" checked disabled />
             </n-grid-item>
             <n-grid-item>
-              <n-checkbox value="skala" label="Skala Kredit" v-model:checked="optPrint.skalaPage"/>
+              <n-checkbox value="skala" label="Skala Kredit" v-model:checked="optPrint.skalaPage" />
             </n-grid-item>
 
             <n-grid-item>
-              <n-checkbox value="" label="Pasangan" v-model:checked="optPrint.pasanganPage"/>
+              <n-checkbox value="" label="Pasangan" v-model:checked="optPrint.pasanganPage" />
             </n-grid-item>
             <n-grid-item>
-              <n-checkbox value="" label="Penjamin" v-model:checked="optPrint.penjaminPage"/>
+              <n-checkbox value="" label="Penjamin" v-model:checked="optPrint.penjaminPage" />
             </n-grid-item>
             <n-grid-item>
-              <n-checkbox value="" label="Tanda Terima" v-model:checked="optPrint.tandaTerima"/>
+              <n-checkbox value="" label="Tanda Terima" v-model:checked="optPrint.tandaTerima" />
             </n-grid-item>
             <n-grid-item>
-              <n-checkbox value="ktpa" label="Asuransi" v-model:checked="optPrint.ktpaPage"/>
+              <n-checkbox value="ktpa" label="Asuransi" v-model:checked="optPrint.ktpaPage" />
             </n-grid-item>
           </n-grid>
         </n-form-item>
@@ -53,33 +53,31 @@ class="flex gap-2 border-t p-4 justify-end"
       <!-- <div class="sticky  flex bottom-0 w-full" v-if="pkData.no_perjanjian === ''">
         <CollateralCheck :coll_data="payloadCheck()" @coll_val="handleCollCheck"/>
       </div> -->
-      <div class="w-full" v-if="pageData.order_validation?.length != 0">
-            <n-alert :title="`${pkData.order_validation?.length} Catatan`" type="warning"
-                class="shadow">
-                <div class="text-red-500" v-for="messageValidation in pkData.order_validation"
-                    :key="messageValidation">
-                    {{ messageValidation }}
-                </div>
-            </n-alert>
-        </div>
+      <div class="w-full" v-if="pkData.order_validation?.length != 0">
+        <n-alert :title="`${pkData.order_validation?.length} Catatan`" type="warning" class="shadow">
+          <div class="text-red-500" v-for="messageValidation in pkData.order_validation" :key="messageValidation">
+            {{ messageValidation }}
+          </div>
+        </n-alert>
+      </div>
       <div v-else class="flex gap-2">
         <n-button :type="pkData.flag == 1 ? 'warning' : 'primary'" class="gap-2"
-                  @click="handlePrintAction(pkData.flag)">
+          @click="handlePrintAction(pkData.flag)">
           <n-icon>
-            <print-icon/>
+            <print-icon />
           </n-icon>
           {{ pkData.flag == 1 ? "Cetak Ulang Order" : "Cetak Order" }}
         </n-button>
         <n-button v-if="pkData.flag === 1 && tgl_cetaks == pkData.tgl_awal_pk" type="error" class="gap-2"
-                  @click="confModal = true">
+          @click="confModal = true">
           <n-icon>
-            <cancel-icon/>
+            <cancel-icon />
           </n-icon>
           Batal Order
         </n-button>
         <n-button v-else-if="pkData.flag !== 1" type="info" class="gap-2" @click="confModalRevisi = true">
           <n-icon>
-            <edit-icon/>
+            <edit-icon />
           </n-icon>
           Revisi Order
         </n-button>
@@ -88,20 +86,10 @@ class="flex gap-2 border-t p-4 justify-end"
     <div class="flex bg-slate-100 justify-center overflow-auto p-2" v-show="prosesPK">
       <div class="flex flex-col min-w-[900px] p-10" ref="pk">
         <div ref="areaPrintRef">
-          <n-watermark
-              :content="apptitle"
-              cross
-              selectable
-              :font-size="16"
-              :line-height="16"
-              :width="192"
-              :height="128"
-              :x-offset="12"
-              :y-offset="28"
-              :rotate="-15"
-          >
+          <n-watermark :content="apptitle" cross selectable :font-size="16" :line-height="16" :width="192" :height="128"
+            :x-offset="12" :y-offset="28" :rotate="-15">
             <div class="bg-white max-w-[900px]  p-8" v-show="optPrint.pkPage">
-              <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
+              <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang" />
               <table border="1" class="mb-10">
                 <tr>
                   <td align="center"><b>PERJANJIAN PEMBERIAN PINJAMAN</b></td>
@@ -119,7 +107,7 @@ class="flex gap-2 border-t p-4 justify-end"
                 </tr>
                 <tr>
                   <td>
-                    <br/>
+                    <br />
                     <table>
                       <tr>
                         <td rowspan="3" valign="top" width="20">I.</td>
@@ -175,7 +163,7 @@ class="flex gap-2 border-t p-4 justify-end"
                 </tr>
                 <tr>
                   <td>
-                    <br/>
+                    <br />
                     Dengan ini menerangkan bahwa para pihak sepakat menandatangani
                     Perjanjian Pemberian Pinjaman, dengan isi, syarat dan ketentuan
                     sebagai berikut :
@@ -183,7 +171,7 @@ class="flex gap-2 border-t p-4 justify-end"
                 </tr>
                 <tr>
                   <td align="center">
-                    <br/>
+                    <br />
                     Pasal 1
                   </td>
                 </tr>
@@ -195,7 +183,7 @@ class="flex gap-2 border-t p-4 justify-end"
                   </td>
                 </tr>
                 <tr>
-                  <td align="center"><br/>Pasal 2</td>
+                  <td align="center"><br />Pasal 2</td>
                 </tr>
                 <tr>
                   <td>
@@ -208,7 +196,7 @@ class="flex gap-2 border-t p-4 justify-end"
                 </tr>
                 <tr>
                   <td align="center">
-                    <br/>
+                    <br />
                     Pasal 3
                   </td>
                 </tr>
@@ -277,9 +265,9 @@ class="flex gap-2 border-t p-4 justify-end"
                           <td>IMB / Luas Tanah / Luas Bangunan</td>
                           <td width="25">:</td>
                           <td>{{
-                              `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
-                                                    ${jaminan.atr.luas_bangunan} m2`
-                            }}
+                            `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
+                            ${jaminan.atr.luas_bangunan} m2`
+                          }}
                           </td>
                         </tr>
                         <tr>
@@ -293,7 +281,7 @@ class="flex gap-2 border-t p-4 justify-end"
                 </tr>
                 <tr>
                   <td>
-                    <br/>
+                    <br />
                     Apabila pihak kedua tidak bisa memenuhi kewajiban pembayaran
                     angsuran selama 3 bulan, maka pihak kedua bersedia menyerahkan
                     jaminan kendaraan sesuai dengan pasal 3 di atas kepada pihak
@@ -305,25 +293,25 @@ class="flex gap-2 border-t p-4 justify-end"
                 </tr>
                 <tr>
                   <td>
-                    <br/>
+                    <br />
                     Demikian Perjanjian Pemberian Pinjaman ini dibuat dan
-                    ditandatangani, tanpa adanya unsur paksaan.<br/>
+                    ditandatangani, tanpa adanya unsur paksaan.<br />
                     {{ pkData.kota }}, {{ dayFull.full_date_only }}
                   </td>
                 </tr>
                 <tr>
                   <td>
-                    <br/>
+                    <br />
                     <table width="100%">
                       <tr>
                         <td>
-                          Pihak Pertama<br/>{{
+                          Pihak Pertama<br />{{
                             pkData.cabang
-                          }}<br/><br/><br/><br/>
+                          }}<br /><br /><br /><br />
                           ( {{ pihak1.nama }} )
                         </td>
                         <td>
-                          Pihak Kedua<br/><br/><br/><br/><br/>
+                          Pihak Kedua<br /><br /><br /><br /><br />
                           ( {{ pihak2.nama }} )
                         </td>
                       </tr>
@@ -334,7 +322,7 @@ class="flex gap-2 border-t p-4 justify-end"
             </div>
             <div class="mt-2" v-show="optPrint.tandaTerima">
               <div class="bg-white max-w-[900px]  p-8">
-                <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
+                <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang" />
                 <div class="mb-4 text-center text-base">
                   <b>SURAT TANDA TERIMA DOKUMEN</b>
                 </div>
@@ -424,9 +412,9 @@ class="flex gap-2 border-t p-4 justify-end"
                       <td>IMB / Luas Tanah / Luas Bangunan</td>
                       <td width="25">:</td>
                       <td>{{
-                          `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
-                                            ${jaminan.atr.luas_bangunan} m2`
-                        }}
+                        `${jaminan.atr.imb} / ${jaminan.atr.luas_tanah} m2 /
+                        ${jaminan.atr.luas_bangunan} m2`
+                      }}
                       </td>
                     </tr>
                     <tr>
@@ -447,12 +435,12 @@ class="flex gap-2 border-t p-4 justify-end"
                     <tr>
                       <td class="py-4 pr-4">
                         Pemberi,
-                        <br/><br/><br/>
+                        <br /><br /><br />
                         <u class="uppercase">{{ pihak2.nama }}</u>
                       </td>
                       <td class="py-4 pr-4">
                         Penerima,
-                        <br/><br/><br/>
+                        <br /><br /><br />
                         <u class="uppercase">{{ pihak1.nama }}</u>
                       </td>
                     </tr>
@@ -464,7 +452,7 @@ class="flex gap-2 border-t p-4 justify-end"
         </div>
         <div class="mt-2" v-show="optPrint.skalaPage">
           <div class="bg-white max-w-[900px] shadow-lg p-8">
-            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
+            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang" />
             <div class="mb-4 bg-white">Tabel Skala Angsuran</div>
             <div vertical class="bg-white flex w-full">
               <table class="tblprint">
@@ -490,7 +478,7 @@ class="flex gap-2 border-t p-4 justify-end"
         </div>
         <div class="mt-2" v-show="optPrint.ktpaPage">
           <div class="bg-white max-w-[900px] shadow-lg p-8">
-            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
+            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang" />
             <div class="mb-4 text-center text-base">
               <b>SYARAT DAN KETENTUTAN KHUSUS PROGRAM
                 <b>" KREDIT TANPA PERLINDUNGAN ASURANSI "</b></b>
@@ -574,17 +562,17 @@ class="flex gap-2 border-t p-4 justify-end"
                 <tr>
                   <td class="py-4 pr-4">
                     Penerima Pinjaman,
-                    <br/><br/><br/>
+                    <br /><br /><br />
                     <u class="uppercase">{{ pihak2.nama }}</u>
                   </td>
                   <td class="py-4 pr-4">
                     Pemberi Jaminan,
-                    <br/><br/><br/>
+                    <br /><br /><br />
                     <u class="uppercase">{{ pihak1.nama }}</u>
                   </td>
                   <td>
                     Pemberi Pinjaman / Penerima Jaminan,
-                    <br/><br/><br/>
+                    <br /><br /><br />
                     <u class="uppercase">{{ pihak1.nama }} / {{ pihak2.nama }}</u>
                   </td>
                 </tr>
@@ -594,7 +582,7 @@ class="flex gap-2 border-t p-4 justify-end"
         </div>
         <div class="mt-2" v-show="optPrint.pasanganPage">
           <div class="bg-white max-w-[900px] shadow-lg p-8">
-            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
+            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang" />
             <div class="mb-4 text-center text-base">
               <b>SURAT PERSETUJUAN SUAMI ISTRI</b>
             </div>
@@ -606,8 +594,8 @@ class="flex gap-2 border-t p-4 justify-end"
                   <td width="25">:</td>
                   <td>
                     <b class="uppercase">{{
-                        upCase(dataPasangan.nama_pasangan)
-                      }}</b>
+                      upCase(dataPasangan.nama_pasangan)
+                    }}</b>
                   </td>
                 </tr>
                 <tr>
@@ -615,8 +603,8 @@ class="flex gap-2 border-t p-4 justify-end"
                   <td width="25">:</td>
                   <td>
                     <b class="uppercase">{{
-                        upCase(dataPasangan.pekerjaan_pasangan)
-                      }}</b>
+                      upCase(dataPasangan.pekerjaan_pasangan)
+                    }}</b>
                   </td>
                 </tr>
                 <tr>
@@ -624,8 +612,8 @@ class="flex gap-2 border-t p-4 justify-end"
                   <td width="25">:</td>
                   <td>
                     <b class="uppercase">{{
-                        upCase(dataPasangan.alamat_pasangan)
-                      }}</b>
+                      upCase(dataPasangan.alamat_pasangan)
+                    }}</b>
                   </td>
                 </tr>
               </table>
@@ -692,15 +680,15 @@ class="flex gap-2 border-t p-4 justify-end"
               telah lunas seluruhnya.
             </div>
             <div class="mb-4">
-              {{ dayFull.full_date_only }},<br/>
-              Yang memberi persetujuan,<br/><br/><br/>
+              {{ dayFull.full_date_only }},<br />
+              Yang memberi persetujuan,<br /><br /><br />
               <u class="uppercase">{{ upCase(dataPasangan.nama_pasangan) }}</u>
             </div>
           </div>
         </div>
         <div class="mt-2" v-show="optPrint.penjaminPage">
           <div class="bg-white max-w-[900px] shadow-lg p-8">
-            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang"/>
+            <kop-header :alamat_cabang="`${pkData.alamat_kantor} ${pkData.kota}`" :cabang="pkData.cabang" />
             <div class="mb-4 text-center text-base">
               <b>PERNYATAAN PENJAMIN</b>
             </div>
@@ -749,16 +737,16 @@ class="flex gap-2 border-t p-4 justify-end"
               1. Penjamin benar-benar mengetahui timbulnya hutang piutang secara
               sah berdasarkan Perjanjian pembiayaan Konsumen Nomor
               <b>{{ dynamicForm.order_number }}</b> tanggal
-              <b> {{ dayFull.full_date_only }} </b><br/>
+              <b> {{ dayFull.full_date_only }} </b><br />
               beserta seluruh lampiran, penambahan dan / atau pengurangannya (
               selanjutnya disebut Perjanjian ) oleh dan antara
               <b>KSP Djaya</b> berkedudukan di Haurgeulis
-              <br/>
+              <br />
               ( selanjutnya secara sendiri-sendiri atau bersama disebut<b>
-              Pemberi Pinjaman</b>
+                Pemberi Pinjaman</b>
               dengan :
-              <br/>
-              <br/>
+              <br />
+              <br />
               <table>
                 <tr>
                   <td width="100px">Nama</td>
@@ -808,10 +796,10 @@ class="flex gap-2 border-t p-4 justify-end"
             </div>
 
             <div class="mb-4 justify-end">
-              {{ dayFull.full_date_only }}<br/>
+              {{ dayFull.full_date_only }}<br />
               <div class="w-fit gap-10 grid grid-flow-col text-center bg-white">
                 <div v-for="(penjamin, i) in dataPenjamin" :key="penjamin">
-                  Penjamin {{ i + 1 }},<br/><br/><br/>
+                  Penjamin {{ i + 1 }},<br /><br /><br />
                   (<u class="uppercase">{{ upCase(penjamin.nama) }}</u>)
                 </div>
               </div>
@@ -823,18 +811,18 @@ class="flex gap-2 border-t p-4 justify-end"
     </div>
   </n-card>
   <n-modal v-model:show="confModal" preset="dialog" draggable title="Konfirmasi" positive-text="Ajukan Batal Order"
-           negative-text="Tidak" @positive-click="handleCancel" @negative-click="cancelCallback">
+    negative-text="Tidak" @positive-click="handleCancel" @negative-click="cancelCallback">
     <div>Masukan alasan batal order</div>
-    <n-input type="textarea" placeholder="alasan batal order" v-model:value="bodyCancel.descr"/>
+    <n-input type="textarea" placeholder="alasan batal order" v-model:value="bodyCancel.descr" />
   </n-modal>
   <n-modal v-model:show="confModalRevisi" preset="dialog" draggable title="Konfirmasi" positive-text="Ya"
-           negative-text="Tidak" @positive-click="handleCancel('revisi')" @negative-click="cancelCallback">
+    negative-text="Tidak" @positive-click="handleCancel('revisi')" @negative-click="cancelCallback">
     <div>Apakah yakin revisi order ?</div>
     <!--    <n-input type="textarea" placeholder="alasan revisi order" v-model:value="bodyCancel.descr"/>-->
   </n-modal>
 </template>
 <style scoped>
-table.tblprint > tr > th {
+table.tblprint>tr>th {
   padding: 2px 0px 10px 4px;
   border: 1px solid;
 }
@@ -843,7 +831,7 @@ table.tblprint {
   font-size: 10px;
 }
 
-table.tblprint > tr > td {
+table.tblprint>tr>td {
   padding: 2px 0px 10px 4px;
   border: 1px solid;
 }
@@ -853,14 +841,14 @@ table.tblprint > tr > td {
 }
 </style>
 <script setup>
-import {LocalPrintshopRound as PrintIcon, CancelFilled as CancelIcon, EditOutlined as EditIcon} from "@vicons/material";
-import {NButton, NIcon, useMessage} from "naive-ui";
-import {toRef, useDateFormat, useNow} from '@vueuse/core'
-import {computed, onMounted, reactive, ref} from "vue";
-import {useRoute} from "vue-router";
-import {useApi} from "../../../helpers/axios";
+import { LocalPrintshopRound as PrintIcon, CancelFilled as CancelIcon, EditOutlined as EditIcon } from "@vicons/material";
+import { NButton, NIcon, useMessage } from "naive-ui";
+import { toRef, useDateFormat, useNow } from '@vueuse/core'
+import { computed, onMounted, reactive, ref } from "vue";
+import { useRoute } from "vue-router";
+import { useApi } from "../../../helpers/axios";
 import router from "../../../router";
-import {useVueToPrint} from "vue-to-print";
+import { useVueToPrint } from "vue-to-print";
 // import CollateralCheck from "../../../components/atoms/CollateralCheck.vue";
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const prosesPK = ref(false);
@@ -923,7 +911,7 @@ const dataJaminan = ref([]);
 
 const nowDate = ref('YYYY-MM-DD')
 const lang = ref('en-US')
-const formatted = toRef(useDateFormat(useNow(), nowDate, {locales: lang}));
+const formatted = toRef(useDateFormat(useNow(), nowDate, { locales: lang }));
 
 const tgl_cetaks = ref(formatted.value);
 const tgl_cetak = ref("2023-10-10");
@@ -1002,16 +990,16 @@ const dayFull = reactive({
   month: computed(() => monthNames[new Date(dayFull.print_date).getMonth()]),
   year: computed(() => new Date(dayFull.print_date).getFullYear()),
   full_date_only: computed(
-      () => `${dayFull.date} ${dayFull.month} ${dayFull.year}`
+    () => `${dayFull.date} ${dayFull.month} ${dayFull.year}`
   ),
   full_date: computed(
-      () => `${dayFull.day}, ${dayFull.date} ${dayFull.month} ${dayFull.year}`
+    () => `${dayFull.day}, ${dayFull.date} ${dayFull.month} ${dayFull.year}`
   ),
 });
 
 
 const areaPrintRef = ref();
-const {handlePrint} = useVueToPrint({
+const { handlePrint } = useVueToPrint({
   content: areaPrintRef,
   documentTitle: "Perjanjian Kredit",
 });
@@ -1033,7 +1021,7 @@ const handlePrintAction = async (e) => {
   if (!response.ok) {
     console.log(response.error);
   } else {
-    router.push({name: "Order"});
+    router.push({ name: "Order" });
     handlePrint();
   }
 
@@ -1095,7 +1083,7 @@ const handleCancel = async (e) => {
   });
   if (!response.ok) {
     console.log(response.error);
-    router.push({name: 'Pengajuan Kredit'})
+    router.push({ name: 'Pengajuan Kredit' })
   } else {
     message.success("pengajuan batal order berhasil....");
   }
