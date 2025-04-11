@@ -11,7 +11,7 @@
         <div class="md:flex gap-2">
             <n-form-item label="No Polisi" path="no_polisi" class="w-full">
                 <n-input placeholder="No Polisi" @input="$event => (jaminan.no_polisi = $event.toUpperCase())"
-                    v-model:value="jaminan.no_polisi" :disabled="props.viewMode" />
+                    v-model:value="jaminan.no_polisi" :disabled="props.viewMode"  @keydown.space.prevent />
             </n-form-item>
             <n-form-item label="Warna" path="warna" class="w-full">
                 <n-input placeholder="warna" v-model:value="jaminan.warna"
