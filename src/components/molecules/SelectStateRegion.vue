@@ -1,20 +1,23 @@
 <template>
     <div class="flex md:flex-row flex-col w-full  gap-2">
         <n-form-item label="Provinsi" path="provinsi" class="w-full">
-            <n-select filterable placeholder="Pilih Provinsi" label-field="text" value-field="id"
+            <n-input :readonly="active" v-model:value="props.provinsi" v-if="!props.action"/>
+            <n-select v-else filterable placeholder="Pilih Provinsi" label-field="text" value-field="id"
                 v-model:value="props.provinsi" :options="col_provinsi" @update:value="provinsiChanged"
                 @blur="provUpdate" />
         </n-form-item>
         <n-form-item label="Kota" path="kota" class="w-full">
-            <n-select filterable placeholder="Pilih Kab/Kota" label-field="text" value-field="id"
+            <n-input :readonly="active" v-model:value="props.kota" v-if="!props.action"/>
+            <n-select v-else filterable placeholder="Pilih Kab/Kota" label-field="text" value-field="id"
                 v-model:value="props.kota" :options="col_kota" @update:value="kotaChanged" @blur="kotaUpdate" />
         </n-form-item>
         <n-form-item label="Kecamatan" path="kecamatan" class="w-full">
-            <n-select filterable placeholder="Pilih Kecamatan" label-field="text" value-field="id"
+            <n-input :readonly="active" v-model:value="props.kecamatan" v-if="!props.action"/>
+            <n-select v-else filterable placeholder="Pilih Kecamatan" label-field="text" value-field="id"
                 v-model:value="props.kecamatan" :options="col_kec" @update:value="kecChanged" @blur="kecUpdate" />
         </n-form-item>
       <n-form-item label="Desa" path="desa" class="w-full" v-if="col_desa.length <= 0 ">
-        <n-input v-model:value="props.desa" placeholder="Kelurahan / Desa" @update:value="desaPostUp" />
+        <n-input v-model:value="props.desa" placeholder="Kelurahan / Desa" @update:value="desaPostUp" :readonly="!props.action"/>
       </n-form-item>
 
         <n-form-item label="Desa" path="desa" class="w-full" v-else>
