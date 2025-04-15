@@ -53,7 +53,7 @@ class="flex gap-2 border-t p-4 justify-end"
       <div class="sticky  flex bottom-0 w-full" v-if="pkData.no_perjanjian === ''">
         <CollateralCheck :coll_data="payloadCheck()" @coll_val="handleCollCheck"/>
       </div>
-      <div v-else>
+      <div v-else class="flex gap-2">
         <n-button :type="pkData.flag == 1 ? 'warning' : 'primary'" class="gap-2"
                   @click="handlePrintAction(pkData.flag)">
           <n-icon>
@@ -61,7 +61,7 @@ class="flex gap-2 border-t p-4 justify-end"
           </n-icon>
           {{ pkData.flag == 1 ? "Cetak Ulang Order" : "Cetak Order" }}
         </n-button>
-        <n-button v-if="pkData.flag === 1 && tgl_cetaks == pkData.tgl_awal_pk" type="error" class="gap-2"
+        <n-button v-if="pkData.flag === 1 && tgl_cetaks === pkData.tgl_awal_pk" type="error" class="gap-2"
                   @click="confModal = true">
           <n-icon>
             <cancel-icon/>

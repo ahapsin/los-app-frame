@@ -3,8 +3,7 @@
         content: true,
         footer: 'soft',
     }" size="small">
-        <template #header>PEMBAYARAN
-        </template>
+    
         <template #header-extra>
             <n-space>
                 <n-button strong type="primary" @click="handleAddPay">
@@ -306,6 +305,7 @@ const loadingBar = useLoadingBar();
 import { useMessage, NIcon, NTag, NButton, NInput, NImage } from "naive-ui";
 import { computed, onMounted, reactive, ref, h } from "vue";
 import { useVueToPrint } from "vue-to-print";
+import HAppBar from "../../../components/molecules/HAppBar.vue";
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const uploadState = ref(false);

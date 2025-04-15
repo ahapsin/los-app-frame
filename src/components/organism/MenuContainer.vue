@@ -3,18 +3,18 @@
     <pre>{{ menu.list }}</pre>
     <div v-if="menu.loading">
       <div class="flex flex-col gap-2">
-        <n-skeleton height="10px" width="100px" round/>
+        <n-skeleton height="10px" width="100px" round />
         <n-space>
-          <n-skeleton height="60px" width="60px" class="rounded-xl"/>
-          <n-skeleton height="60px" width="60px" class="rounded-xl"/>
+          <n-skeleton height="60px" width="60px" class="rounded-xl" />
+          <n-skeleton height="60px" width="60px" class="rounded-xl" />
         </n-space>
       </div>
       <div class="flex flex-col gap-2 mt-2">
-        <n-skeleton height="10px" width="100px" round/>
+        <n-skeleton height="10px" width="100px" round />
         <n-space>
-          <n-skeleton height="60px" width="60px" class="rounded-xl"/>
-          <n-skeleton height="60px" width="60px" class="rounded-xl"/>
-          <n-skeleton height="60px" width="60px" class="rounded-xl"/>
+          <n-skeleton height="60px" width="60px" class="rounded-xl" />
+          <n-skeleton height="60px" width="60px" class="rounded-xl" />
+          <n-skeleton height="60px" width="60px" class="rounded-xl" />
         </n-space>
       </div>
     </div>
@@ -25,8 +25,9 @@
           <div class="flex flex-col " v-for="colSubMenu in colMenu.menuitem.submenu" :key="colSubMenu.id">
             <router-link :to="`${colMenu.menuitem.routename}${colSubMenu.subroute}`">
               <div class="flex flex-col  cursor-pointer rounded-xl  border  h-24 gap-4  justify-center items-center ">
-                <div class="w-10 h-10 flex items-center justify-center  rounded-full text-white" :style="`background-color:${appbase} ;`">
-                  <v-icon :name="colSubMenu.leading[0] ? colSubMenu.leading[0] : 'ri-apps-2-line'"/>
+                <div class="w-10 h-10 flex items-center justify-center  rounded-full text-white"
+                  :style="`background-color:${appbase} ;`">
+                  <v-icon :name="colSubMenu.leading[0] ? colSubMenu.leading[0] : 'ri-apps-2-line'" />
                 </div>
                 <n-ellipsis class="px-2  text-xs text-center">{{ colSubMenu.sublabel }}</n-ellipsis>
               </div>
@@ -39,7 +40,7 @@
 </template>
 <script setup>
 import _ from "lodash";
-import {useMenuStore} from "../../stores/menu.js";
+import { useMenuStore } from "../../stores/menu.js";
 const appbase = import.meta.env.VITE_APP_BASE_COLOR;
 
 const menu = useMenuStore();
