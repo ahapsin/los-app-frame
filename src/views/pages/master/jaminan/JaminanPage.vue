@@ -15,7 +15,7 @@
             </n-form-item>
             <n-form-item label="NO POLISI" class="w-full">
               <n-input v-model:value="dynamicSearch.no_polisi" type="text" placeholder="NO POLISI"
-                       clearable/>
+                       clearable @keydown.space.prevent/>
             </n-form-item>
             <n-form-item label="NO BPKB" class="w-full">
               <n-input v-model:value="dynamicSearch.no_bpkb" type="text" placeholder="NO BPKB"

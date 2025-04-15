@@ -16,10 +16,11 @@
             </n-button>
           </n-form-item>
           <n-form-item>
-            <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan" -->
-            <!-- :name="`Listing_Beban_${selectBranch}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false"> -->
-            <n-button type="primary" secondary @click="exportToExcel" :disabled="ctrDownload">Download</n-button>
-            <!-- </json-excel> -->
+            <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
+              :name="`Listing_Beban_${selectedBranch?.nama ? selectedBranch.nama : me.me.cabang_nama}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false">
+              <!--<n-button type="primary" secondary @click="exportToExcel" :disabled="ctrDownload">Download</n-button>-->
+              <n-button type="primary" secondary :disabled="ctrDownload">Download</n-button>
+            </json-excel>
           </n-form-item>
         </n-space>
         <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
@@ -34,6 +35,7 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
 import moment from "moment";
+import JsonExcel from "vue-json-excel3";
 import { useLoadingBar, useMessage } from "naive-ui";
 import { useMeStore } from "../../../stores/me";
 import { useApi } from "../../../helpers/axios.js";

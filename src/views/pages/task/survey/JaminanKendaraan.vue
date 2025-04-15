@@ -11,7 +11,7 @@
         <div class="md:flex gap-2">
             <n-form-item label="No Polisi" path="no_polisi" class="w-full">
                 <n-input placeholder="No Polisi" @input="$event => (jaminan.no_polisi = $event.toUpperCase())"
-                    v-model:value="jaminan.no_polisi" :disabled="props.viewMode" />
+                    v-model:value="jaminan.no_polisi" :disabled="props.viewMode"  @keydown.space.prevent />
             </n-form-item>
             <n-form-item label="Warna" path="warna" class="w-full">
                 <n-input placeholder="warna" v-model:value="jaminan.warna"
@@ -22,7 +22,14 @@
                     :disabled="props.viewMode" value-format="yyyy-MM-dd" format="dd-MM-yyyy" type="date"
                     class="w-full" />
             </n-form-item>
+            
         </div>
+        <n-form-item label="Kondisi Jaminan" path="kondisi_jaminan">
+              <n-radio-group v-model:value="jaminan.kondisi_jaminan" name="kondisi_jaminan">
+                <n-radio value="ada">Ada</n-radio>
+                <n-radio value="didealer">Masih didealer</n-radio>
+              </n-radio-group>
+            </n-form-item>
         <div class="grid grid-cols-3 gap-2" v-if="me.me.jabatan != 'MCF' || props.viewMode">
             <n-form-item label="No BPKB" path="no_bpkb" class="w-full">
                 <n-input placeholder="No BPKB" v-model:value="jaminan.no_bpkb"
