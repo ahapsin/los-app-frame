@@ -2,6 +2,7 @@ import {computed, ref} from 'vue';
 
 import {defineStore} from 'pinia';
 import {useApi} from "../helpers/axios.js";
+import { useMessage } from "naive-ui";
 import {useValidator} from "../utils/validator.js";
 
 export const useSurveyStore = defineStore('surveys', () => {
@@ -9,6 +10,7 @@ export const useSurveyStore = defineStore('surveys', () => {
     const surveys = ref([]);
     const loading = ref(false);
     const error = ref(null);
+    const message=useMessage();
 
     const {millionValidator} = useValidator();
 
@@ -45,22 +47,22 @@ export const useSurveyStore = defineStore('surveys', () => {
         }, {});
     });
 
-    const createSurvey = async (newSurvey) => {
-
-        const response = await useApi({
-            api: 'kunjungan',
-            method: 'POST',
-            data: newSurvey,
-            token: localStorage.getItem('token'),
-        });
-        console.log(response);
-        // if (response.ok) {
-        //     loading.value = false;
-        //     surveys.value = response.data.response;
-        // } else {
-        //     loading.value = false;
-        //     error.value = response.error;
-        // }
+    const createSurvey = (newSurvey) => {
+        console.log(newSurvey);
+        // const response = await useApi({
+        //     api: 'kunjungan',
+        //     method: 'POST',
+        //     data: newSurvey,
+        //     token: localStorage.getItem('token'),
+        // });
+        // console.log(response);
+        // // if (response.ok) {
+        // //     loading.value = false;
+        // //     surveys.value = response.data.response;
+        // // } else {
+        // //     loading.value = false;
+        // //     error.value = response.error;
+        // // }
 
     }
 
