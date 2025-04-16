@@ -1,20 +1,25 @@
 <template>
   <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
     <div class="flex gap-2">
-      <n-badge :value="9">
-        <n-button type="primary" tertiary circle>
-          <template #icon>
-            <v-icon name="bi-chat" />
-          </template>
-        </n-button>
-      </n-badge>
-      <n-badge :value="4">
-        <n-button type="primary" tertiary circle>
-          <template #icon>
-            <v-icon name="bi-bell" />
-          </template>
-        </n-button>
-      </n-badge>
+      
+      <n-popover placement="bottom-end" width="250">
+        <template #trigger>
+          <n-badge :value="tasks.length">
+            <n-button type="primary" tertiary circle @click="handleTask">
+              <template #icon>
+                <v-icon name="bi-bell" />
+              </template>
+            </n-button>
+          </n-badge>
+        </template>
+        {{ tasks }}
+        <!-- <n-skeleton text :repeat="2" /> <n-skeleton text style="width: 60%" v-show="false"/> -->
+        <div v-for="task in tasks" :key="task" @click="tasks = []">
+          <div><b>{{ task.type }}</b></div>
+          <div>{{ task.descr }}</div>
+          <div>{{ task.created_at }}</div>
+        </div>
+      </n-popover>
     </div>
     <div></div>
     <n-dropdown trigger="hover" :options="options">
@@ -128,6 +133,21 @@ const GetMe = async () => {
   }
 };
 
+const tasks=ref([]);
+const handleTask = async () => {
+  let userToken = localStorage.getItem("token");
+  const response = await useApi({
+    method: "GET",
+    api: "task_pusher",
+    token: userToken,
+  });
+  if (!response.ok) {
+    message.info('SESI BERAKHIR');
+  } else {
+    tasks.value = response.data;
+  }
+};
+
 // const getDataColl = async () => {
 //   let userToken = localStorage.getItem("token");
 //
@@ -158,6 +178,7 @@ const GetPayment = async () => {
     task.storeTask(response.data.response);
   }
 };
+
 
 
 const LogOut = async () => {

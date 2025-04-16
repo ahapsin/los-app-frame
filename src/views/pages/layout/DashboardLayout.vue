@@ -1,5 +1,5 @@
 <template>
-  <div :style="`background-color:${appAccentColor} ;`" class="h-screen">
+  <div :style="`background-color:${appAccentColor} ;`" class="h-screen !bg-pr-100">
     <div class="flex">
 
       <n-scrollbar class="h-screen w-52" v-if="width > 390">
