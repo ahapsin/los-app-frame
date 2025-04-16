@@ -12,12 +12,25 @@
             </n-button>
           </n-badge>
         </template>
-        {{ tasks }}
+     
         <!-- <n-skeleton text :repeat="2" /> <n-skeleton text style="width: 60%" v-show="false"/> -->
-        <div v-for="task in tasks" :key="task" @click="tasks = []">
+        <!-- <div v-for="task in tasks" :key="task" @click="tasks = []">
+          <div>
+            
+          </div>
           <div><b>{{ task.type }}</b></div>
           <div>{{ task.descr }}</div>
-          <div>{{ task.created_at }}</div>
+          <div class="text-[10px] text-slate-500">{{ task.created_at }}</div>
+        </div> -->
+        <div v-for="task in tasks" :key="task" class="hover:bg-pr-50 rounded-lg p-2" @click="handleDetail(task.type_id)">
+          <div>
+          </div>
+          <div><b>{{ task.type }}</b></div>
+          <div>{{ task.descr }}</div>
+          <div class="text-[10px] text-slate-500">{{ task.created_at }}</div>
+        </div>
+        <div class="flex justify-center p-2">
+          <n-button text type="primary" size="small">Selengkapnya</n-button>
         </div>
       </n-popover>
     </div>
@@ -37,6 +50,9 @@
       </div>
     </n-dropdown>
   </div>
+  <n-modal v-show="false">
+    asdasd
+  </n-modal>
 </template>
 <script setup>
 import { ref, h, onMounted } from "vue";
@@ -148,6 +164,10 @@ const handleTask = async () => {
   }
 };
 
+const handleDetail = (e)=>{
+  console.log(e)
+  tasks.value=[];
+}
 // const getDataColl = async () => {
 //   let userToken = localStorage.getItem("token");
 //
@@ -190,5 +210,6 @@ const LogOut = async () => {
 };
 onMounted(() => {
   GetMe();
+  handleTask();
 });
 </script>
