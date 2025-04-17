@@ -6,7 +6,7 @@
         <n-button v-if="!props.primary" circle quaternary @click="router.back()">
           <v-icon :inverse="!true" name="bi-chevron-left" scale="1.5"/>
         </n-button>
-        <div v-if="!searching" class="text-base">{{ props.title }}</div>
+        <div v-if="!searching" class="text-base flex :md:hidden">{{ props.title }}</div>
         <div v-show="searching" class="flex w-full pe-2">
           <n-input class="w-full" clearable placeholder="cari disini"/>
         </div>

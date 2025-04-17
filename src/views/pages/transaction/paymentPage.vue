@@ -1,4 +1,8 @@
 <template>
+
+    <h-app-bar title="PEMBAYARAN">
+        <template #suffix></template>
+    </h-app-bar>
     <n-card content-style="padding: 0;" :segmented="{
         content: true,
         footer: 'soft',
