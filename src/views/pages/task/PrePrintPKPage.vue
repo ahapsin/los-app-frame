@@ -280,6 +280,17 @@ class="flex gap-2 border-t p-4 justify-end"
                   </td>
                 </tr>
                 <tr>
+                  <td align="center">
+                    <br />
+                    Pasal 4
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    Pihak Kedua menyatakan dengan benar bahwa Perjanjian Pemberian Pinjaman ini adalah untuk keperluan pribadi <b>Bukan Untuk Atas Nama Orang Lain</b>, dan Pihak Kedua bertanggung jawab penuh atas segala pinjaman dan seluruh pembayaran angsuran sesuai yang sudah disepakati dalam perjanjian ini
+                  </td>
+                </tr>
+                <tr>
                   <td>
                     <br />
                     Apabila pihak kedua tidak bisa memenuhi kewajiban pembayaran

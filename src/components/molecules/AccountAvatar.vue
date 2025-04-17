@@ -1,37 +1,80 @@
 <template>
-  <div class="flex items-center gap-4 cursor-pointer">
+  <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
+    <div class="flex gap-2">
+
+      <n-popover placement="bottom-end" width="250">
+        <template #trigger>
+          <n-badge :value="tasks.length">
+            <n-button type="primary" tertiary circle @click="handleTask">
+              <template #icon>
+                <v-icon name="bi-bell" />
+              </template>
+            </n-button>
+          </n-badge>
+        </template>
+
+        <!-- <n-skeleton text :repeat="2" /> <n-skeleton text style="width: 60%" v-show="false"/> -->
+        <!-- <div v-for="task in tasks" :key="task" @click="tasks = []">
+          <div>
+            
+          </div>
+          <div><b>{{ task.type }}</b></div>
+          <div>{{ task.descr }}</div>
+          <div class="text-[10px] text-slate-500">{{ task.created_at }}</div>
+        </div> -->
+        <div v-if="tasks.length > 0">
+          <div v-for="task in tasks" :key="task" class="hover:bg-pr-50 rounded-lg p-2"
+            @click="handleDetail(task.type_id)">
+            <div>
+            </div>
+            <div><b>{{ task.type }}</b></div>
+            <div>{{ task.descr }}</div>
+            <div class="text-[10px] text-slate-500">{{ task.created_at }}</div>
+          </div>
+          <div class="flex justify-center p-2">
+            <n-button text type="primary" size="small">Selengkapnya</n-button>
+          </div>
+        </div>
+        <div class="flex text-gray-500 justify-center">
+          data tidak ada
+        </div>
+      </n-popover>
+    </div>
+    <div></div>
     <n-dropdown trigger="hover" :options="options">
-      <div class="flex items-center gap-4">
-                <span class="flex flex-col items-end">
-                  <n-text type="primary" class="text-primary hidden md:flex uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
-                    <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small>
-                </span>
+      <div class="flex items-center gap-2">
+        <span class="flex flex-col items-end">
+          <n-text type="primary" class="text-primary uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
+          <n-text type="primary" class="text-primary uppercase"><small>POS: {{ dataUser?.cabang_nama }}</small></n-text>
+          <!-- <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small> -->
+        </span>
         <n-avatar round size="small" class="aspect-square" :src="dataUser
-                    ? dataUser.PHOTO_URL
-                    : 'https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-vert.png'
-                    ">
+          ? dataUser.PHOTO_URL
+          : 'https://icones.pro/wp-content/uploads/2021/02/icone-utilisateur-vert.png'
+          ">
           {{ dataUser?.nama.at(0) }}
         </n-avatar>
-
       </div>
     </n-dropdown>
-
   </div>
+  <n-modal v-show="false">
+    asdasd
+  </n-modal>
 </template>
 <script setup>
-import {ref, h, onMounted} from "vue";
+import { ref, h, onMounted } from "vue";
 import router from "../../router";
-import {useMessage, NIcon} from "naive-ui";
+import { useMessage, NIcon } from "naive-ui";
 import {
   AccountCircleOutlined as Account,
   LockOutlined as Locked,
   LogOutOutlined as SignOut,
 } from "@vicons/material";
 
-import {useApi} from "../../helpers/axios";
-import {useMeStore} from "../../stores/me";
-import {useTaskStore} from "../../stores/task";
-import {useCollateralStore} from "../../stores/collateral.js";
+import { useApi } from "../../helpers/axios";
+import { useMeStore } from "../../stores/me";
+import { useTaskStore } from "../../stores/task";
+import { useCollateralStore } from "../../stores/collateral.js";
 
 const message = useMessage();
 const me = useMeStore();
@@ -88,13 +131,13 @@ const options = [
 const task = useTaskStore();
 const coll = useCollateralStore();
 const approvalCenter = () => {
-  router.push({name: "approval-center"})
+  router.push({ name: "approval-center" })
 }
 const handleAccount = () => {
-  router.push({name: "myaccount"});
+  router.push({ name: "myaccount" });
 };
 const handleChangePassword = () => {
-  router.push({name: "changepassword"});
+  router.push({ name: "changepassword" });
 };
 
 const GetMe = async () => {
@@ -113,6 +156,25 @@ const GetMe = async () => {
   }
 };
 
+const tasks = ref([]);
+const handleTask = async () => {
+  let userToken = localStorage.getItem("token");
+  const response = await useApi({
+    method: "GET",
+    api: "task_pusher",
+    token: userToken,
+  });
+  if (!response.ok) {
+    message.info('SESI BERAKHIR');
+  } else {
+    tasks.value = response.data;
+  }
+};
+
+const handleDetail = (e) => {
+  console.log(e)
+  tasks.value = [];
+}
 // const getDataColl = async () => {
 //   let userToken = localStorage.getItem("token");
 //
@@ -145,6 +207,7 @@ const GetPayment = async () => {
 };
 
 
+
 const LogOut = async () => {
 
   localStorage.removeItem("token");
@@ -154,5 +217,6 @@ const LogOut = async () => {
 };
 onMounted(() => {
   GetMe();
+  handleTask();
 });
 </script>
