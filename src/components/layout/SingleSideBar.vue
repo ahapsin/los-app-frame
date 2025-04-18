@@ -2,7 +2,7 @@
   <n-layout class="h-screen">
 
     <n-layout-header>
-      <n-page-header class="sticky bg-scf border-b top-0 z-50 backdrop-blur p-2">
+      <n-page-header class="sticky bg-slate-50 border-b top-0 z-50 backdrop-blur p-2">
         <template #title>
           <n-space align="center">
             <n-button circle quaternary @click="router.back()"
@@ -40,12 +40,12 @@
       </n-page-header>
     </n-layout-header>
     <n-layout position="absolute" style="top: 60px" has-sider>
-      <n-layout-sider :width="180" :collapsed-width="0" :show-collapsed-content="false"
+      <n-layout-sider :width="230" :collapsed-width="0" :show-collapsed-content="false"
         :collapsed="sideMenu.sideEffect ? true : false" content-style="padding: 10px;"
-        class="bg-white/80 backdrop-blur absolute md:relative h-full z-20" bordered>
+        class="bg-slate-50 backdrop-blur absolute md:relative h-full z-20 border" >
         <SideMenu />
       </n-layout-sider>
-      <n-layout :class="`md:p-4`">
+      <n-layout :class="`md:p-4 bg-slate-100`">
         <RouterView />
         <slot />
       </n-layout>
