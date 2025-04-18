@@ -1,5 +1,5 @@
 <template>
-    <n-card :title="prop?.label" :segmented="true" size="small">
+    <n-card :title="prop?.label" :segmented="true" size="small" class="w-1/2">
         <n-spin :show="loading">
             <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
                 <n-watermark :content="apptitle" cross selectable :font-size="16" :line-height="16" :width="192"
@@ -12,9 +12,8 @@
                                 }}</n-text>
 
                         </div>
-    
                         <div class="flex justify-between border-b border-dashed border-black"
-                            :class="width > 850 ? 'flex-row' : 'flex-col'">
+                            >
                             <div class="flex flex-col py-4">
                                 <small class="text-reg">No Transaksi : </small>
                                 <n-text class="text-reg font-bold"> {{ bodyModal?.no_transaksi }}</n-text>
@@ -72,7 +71,7 @@
                             </div>
 
                         </div>
-                        <div class="grid border-b border-dashed border-black pb-2"
+                        <div class="flex gap-4 border-b border-dashed border-black pb-2"
                             :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '" v-else>
                             <div class="flex flex-col">
                                 <small class="text-reg">Total Pelunasan</small>
@@ -96,7 +95,14 @@
                             <div class="flex flex-col">
                                 <small class="text-reg">Diskon</small>
                                 <n-text class="text-md font-bold"> {{
-                                    (bodyModal?.total_bayar - bodyModal?.jumlah_uang).toLocaleString("US")
+                                    (Math.abs(bodyModal?.total_bayar - bodyModal?.jumlah_uang)).toLocaleString("US")
+                                    }}
+                                </n-text>
+                            </div>
+                            <div class="flex flex-col">
+                                <small class="text-reg">Pinalti</small>
+                                <n-text class="text-md font-bold"> {{
+                                    bodyModal.pinalti.toLocaleString("US")
                                     }}
                                 </n-text>
                             </div>
@@ -112,11 +118,11 @@
 
                         <table width="100%" class="border border-black" v-if="bodyModal?.payment_type != 'pelunasan'">
                             <tr>
-                                <th class="border border-black">ANGS. KE</th>
-                                <th class="border border-black">TANGGAL JT.</th>
-                                <th class="border border-black">BYR. ANGS</th>
-                                <th class="border border-black">BYR. DENDA</th>
-                                <th class="border border-black">DISKON</th>
+                                <th class="border border-black p-1">ANGS. KE</th>
+                                <th class="border border-black p-1">TANGGAL JT.</th>
+                                <th class="border border-black p-1">BYR. ANGS</th>
+                                <th class="border border-black p-1">BYR. DENDA</th>
+                                <th class="border border-black p-1">DISKON</th>
                                 <!--              <th class="border border-black">Jumlah</th>-->
                             </tr>
                             <tr v-for="angs in bodyModal?.struktur" :key="angs.id">
@@ -174,7 +180,8 @@ import { useApi } from "../../helpers/axios.js";
 const prop = defineProps({
     id: String,
     type: String,
-    label: String
+    label: String,
+    route:String,
 });
 const bodyModal = ref();
 const loading = ref(false);
@@ -211,7 +218,7 @@ const handleSave = async () => {
     const response = await useApi({
         method: "POST",
         data: bodyPayment,
-        api: prop.type === 'payemnt'? "payment_approval":"payment_cancel",
+        api: prop.route,
         token: localStorage.getItem('token'),
     });
     if (!response.ok) {

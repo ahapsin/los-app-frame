@@ -24,14 +24,22 @@
         </div> -->
 
 
-        <div v-if="tasks.length != 0">
-          <div v-for="task in tasks" :key="task" class="hover:bg-pr-50 rounded-lg p-2 cursor-pointer"
+        <div v-if="tasks.length != 0" >
+          <div v-for="task in tasks" :key="task" class=" hover:bg-pr-50 rounded-lg p-2 cursor-pointer"
             @click="handleDetail(task)">
             <div class="flex gap-2">
               <div secondary v-if="task.type === 'payment'" class="flex text-xl p-1">
                 🤑
               </div>
-
+              <div secondary v-if="task.type === 'request_payment'" class="flex text-xl p-1">
+                🤑
+              </div>
+              <div secondary v-if="task.type === 'repayment'" class="flex text-xl p-1">
+                🤑
+              </div>
+              <div secondary v-if="task.type === 'repayment_cancel'" class="flex text-xl p-1">
+                🤑
+              </div>
               <div circle type="error" secondary v-if="task.type === 'payment_cancel'" class="flex text-xl p-1">
                 😤
               </div>
@@ -66,10 +74,18 @@
         <div v-for="task in tasks" :key="task" class="hover:bg-pr-50 rounded-lg p-2 cursor-pointer"
           @click="handleDetail(task)">
           <div class="flex gap-2">
-              <div secondary v-if="task.type === 'payment'" class="flex text-xl p-1">
+            <div secondary v-if="task.type === 'payment'" class="flex text-xl p-1">
                 🤑
               </div>
-
+              <div secondary v-if="task.type === 'request_payment'" class="flex text-xl p-1">
+                🤑
+              </div>
+              <div secondary v-if="task.type === 'repayment'" class="flex text-xl p-1">
+                🤑
+              </div>
+              <div secondary v-if="task.type === 'repayment_cancel'" class="flex text-xl p-1">
+                🤑
+              </div>
               <div circle type="error" secondary v-if="task.type === 'payment_cancel'" class="flex text-xl p-1">
                 😤
               </div>
@@ -103,7 +119,7 @@
   </div>
 
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="modalNotif" :on-after-leave="onAfterLeave">
-    <kwitansi-pembayaran :id="bodyModal.type_id" :type="bodyModal.type" @save="handleModal" :label="bodyModal.title" />
+    <kwitansi-pembayaran :id="bodyModal.type_id" :type="bodyModal.type" :route="bodyModal.route" @save="handleModal" :label="bodyModal.title" />
   </n-modal>
 </template>
 <script setup>
