@@ -168,7 +168,7 @@
 
                     <select-state-region v-model:provinsi="alamatIdentitas.provinsi" v-model:kota="alamatIdentitas.kota"
                         v-model:kecamatan="alamatIdentitas.kecamatan" v-model:desa="alamatIdentitas.kelurahan"
-                        v-model:kodepos="alamatIdentitas.kode_pos" />
+                        v-model:kodepos="alamatIdentitas.kode_pos" :viewMode="viewMode"/>
                     <div class="flex items-center justify-between border-b pb-2 mb-2">
                         <strong class="text-base">Informasi Alamat Tagih</strong>
                         <n-button secondary type="primary" @click="copyAddress" v-show="!viewMode">
@@ -196,7 +196,7 @@
                     </div>
                     <select-state-region v-model:provinsi="alamatTagih.provinsi" v-model:kota="alamatTagih.kota"
                         v-model:kecamatan="alamatTagih.kecamatan" v-model:desa="alamatTagih.kelurahan"
-                        v-model:kodepos="alamatTagih.kode_pos" />
+                        v-model:kodepos="alamatTagih.kode_pos" :viewMode/>
                     <n-divider title-placement="left"> Dokumen Identitas </n-divider>
                     <n-space justify="space-between">
                         <n-space>
@@ -667,7 +667,7 @@
                     </n-form-item>
                     <select-state-region v-model:provinsi="dataKerabat.provinsi" v-model:kota="dataKerabat.kota"
                         v-model:kecamatan="dataKerabat.kecamatan" v-model:desa="dataKerabat.kelurahan"
-                        v-model:kodepos="dataKerabat.kodepos" />
+                        v-model:kodepos="dataKerabat.kodepos" :viewMode/>
                     <n-divider title-placement="left"> Informasi Bank </n-divider>
                     <n-dynamic-input v-model:value="formAssign.info_bank" :on-create="onCreate" disabled
                         v-if="viewMode">

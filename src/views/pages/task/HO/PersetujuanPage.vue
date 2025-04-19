@@ -13,9 +13,9 @@
       <n-tab-pane name="Transfer" tab="Transfer">
         <PendingTransferPage/>
       </n-tab-pane>
-      <n-tab-pane name="Diskon" tab="Permintaan Diskon">
+      <!-- <n-tab-pane name="Diskon" tab="Permintaan Diskon">
         <n-data-table :columns="columns" :data="dataTable"/>
-      </n-tab-pane>
+      </n-tab-pane> -->
       <n-tab-pane name="Order" tab="Order">
         <template #tab>
           <n-space>
@@ -25,7 +25,7 @@
         </template>
         <CancelOrderPage :data="dataCancelOrder" @conf="handleConfCancelOrder"/>
       </n-tab-pane>
-      <n-tab-pane name="Pembayaran" tab="Pembayaran">
+      <!-- <n-tab-pane name="Pembayaran" tab="Pembayaran">
         <template #tab>
           <n-space>
             Batal Bayar
@@ -33,7 +33,7 @@
           </n-space>
         </template>
         <CancelPaymentPage :data="dataCancelPayment"/>
-      </n-tab-pane>
+      </n-tab-pane> -->
       <template #suffix>
         <n-dropdown trigger="hover" :options="options" @select="handleSelect" v-if="addButtonDisplay">
           <n-button type="primary">Tambah Transaksi</n-button>
