@@ -17,6 +17,7 @@ const routes = [
         name: "visit",
         component: () => import("../views/pages/task/survey/MSurveyPage.vue"),
     },
+    
     {
         path: "/no-service",
         name: "maintenance",
@@ -99,6 +100,11 @@ const routes = [
                 path: "apply-credit",
                 name: "Order",
                 component: () => import("../views/pages/task/FpkPage.vue"),
+            },
+            {
+                path: "/notif-center",
+                name: "notif-center",
+                component: () => import("../views/pages/user/NotifCenterPage.vue"),
             },
             {
                 path: "kunjungan_cust",
