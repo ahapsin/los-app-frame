@@ -1,5 +1,4 @@
-<template>
-    
+<template>    
     <fpk-form :view-mode="true"/>
 </template>
 
