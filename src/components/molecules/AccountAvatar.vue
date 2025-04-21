@@ -40,10 +40,9 @@
         </div>
       </n-popover>
     </div>
-    <div></div>
     <n-dropdown trigger="hover" :options="options">
       <div class="flex items-center gap-2">
-        <span class="flex flex-col items-end">
+        <span class="flex-col items-end hidden md:flex">
           <n-text type="primary" class="text-primary uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
           <n-text type="primary" class="text-primary uppercase"><small>POS: {{ dataUser?.cabang_nama }}</small></n-text>
           <!-- <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small> -->
