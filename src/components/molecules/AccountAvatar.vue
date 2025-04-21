@@ -1,7 +1,6 @@
 <template>
   <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
     <div class="flex gap-2">
-
       <n-popover placement="bottom-end" width="350">
         <template #trigger>
           <n-badge :value="tasks.length">
@@ -24,7 +23,7 @@
         </div> -->
 
 
-        <div v-if="tasks.length != 0" >
+        <div v-if="tasks.length != 0">
           <div v-for="task in tasks" :key="task" class=" hover:bg-pr-50 rounded-lg p-2 cursor-pointer"
             @click="handleDetail(task)">
             <div class="flex gap-2">
@@ -46,7 +45,7 @@
               <div>
                 <div class="text-[10px] text-slate-500"><n-tag :type="task.type == 'payment' ? 'success' : 'error'"
                     size="small">{{
-                    task.branch_name }}</n-tag> •
+                      task.branch_name }}</n-tag> •
                   {{
                     task.created_at }}</div>
                 <div><b>{{ task.title }}</b></div>
@@ -75,38 +74,38 @@
           @click="handleDetail(task)">
           <div class="flex gap-2">
             <div secondary v-if="task.type === 'payment'" class="flex text-xl p-1">
-                🤑
-              </div>
-              <div secondary v-if="task.type === 'request_payment'" class="flex text-xl p-1">
-                🤑
-              </div>
-              <div secondary v-if="task.type === 'repayment'" class="flex text-xl p-1">
-                🤑
-              </div>
-              <div secondary v-if="task.type === 'repayment_cancel'" class="flex text-xl p-1">
-                🤑
-              </div>
-              <div circle type="error" secondary v-if="task.type === 'payment_cancel'" class="flex text-xl p-1">
-                😤
-              </div>
-              <div>
-                <div class="text-[10px] text-slate-500"><n-tag :type="task.type == 'payment' ? 'success' : 'error'"
-                    size="small">{{
-                    task.branch_name }}</n-tag> •
-                  {{
-                    task.created_at }}</div>
-                <div><b>{{ task.title }}</b></div>
-                <div>{{ task.descr }}</div>
-              </div>
+              🤑
             </div>
+            <div secondary v-if="task.type === 'request_payment'" class="flex text-xl p-1">
+              🤑
+            </div>
+            <div secondary v-if="task.type === 'repayment'" class="flex text-xl p-1">
+              🤑
+            </div>
+            <div secondary v-if="task.type === 'repayment_cancel'" class="flex text-xl p-1">
+              🤑
+            </div>
+            <div circle type="error" secondary v-if="task.type === 'payment_cancel'" class="flex text-xl p-1">
+              😤
+            </div>
+            <div>
+              <div class="text-[10px] text-slate-500"><n-tag :type="task.type == 'payment' ? 'success' : 'error'"
+                  size="small">{{
+                    task.branch_name }}</n-tag> •
+                {{
+                  task.created_at }}</div>
+              <div><b>{{ task.title }}</b></div>
+              <div>{{ task.descr }}</div>
+            </div>
+          </div>
         </div>
       </n-drawer-content>
     </n-drawer>
     <n-dropdown trigger="hover" :options="options">
       <div class="flex items-center gap-2">
-        <span class="flex flex-col items-end">
+        <span class="flex-col items-end hidden md:flex">
           <n-text type="primary" class="text-primary uppercase"><strong>{{ dataUser?.nama }}</strong></n-text>
-          <!-- <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small> -->
+          <small class="text-primary hidden md:flex uppercase"> POS :{{ dataUser?.cabang_nama }}</small>
         </span>
         <n-avatar round size="small" class="aspect-square" :src="dataUser
           ? dataUser.PHOTO_URL
@@ -119,7 +118,8 @@
   </div>
 
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="modalNotif" :on-after-leave="onAfterLeave">
-    <kwitansi-pembayaran :id="bodyModal.type_id" :type="bodyModal.type" :route="bodyModal.route" @save="handleModal" :label="bodyModal.title" />
+    <kwitansi-pembayaran :id="bodyModal.type_id" :type="bodyModal.type" :route="bodyModal.route" @save="handleModal"
+      :label="bodyModal.title" />
   </n-modal>
 </template>
 <script setup>
