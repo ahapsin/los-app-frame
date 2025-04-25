@@ -1,10 +1,10 @@
 <template>
   <div>
     <n-space vertical>
-      <n-card title="Data Pelanggan" :segmented="{
+      <n-card title="Data Survey" :segmented="{
                 content: true,
                 footer: 'soft',
-            }">
+            }" size="small">
         <template #header-extra>
           <n-space class="!gap-1">
             <div class="me-1">

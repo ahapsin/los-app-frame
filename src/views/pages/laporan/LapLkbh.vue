@@ -2,7 +2,7 @@
   <n-card title="Laporan Keuangan Berbasis Harian (LKBH)" :segmented="{
     content: true,
     footer: 'soft',
-  }">
+  }" size="small">
     <div>
       <n-space vertical :size="12" class="pt-4">
         <n-space>

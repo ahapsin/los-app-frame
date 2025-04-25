@@ -1,8 +1,7 @@
 <template>
     <div class="pt-4">
         <n-space vertical>
-            <n-card :title="`Tabel ${$route.name}`">
-
+            <n-card :title="`Tabel ${$route.name}`" :segmented="true" size="small">
                 <template #header-extra>
                     <n-space class="!gap-1">
                         <div class="me-1">
@@ -186,7 +185,7 @@ const handleUpdate = (evt) => {
 const handleAdd = () => {
     router.push('/master/branch-action');
 }
-const loadingBar=useLoadingBar();
+const loadingBar = useLoadingBar();
 const getData = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
@@ -195,7 +194,7 @@ const getData = async () => {
         token: userToken
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         loadingBar.finish();
         dataTable.value = response.data;

@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Inquery Piutang" :segmented="true">
+  <n-card title="Inquery Piutang" :segmented="true" size="small">
     <TabInqPinjaman :columns="columnsPinjaman" :data="dataInqPinjaman" :loading="loadInqPinjaman"
                     @cari="handleCariInqPinjaman" :available="inqView"/>
   </n-card>

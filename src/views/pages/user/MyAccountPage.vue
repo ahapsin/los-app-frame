@@ -9,9 +9,6 @@
 
 <script setup>
 import { defineAsyncComponent } from 'vue'
-import { useEventSource } from '@vueuse/core'
-
-const { status, data, error, close } = useEventSource('https://dev.kspdjaya.id/tasks')
 
 const ProfileSection = defineAsyncComponent(() =>
   import('./ProfileSection.vue')

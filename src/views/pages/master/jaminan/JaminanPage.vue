@@ -1,8 +1,7 @@
 <template>
   <div class="pt-4">
     <n-space vertical>
-      <n-card :title="`Tabel ${$route.name}`">
-
+      <n-card :title="`Tabel ${$route.name}`" :segmented="true" size="small">
         <n-space vertical :size="12" class="pt-4">
           <div class="flex flex-col md:flex-row gap-2 pt-4 pr-4 ps-4">
             <n-form-item label="NO KONTRAK" class="w-full">

@@ -3,7 +3,7 @@
         <n-card :segmented="{
             content: true,
             footer: 'soft'
-        }" :title="`Tabel ${$route.name}`">
+        }" :title="`Tabel ${$route.name}`" size="small">
             <template #header-extra>
                 <n-space class="!gap-1">
                     <div class="me-1">
