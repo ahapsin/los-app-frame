@@ -21,7 +21,7 @@
       </n-form-item>
 
         <n-form-item label="Desa" path="desa" class="w-full" v-else>
-            <n-select filterable placeholder="Pilih Desa" label-field="text" value-field="id" v-model:value="props.desa"
+            <n-select filterable placeholder="Pilih Desa" tag label-field="text" value-field="id" v-model:value="props.desa"
                 :options="col_desa" @update:value="desaChanged" @click="desaUpdate" />
         </n-form-item>
         <n-form-item label="Kode Pos" path="kodepos" class="w-full" v-if="col_kodepos.length <= 0">

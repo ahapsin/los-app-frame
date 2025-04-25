@@ -15,12 +15,8 @@
             <n-button circle quaternary @click="sideMenu.sideEffect = !sideMenu.sideEffect" color="#424242"
               v-if="width > 450">
               <template #icon>
-                <n-icon v-if="sideMenu.sideEffect">
-                  <burger-icon />
-                </n-icon>
-                <n-icon v-else>
-                  <close-icon />
-                </n-icon>
+                <v-icon name="bi-grid" v-if="sideMenu.sideEffect" />
+                <v-icon name="bi-grid-fill" v-else/>
               </template>
             </n-button>
             <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />

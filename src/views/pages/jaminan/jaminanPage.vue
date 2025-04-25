@@ -22,7 +22,7 @@
           <!-- Data Table -->
           <div id="drawer-target">
             <n-data-table :columns="columns" :data="data" :bordered="true" :max-height="300"
-                          :loading="loadData" :scroll-x="900"/>
+                          :loading="loadData" :scroll-x="1250"/>
           </div>
           <!-- Pagination -->
           <n-pagination v-model:page="currentPage" :page-size="pageSize" :page-sizes="pageSizes"
@@ -741,10 +741,10 @@ const columns = [
     title: "No Kontrak",
     key: "no_kontrak",
     sorter: "default",
-    width: 100,
+    width: 150,
   },
   {
-    title: "Stts Kontrak",
+    title: "Stts",
     key: "status_kontrak",
     sorter: "default",
     width: 100,
@@ -753,17 +753,17 @@ const columns = [
     title: "Nama Debitur",
     key: "debitur",
     sorter: "default",
-    width: 100,
+    width: 200,
   }, {
     title: "NO BPKB",
     key: "BPKB_NUMBER",
     sorter: "default",
-    width: 100,
+    width: 200,
   }, {
     title: "Atas Nama",
     key: "ON_BEHALF",
     sorter: "default",
-    width: 100,
+    width: 200,
   },
   {
     title: "Asal Jaminan",
