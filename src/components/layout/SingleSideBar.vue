@@ -59,6 +59,7 @@
           <RouterView />
           <slot />
         </div>
+
       </n-layout>
     </n-layout>
   </n-layout>
