@@ -52,7 +52,7 @@
             </div>
 
             <n-data-table ref="tableRef" striped size="small" :row-key="(row) => row.loan_number" :columns="columns"
-                :scroll-x="870" :data="filterDate ? showData : dataPayment" :max-height="500"
+                :scroll-x="1070" :data="filterDate ? showData : dataPayment" :max-height="500"
                 :on-update:checked-row-keys="handleFasilitas" :loading="loadDataPayment" class="p-4"
                 :pagination="paginationReactive" />
         </div>
@@ -405,129 +405,244 @@ const handleCancelPayment = (e) => {
     }
 }
 
+// const createColumns = () => {
+//     return [
+//         {
+//             title: "#",
+//             width: 30,
+//             render(row) {
+//                 return row.attachment ? h(
+//                     NImage,
+//                     {
+//                         src: row.attachment,
+
+//                         class: 'w-6 ratio-square',
+
+//                     },
+//                     {
+//                         default: () => row.attachment,
+//                     }
+//                 ) : h(
+//                     NButton,
+//                     {
+//                         size: "small",
+//                         type: "error",
+//                         circle: true,
+//                         onClick: () => {
+//                             handleAction(row);
+//                         },
+//                     },
+//                     {
+//                         default: () => "!",
+//                     }
+//                 );
+//             },
+//         }, {
+//             title: "NO TRANSAKSI",
+//             width: 150,
+//             ellipsis: {
+//                 tooltip: true,
+//             },
+//             key: "no_transaksi",
+//             sorter: "default",
+//         },
+//         {
+//             title: "NO KONTRAK",
+//             width: 120,
+//             ellipsis: {
+//                 tooltip: true,
+//             },
+//             key: "no_fasilitas",
+//             sorter: "default",
+//         },
+//         {
+//             title: "TANGGAL",
+//             width: 100,
+//             ellipsis: {
+//                 tooltip: true,
+//             },
+//             key: "tgl_transaksi",
+//             sorter: "default",
+//         },
+//         {
+//             title: "ATAS NAMA",
+//             key: "nama",
+//             fixed: "left",
+//             width: 200,
+//         },
+//         {
+//             title: "METODE",
+//             width: 100,
+//             key: "payment_method",
+//             sorter: "default",
+//         },
+//         {
+//             title: "NOMINAL",
+//             width: 120,
+//             align: 'right',
+//             key: "total_bayar",
+//             render(row) {
+//                 return h("div", row.total_bayar.toLocaleString("US"));
+//             },
+//             sorter: "default",
+//         },
+//         {
+//             title: "STATUS",
+//             width: 80,
+//             key: "STATUS",
+//             defaultFilterOptionValues: ["PAID", "UNPAID"],
+//             render(row) {
+//                 return h(
+//                     NTag,
+//                     {
+//                         type: row.STATUS == "PENDING" ? "warning" : row.STATUS == "PAID" ? "success" : "error",
+//                         onClick: () => {
+//                             handleAction(row);
+//                         },
+//                     },
+//                     {
+//                         default: () => row.STATUS,
+//                     }
+//                 );
+//             },
+//         },
+//         {
+//             width: 100,
+//             align: "right",
+//             key: "action",
+//             render(row) {
+//                 return h(
+//                     NButton,
+//                     {
+//                         secondary: true,
+//                         round: true,
+//                         size: "small",
+//                         onClick: () => {
+//                             handleAction(row);
+//                         },
+//                     },
+//                     {
+//                         default: () => "detail",
+//                     }
+//                 );
+//             },
+//         },
+//     ];
+// };
 const createColumns = () => {
-    return [
-        {
-            title: "#",
-            width: 30,
-            render(row) {
-                return row.attachment ? h(
-                    NImage,
-                    {
-                        src: row.attachment,
-
-                        class: 'w-6 ratio-square',
-
-                    },
-                    {
-                        default: () => row.attachment,
-                    }
-                ) : h(
-                    NButton,
-                    {
-                        size: "small",
-                        type: "error",
-                        circle: true,
-                        onClick: () => {
-                            handleAction(row);
-                        },
-                    },
-                    {
-                        default: () => "!",
-                    }
-                );
+  return [
+    {
+      title: "@",
+      width: 30,
+      render(row) {
+        return row.attachment ? h(
+            NImage,
+            {
+              src: row.attachment,
+              width: 20,
+              height: 20,
             },
-        }, {
-            title: "NO TRANSAKSI",
-            width: 150,
-            ellipsis: {
-                tooltip: true,
+            {
+              default: () => row.attachment,
+            }
+        ) : h(
+            NButton,
+            {
+              size: "small",
+              type: "error",
+              circle: true,
+              onClick: () => {
+                handleAction(row);
+              },
             },
-            key: "no_transaksi",
-            sorter: "default",
-        },
-        {
-            title: "NO KONTRAK",
-            width: 120,
-            ellipsis: {
-                tooltip: true,
+            {
+              default: () => "!",
+            }
+        );
+      },
+    },
+    {
+      title: "NO TRANSAKSI",
+      key: "no_transaksi",
+      width: 200,
+      sorter: "default",
+    },
+    {
+      title: "NO KONTRAK",
+      width: 130,
+      key: "no_fasilitas",
+      sorter: "default",
+    },
+    {
+      title: "TANGGAL",
+      width: 150,
+      key: "tgl_transaksi",
+      sorter: "default",
+    },
+    {
+      title: "ATAS NAMA",
+      key: "nama",
+      fixed: "left",
+      width: 200,
+    },
+    {
+      title: "VIA",
+      width: 80,
+      key: "payment_method",
+      sorter: "default",
+    },
+    {
+      title: "NOMINAL",
+      align: 'right',
+      width: 120,
+      key: "total_bayar",
+      render(row) {
+        return h("div", row.total_bayar.toLocaleString("US"));
+      },
+      sorter: "default",
+    },
+    {
+      title: "STATUS",
+      width: 80,
+      key: "STATUS",
+      defaultFilterOptionValues: ["PAID", "UNPAID"],
+      render(row) {
+        return h(
+            NTag,
+            {
+              type: row.STATUS == "PENDING" ? "warning" : row.STATUS == "PAID" ? "success" : "error",
+              onClick: () => {
+                handleAction(row);
+              },
             },
-            key: "no_fasilitas",
-            sorter: "default",
-        },
-        {
-            title: "TANGGAL",
-            width: 100,
-            ellipsis: {
-                tooltip: true,
+            {
+              default: () => row.STATUS,
+            }
+        );
+      },
+    },
+    {
+      width: 80,
+      align: "right",
+      key: "action",
+      render(row) {
+        return h(
+            NButton,
+            {
+              secondary: true,
+              round: true,
+              size: "small",
+              onClick: () => {
+                handleAction(row);
+              },
             },
-            key: "tgl_transaksi",
-            sorter: "default",
-        },
-        {
-            title: "ATAS NAMA",
-            key: "nama",
-            fixed: "left",
-            width: 200,
-        },
-        {
-            title: "METODE",
-            width: 100,
-            key: "payment_method",
-            sorter: "default",
-        },
-        {
-            title: "NOMINAL",
-            width: 120,
-            align: 'right',
-            key: "total_bayar",
-            render(row) {
-                return h("div", row.total_bayar.toLocaleString("US"));
-            },
-            sorter: "default",
-        },
-        {
-            title: "STATUS",
-            width: 80,
-            key: "STATUS",
-            defaultFilterOptionValues: ["PAID", "UNPAID"],
-            render(row) {
-                return h(
-                    NTag,
-                    {
-                        type: row.STATUS == "PENDING" ? "warning" : row.STATUS == "PAID" ? "success" : "error",
-                        onClick: () => {
-                            handleAction(row);
-                        },
-                    },
-                    {
-                        default: () => row.STATUS,
-                    }
-                );
-            },
-        },
-        {
-            width: 100,
-            align: "right",
-            key: "action",
-            render(row) {
-                return h(
-                    NButton,
-                    {
-                        secondary: true,
-                        round: true,
-                        size: "small",
-                        onClick: () => {
-                            handleAction(row);
-                        },
-                    },
-                    {
-                        default: () => "detail",
-                    }
-                );
-            },
-        },
-    ];
+            {
+              default: () => "detail",
+            }
+        );
+      },
+    },
+  ];
 };
 const showModal = ref(false);
 const bodyModal = ref([]);

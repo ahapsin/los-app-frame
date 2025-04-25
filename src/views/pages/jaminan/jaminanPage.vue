@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <n-card :segmented="true" title="Tabel Jaminan" size="small">
     <n-tabs size="medium" @update:value="handleUpdateValue" class="card-tabs" default-value="jaminan" animated
             type="segment" pane-wrapper-style="margin: 0 -4px" @before-leave="handleSwitchTab"
             pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">

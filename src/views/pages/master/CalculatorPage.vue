@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Master Biaya Admin">
+    <n-card title="Master Biaya Admin" :segmented="true" size="small">
         <template #header-extra>
             <n-button type="primary" v-show="displayList" @click="() => { displayForm = true; displayList = false; }">
                 Tambah Skema
@@ -68,10 +68,9 @@
 </template>
 
 <script setup>
-import {  onMounted, ref,h ,reactive} from "vue";
+import { onMounted, ref, h, reactive } from "vue";
 import { NInputNumber, NInput, NButton, useLoadingBar } from "naive-ui";
 import { useApi } from "../../../helpers/axios";
-import router from '../../../router';
 import { useMessage } from "naive-ui";
 import _ from "lodash";
 import {
@@ -380,7 +379,7 @@ const createMainColumns = () => [
                     type: "primary",
                     size: "tiny",
                     onClick: () => {
-                        
+
                     },
                 },
                 {
@@ -404,7 +403,7 @@ const createMainColumnsMusiman = () => [
     {
         title: "Plafon",
         key: "plafond",
-        render(row, ) {
+        render(row,) {
             // return `${row.range_start} -${row.range_end}`;
             return `${formatLocal(row.range_start * 1000000)} - ${formatLocal(row.range_end * 1000000)}`;
         }
@@ -412,7 +411,7 @@ const createMainColumnsMusiman = () => [
     {
         title: "1 x 3 Bulan",
         key: "6",
-        render(row ) {
+        render(row) {
             //console.log(row.tenor_6);
             return formatLocal(row.tenor_6.total);
         }
@@ -451,7 +450,7 @@ const createMainColumnsMusiman = () => [
                     type: "primary",
                     size: "tiny",
                     onClick: () => {
-                        
+
                     },
                 },
                 {
@@ -495,7 +494,7 @@ const getData = async () => {
         token: userToken
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         loadingBar.finish();
         dataTable.value = response.data;
@@ -521,7 +520,7 @@ const handleSave = async (e) => {
         message.error("data gagal disimpan");
         loading.value = false;
     } else {
-      
+
         message.success("data berhasil disimpan");
         loading.value = false;
         getData();
