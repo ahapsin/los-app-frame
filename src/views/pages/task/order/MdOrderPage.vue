@@ -4,7 +4,7 @@
       <n-card :title="`Tabel ${$route.name}`" :segmented="{
                 content: true,
                 footer: 'soft',
-            }">
+            }" size="small">
         <template #header-extra>
           <n-space>
             <!-- <n-popover trigger="click" placement="bottom-end">

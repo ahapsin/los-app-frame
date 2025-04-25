@@ -24,8 +24,8 @@
 
 
         <div v-if="tasks.length != 0">
-          <div v-for="task in tasks" :key="task" class=" hover:bg-pr-50 rounded-lg p-2 cursor-pointer"
-            @click="handleDetail(task)">
+          <div v-for="task in _.slice(_.orderBy(tasks, ['created_at'], ['desc']), 0, 4)" :key="task"
+            class=" hover:bg-pr-50 rounded-lg p-2 cursor-pointer" @click="handleDetail(task)">
             <div class="flex gap-2">
               <div secondary v-if="task.type === 'payment'" class="flex text-xl p-1">
                 🤑
@@ -67,11 +67,15 @@
 
       <n-drawer-content>
         <div class="flex justify-between p-2">
-          <div class="text-lg font-bold">Notifikasi</div>
-          <n-tag type="error" round>{{ tasks.length }}</n-tag>
+          <div class="text-lg font-bold">Notifikasi <n-tag type="error" round>{{ tasks.length }}</n-tag></div>
+          <div>
+            <n-button size="small" secondary type="info" @click="router.push({path:'/notif-center'})">
+              lihat semua
+            </n-button>
+          </div>
         </div>
-        <div v-for="task in tasks" :key="task" class="hover:bg-pr-50 rounded-lg p-2 cursor-pointer"
-          @click="handleDetail(task)">
+        <div v-for="task in _.orderBy(tasks, ['created_at'], ['desc'])" :key="task"
+          class="hover:bg-pr-50 rounded-lg p-2 cursor-pointer" @click="handleDetail(task)">
           <div class="flex gap-2">
             <div secondary v-if="task.type === 'payment'" class="flex text-xl p-1">
               🤑
@@ -125,6 +129,7 @@
 <script setup>
 import { ref, h, onMounted } from "vue";
 import router from "../../router";
+import _ from "lodash";
 import KwitansiPembayaran from "../molecules/KwitansiPembayaran.vue";
 import { useMessage, NIcon } from "naive-ui";
 import {

@@ -1,12 +1,11 @@
 <template>
   <n-layout class="h-screen">
-
     <n-layout-header>
-      <n-page-header class="sticky bg-slate-50 border-b top-0 z-50 backdrop-blur p-2">
+      <n-page-header class="sticky outline outline-1 outline-slate-300 top-0 z-50 backdrop-blur p-2">
         <template #title>
           <n-space align="center">
             <n-button circle quaternary @click="router.back()"
-              v-if="route.name !== 'landing' && route.name !== 'dashboard'">
+              v-if="route.name !== 'landing' && route.name !== 'dashboard'" class="flex md:hidden">
               <template #icon>
                 <n-icon>
                   <back-icon />
@@ -16,12 +15,8 @@
             <n-button circle quaternary @click="sideMenu.sideEffect = !sideMenu.sideEffect" color="#424242"
               v-if="width > 450">
               <template #icon>
-                <n-icon v-if="sideMenu.sideEffect">
-                  <burger-icon />
-                </n-icon>
-                <n-icon v-else>
-                  <close-icon />
-                </n-icon>
+                <v-icon name="bi-grid" v-if="sideMenu.sideEffect" />
+                <v-icon name="bi-grid-fill" v-else/>
               </template>
             </n-button>
             <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />
@@ -40,14 +35,27 @@
       </n-page-header>
     </n-layout-header>
     <n-layout position="absolute" style="top: 60px" has-sider>
-      <n-layout-sider :width="230" :collapsed-width="0" :show-collapsed-content="false"
+      <n-layout-sider :width='200' :collapsed-width="0" :show-collapsed-content="false"
         :collapsed="sideMenu.sideEffect ? true : false" content-style="padding: 10px;"
-        class="bg-slate-50 backdrop-blur absolute md:relative h-full z-20 border" >
-        <SideMenu />
+        class="absolute md:relative h-full z-20" bordered>
+        <n-scrollbar>
+          <SideMenu />
+        </n-scrollbar>
       </n-layout-sider>
-      <n-layout :class="`md:p-4 bg-slate-100`">
-        <RouterView />
-        <slot />
+      <n-layout :class="` bg-slate-100`">
+        <div class="p-4">
+          <n-page-header @back="handleBack">
+            <template #header>
+              <n-breadcrumb>
+                <n-breadcrumb-item>Dashboard</n-breadcrumb-item>
+                <n-breadcrumb-item v-if="$route.name != 'landing'">{{ $route.name?.toUpperCase() }}</n-breadcrumb-item>
+              </n-breadcrumb>
+            </template>
+          </n-page-header>
+          <RouterView />
+          <slot />
+        </div>
+
       </n-layout>
     </n-layout>
   </n-layout>

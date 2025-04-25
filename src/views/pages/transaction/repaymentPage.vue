@@ -62,7 +62,7 @@
       </div>
 
       <n-data-table ref="tableRef" striped size="small" :row-key="(row) => row.loan_number" :columns="columns"
-                    :scroll-x="870" :data="showData" :max-height="500" :on-update:checked-row-keys="handleFasilitas"
+                    :scroll-x="1070" :data="showData" :max-height="500" :on-update:checked-row-keys="handleFasilitas"
                     :loading="loadDataPayment" class="p-4" :pagination="{ pageSize: 10 }"/>
     </div>
   </n-card>
@@ -427,7 +427,7 @@ const handleCancelPayment = (e) => {
 const createColumns = () => {
   return [
     {
-      title: "",
+      title: "@",
       width: 30,
       render(row) {
         return row.attachment ? h(
@@ -458,19 +458,19 @@ const createColumns = () => {
     },
     {
       title: "NO TRANSAKSI",
-      width: 150,
       key: "no_transaksi",
+      width: 200,
       sorter: "default",
     },
     {
       title: "NO KONTRAK",
-      width: 150,
+      width: 130,
       key: "no_fasilitas",
       sorter: "default",
     },
     {
       title: "TANGGAL",
-      width: 120,
+      width: 150,
       key: "tgl_transaksi",
       sorter: "default",
     },
@@ -481,15 +481,15 @@ const createColumns = () => {
       width: 200,
     },
     {
-      title: "METODE BAYAR",
-      width: 100,
+      title: "VIA",
+      width: 80,
       key: "payment_method",
       sorter: "default",
     },
     {
       title: "NOMINAL",
-      width: 100,
       align: 'right',
+      width: 120,
       key: "total_bayar",
       render(row) {
         return h("div", row.total_bayar.toLocaleString("US"));
@@ -498,7 +498,7 @@ const createColumns = () => {
     },
     {
       title: "STATUS",
-      width: 100,
+      width: 80,
       key: "STATUS",
       defaultFilterOptionValues: ["PAID", "UNPAID"],
       render(row) {
@@ -517,7 +517,7 @@ const createColumns = () => {
       },
     },
     {
-      width: 100,
+      width: 80,
       align: "right",
       key: "action",
       render(row) {
