@@ -7,10 +7,10 @@
         class="flex w-full h-full md:w-3/4 md:h-full  md:rounded-lg gap-20"
     >
 
-      <div class="hidden md:flex w-1/2">
+      <div class="hidden lg:flex w-1/2">
         <QuoteSection/>
       </div>
-      <div class="items-center flex w-full md:w-1/2 md:p-10 h-full">
+      <div class="items-center flex w-full lg:w-1/2 md:p-10 h-full">
         <LoginForm/>
       </div>
     </div>
