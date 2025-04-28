@@ -37,7 +37,7 @@
     <n-layout position="absolute" style="top: 60px" has-sider>
       <n-layout-sider :width='200' :collapsed-width="0" :show-collapsed-content="false"
         :collapsed="sideMenu.sideEffect ? true : false" content-style="padding: 10px;"
-        class="absolute md:relative h-full z-20" bordered>
+        class="absolute md:relative h-full z-20 shadow-xl md:shadow-none" bordered>
         <n-scrollbar>
           <SideMenu />
         </n-scrollbar>

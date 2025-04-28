@@ -5,11 +5,12 @@
     </div>
     <div>
         <taksasi-select-state v-model:brand="jaminan.merk" v-model:tipe="jaminan.tipe" v-model:tahun="jaminan.tahun"
-            v-model:pasar="jaminan.nilai" />
+            v-model:pasar="jaminan.nilai"  :active="props.viewMode"/>
     </div>
     <n-form ref="formJaminan" :model="jaminan" require-mark-placement="right-hanging">
         <div class="md:flex gap-2">
             <n-form-item label="No Polisi" path="no_polisi" class="w-full">
+                
                 <n-input placeholder="No Polisi" @input="$event => (jaminan.no_polisi = $event.toUpperCase())"
                     v-model:value="jaminan.no_polisi" :disabled="props.viewMode"  @keydown.space.prevent />
             </n-form-item>
@@ -25,8 +26,8 @@
             
         </div>
         <n-form-item label="Kondisi Jaminan" path="kondisi_jaminan">
-              <n-radio-group v-model:value="jaminan.kondisi_jaminan" name="kondisi_jaminan">
-                <n-radio value="ada">Ada</n-radio>
+              <n-radio-group v-model:value="jaminan.kondisi_jaminan" name="kondisi_jaminan" :disabled="props.viewMode">
+                <n-radio value="ada" >Ada</n-radio>
                 <n-radio value="didealer">Masih didealer</n-radio>
               </n-radio-group>
             </n-form-item>

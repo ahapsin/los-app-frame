@@ -25,7 +25,7 @@
                 :options="col_desa" @update:value="desaChanged" @click="desaUpdate" />
         </n-form-item>
         <n-form-item label="Kode Pos" path="kodepos" class="w-full" v-if="col_kodepos.length <= 0">
-            <n-input v-model:value="props.kodepos" placeholder="Kode Pos" @update:value="kodePostUp" maxlength="5"/>
+            <n-input v-model:value="props.kodepos" placeholder="Kode Pos" @update:value="kodePostUp" maxlength="5" :readonly="props.viewMode"/>
         </n-form-item>
         <n-form-item label="Kode Pos" path="kodepos" class="w-full" v-else>
             <n-select filterable placeholder="Pilih Kodepos" label-field="text" value-field="id"
