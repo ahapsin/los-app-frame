@@ -60,39 +60,42 @@
                 </template>
                 <n-form ref="formPelanggan" :model="dataPelanggan" :rules="rulesPelanggan"
                     :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
-                     label-width="auto">
+                    label-width="auto">
                     <div class="flex w-full gap-2">
                         <n-form-item label="Nama" path="nama" class="w-full">
                             <n-input :readonly="viewMode" placeholder="nama" v-model:value="dataPelanggan.nama"
                                 @input="$event => (dataPelanggan.nama = $event.toUpperCase())" />
                         </n-form-item>
                         <n-form-item label="Nama Panggilan" path="nama_panggilan" class="w-full">
-                            <n-input :readonly="viewMode" placeholder="nama panggilan" v-model:value="dataPelanggan.nama_panggilan"
+                            <n-input :readonly="viewMode" placeholder="nama panggilan"
+                                v-model:value="dataPelanggan.nama_panggilan"
                                 @input="$event => (dataPelanggan.nama_panggilan = $event.toUpperCase())" />
                         </n-form-item>
                     </div>
                     <div class="flex w-full gap-2">
                         <n-form-item label="Jenis kelamin" path="jenis_kelamin" class="w-full">
-                            <n-input :readonly="viewMode" v-model:value="dataPelanggan.jenis_kelamin" v-if="viewMode"/>
+                            <n-input :readonly="viewMode" v-model:value="dataPelanggan.jenis_kelamin" v-if="viewMode" />
                             <n-select v-else filterable placeholder="Jenis Kelamin" :options="optJenisKelamin"
                                 v-model:value="dataPelanggan.jenis_kelamin" />
                         </n-form-item>
                         <n-form-item label="Tempat Lahir" path="tempat_lahir" class="w-full">
-                            <n-input :readonly="viewMode" placeholder="tempat lahir" v-model:value="dataPelanggan.tempat_lahir"
+                            <n-input :readonly="viewMode" placeholder="tempat lahir"
+                                v-model:value="dataPelanggan.tempat_lahir"
                                 @input="$event => (dataPelanggan.tempat_lahir = $event.toUpperCase())" />
                         </n-form-item>
                         <n-form-item label="Tanggal lahir" path="tgl_lahir" class="w-full">
-                           
-                            <n-date-picker input-readonly placeholder="Tanggal Lahir" v-model:formatted-value="dataPelanggan.tgl_lahir"
-                                value-format="yyyy-MM-dd" format="dd-MM-yyyy" type="date"
-                                @update:value="handleTanggalLahir" class="w-full" />
+
+                            <n-date-picker input-readonly placeholder="Tanggal Lahir" :disabled="props.viewMode"
+                                v-model:formatted-value="dataPelanggan.tgl_lahir" value-format="yyyy-MM-dd"
+                                format="dd-MM-yyyy" type="date" @update:value="handleTanggalLahir" class="w-full" />
                             <span
                                 class="absolute text-xs text-orange-500 top-6 bg-orange-50 w-full p-0.5 mt-2 animate-pulse"
                                 v-show="notifUsia">{{ noteUsia }}</span>
                         </n-form-item>
                         <n-form-item label="Status Kawin" path="status_kawin" class="w-full">
                             <n-input-group>
-                                <n-input :readonly="viewMode" v-model:value="dataPelanggan.status_kawin" v-if="viewMode"/>
+                                <n-input :readonly="viewMode" v-model:value="dataPelanggan.status_kawin"
+                                    v-if="viewMode" />
                                 <n-select v-else filterable placeholder="Status Kawin" :options="optStatusKawin"
                                     v-model:value="dataPelanggan.status_kawin" />
                             </n-input-group>
@@ -100,13 +103,15 @@
                     </div>
                     <div class="flex w-full gap-2">
                         <n-form-item label="Tipe Identitas" path="tipe_identitas" class="w-full">
-                            <n-input :readonly="viewMode" v-model:value="dataPelanggan.tipe_identitas" v-if="viewMode"/>
+                            <n-input :readonly="viewMode" v-model:value="dataPelanggan.tipe_identitas"
+                                v-if="viewMode" />
                             <n-select v-else filterable placeholder="Jenis Identitas" :options="optJenisIdentitas"
                                 v-model:value="dataPelanggan.tipe_identitas" />
                         </n-form-item>
                         <n-form-item label="No Identitas" path="no_identitas" class="w-full">
-                            <n-input :readonly="viewMode" :allow-input="onlyAllowNumber" class="w-full" placeholder="No Identitas" show-count
-                                :maxlength="16" v-model:value="dataPelanggan.no_identitas">
+                            <n-input :readonly="viewMode" :allow-input="onlyAllowNumber" class="w-full"
+                                placeholder="No Identitas" show-count :maxlength="16"
+                                v-model:value="dataPelanggan.no_identitas">
                             </n-input>
                         </n-form-item>
                         <n-form-item label="No KK" path="no_kk" class="w-full">
@@ -115,30 +120,31 @@
                         </n-form-item>
                     </div>
                 </n-form>
-                <n-form ref="formPelangganPekerjaan" :model="dataPekerjaan" :rules="rulesPekerjaan" 
+                <n-form ref="formPelangganPekerjaan" :model="dataPekerjaan" :rules="rulesPekerjaan"
                     :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
                     label-width="auto">
                     <div class="flex gap-4">
                         <n-form-item label="Sektor" path="pekerjaan_id" class="w-full">
-                            <n-input :readonly="viewMode" v-model:value="dataPekerjaan.pekerjaan_id" v-if="viewMode"/>
+                            <n-input :readonly="viewMode" v-model:value="dataPekerjaan.pekerjaan_id" v-if="viewMode" />
                             <n-select v-else filterable placeholder="pekerjaan" :options="optPekerjaan"
                                 v-model:value="dataPekerjaan.pekerjaan_id" />
                         </n-form-item>
                         <n-form-item label="Pendidikan" path="pendidikan" class="w-full">
-                            <n-input :readonly="viewMode" v-model:value="dataPekerjaan.pendidikan" v-if="viewMode"/>
+                            <n-input :readonly="viewMode" v-model:value="dataPekerjaan.pendidikan" v-if="viewMode" />
                             <n-select v-else filterable placeholder="pendidikan" :options="optPendidikan"
                                 v-model:value="dataPekerjaan.pendidikan" />
                         </n-form-item>
                     </div>
                     <div class="flex gap-2">
                         <n-form-item label="Telepon Selullar 1" path="telepon_selular" class="w-full">
-                            <n-input :readonly="viewMode" placeholder="Telepon Sellular 1" :allow-input="onlyAllowNumber"
-                                v-model:value="dataPekerjaan.telepon_selular" maxlength="13" />
+                            <n-input :readonly="viewMode" placeholder="Telepon Sellular 1"
+                                :allow-input="onlyAllowNumber" v-model:value="dataPekerjaan.telepon_selular"
+                                maxlength="13" />
                         </n-form-item>
 
                         <n-form-item label="Telepon Selullar 2" path="telepon_rumah" class="w-full">
-                            <n-input :readonly="viewMode" placeholder="Telepon Sellular 2" v-model:value="dataPekerjaan.telepon_rumah"
-                                :allow-input="onlyAllowNumber">
+                            <n-input :readonly="viewMode" placeholder="Telepon Sellular 2"
+                                v-model:value="dataPekerjaan.telepon_rumah" :allow-input="onlyAllowNumber">
                             </n-input>
                         </n-form-item>
                     </div>
@@ -147,28 +153,30 @@
                     </n-divider>
                 </n-form>
                 <n-form ref="formPelangganAlamatIdentitas" :model="alamatIdentitas" :rules="rulesIdentitas"
-                     :label-placement="width <= 920 ? 'top' : 'top'"
-                    require-mark-placement="right-hanging" label-width="auto">
+                    :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
+                    label-width="auto">
                     <div class="flex gap-2">
                         <n-form-item label="Alamat" class="w-full" path="alamat">
                             <n-input :readonly="viewMode" placeholder="Alamat" v-model:value="alamatIdentitas.alamat"
                                 @input="$event => (alamatIdentitas.alamat = $event.toUpperCase())" />
                         </n-form-item>
                         <n-form-item label="RT" path="rt">
-                            <n-input :readonly="viewMode" placeholder="RT" v-model:value="alamatIdentitas.rt" :allow-input="onlyAllowNumber"
-                                :maxlength="3" @input="$event => (alamatIdentitas.rt = $event.toUpperCase())">
+                            <n-input :readonly="viewMode" placeholder="RT" v-model:value="alamatIdentitas.rt"
+                                :allow-input="onlyAllowNumber" :maxlength="3"
+                                @input="$event => (alamatIdentitas.rt = $event.toUpperCase())">
                             </n-input>
                         </n-form-item>
                         <n-form-item label="RW" path="rw">
-                            <n-input :readonly="viewMode" placeholder="RW" v-model:value="alamatIdentitas.rw" :allow-input="onlyAllowNumber"
-                                :maxlength="3" @input="$event => (alamatIdentitas.rw = $event.toUpperCase())">
+                            <n-input :readonly="viewMode" placeholder="RW" v-model:value="alamatIdentitas.rw"
+                                :allow-input="onlyAllowNumber" :maxlength="3"
+                                @input="$event => (alamatIdentitas.rw = $event.toUpperCase())">
                             </n-input>
                         </n-form-item>
                     </div>
 
                     <select-state-region v-model:provinsi="alamatIdentitas.provinsi" v-model:kota="alamatIdentitas.kota"
                         v-model:kecamatan="alamatIdentitas.kecamatan" v-model:desa="alamatIdentitas.kelurahan"
-                        v-model:kodepos="alamatIdentitas.kode_pos" :viewMode="viewMode"/>
+                        v-model:kodepos="alamatIdentitas.kode_pos" :viewMode="viewMode" />
                     <div class="flex items-center justify-between border-b pb-2 mb-2">
                         <strong class="text-base">Informasi Alamat Tagih</strong>
                         <n-button secondary type="primary" @click="copyAddress" v-show="!viewMode">
@@ -176,27 +184,29 @@
                     </div>
                 </n-form>
                 <n-form ref="formPelangganAlamatTagih" :model="alamatTagih" :rules="rulesAlamatTagih"
-                     :label-placement="width <= 920 ? 'top' : 'top'"
-                    require-mark-placement="right-hanging" label-width="auto">
+                    :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
+                    label-width="auto">
                     <div class="flex gap-2">
                         <n-form-item label="Alamat" class="w-full" path="alamat">
                             <n-input :readonly="viewMode" placeholder="Alamat" v-model:value="alamatTagih.alamat"
                                 @input="$event => (alamatTagih.alamat = $event.toUpperCase())" />
                         </n-form-item>
                         <n-form-item label="RT" path="rt">
-                            <n-input :readonly="viewMode" placeholder="RT" v-model:value="alamatTagih.rt" :allow-input="onlyAllowNumber"
-                                :maxlength="3" @input="$event => (alamatTagih.rt = $event.toUpperCase())">
+                            <n-input :readonly="viewMode" placeholder="RT" v-model:value="alamatTagih.rt"
+                                :allow-input="onlyAllowNumber" :maxlength="3"
+                                @input="$event => (alamatTagih.rt = $event.toUpperCase())">
                             </n-input>
                         </n-form-item>
                         <n-form-item label="RW" path="rw">
-                            <n-input :readonly="viewMode" placeholder="RW" v-model:value="alamatTagih.rw" :allow-input="onlyAllowNumber"
-                                :maxlength="3" @input="$event => (alamatTagih.rw = $event.toUpperCase())">
+                            <n-input :readonly="viewMode" placeholder="RW" v-model:value="alamatTagih.rw"
+                                :allow-input="onlyAllowNumber" :maxlength="3"
+                                @input="$event => (alamatTagih.rw = $event.toUpperCase())">
                             </n-input>
                         </n-form-item>
                     </div>
                     <select-state-region v-model:provinsi="alamatTagih.provinsi" v-model:kota="alamatTagih.kota"
                         v-model:kecamatan="alamatTagih.kecamatan" v-model:desa="alamatTagih.kelurahan"
-                        v-model:kodepos="alamatTagih.kode_pos" :viewMode/>
+                        v-model:kodepos="alamatTagih.kode_pos" :viewMode />
                     <n-divider title-placement="left"> Dokumen Identitas </n-divider>
                     <n-space justify="space-between">
                         <n-space>
@@ -209,7 +219,7 @@
                             <file-upload title="KTP Pasangan" :def_value="findDocByType(dok_identitas, 'ktp_pasangan')"
                                 endpoint="image_upload_prospect" type="ktp_pasangan" :idapp="pageData.survey_id"
                                 :view-mode="props.viewMode" />
-                                <file-upload title="Foto dengan KTP" :def_value="findDocByType(dok_identitas, 'selfie')"
+                            <file-upload title="Foto dengan KTP" :def_value="findDocByType(dok_identitas, 'selfie')"
                                 endpoint="image_upload_prospect" type="selfie" :idapp="pageData.survey_id"
                                 :view-mode="props.viewMode" />
                         </n-space>
@@ -290,7 +300,7 @@
             }">
                 <n-form ref="formOrder" :model="dataOrder" :rules="rulesOrder"
                     :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
-                    label-width="auto" >
+                    label-width="auto">
                     <div class="flex gap-2">
                         <n-form-item label="Tanggal Order" path="order_tanggal" class="w-full">
                             <n-input :readonly="viewMode" :value="dataOrder.order_tanggal" disabled></n-input>
@@ -298,7 +308,7 @@
                         <n-form-item label="Reff Pelanggan" path="ref_pelanggan" class="w-full">
                             <div class="flex gap-2 w-full">
 
-                                <n-input :readonly="viewMode"/>
+                                <n-input :readonly="viewMode" />
                                 <n-select filterable placeholder="reff pelanggan" :options="optReff"
                                     v-model:value="dataOrder.ref_pelanggan" class="w-full" />
                                 <n-input :readonly="viewMode" placeholder="Reff Pelanggan" v-show="dataOrder.ref_pelanggan == 'LAINNYA' ||
@@ -308,7 +318,8 @@
                             </div>
                         </n-form-item>
                         <n-form-item label="Surveyor" path="surveyor_name" class="w-full">
-                            <n-input :readonly="viewMode" placeholder="Surveyor" v-model:value="dataOrder.surveyor_name" disabled />
+                            <n-input :readonly="viewMode" placeholder="Surveyor" v-model:value="dataOrder.surveyor_name"
+                                disabled />
                         </n-form-item>
                     </div>
                     <n-form-item label="Catatan Survey" path="catatan_survey">
@@ -325,34 +336,34 @@
                                 v-model:value="dataOrder.nama_ibu" />
                         </n-form-item>
                         <n-form-item label="Lama Bekerja" path="lama_bekerja" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false"
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false"  :readonly="viewMode"
                                 placeholder="lama bekerja" v-model:value="dataOrder.lama_bekerja" class="w-full">
                                 <template #suffix> bulan </template>
                             </n-input-number>
                         </n-form-item>
                         <n-form-item label="Tanggungan" path="tanggungan" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Tanggungan"
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Tanggungan"  :readonly="viewMode"
                                 v-model:value="dataOrder.tanggungan" class="w-full" />
                         </n-form-item>
                     </div>
                     <div class="flex gap-2">
                         <n-form-item label="Pendapatan Pelanggan" path="pendapatan_pribadi" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"  :readonly="viewMode"
                                 v-model:value="dataOrder.pendapatan_pribadi" :show-button="false" class="flex !w-full"
                                 placeholder="Pribadi" />
                         </n-form-item>
                         <n-form-item label="Pendapatan Pasangan" path="pendapatan_pasangan" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"  :readonly="viewMode"
                                 v-model:value="dataOrder.pendapatan_pasangan" :show-button="false" class="flex !w-full"
                                 placeholder="Pasangan" />
                         </n-form-item>
                         <n-form-item label="Pendapatan Lainnya" path="pendapatan_lainnya" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"  :readonly="viewMode"
                                 v-model:value="dataOrder.pendapatan_lainnya" :show-button="false" class="flex !w-full"
                                 placeholder="Lainnya" />
                         </n-form-item>
                         <n-form-item label="Biaya" path="biaya_bulanan" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"  :readonly="viewMode"
                                 v-model:value="dataOrder.biaya_bulanan" :show-button="false" class="flex !w-full"
                                 placeholder="Pengeluaran" />
                         </n-form-item>
@@ -367,7 +378,7 @@
                         :title="`Jumlah Jaminan : ${jaminanStore.listJaminan.length}, Total Nilai Jaminan : ${sumJaminan.toLocaleString()}`">
                         <template #header-extra>
                             <div class="flex w-60 gap-2" v-show="!viewMode">
-                                <n-input :readonly="viewMode"/>
+                                <n-input :readonly="viewMode" />
                                 <n-select v-model:value="jenisJaminan" :options="optJaminan"
                                     placeholder="jenis jaminan" />
                                 <n-button circle type="primary" @click="addJaminan">
@@ -413,7 +424,7 @@
                                 <div class="pb-2"
                                     v-if="coll.type == 'KENDARAAN' && coll.atr.tahun && tahunJaminanValidate(coll.atr.tahun) > 10">
                                     <n-alert type="warning">usia KENDARAAN <b>{{ tahunJaminanValidate(coll.atr.tahun)
-                                            }}</b>
+                                    }}</b>
                                         tahun</n-alert>
                                 </div>
                                 <div class="pt-2">
@@ -487,9 +498,9 @@
                         <n-card class="md:w-1/2" closable @close="showModal = false" :segmented="true"
                             :title="`form ${jenisJaminan}`">
                             <component :is="JaminanKendaraan" v-if="jenisJaminan.toLowerCase() == 'kendaraan'"
-                                @childData="handleChildData" :def_data="dataProp" />
+                                @childData="handleChildData" :def_data="dataProp"  :viewMode/>
                             <component :is="JaminanSertifikat" v-if="jenisJaminan.toLowerCase() == 'sertifikat'"
-                                @childData="handleChildData" :def_data="dataProp" />
+                                @childData="handleChildData" :def_data="dataProp"  :viewMode />
                             <!-- <component :is="JaminanBillyet" v-if="jenisJaminan == 'billyet'" @childData="handleChildData" />
         <component :is="JaminanEmas" v-if="jenisJaminan == 'emas'" @childData="handleChildData" /> -->
                             <template #footer>
@@ -540,32 +551,35 @@
             }">
                 <n-form ref="formTambahan" :model="dataPasangan" :rules="rulesPasangan"
                     :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
-                    label-width="auto" >
+                    label-width="auto">
                     <div v-if="dataPelanggan.status_kawin == 'KAWIN'">
                         <n-divider title-placement="left"> Pasangan </n-divider>
                         <div class="flex gap-2">
                             <n-form-item label="Nama Pasangan" path="nama_kerabat" class="w-full">
-                                <n-input :readonly="viewMode" placeholder="Nama Pasangan" v-model:value="dataPasangan.nama_pasangan"
+                                <n-input :readonly="viewMode" placeholder="Nama Pasangan"
+                                    v-model:value="dataPasangan.nama_pasangan"
                                     @input="$event => (dataPasangan.nama_pasangan = $event.toUpperCase())" />
                             </n-form-item>
                             <n-form-item label="Tempat / Tanggal Lahir" path="order" class="w-full">
                                 <n-input-group>
-                                    <n-input :readonly="viewMode" placeholder="Tempat lahir" v-model:value="dataPasangan.tmptlahir_pasangan"
+                                    <n-input :readonly="viewMode" placeholder="Tempat lahir"
+                                        v-model:value="dataPasangan.tmptlahir_pasangan"
                                         @input="$event => (dataPasangan.tmptlahir_pasangan = $event.toUpperCase())" />
-                                    <n-date-picker placeholder="Tanggal lahir"
+                                    <n-date-picker placeholder="Tanggal lahir" :disabled="props.viewMode"
                                         v-model:formatted-value="dataPasangan.tgllahir_pasangan"
                                         value-format="yyyy-MM-dd" format="dd-MM-yyyy" type="date" class="w-full" />
                                 </n-input-group>
                             </n-form-item>
                             <n-form-item label="Pekerjaan" path="pekerjaan_pasangan" class="w-full">
-                                <n-input :readonly="viewMode" placeholder="pekerjaan" v-model:value="dataPasangan.pekerjaan_pasangan"
+                                <n-input :readonly="viewMode" placeholder="pekerjaan"
+                                    v-model:value="dataPasangan.pekerjaan_pasangan"
                                     @input="$event => (dataPasangan.pekerjaan_pasangan = $event.toUpperCase())" />
                             </n-form-item>
                         </div>
                         <n-form-item label="Alamat" path="alamat_pasangan" class="w-full">
                             <!-- <pre>{{ formAssign }}</pre> -->
                             <div class="w-full gap-2 flex flex-col">
-                                <n-checkbox v-model:checked="alamatPelanggan" @update:checked="handleAlamatPasangan">
+                                <n-checkbox v-model:checked="alamatPelanggan" @update:checked="handleAlamatPasangan" :disabled="viewMode">
                                     sesuai dengan pelanggan
                                 </n-checkbox>
                                 <n-input :readonly="viewMode" type="textarea" ref="inputAlamatPasanganRef" :autosize="{
@@ -606,30 +620,33 @@
                         <div class="p-4 pb-0">
                             <div class="flex gap-2">
                                 <n-form-item label="No KTP" path="ktp_penjamin" class="w-full">
-                                    <n-input :readonly="viewMode" placeholder="KTP Penjamin" v-model:value="penjamin.no_identitas" show-count
-                                        :maxlength="16" :allow-input="onlyAllowNumber" />
+                                    <n-input :readonly="viewMode" placeholder="KTP Penjamin"
+                                        v-model:value="penjamin.no_identitas" show-count :maxlength="16"
+                                        :allow-input="onlyAllowNumber" />
                                 </n-form-item>
                                 <n-form-item label="Nama Penjamin" path="nama_penjamin" class="w-full">
-                                    <n-input :readonly="viewMode" placeholder="Nama penjamin" v-model:value="penjamin.nama"
+                                    <n-input :readonly="viewMode" placeholder="Nama penjamin"
+                                        v-model:value="penjamin.nama"
                                         @input="$event => (penjamin.nama = $event.toUpperCase())" />
                                 </n-form-item>
                                 <n-form-item label="Tanggal Lahir" path="tgllahir_penjamin" class="w-full">
-                                    <n-date-picker placeholder="Tanggal lahir"
+                                    <n-date-picker placeholder="Tanggal lahir" :disabled="props.viewMode"
                                         v-model:formatted-value="penjamin.tgl_lahir" value-format="yyyy-MM-dd"
                                         format="dd-MM-yyyy" type="date" class="w-full" />
                                 </n-form-item>
                             </div>
                             <div class="grid grid-cols-3 gap-2">
                                 <n-form-item label="Hubungan Dengan konsumen" path="hub_penjamin">
-                                    <n-input :readonly="viewMode"/>
+                                    <n-input :readonly="viewMode" />
                                     <n-select filterable :options="optHubCust" v-model:value="penjamin.hub_cust" />
                                 </n-form-item>
                                 <n-form-item label="Telepon" path="telepon_penjamin">
-                                    <n-input :readonly="viewMode" placeholder="Telepon Sellular 1" v-model:value="penjamin.no_hp"
-                                        maxlength="13" :allow-input="onlyAllowNumber" />
+                                    <n-input :readonly="viewMode" placeholder="Telepon Sellular 1"
+                                        v-model:value="penjamin.no_hp" maxlength="13" :allow-input="onlyAllowNumber" />
                                 </n-form-item>
                                 <n-form-item label="Pekerjaan" path="pekerjaan_penjamin">
-                                    <n-input :readonly="viewMode" placeholder="Pekerjaan Penjamin" v-model:value="penjamin.pekerjaan"
+                                    <n-input :readonly="viewMode" placeholder="Pekerjaan Penjamin"
+                                        v-model:value="penjamin.pekerjaan"
                                         @input="$event => (penjamin.pekerjaan = $event.toUpperCase())">
                                     </n-input>
                                 </n-form-item>
@@ -651,8 +668,8 @@
                                 @input="$event => (dataKerabat.nama = $event.toUpperCase())" />
                         </n-form-item>
                         <n-form-item label="Telepon" path="telepon_kerabat" class="w-full">
-                            <n-input :readonly="viewMode" placeholder="Telepon Selular" v-model:value="dataKerabat.no_hp" maxlength="13"
-                                :allow-input="onlyAllowNumber" />
+                            <n-input :readonly="viewMode" placeholder="Telepon Selular"
+                                v-model:value="dataKerabat.no_hp" maxlength="13" :allow-input="onlyAllowNumber" />
                         </n-form-item>
                     </div>
                     <n-form-item label="Alamat" path="alamat_kerabat">
@@ -667,7 +684,7 @@
                     </n-form-item>
                     <select-state-region v-model:provinsi="dataKerabat.provinsi" v-model:kota="dataKerabat.kota"
                         v-model:kecamatan="dataKerabat.kecamatan" v-model:desa="dataKerabat.kelurahan"
-                        v-model:kodepos="dataKerabat.kodepos" :viewMode/>
+                        v-model:kodepos="dataKerabat.kodepos" :viewMode />
                     <n-divider title-placement="left"> Informasi Bank </n-divider>
                     <n-dynamic-input v-model:value="formAssign.info_bank" :on-create="onCreate" disabled
                         v-if="viewMode">
@@ -700,7 +717,7 @@
             }" :loading="true">
                 <n-form ref="formExtra" :model="calcCredit" :rules="rulesExtra"
                     :label-placement="width <= 920 ? 'top' : 'top'" require-mark-placement="right-hanging"
-                    label-width="auto" >
+                    label-width="auto">
                     <div class="w-full flex md:flex-row flex-col gap-4">
                         <div class="flex flex-col w-full">
                             <n-form-item label="Pokok Pembayaran" path="Nama Bank" class="w-full">
@@ -710,18 +727,21 @@
                                 </n-input-number>
                             </n-form-item>
                             <n-form-item label="Jenis Angsuran" path="jenis">
-                                <n-input :readonly="viewMode" v-model:value="calcCredit.jenis_angsuran" v-if="!props.action"/>
+                                <n-input :readonly="viewMode" v-model:value="calcCredit.jenis_angsuran"
+                                    v-if="props.viewMode" />
                                 <n-select v-else filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
                                     v-model:value="calcCredit.jenis_angsuran" @update:value="handleTipe" />
                             </n-form-item>
                             <n-form-item label="Tenor / Angsuran" path="tenor">
                                 <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran == 'bulanan'">
-                                   <n-input-group v-if="!props.active">
-                                    <n-input v-model:value="calcCredit.tenor" readonly class="w-fit"></n-input>
-                                    <n-input-number class="w-full" :show-button="false" v-model:value="calcCredit.angsuran" readonly :parse="parse" :format="format"></n-input-number>
-                                   </n-input-group>
-                                    <n-radio-group v-else v-model:value="calcCredit.tenor" name="radiogroup" >
-                                        <n-radio @change="handleChange" name="tenor" value="6" >
+                                    <n-input-group v-if="props.viewMode">
+                                        <n-input v-model:value="calcCredit.tenor" readonly class="w-fit"></n-input>
+                                        <n-input-number class="w-full" :show-button="false"
+                                            v-model:value="calcCredit.angsuran" readonly :parse="parse"
+                                            :format="format"></n-input-number>
+                                    </n-input-group>
+                                    <n-radio-group v-else v-model:value="calcCredit.tenor" name="radiogroup">
+                                        <n-radio @change="handleChange" name="tenor" value="6">
                                             6 bulan<n-text code>
                                                 {{
                                                     skemaAngsuran.length == null
@@ -831,7 +851,7 @@
                             <n-form-item label="Nilai yang diterima" path="nilai_yang_diterima">
                                 <n-input-number :parse="parse" :format="format" :placeholder="calcCredit.plafond"
                                     :show-button="false" class="flex !w-full" @update:value="handlePlafond"
-                                    :loading="loading" v-model:value="calcCredit.nilai_yang_diterima" />
+                                    :loading="loading" v-model:value="calcCredit.nilai_yang_diterima" :readonly="props.viewMode"/>
                                 <!-- <div class="absolute top-9 flex bg-yellow-50 gap-2 text-xs px-2" v-show="dataTaksasi.nilai != '' &&
                   calcCredit.nilai_yang_diterima > dataTaksasi.nilai
                   ">
@@ -910,6 +930,10 @@ const jaminanStore = useJaminanStore();
 
 const props = defineProps({
     viewMode: {
+        type: Boolean,
+        default: false,
+    },
+    active: {
         type: Boolean,
         default: false,
     },
