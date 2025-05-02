@@ -3,7 +3,6 @@
         <n-space vertical>
             <n-card :title="`Laporan data Jaminan`" :segmented="true" size="small">
                 <template #header-extra>
-
                     <json-excel v-if="showData.length > 0" :data="showData"
                         :name="`laporan_jaminan_${dynamicSearch.pos}`" :fields="json_fields" :stringifyLongNum="true">
                         <n-button type="primary">Download Xls</n-button>
@@ -44,7 +43,11 @@
             </n-card>
         </n-space>
         <n-modal v-model:show="showDetailModal" title="Modal">
-            <n-card class="w-2/3">
+            <n-card class="w-2/3" title="Detail Jaminan" size="small">
+                <template #header-extra>
+                    <n-button type="info" @click="showSuratPengantar = true" v-if="bodyModal.status != 'RILIS'">Surat
+                        Pengantar</n-button>
+                </template>
                 <n-table :bordered="false" :single-line="false" size="small">
                     <thead>
                         <tr>
@@ -107,18 +110,116 @@
                 </n-table>
             </n-card>
         </n-modal>
+        <n-modal v-model:show="showSuratPengantar">
+            <n-card class="w-fit" title="Surat Pengantar" size="small" :segmented="true">
+                <template #header-extra>
+                    <n-button size="small" type="primary" secondary @click="handlePrint">Cetak</n-button>
+                </template>
+                <div ref="printArea" class="p-4">
+
+                    <kop-header :alamat_cabang="bodyModal.alamat_cabang" :cabang="bodyModal.nama_cabang" />
+                    <div class="p-8">
+                        <div>
+                            Kepada/Yth,<br />
+                            Kaditlantas/Kasatlantas<br />
+                            Up.Kasubag STNK<br>
+                            <b>Di Samsat Resort Indramayu</b>
+                        </div>
+                        <div class="py-2">
+                            <b><i>Perihal : Surat Keterangan Pengurusan STNK</i></b>
+                        </div>
+                        <div class="py-2">
+                            Dengan hormat,
+                        </div>
+                        <div class="py-2">
+                            Yang bertanda tangan di bawah ini :<br />
+                            Kantor <b>{{ bodyModal.nama_cabang }}</b> Yang beralamat di Jl.jendral sudirman No.50 (
+                            depan
+                            joyland park
+                            haurgeulis)<br />
+                            Ds.Mekarjati Kec.Haurgeulis Kab.Indramayu. <br />Dengan ini menerangkan bahwa Asli Buku
+                            Pemilik
+                            Kendaraan Bermotor ( BPKB ) atas kendaraan :
+                        </div>
+                        <div class="p-4">
+                            <table>
+                                <tr>
+                                    <td>NO POLISI</td>
+                                    <td>:</td>
+                                    <td>{{ bodyModal.no_polisi }}</td>
+                                </tr>
+                                <tr>
+                                    <td>MERK /TYPE /TAHUN</td>
+                                    <td>:</td>
+                                    <td>{{ bodyModal.merk }} / {{ bodyModal.tipe }} / {{ bodyModal.tahun }}</td>
+                                </tr>
+                                <tr>
+                                    <td>WARNA</td>
+                                    <td>:</td>
+                                    <td>{{ bodyModal.warna }}</td>
+                                </tr>
+                                <tr>
+                                    <td>NO RANGKA /NO MESIN</td>
+                                    <td>:</td>
+                                    <td>{{ bodyModal.no_rangka }} / {{ bodyModal.no_mesin }}</td>
+                                </tr>
+                                <tr>
+                                    <td>NAMA BPKB</td>
+                                    <td>:</td>
+                                    <td>{{ bodyModal.atas_nama }}</td>
+                                </tr>
+                                <tr>
+                                    <td>ALAMAT</td>
+                                    <td>:</td>
+                                    <td>{{ bodyModal.alamat_bpkb }}</td>
+                                </tr>
+                            </table>
+                        </div>
+                        <div><i>Sampai saat ini masih disimpan di <b>KSP DJAYA {{ bodyModal.nama_cabang?.toUpperCase()
+                        }}</b>
+                                sehubungan Hutang
+                                Pinjaman
+                                Konsumen
+                                tersebut.
+                            </i>
+                        </div>
+                        <div class="py-2">
+                            Surat Keterangan ini dibuat untuk keperluan Pengurusan Surat Tanda Nomor Kendaraan ( STNK )
+                            dan
+                            hanya untuk
+                            satu kali penggunaan.
+                        </div>
+                        <div>
+                            <b>{{ bodyModal.nama_cabang }}, {{ thisday }}</b><br />
+                            Hormat Kami
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <br />
+                            <div>
+                                <u><b>{{ bodyModal.kapos }}</b></u><br />
+                                KSP DJAYA
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </n-card>
+        </n-modal>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, computed, reactive, h } from "vue";
+import {
+    NButton, NInput,
+    useMessage,
+} from "naive-ui";
+import { computed, h, onMounted, reactive, ref } from "vue";
+import JsonExcel from "vue-json-excel3";
+import { useVueToPrint } from "vue-to-print";
 import { useApi } from "../../../helpers/axios";
 import { useSearch } from "../../../helpers/searchObject";
 import { useMeStore } from "../../../stores/me";
-import {
-    useMessage,
-    NButton, NInput,
-} from "naive-ui";
-import JsonExcel from "vue-json-excel3";
 
 const message = useMessage();
 const dataTable = ref([]);
@@ -183,13 +284,22 @@ const getBranch = async () => {
 const handleSearch = () => {
     getData();
 }
+var dt = new Date();
+let year = dt.getFullYear();
+let day = dt.getDate().toString().padStart(2, "0");
+
+let thisMonths = (dt.getMonth() + 1).toString().padStart(2, "0");
+
+const thisday = `${day}-${thisMonths}-${year}`;
+
 const loadTable = ref(false);
 const getData = async () => {
     loadTable.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: `collateral_report?pos=${dynamicSearch.pos}&loan_number=${dynamicSearch.loan_number}&nama=${dynamicSearch.nama}&nopol=${dynamicSearch.nopol}&status=${dynamicSearch.status}`,
+        api:
+            `collateral_report?pos=${dynamicSearch.pos}&loan_number=${dynamicSearch.loan_number}&nama=${dynamicSearch.nama}&nopol=${dynamicSearch.nopol}&status=${dynamicSearch.status}`,
         token: userToken,
     });
     if (!response.ok) {
@@ -199,13 +309,13 @@ const getData = async () => {
         loadTable.value = false;
     }
 };
-const convertObjectToArray = (obj) => {
-    if (!Array.isArray(obj) || obj.length === 0) {
-        return [];
-    }
-    const keys = Object.keys(obj[0]);
-    return keys.map(key => ({ title: key, key: key }));
-}
+
+const printArea = ref();
+const { handlePrint } = useVueToPrint({
+    content: printArea,
+    documentTitle: "Surat Pengantar",
+});
+
 const pagination = {
     pageSize: 10,
 };
@@ -260,6 +370,7 @@ const columns = [
 
 const bodyModal = ref();
 const showDetailModal = ref(false);
+const showSuratPengantar = ref(false);
 const handleAction = (e) => {
     showDetailModal.value = true;
     bodyModal.value = e;
