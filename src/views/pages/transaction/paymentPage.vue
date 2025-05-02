@@ -61,7 +61,7 @@
         <n-card title="Detail Pembayaran" :segmented="{
             content: true,
             footer: 'soft',
-        }">
+        }" size="small">
             <template #header-extra>
                 <div class="flex gap-2">
                     <n-space>
@@ -69,22 +69,20 @@
                             :type="bodyModal.STATUS == 'PENDING' ? 'warning' : bodyModal.STATUS == 'PAID' ? 'success' : 'error'">
                             {{ bodyModal.STATUS }}
                         </n-tag>
-                        <n-button circle secondary @click="showModal = false">X</n-button>
+                        <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
+                            v-show="bodyModal.STATUS == 'PAID'" :disabled="bodyModal.print_ke > 2">
+                            <n-space>
+                                <n-icon>
+                                    <print-icon />
+                                </n-icon>
+                                <p>Sisa Cetak {{ printCount - bodyModal.print_ke }}</p>
+                            </n-space>
+                        </n-button>
                     </n-space>
                 </div>
             </template>
             <template #footer>
                 <n-space>
-                    <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
-                        v-show="bodyModal.STATUS == 'PAID'" :disabled="bodyModal.print_ke > 1500">
-                        <n-space>
-                            <n-icon>
-                                <print-icon />
-                            </n-icon>
-                            <p>Sisa Cetak {{ printCount - bodyModal.print_ke }}</p>
-                        </n-space>
-                    </n-button>
-
                     <n-button type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS == 'PAID'">
                         <n-space>
                             <p>Lihat/Upload Nota</p>
@@ -124,7 +122,7 @@
                         <div class="flex justify-between">
                             <n-text strong class="text-md"> {{ bodyModal.tgl_transaksi }}</n-text>
                             <n-text strong class="text-md"> {{ bodyModal.payment_method == 'cash' ? 'TUNAI' : 'TRANSFER'
-                                }}</n-text>
+                            }}</n-text>
 
                         </div>
                         <div class="flex justify-between border-b border-dashed border-black"
@@ -162,7 +160,7 @@
                             <div class="flex flex-col">
                                 <small class="text-reg">CUST. BAYAR</small>
                                 <n-text strong class="text-md"> {{ bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}</n-text>
+                                }}</n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">PEMBULATAN</small>
@@ -173,7 +171,7 @@
                                 <small class="text-reg">KEMBALIAN</small>
                                 <td>
                                     <n-text strong class="text-md"> {{ bodyModal.kembalian.toLocaleString("US")
-                                        }}</n-text>
+                                    }}</n-text>
                                 </td>
                             </div>
 
@@ -196,14 +194,14 @@
                                 <small class="text-reg">Cust. Bayar</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.jumlah_uang.toLocaleString("US")
-                                }}
+                                    }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Diskon</small>
                                 <n-text class="text-md font-bold"> {{
                                     (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
-                                }}
+                                    }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -230,11 +228,11 @@
                                 <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                }}
+                                    }}
                                 </td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_denda).toLocaleString('US')
-                                }}
+                                    }}
                                 </td>
                                 <td align="right" class="border pe-2 border-black text-right">
                                     {{
@@ -286,26 +284,22 @@
 </template>
 <script setup>
 import { useApi } from "../../../helpers/axios";
-import { useSearch } from "../../../helpers/searchObject";
 import router from "../../../router";
 
 import {
     PlusFilled as addIcon,
-    FilterAltSharp as filterIcon,
     CloseRound as closeIcon,
-    SearchRound as searchIcon,
     AttachFileFilled as fileIcon,
-    CloudUploadOutlined as uploadIcon,
-    LocalPrintshopOutlined as PrintIcon,
+    FilterAltSharp as filterIcon,
+    LocalPrintshopOutlined as PrintIcon
 } from "@vicons/material";
 import { useWindowSize } from "@vueuse/core";
 import _ from "lodash";
-import { useLoadingBar } from "naive-ui";
+import { NButton, NIcon, NImage, NInput, NTag, useLoadingBar, useMessage } from "naive-ui";
+import { computed, h, onMounted, reactive, ref } from "vue";
+import { useVueToPrint } from "vue-to-print";
 
 const loadingBar = useLoadingBar();
-import { useMessage, NIcon, NTag, NButton, NInput, NImage } from "naive-ui";
-import { computed, onMounted, reactive, ref, h } from "vue";
-import { useVueToPrint } from "vue-to-print";
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const uploadState = ref(false);
@@ -530,119 +524,119 @@ const handleCancelPayment = (e) => {
 //     ];
 // };
 const createColumns = () => {
-  return [
-    {
-      title: "@",
-      width: 30,
-      render(row) {
-        return row.attachment ? h(
-            NImage,
-            {
-              src: row.attachment,
-              width: 20,
-              height: 20,
+    return [
+        {
+            title: "@",
+            width: 30,
+            render(row) {
+                return row.attachment ? h(
+                    NImage,
+                    {
+                        src: row.attachment,
+                        width: 20,
+                        height: 20,
+                    },
+                    {
+                        default: () => row.attachment,
+                    }
+                ) : h(
+                    NButton,
+                    {
+                        size: "small",
+                        type: "error",
+                        circle: true,
+                        onClick: () => {
+                            handleAction(row);
+                        },
+                    },
+                    {
+                        default: () => "!",
+                    }
+                );
             },
-            {
-              default: () => row.attachment,
-            }
-        ) : h(
-            NButton,
-            {
-              size: "small",
-              type: "error",
-              circle: true,
-              onClick: () => {
-                handleAction(row);
-              },
+        },
+        {
+            title: "NO TRANSAKSI",
+            key: "no_transaksi",
+            width: 200,
+            sorter: "default",
+        },
+        {
+            title: "NO KONTRAK",
+            width: 130,
+            key: "no_fasilitas",
+            sorter: "default",
+        },
+        {
+            title: "TANGGAL",
+            width: 150,
+            key: "tgl_transaksi",
+            sorter: "default",
+        },
+        {
+            title: "ATAS NAMA",
+            key: "nama",
+            fixed: "left",
+            width: 200,
+        },
+        {
+            title: "VIA",
+            width: 80,
+            key: "payment_method",
+            sorter: "default",
+        },
+        {
+            title: "NOMINAL",
+            align: 'right',
+            width: 120,
+            key: "total_bayar",
+            render(row) {
+                return h("div", row.total_bayar.toLocaleString("US"));
             },
-            {
-              default: () => "!",
-            }
-        );
-      },
-    },
-    {
-      title: "NO TRANSAKSI",
-      key: "no_transaksi",
-      width: 200,
-      sorter: "default",
-    },
-    {
-      title: "NO KONTRAK",
-      width: 130,
-      key: "no_fasilitas",
-      sorter: "default",
-    },
-    {
-      title: "TANGGAL",
-      width: 150,
-      key: "tgl_transaksi",
-      sorter: "default",
-    },
-    {
-      title: "ATAS NAMA",
-      key: "nama",
-      fixed: "left",
-      width: 200,
-    },
-    {
-      title: "VIA",
-      width: 80,
-      key: "payment_method",
-      sorter: "default",
-    },
-    {
-      title: "NOMINAL",
-      align: 'right',
-      width: 120,
-      key: "total_bayar",
-      render(row) {
-        return h("div", row.total_bayar.toLocaleString("US"));
-      },
-      sorter: "default",
-    },
-    {
-      title: "STATUS",
-      width: 80,
-      key: "STATUS",
-      defaultFilterOptionValues: ["PAID", "UNPAID"],
-      render(row) {
-        return h(
-            NTag,
-            {
-              type: row.STATUS == "PENDING" ? "warning" : row.STATUS == "PAID" ? "success" : "error",
-              onClick: () => {
-                handleAction(row);
-              },
+            sorter: "default",
+        },
+        {
+            title: "STATUS",
+            width: 80,
+            key: "STATUS",
+            defaultFilterOptionValues: ["PAID", "UNPAID"],
+            render(row) {
+                return h(
+                    NTag,
+                    {
+                        type: row.STATUS == "PENDING" ? "warning" : row.STATUS == "PAID" ? "success" : "error",
+                        onClick: () => {
+                            handleAction(row);
+                        },
+                    },
+                    {
+                        default: () => row.STATUS,
+                    }
+                );
             },
-            {
-              default: () => row.STATUS,
-            }
-        );
-      },
-    },
-    {
-      width: 80,
-      align: "right",
-      key: "action",
-      render(row) {
-        return h(
-            NButton,
-            {
-              secondary: true,
-              round: true,
-              size: "small",
-              onClick: () => {
-                handleAction(row);
-              },
+        },
+        {
+            width: 80,
+            align: "right",
+            key: "action",
+            render(row) {
+                return h(
+                    NButton,
+                    {
+                        secondary: true,
+                        round: true,
+                        size: "small",
+                        onClick: () => {
+                            handleAction(row);
+                        },
+                    },
+                    {
+                        default: () => "detail",
+                    }
+                );
             },
-            {
-              default: () => "detail",
-            }
-        );
-      },
-    },
-  ];
+        },
+    ];
 };
 const showModal = ref(false);
 const bodyModal = ref([]);
@@ -745,7 +739,7 @@ const getSkalaCredit = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         dataStrukturKredit.value = response.data;
         dataAngsuran.value = true;
