@@ -1,8 +1,8 @@
 <template>
   <n-card content-style="padding: 0;" :segmented="{
-        content: true,
-        footer: 'soft',
-    }" size="small">
+    content: true,
+    footer: 'soft',
+  }" size="small">
     <template #header>PELUNASAN
       <!-- <n-icon v-if="width <=620">
 <phone-icon />
@@ -13,69 +13,83 @@
     </template>
     <template #header-extra>
       <n-space>
-        <n-button strong type="primary" @click="handleAddPay">
+        <n-button v-if="width > 480" strong type="primary" @click="handleAddPay">
           <template #icon>
             <n-icon>
-              <add-icon/>
+              <add-icon />
             </n-icon>
           </template>
           <span class="hidden md:flex">tambah</span>
         </n-button>
-        <n-button strong type="warning" @click="searchField=!searchField">
+        <n-button circle type="primary" @click="handleAddPay" v-else>
           <template #icon>
-            <n-icon v-if="searchField">
-              <filter-icon/>
+            <n-icon>
+              <add-icon />
+            </n-icon>
+          </template>
+        </n-button>
+        <n-button v-if="width > 480" strong type="warning" @click="searchField = !searchField">
+          <template #icon>
+            <n-icon v-if="!searchField">
+              <filter-icon />
             </n-icon>
             <n-icon v-else>
-              <close-icon/>
+              <close-icon />
             </n-icon>
           </template>
           <span class="hidden md:flex">Filter</span>
         </n-button>
+        <n-button circle type="warning" @click="searchField = !searchField" v-else>
+          <template #icon>
+            <n-icon v-if="!searchField">
+              <filter-icon />
+            </n-icon>
+            <n-icon v-else>
+              <close-icon />
+            </n-icon>
+          </template>
+        </n-button>
       </n-space>
     </template>
     <div>
-      <div class="flex gap-2 p-4 bg-sc-50/50 border-b" v-if="searchField">
-        <n-form-item label="NO TRANSAKSI" class="w-full">
-          <n-input v-model:value="dynamicSearch.no_transaksi" type="text" placeholder="NO TRANSAKSI"
-                   clearable/>
-        </n-form-item>
-        <n-form-item label="ATAS NAMA" class="w-full">
-          <n-input v-model:value="dynamicSearch.atas_nama" type="text" placeholder="ATAS NAMA" clearable/>
-        </n-form-item>
-        <n-form-item label="NO KONTRAK" class="w-full">
-          <n-input v-model:value="dynamicSearch.no_kontrak" type="text" placeholder="NO KONTRAK" clearable/>
-        </n-form-item>
-        <n-form-item label="TANGGAL" class="w-full">
-          <n-date-picker placeholder="CARI TANGGAL" v-model:formatted-value="dynamicSearch.dari"
-                         :default-value="Date.now()" clearable format="yyyy-MM-dd"
-          />
-        </n-form-item>
-        <n-form-item class="w-full">
-          <n-button type="primary" secondary @click="handleSearch" class="px-4">
-            <n-icon>
-              <search-icon/>
-            </n-icon>
-            Cari
-          </n-button>
-        </n-form-item>
-      </div>
+      <n-drawer v-model:show="searchField" :placement="width > 480 ? 'right' : 'bottom'">
+        <n-drawer-content title="Filter">
+          <div class="grid  gap-2 p-4 bg-sc-50/50 border-b" v-if="searchField">
+            <n-form-item label="NO TRANSAKSI" class="w-full">
+              <n-input v-model:value="dynamicSearch.no_transaksi" type="text" placeholder="NO TRANSAKSI" clearable />
+            </n-form-item>
+            <n-form-item label="ATAS NAMA" class="w-full">
+              <n-input v-model:value="dynamicSearch.atas_nama" type="text" placeholder="ATAS NAMA" clearable />
+            </n-form-item>
+            <n-form-item label="NO KONTRAK" class="w-full">
+              <n-input v-model:value="dynamicSearch.no_kontrak" type="text" placeholder="NO KONTRAK" clearable />
+            </n-form-item>
+            <n-form-item label="TANGGAL" class="w-full">
+              <n-date-picker class="w-full" placeholder="CARI TANGGAL" v-model:formatted-value="dynamicSearch.dari"
+                :default-value="Date.now()" clearable format="yyyy-MM-dd" />
+            </n-form-item>
+            <n-form-item class="w-full">
+              <n-button type="primary" @click="handleSearch" class="w-full"> Cari</n-button>
+            </n-form-item>
+          </div>
+        </n-drawer-content>
+      </n-drawer>
 
       <n-data-table ref="tableRef" striped size="small" :row-key="(row) => row.loan_number" :columns="columns"
-                    :scroll-x="1070" :data="showData" :max-height="500" :on-update:checked-row-keys="handleFasilitas"
-                    :loading="loadDataPayment" class="p-4" :pagination="{ pageSize: 10 }"/>
+        :scroll-x="1070" :data="showData" :max-height="500" :on-update:checked-row-keys="handleFasilitas"
+        :loading="loadDataPayment" class="p-4" :pagination="{ pageSize: 10 }" />
     </div>
   </n-card>
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal" :on-after-leave="onAfterLeave">
     <n-card title="DETAIL PELUNASAN" :segmented="{
-            content: true,
-            footer: 'soft',
-        }">
+      content: true,
+      footer: 'soft',
+    }">
       <template #header-extra>
         <div class="flex gap-2">
           <n-space>
             <n-tag strong
-                   :type="bodyModal.STATUS == 'PENDING' ? 'warning' : bodyModal.STATUS == 'PAID' ? 'success' : 'error'">
+              :type="bodyModal.STATUS == 'PENDING' ? 'warning' : bodyModal.STATUS == 'PAID' ? 'success' : 'error'">
               {{ bodyModal.STATUS }}
             </n-tag>
             <n-button circle secondary @click="showModal = false">X</n-button>
@@ -84,64 +98,53 @@
       </template>
       <template #footer>
         <n-space>
-          <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
-                    v-show="bodyModal.STATUS == 'PAID'" :disabled="bodyModal.print_ke > 1500">
+          <n-button type="warning" @click="printNota(bodyModal.no_transaksi)" v-show="bodyModal.STATUS == 'PAID'"
+            :disabled="bodyModal.print_ke > 1500">
             <n-space>
               <n-icon>
-                <print-icon/>
+                <print-icon />
               </n-icon>
               <p>Sisa Cetak {{ printCount - bodyModal.print_ke }}</p>
             </n-space>
           </n-button>
 
-          <n-button type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS == 'PAID'"
-          >
+          <n-button type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS == 'PAID'">
             <n-space>
               <n-icon>
-                <upload-icon/>
+                <upload-icon />
               </n-icon>
               <p>Upload Nota</p>
             </n-space>
           </n-button>
           <n-button v-if="bodyModal.STATUS != 'CANCEL'" type="error"
-                    @click="handleCancelPayment(bodyModal.tgl_transaksi)">
+            @click="handleCancelPayment(bodyModal.tgl_transaksi)">
             Ajukan Batal
           </n-button>
-          <n-button secondary type="info" @click="uploadState = !uploadState"
-                    v-show="bodyModal.STATUS == 'PAID'" v-else>
+          <n-button secondary type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS == 'PAID'"
+            v-else>
             <n-icon>
-              <file-icon/>
+              <file-icon />
             </n-icon>
             Tampilkan Nota
           </n-button>
         </n-space>
       </template>
       <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
-        <n-watermark
-            content="KSP DJAYA"
-            cross
-            selectable
-            :font-size="16"
-            :line-height="16"
-            :width="192"
-            :height="128"
-            :x-offset="12"
-            :y-offset="28"
-            :rotate="-15"
-        >
+        <n-watermark content="KSP DJAYA" cross selectable :font-size="16" :line-height="16" :width="192" :height="128"
+          :x-offset="12" :y-offset="28" :rotate="-15">
           <div class="p-2">
             <div class="flex items-center gap-2 pb-2 justify-between border-b border-dashed border-black">
               <div class="flex gap-2 items-center">
-                <img class="h-10 md:h-10" :src="applogo" alt="logo_company"/>
+                <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />
                 <div class="flex flex-col">
-                  <span class="text-xl font-bold">{{apptitle}}</span>
+                  <span class="text-xl font-bold">{{ apptitle }}</span>
                   <n-text strong class="text-md"> POS: {{ bodyModal.cabang }}</n-text>
                 </div>
               </div>
               <div class="text-lg font-bold hidden md:flex">KWITANSI {{
-                  bodyModal.payment_type ==
+                bodyModal.payment_type ==
                   'pelunasan' ? 'PELUNASAN' : 'PEMBAYARAN'
-                }}
+              }}
               </div>
             </div>
             <div class="flex justify-between">
@@ -150,7 +153,7 @@
 
             </div>
             <div class="flex justify-between border-b border-dashed border-black"
-                 :class="width > 850 ? 'flex-row' : 'flex-col'">
+              :class="width > 850 ? 'flex-row' : 'flex-col'">
               <div class="flex flex-col py-4">
                 <small class="text-reg">No Transaksi : </small>
                 <n-text class="text-reg font-bold"> {{ bodyModal.no_transaksi }}</n-text>
@@ -165,14 +168,13 @@
             </div>
 
             <div class="grid border-b border-dashed border-black pb-2"
-                 :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '"
-                 v-if="bodyModal.payment_type != 'pelunasan'">
+              :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '" v-if="bodyModal.payment_type != 'pelunasan'">
               <div class="flex flex-col">
                 <small class="text-reg">JML. ANGS</small>
                 <n-text strong class="text-md"> {{
-                    bodyModal.bayar_angsuran.toLocaleString('US') ?
-                        bodyModal.bayar_angsuran.toLocaleString('US') : 'n/a'
-                  }}
+                  bodyModal.bayar_angsuran.toLocaleString('US') ?
+                    bodyModal.bayar_angsuran.toLocaleString('US') : 'n/a'
+                }}
                 </n-text>
               </div>
               <div class="flex flex-col">
@@ -199,13 +201,13 @@
 
             </div>
             <div class="grid border-b border-dashed border-black pb-2"
-                 :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '" v-else>
+              :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '" v-else>
               <div class="flex flex-col">
                 <small class="text-reg">Total Pelunasan</small>
                 <n-text class="text-md font-bold"> {{
-                    bodyModal.total_bayar.toLocaleString('US') ?
-                        bodyModal.total_bayar.toLocaleString('US') : 'n/a'
-                  }}
+                  bodyModal.total_bayar.toLocaleString('US') ?
+                    bodyModal.total_bayar.toLocaleString('US') : 'n/a'
+                }}
                 </n-text>
               </div>
               <div class="flex flex-col">
@@ -215,14 +217,14 @@
               <div class="flex flex-col">
                 <small class="text-reg">Cust. Bayar</small>
                 <n-text class="text-md font-bold"> {{
-                    bodyModal.jumlah_uang.toLocaleString("US")
+                  bodyModal.jumlah_uang.toLocaleString("US")
                   }}
                 </n-text>
               </div>
               <div class="flex flex-col">
                 <small class="text-reg">Diskon</small>
                 <n-text class="text-md font-bold"> {{
-                    (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
+                  (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
                   }}
                 </n-text>
               </div>
@@ -249,11 +251,11 @@
                 <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
                 <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
                 <td class="border pe-2 border-black text-right">{{
-                    parseInt(angs.bayar_angsuran).toLocaleString('US')
+                  parseInt(angs.bayar_angsuran).toLocaleString('US')
                   }}
                 </td>
                 <td class="border pe-2 border-black text-right">{{
-                    parseInt(angs.bayar_denda).toLocaleString('US')
+                  parseInt(angs.bayar_denda).toLocaleString('US')
                   }}
                 </td>
                 <td align="right" class="border pe-2 border-black text-right">
@@ -289,43 +291,40 @@
       </div>
       <div v-else>
         <file-upload title="Upload Nota" type="nota" :idapp="bodyModal.payment_id" endpoint="payment_attachment"
-                     :def_value="bodyModal.attachment"/>
+          :def_value="bodyModal.attachment" />
       </div>
       <div v-show="bodyModal.payment_method == 'transfer'">
         <n-divider>bukti transfer</n-divider>
-        <n-image :src="bodyModal.attachment" class="max-w-36"/>
+        <n-image :src="bodyModal.attachment" class="max-w-36" />
       </div>
     </n-card>
   </n-modal>
   <n-modal v-model:show="confCancelModal" preset="dialog" draggable title="Konfirmasi"
-           positive-text="Ya, Ajukan Sekarang !" negative-text="hmm, nanti dulu deh"
-           @positive-click="postCancelPayment">
+    positive-text="Ya, Ajukan Sekarang !" negative-text="hmm, nanti dulu deh" @positive-click="postCancelPayment">
     <div>Batalin sekarang, yakin?
     </div>
-    <n-input type="textarea" placeholder="isi dulu alasannya disini" v-model:value="bodyCancel.descr"/>
+    <n-input type="textarea" placeholder="isi dulu alasannya disini" v-model:value="bodyCancel.descr" />
   </n-modal>
 </template>
 <script setup>
-import {useApi} from "../../../helpers/axios";
-import {useSearch} from "../../../helpers/searchObject";
-import router from "../../../router";
 import {
   PlusFilled as addIcon,
-  FilterAltSharp as filterIcon,
   CloseRound as closeIcon,
-  SearchRound as searchIcon,
   AttachFileFilled as fileIcon,
-  CloudUploadOutlined as uploadIcon,
+  FilterAltSharp as filterIcon,
   LocalPrintshopOutlined as PrintIcon,
+  CloudUploadOutlined as uploadIcon
 } from "@vicons/material";
-import {useWindowSize} from "@vueuse/core";
-import {NImage, useLoadingBar} from "naive-ui";
+import { useWindowSize } from "@vueuse/core";
+import { NButton, NIcon, NImage, NInput, NTag, useLoadingBar, useMessage } from "naive-ui";
+import { computed, h, onMounted, reactive, ref } from "vue";
+import { useVueToPrint } from "vue-to-print";
+import { useApi } from "../../../helpers/axios";
+import { useSearch } from "../../../helpers/searchObject";
+import router from "../../../router";
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const loadingBar = useLoadingBar();
-import {useMessage, NIcon, NTag, NButton, NInput} from "naive-ui";
-import {computed, onMounted, reactive, ref, h} from "vue";
-import {useVueToPrint} from "vue-to-print";
 
 const uploadState = ref(false);
 const dynamicSearch = reactive({
@@ -338,9 +337,9 @@ const searchField = ref(false);
 const searchBox = ref();
 const checkedRowCredit = ref([]);
 const tableRef = ref();
-const {width} = useWindowSize();
+const { width } = useWindowSize();
 const printReceiptRef = ref();
-const {handlePrint} = useVueToPrint({
+const { handlePrint } = useVueToPrint({
   content: printReceiptRef,
   documentTitle: "Receipt",
 });
@@ -379,15 +378,15 @@ const thisDays = computed(() => {
 
 const totalPay = computed(() => {
   const totalInstallment = () =>
-      checkedRowCredit.value.reduce(
-          (total, installment) => total + installment.bayar_angsuran,
-          0
-      );
+    checkedRowCredit.value.reduce(
+      (total, installment) => total + installment.bayar_angsuran,
+      0
+    );
   const totalPenalty = () =>
-      checkedRowCredit.value.reduce(
-          (total, installment) => total + installment.bayar_denda,
-          0
-      );
+    checkedRowCredit.value.reduce(
+      (total, installment) => total + installment.bayar_denda,
+      0
+    );
   const combinedTotal = () => totalInstallment() + totalPenalty();
   return combinedTotal();
 });
@@ -398,9 +397,9 @@ const pageData = reactive({
   payment_method: "cash",
   pembulatan: 0,
   kembalian: computed(() =>
-      pageData.jumlah_uang
-          ? pageData.jumlah_uang - pageData.total_bayar - pageData.pembulatan
-          : 0
+    pageData.jumlah_uang
+      ? pageData.jumlah_uang - pageData.total_bayar - pageData.pembulatan
+      : 0
   ),
   struktur: checkedRowCredit,
   bank_tujuan: null,
@@ -431,28 +430,28 @@ const createColumns = () => {
       width: 30,
       render(row) {
         return row.attachment ? h(
-            NImage,
-            {
-              src: row.attachment,
-              width: 20,
-              height: 20,
-            },
-            {
-              default: () => row.attachment,
-            }
+          NImage,
+          {
+            src: row.attachment,
+            width: 20,
+            height: 20,
+          },
+          {
+            default: () => row.attachment,
+          }
         ) : h(
-            NButton,
-            {
-              size: "small",
-              type: "error",
-              circle: true,
-              onClick: () => {
-                handleAction(row);
-              },
+          NButton,
+          {
+            size: "small",
+            type: "error",
+            circle: true,
+            onClick: () => {
+              handleAction(row);
             },
-            {
-              default: () => "!",
-            }
+          },
+          {
+            default: () => "!",
+          }
         );
       },
     },
@@ -503,16 +502,16 @@ const createColumns = () => {
       defaultFilterOptionValues: ["PAID", "UNPAID"],
       render(row) {
         return h(
-            NTag,
-            {
-              type: row.STATUS == "PENDING" ? "warning" : row.STATUS == "PAID" ? "success" : "error",
-              onClick: () => {
-                handleAction(row);
-              },
+          NTag,
+          {
+            type: row.STATUS == "PENDING" ? "warning" : row.STATUS == "PAID" ? "success" : "error",
+            onClick: () => {
+              handleAction(row);
             },
-            {
-              default: () => row.STATUS,
-            }
+          },
+          {
+            default: () => row.STATUS,
+          }
         );
       },
     },
@@ -522,18 +521,18 @@ const createColumns = () => {
       key: "action",
       render(row) {
         return h(
-            NButton,
-            {
-              secondary: true,
-              round: true,
-              size: "small",
-              onClick: () => {
-                handleAction(row);
-              },
+          NButton,
+          {
+            secondary: true,
+            round: true,
+            size: "small",
+            onClick: () => {
+              handleAction(row);
             },
-            {
-              default: () => "detail",
-            }
+          },
+          {
+            default: () => "detail",
+          }
         );
       },
     },
@@ -633,7 +632,7 @@ const getSkalaCredit = async (e) => {
   }
 };
 const handleAddPay = () => {
-  router.push({name: "tambah pelunasan"});
+  router.push({ name: "tambah pelunasan" });
 };
 const showData = computed(() => {
   return useSearch(dataPayment.value, searchBox.value);

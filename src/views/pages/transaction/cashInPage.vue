@@ -5,25 +5,10 @@
     }" size="small">
         <!-- <pre>{{ pageData }}</pre> -->
         <template #header>Tambah Penerimaan Uang</template>
-        <template #header-extra>
-
-            <n-space>
-
-                <n-button v-show="!searchField" strong type="warning" @click="handleBack">
-                    <template #icon>
-                        <n-icon>
-                            <back-icon />
-                        </n-icon>
-                    </template>
-                    <p class="hidden md:flex">kembali</p>
-                </n-button>
-
-            </n-space>
-        </template>
         <div class="flex flex-col md:flex-row gap-2">
             <span v-show="false">{{
                 isLasted ? pageData.diskon_tunggakan = totalDenda : pageData.diskon_tunggakan = 0
-            }} {{ !isLasted ? pageData.bayar_dengan_diskon = 'tidak' : 0 }}</span>
+                }} {{ !isLasted ? pageData.bayar_dengan_diskon = 'tidak' : 0 }}</span>
             <n-form-item label="Nama Pelanggan" class="w-full">
                 <n-input v-model:value="dynamicSearch.nama" type="text" placeholder="Nama" @blur="handleSearch"
                     clearable />
@@ -89,7 +74,7 @@
                                 <div class="flex gap-2">
                                     <strong class="font-bold">{{
                                         pageData.diskon_tunggakan.toLocaleString('US')
-                                        }}</strong>
+                                    }}</strong>
                                 </div>
                             </div>
                         </div>
@@ -193,19 +178,19 @@
                                         <small class="text-reg">No Transaksi : </small>
                                         <n-text strong class="text-lg font-bold"> {{
                                             responseProsesPayment.res.no_transaksi
-                                            }}
+                                        }}
                                         </n-text>
                                         <small class="text-reg">No Pelanggan : </small>
                                         <n-text strong class="text-lg font-bold"> {{
                                             responseProsesPayment.res.cust_code
-                                            }}
+                                        }}
                                         </n-text>
                                     </div>
                                     <div class="flex flex-col py-4">
                                         <small class="text-reg">Terima dari (No Kontrak)</small>
                                         <n-text strong class="text-lg font-bold"> {{
                                             responseProsesPayment.res.nama
-                                            }}
+                                        }}
                                         </n-text>
                                         <small class="text-lg">{{ responseProsesPayment.res.no_fasilitas }}</small>
                                     </div>
@@ -216,7 +201,7 @@
                                         <small class="text-reg">Tanggal & Waktu</small>
                                         <n-text strong class="text-md">{{
                                             responseProsesPayment.res.tgl_transaksi
-                                            }}
+                                        }}
                                         </n-text>
                                     </div>
                                     <div class="flex flex-col">
@@ -228,19 +213,19 @@
                                     <div class="flex flex-col">
                                         <small class="text-reg">Pembulatan</small>
                                         <n-text strong class="text-md"> {{ responseProsesPayment.res.pembulatan
-                                        }}</n-text>
+                                            }}</n-text>
                                     </div>
                                     <div class="flex flex-col">
                                         <small class="text-reg">Jumlah Uang</small>
                                         <n-text strong class="text-md"> {{ responseProsesPayment.res.jumlah_uang
-                                        }}</n-text>
+                                            }}</n-text>
                                     </div>
                                     <div class="flex flex-col">
                                         <small class="text-reg">Kembalian</small>
                                         <td>
                                             <n-text strong class="text-md"> {{
                                                 responseProsesPayment.res.kembalian
-                                                }}
+                                            }}
                                             </n-text>
                                         </td>
                                     </div>
@@ -248,7 +233,7 @@
                                         <small class="text-reg">Metode Pembayaran</small>
                                         <n-text strong class="text-md"> {{
                                             responseProsesPayment.res.payment_method
-                                            }}
+                                        }}
                                         </n-text>
                                     </div>
                                 </div>
@@ -266,11 +251,11 @@
                                         <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
                                         <td class="border pe-2 border-black">{{
                                             parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                            }}
+                                        }}
                                         </td>
                                         <td class="border pe-2 border-black">{{
                                             parseInt(angs.bayar_denda).toLocaleString('US')
-                                            }}
+                                        }}
                                         </td>
                                         <td align="right" class="border pe-2 border-black">
                                             {{
@@ -284,7 +269,7 @@
                                         <td colspan="3" align="right" class="pe-2">
                                             <strong>{{
                                                 responseProsesPayment.res.total_bayar.toLocaleString("US")
-                                                }}</strong>
+                                            }}</strong>
                                         </td>
                                     </tr>
                                 </table>
@@ -294,13 +279,13 @@
                                     <div class="border-b border-black pt-20 px-4">
                                         <n-text strong class="text-md font-bold">{{
                                             responseProsesPayment.res.created_by
-                                            }}
+                                        }}
                                         </n-text>
                                     </div>
                                     <div class="border-b border-black pt-20 px-4">
                                         <n-text strong class="text-md font-bold">{{
                                             responseProsesPayment.res.nama
-                                            }}
+                                        }}
                                         </n-text>
                                     </div>
                                 </div>
@@ -321,26 +306,25 @@
     </n-modal>
 </template>
 <script setup>
-import { v4 as uuidv4 } from "uuid";
-import { useApi } from "../../../helpers/axios";
-import router from "../../../router";
+import {
+    CheckCircleRound as checkIcon
+} from "@vicons/material";
+import { useWindowSize } from "@vueuse/core";
 import _ from "lodash";
 import {
-    CheckCircleRound as checkIcon,
-    ChevronLeftRound as backIcon,
-} from "@vicons/material";
-import {
-    useDialog,
-    useMessage,
-    NIcon,
-    NTag,
     NButton,
+    NIcon,
     NInput,
     NInputNumber,
+    NTag,
+    useDialog,
+    useMessage,
 } from "naive-ui";
-import { computed, reactive, ref, h } from "vue";
-import { useWindowSize } from "@vueuse/core";
+import { v4 as uuidv4 } from "uuid";
+import { computed, h, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
+import { useApi } from "../../../helpers/axios";
+import router from "../../../router";
 
 const searchField = ref(false);
 
