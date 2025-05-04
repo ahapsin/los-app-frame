@@ -1,19 +1,18 @@
 <template>
   <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
     <div class="flex gap-2">
-      <n-popover placement="bottom-end" width="350">
-        <template #trigger>
-          <n-badge :value="tasks.length">
-            <n-button type="primary" tertiary circle @click="handleTask">
-              <template #icon>
-                <v-icon name="bi-bell" />
-              </template>
-            </n-button>
-          </n-badge>
-        </template>
 
-        <!-- <n-skeleton text :repeat="2" /> <n-skeleton text style="width: 60%" v-show="false"/> -->
-        <!-- <div v-for="task in tasks" :key="task" @click="tasks = []">
+
+      <n-badge :value="tasks.length">
+        <n-button type="primary" tertiary circle @click="showAllNotif">
+          <template #icon>
+            <v-icon name="bi-bell" />
+          </template>
+        </n-button>
+      </n-badge>
+    </div>
+    <!-- <n-skeleton text :repeat="2" /> <n-skeleton text style="width: 60%" v-show="false"/> -->
+    <!-- <div v-for="task in tasks" :key="task" @click="tasks = []">
           <div>
             
           </div>
@@ -21,58 +20,16 @@
           <div>{{ task.descr }}</div>
           <div class="text-[10px] text-slate-500">{{ task.created_at }}</div>
         </div> -->
-
-
-        <div v-if="tasks.length != 0">
-          <div v-for="task in _.slice(_.orderBy(tasks, ['created_at'], ['desc']), 0, 4)" :key="task"
-            class=" hover:bg-pr-50 rounded-lg p-2 cursor-pointer" @click="handleDetail(task)">
-            <div class="flex gap-2">
-              <div secondary v-if="task.type === 'payment'" class="flex text-xl p-1">
-                🤑
-              </div>
-              <div secondary v-if="task.type === 'request_payment'" class="flex text-xl p-1">
-                🤑
-              </div>
-              <div secondary v-if="task.type === 'repayment'" class="flex text-xl p-1">
-                🤑
-              </div>
-              <div secondary v-if="task.type === 'repayment_cancel'" class="flex text-xl p-1">
-                🤑
-              </div>
-              <div circle type="error" secondary v-if="task.type === 'payment_cancel'" class="flex text-xl p-1">
-                😤
-              </div>
-              <div>
-                <div class="text-[10px] text-slate-500"><n-tag :type="task.type == 'payment' ? 'success' : 'error'"
-                    size="small">{{
-                      task.branch_name }}</n-tag> •
-                  {{
-                    task.created_at }}</div>
-                <div><b>{{ task.title }}</b></div>
-                <div>{{ task.descr }}</div>
-              </div>
-            </div>
-          </div>
-          <div class="flex justify-center p-2">
-            <n-button text type="primary" size="small" @click="showAllNotif">Selengkapnya</n-button>
-          </div>
-        </div>
-        <div v-else class="flex">
-          <div class="text-gray-300 text-center w-full">Tidak ada notifikasi</div>
-        </div>
-      </n-popover>
-    </div>
-    <div></div>
     <n-drawer v-model:show="drawDetail" width="350">
 
       <n-drawer-content>
         <div class="flex justify-between p-2">
           <div class="text-lg font-bold">Notifikasi <n-tag type="error" round>{{ tasks.length }}</n-tag></div>
-          <div>
-            <n-button size="small" secondary type="info" @click="router.push({path:'/notif-center'})">
+          <!-- <div>
+            <n-button size="small" secondary type="info" @click="router.push({ path: '/notif-center' })">
               lihat semua
             </n-button>
-          </div>
+          </div> -->
         </div>
         <div v-for="task in _.orderBy(tasks, ['created_at'], ['desc'])" :key="task"
           class="hover:bg-pr-50 rounded-lg p-2 cursor-pointer" @click="handleDetail(task)">
@@ -127,21 +84,21 @@
   </n-modal>
 </template>
 <script setup>
-import { ref, h, onMounted } from "vue";
-import router from "../../router";
-import _ from "lodash";
-import KwitansiPembayaran from "../molecules/KwitansiPembayaran.vue";
-import { useMessage, NIcon } from "naive-ui";
 import {
   AccountCircleOutlined as Account,
   LockOutlined as Locked,
   LogOutOutlined as SignOut,
 } from "@vicons/material";
+import _ from "lodash";
+import { NIcon, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
+import router from "../../router";
+import KwitansiPembayaran from "../molecules/KwitansiPembayaran.vue";
 
 import { useApi } from "../../helpers/axios";
+import { useCollateralStore } from "../../stores/collateral.js";
 import { useMeStore } from "../../stores/me";
 import { useTaskStore } from "../../stores/task";
-import { useCollateralStore } from "../../stores/collateral.js";
 
 const message = useMessage();
 const me = useMeStore();
