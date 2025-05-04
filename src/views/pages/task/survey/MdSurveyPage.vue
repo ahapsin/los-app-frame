@@ -2,9 +2,9 @@
   <div>
     <n-space vertical>
       <n-card title="Data Survey" :segmented="{
-                content: true,
-                footer: 'soft',
-            }" size="small">
+        content: true,
+        footer: 'soft',
+      }" size="small">
         <template #header-extra>
           <n-space class="!gap-1">
             <div class="me-1">
@@ -12,26 +12,23 @@
                 <template #trigger>
                   <n-button :circle="width <= 520 ? true : false">
                     <n-icon>
-                      <search-icon/>
+                      <search-icon />
                     </n-icon>
                     <span v-if="width >= 520">Cari</span>
                   </n-button>
                 </template>
                 <n-space vertical>
-                  <n-input autofocus="true" clearable placeholder="cari disini.."
-                           v-model:value="searchBox"/>
-                  <n-date-picker :default-value="[Date.now(), Date.now()]"
-                                 :update-value-on-close="updateValueOnClose" type="daterange"
-                                 @update:value="onConfirmDate"/>
+                  <n-input autofocus="true" clearable placeholder="cari disini.." v-model:value="searchBox" />
+                  <n-date-picker :default-value="[Date.now(), Date.now()]" :update-value-on-close="updateValueOnClose"
+                    type="daterange" @update:value="onConfirmDate" v-if="width > 480" />
                 </n-space>
               </n-popover>
             </div>
             <div>
-              <n-button type="primary" secondary @click="downloadCsv"
-                        :circle="width <= 520 ? true : false">
+              <n-button type="primary" secondary @click="downloadCsv" :circle="width <= 520 ? true : false">
                 <template #icon>
                   <n-icon>
-                    <download-icon/>
+                    <download-icon />
                   </n-icon>
                 </template>
                 <span v-if="width >= 520">Download</span>
@@ -41,7 +38,7 @@
               <n-button type="primary" strong @click="handleAdd" :circle="width <= 520 ? true : false">
                 <template #icon>
                   <n-icon>
-                    <add-icon/>
+                    <add-icon />
                   </n-icon>
                 </template>
                 <span v-if="width >= 520">Tambah</span>
@@ -50,39 +47,37 @@
           </n-space>
         </template>
         <n-space vertical :size="12" class="pt-4">
-          <n-data-table striped ref="tableRef" :scroll-x="500" size="small" :columns="columns"
-                        :data="showData" :pagination="pagination" :loading="loadData"/>
+          <n-data-table striped ref="tableRef" :scroll-x="750" size="small" :columns="columns" :data="showData"
+            :pagination="pagination" :loading="loadData" />
         </n-space>
       </n-card>
     </n-space>
   </div>
 </template>
 <script setup>
-import {ref, onMounted, h, computed} from "vue";
-import {useApi} from "../../../../helpers/axios.js";
-import {useSearch} from "../../../../helpers/searchObject";
+import { computed, h, onMounted, ref } from "vue";
+import { useApi } from "../../../../helpers/axios.js";
+import { useSearch } from "../../../../helpers/searchObject";
 import router from "../../../../router";
 
 import {
-  useDialog,
-  useMessage,
+  AddCircleOutlineRound as AddIcon,
+  DeleteOutlined as DeleteIcon,
+  ListAltOutlined as DetailIcon,
+  FileDownloadOutlined as DownloadIcon,
+  EditOutlined as EditIcon,
+  SearchOutlined as SearchIcon,
+} from "@vicons/material";
+import { useWindowSize } from "@vueuse/core";
+import {
+  NButton,
   NDropdown,
   NIcon,
   NTag,
-  NButton,
+  useDialog,
+  useLoadingBar,
+  useMessage,
 } from "naive-ui";
-import {
-  AddCircleOutlineRound as AddIcon,
-  SearchOutlined as SearchIcon,
-  FileDownloadOutlined as DownloadIcon,
-} from "@vicons/material";
-import {
-  EditOutlined as EditIcon,
-  DeleteOutlined as DeleteIcon,
-  ListAltOutlined as DetailIcon,
-} from "@vicons/material";
-import {useLoadingBar} from "naive-ui";
-import {useWindowSize} from "@vueuse/core";
 
 const loadingBar = useLoadingBar();
 const message = useMessage();
@@ -91,15 +86,16 @@ const loadData = ref(false);
 const dataTable = ref([]);
 const tableRef = ref();
 const downloadCsv = () =>
-    tableRef.value?.downloadCsv({fileName: "export-data-survey"});
+  tableRef.value?.downloadCsv({ fileName: "export-data-survey" });
 
 
-const {width} = useWindowSize();
+const { width } = useWindowSize();
 const columns = [
   {
     title: "Tanggal",
     sorter: "default",
     key: "visit_date",
+    width: 100,
   },
   {
     title: "Nama",
@@ -109,12 +105,14 @@ const columns = [
     ellipsis: {
       tooltip: true,
     },
+    width: 200,
   },
   {
     title: "Plafond",
     sorter: "default",
     align: 'right',
     key: "plafond",
+    wisth: 100,
     render(row) {
       return h("div", format(row.plafond));
     },
@@ -124,6 +122,7 @@ const columns = [
     sorter: "default",
     align: 'right',
     key: "jenis_angsuran",
+    width: 100,
     render(row) {
       return h("div", row.jenis_angsuran);
     },
@@ -132,15 +131,16 @@ const columns = [
     title: "Status",
     sorter: "default",
     key: "status",
+    width: 150,
     render(row) {
       return h(
-          NTag,
-          {
-            round: true,
-            type: statusTag(row.status_code),
-            size: "small",
-          },
-          {default: () => statusLabel(row.status)}
+        NTag,
+        {
+          round: true,
+          type: statusTag(row.status_code),
+          size: "small",
+        },
+        { default: () => statusLabel(row.status) }
       );
     },
   },
@@ -149,35 +149,36 @@ const columns = [
     align: "right",
     key: "more",
     fixed: "left",
+    width: 100,
     render(row, index) {
       return h(
-          NDropdown,
-          {
-            options: options(row),
-            size: "small",
-            onSelect: (e) => {
-              if (e === "hapus") {
-                handleConfirm(row, index);
-              }
-              if (e === "detail") {
-                handleDetail(row);
-              }
-              if (e === "edit") {
-                handleEdit(row);
-              }
-            },
+        NDropdown,
+        {
+          options: options(row),
+          size: "small",
+          onSelect: (e) => {
+            if (e === "hapus") {
+              handleConfirm(row, index);
+            }
+            if (e === "detail") {
+              handleDetail(row);
+            }
+            if (e === "edit") {
+              handleEdit(row);
+            }
           },
-          {
-            default: () => h(
-                NButton,
-                {
-                  round: true,
-                  type: statusTag(row.status_code),
-                  size: "small",
-                },
-                {default: () => "Action"}
-            ),
-          }
+        },
+        {
+          default: () => h(
+            NButton,
+            {
+              round: true,
+              type: statusTag(row.status_code),
+              size: "small",
+            },
+            { default: () => "Action" }
+          ),
+        }
       );
     },
   },
@@ -241,15 +242,15 @@ const handleConfirm = (row, index) => {
 };
 const handleDetail = (evt) => {
   if (evt.status_code === "WADM") {
-    router.push({name: "detail survey", params: {idsurvey: evt.id}});
+    router.push({ name: "detail survey", params: { idsurvey: evt.id } });
   } else if (evt.status_code === "CROR") {
-    router.push({name: "Detail Kredit", params: {idapplication: evt.id}});
+    router.push({ name: "Detail Kredit", params: { idapplication: evt.id } });
   } else {
-    router.push({name: "detail survey", params: {idsurvey: evt.id}});
+    router.push({ name: "detail survey", params: { idsurvey: evt.id } });
   }
 };
 const handleEdit = (evt) => {
-  router.push({name: "edit survey", params: {idsurvey: evt.id}});
+  router.push({ name: "edit survey", params: { idsurvey: evt.id } });
 };
 const handleAdd = () => {
   router.push("/task/new-survey");

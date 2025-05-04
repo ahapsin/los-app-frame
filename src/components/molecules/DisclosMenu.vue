@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-1">
-
     <div v-for="menu in props.menus" :key="menu.menuid">
       <router-link to="/" v-if="menu.menuitem.labelmenu === 'home'">
-        <div class="flex gap-2  rounded-xl p-2 w-full hover:bg-pr-500 hover:text-white'" :class="$route.name === 'landing'? 'bg-pr text-white font-bold':'bg-white'">
+        <div class="flex gap-2  rounded-xl p-2 w-full hover:bg-pr-500 hover:text-white'"
+          :class="$route.name === 'landing' ? 'bg-pr text-white font-bold' : 'bg-white'">
           <v-icon name="bi-grid" />
-          Dashboard 
+          DASHBOARD
         </div>
       </router-link>
       <div v-else>
@@ -127,13 +127,10 @@
 </template>
 
 <script setup>
-import { Disclosure, DisclosureButton, DisclosurePanel } from "@headlessui/vue";
-import MenuAt from "../atoms/MenuAt.vue";
-import BadgeAt from "../atoms/BadgeAt.vue";
-import { useSidebar } from "../../stores/sidebar";
 import { useWindowSize } from "@vueuse/core";
-import { ref } from "vue";
 import { useLoadingBar } from "naive-ui";
+import { ref } from "vue";
+import { useSidebar } from "../../stores/sidebar";
 const appAccentColor = import.meta.env.VITE_APP_ACCENT_COLOR;
 const { width } = useWindowSize();
 const sideMenu = useSidebar();

@@ -31,7 +31,7 @@
             <div class="text-md font-bold justify-center pt-4 flex flex-col text-right">
               <n-text>LAPORAN KEUANGAN BERBASI HARIAN (LKBH)</n-text>
               <n-text class="text-sm">tanggal : {{ formatDate(dataArusKas.dari) }}-{{ formatDate(dataArusKas.sampai)
-                }}</n-text>
+              }}</n-text>
 
             </div>
           </div>
@@ -69,7 +69,7 @@
                   </n-ellipsis>
                 </td>
                 <td align="right">{{ cashin.metode_pembayaran }}</td>
-                <td align="right">{{ cashin.amount }}</td>
+                <td align="right">{{ cashin.amount.toLocaleString() }}</td>
               </tr>
               <tr class="border-b border-black">
                 <th colspan="8" align="left">JUMLAH</th>
@@ -166,14 +166,15 @@
 </template>
 
 <script setup>
-import { ref, h } from "vue";
+import _ from "lodash";
+import {
+  useLoadingBar,
+  useMessage
+} from "naive-ui";
+import { ref } from "vue";
+import JsonExcel from "vue-json-excel3";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me.js";
-import {
-  useMessage, useLoadingBar, NTag,
-} from "naive-ui";
-import JsonExcel from "vue-json-excel3";
-import _ from "lodash";
 
 
 const apptitle = import.meta.env.VITE_APP_TITLE;

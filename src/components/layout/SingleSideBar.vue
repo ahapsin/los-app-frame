@@ -16,7 +16,7 @@
               v-if="width > 450">
               <template #icon>
                 <v-icon name="bi-grid" v-if="sideMenu.sideEffect" />
-                <v-icon name="bi-grid-fill" v-else/>
+                <v-icon name="bi-grid-fill" v-else />
               </template>
             </n-button>
             <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />
@@ -42,12 +42,12 @@
           <SideMenu />
         </n-scrollbar>
       </n-layout-sider>
-      <n-layout :class="` bg-slate-100`">
-        <div class="p-4">
+      <n-layout :class="`bg-slate-100`">
+        <div class="p-0 md:p-4">
           <n-page-header @back="handleBack">
             <template #header>
-              <n-breadcrumb>
-                <n-breadcrumb-item>Dashboard</n-breadcrumb-item>
+              <n-breadcrumb v-if="width > 480">
+                <n-breadcrumb-item @click="router.push('/')">DASHBOARD</n-breadcrumb-item>
                 <n-breadcrumb-item v-if="$route.name != 'landing'">{{ $route.name?.toUpperCase() }}</n-breadcrumb-item>
               </n-breadcrumb>
             </template>
@@ -67,17 +67,15 @@
   </n-drawer>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
 import {
-  ChevronLeft as BackIcon,
-  LayoutSidebarLeftCollapse as CloseIcon,
-  LayoutSidebarRightCollapse as BurgerIcon,
+  ChevronLeft as BackIcon
 } from "@vicons/tabler";
-import { useSidebar } from "../../stores/sidebar";
 import { useWindowSize } from "@vueuse/core";
+import { onMounted, ref } from "vue";
+import { useRoute } from "vue-router";
 import pjson from '../../../package.json';
 import router from "../../router";
-import { useRoute } from "vue-router";
+import { useSidebar } from "../../stores/sidebar";
 
 const route = useRoute();
 const applogo = import.meta.env.VITE_APP_LOGO;

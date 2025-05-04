@@ -12,8 +12,7 @@
                                 }}</n-text>
 
                         </div>
-                        <div class="flex justify-between border-b border-dashed border-black"
-                            >
+                        <div class="flex justify-between border-b border-dashed border-black">
                             <div class="flex flex-col py-4">
                                 <small class="text-reg">No Transaksi : </small>
                                 <n-text class="text-reg font-bold"> {{ bodyModal?.no_transaksi }}</n-text>
@@ -177,11 +176,12 @@
 <script setup>
 import { useMessage } from "naive-ui";
 import { useApi } from "../../helpers/axios.js";
+import router from "../../router/";
 const prop = defineProps({
     id: String,
     type: String,
     label: String,
-    route:String,
+    route: String,
 });
 const bodyModal = ref();
 const loading = ref(false);
@@ -207,14 +207,13 @@ const buttonSave = ref(false);
 const message = useMessage();
 
 const emit = defineEmits([]);
-
 const handleSave = async () => {
     buttonSave.value = true;
-    const bodyPayment={
-            no_invoice: bodyModal?.value.no_transaksi,
-            flag: radioAcc.value,
-            keterangan: keterangan.value,
-        }
+    const bodyPayment = {
+        no_invoice: bodyModal?.value.no_transaksi,
+        flag: radioAcc.value,
+        keterangan: keterangan.value,
+    }
     const response = await useApi({
         method: "POST",
         data: bodyPayment,
@@ -226,6 +225,7 @@ const handleSave = async () => {
     } else {
         message.success("persetujuan berhasil");
         buttonSave.value = false;
+        router.go();
         emit('save', false);
     }
 }
