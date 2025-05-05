@@ -94,7 +94,7 @@
                             {{ bodyModal.STATUS }}
                         </n-tag> -->
                         <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
-                            :disabled="bodyModal.print_ke > 2">
+                            :disabled="bodyModal.print_ke > 2" v-if="bodyModal.status != 'CANCEL'">
                             <n-space>
                                 <n-icon>
                                     <print-icon />
@@ -108,7 +108,7 @@
             </template>
             <template #footer>
                 <n-space>
-                    <n-button type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS == 'PAID'">
+                    <n-button type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS != 'CANCEL'">
                         <n-space>
                             <p>Lihat/Upload Nota</p>
                         </n-space>
@@ -147,7 +147,7 @@
                         <div class="flex justify-between">
                             <n-text strong class="text-md"> {{ bodyModal.tgl_transaksi }}</n-text>
                             <n-text strong class="text-md"> {{ bodyModal.payment_method == 'cash' ? 'TUNAI' : 'TRANSFER'
-                            }}</n-text>
+                                }}</n-text>
 
                         </div>
                         <div class="flex justify-between border-b border-dashed border-black"
@@ -185,7 +185,7 @@
                             <div class="flex flex-row justify-between md:flex-col">
                                 <small class="text-reg">CUST. BAYAR</small>
                                 <n-text strong class="text-md"> {{ bodyModal.jumlah_uang.toLocaleString("US")
-                                }}</n-text>
+                                    }}</n-text>
                             </div>
                             <div class="flex flex-row justify-between md:flex-col">
                                 <small class="text-reg">PEMBULATAN</small>
@@ -196,7 +196,7 @@
                                 <small class="text-reg">KEMBALIAN</small>
                                 <td>
                                     <n-text strong class="text-md"> {{ bodyModal.kembalian.toLocaleString("US")
-                                    }}</n-text>
+                                        }}</n-text>
                                 </td>
                             </div>
 
@@ -219,14 +219,14 @@
                                 <small class="text-reg">Cust. Bayar</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Diskon</small>
                                 <n-text class="text-md font-bold"> {{
                                     (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -253,11 +253,11 @@
                                 <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_denda).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td align="right" class="border pe-2 border-black text-right">
                                     {{
