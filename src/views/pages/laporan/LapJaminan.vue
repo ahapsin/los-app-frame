@@ -5,7 +5,7 @@
                 <template #header-extra>
                     <json-excel v-if="showData.length > 0" :data="showData"
                         :name="`laporan_jaminan_${dynamicSearch.pos}`" :fields="json_fields" :stringifyLongNum="true">
-                        <n-button type="primary">Download Xls</n-button>
+                        <n-button type="primary" size="small">Download Xls</n-button>
                     </json-excel>
                 </template>
                 <n-space vertical :size="12" class="pt-4">
@@ -115,18 +115,18 @@
                 <template #header-extra>
                     <n-button size="small" type="primary" secondary @click="handlePrint">Cetak</n-button>
                 </template>
+                <n-alert type="info" title="Tips">Klik pada bidang untuk edit surat pengantar</n-alert>
                 <div ref="printArea" class="p-4">
-
                     <kop-header :alamat_cabang="bodyModal.alamat_cabang" :cabang="bodyModal.nama_cabang" />
                     <div class="p-8">
-                        <div>
+                        <div contenteditable="true">
                             Kepada/Yth,<br />
                             Kaditlantas/Kasatlantas<br />
                             Up.Kasubag STNK<br>
-                            <b>Di Samsat Resort Indramayu</b>
+                            <b><span contenteditable="true">Di Samsat Resort Indramayu</span></b>
                         </div>
                         <div class="py-2">
-                            <b><i>Perihal : Surat Keterangan Pengurusan STNK</i></b>
+                            <b><i>Perihal : <span contenteditable="true">Surat Keterangan Pengurusan STNK</span></i></b>
                         </div>
                         <div class="py-2">
                             Dengan hormat,
@@ -164,6 +164,11 @@
                                     <td>{{ bodyModal.no_rangka }} / {{ bodyModal.no_mesin }}</td>
                                 </tr>
                                 <tr>
+                                    <td>NO BPKB</td>
+                                    <td>:</td>
+                                    <td>{{ bodyModal.no_bpkb }}</td>
+                                </tr>
+                                <tr>
                                     <td>NAMA BPKB</td>
                                     <td>:</td>
                                     <td>{{ bodyModal.atas_nama }}</td>
@@ -176,7 +181,7 @@
                             </table>
                         </div>
                         <div><i>Sampai saat ini masih disimpan di <b>KSP DJAYA {{ bodyModal.nama_cabang?.toUpperCase()
-                        }}</b>
+                                    }}</b>
                                 sehubungan Hutang
                                 Pinjaman
                                 Konsumen
