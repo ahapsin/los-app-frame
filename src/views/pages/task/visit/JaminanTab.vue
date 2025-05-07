@@ -11,30 +11,30 @@
             {{ sumJaminan.toLocaleString('US') }}
           </n-statistic>
           <div class=" flex w-60 gap-2">
-            <n-select v-model:value="jenisJaminan" :options="optJaminan" placeholder="jenis jaminan"/>
+            <n-select v-model:value="jenisJaminan" :options="optJaminan" placeholder="jenis jaminan" />
             <n-button circle type="primary" @click="addJaminan" v-if="jenisJaminan != 'kta'">
               <n-icon>
-                <add-icon/>
+                <add-icon />
               </n-icon>
             </n-button>
           </div>
         </div>
-        <n-card :segmented="true" class="my-2 bg-white rounded-xl border hover:shadow"
-                v-for="(coll) in orderJaminan" :key="coll" :title="coll.type">
+        <n-card :segmented="true" class="my-2 bg-white rounded-xl border hover:shadow" v-for="(coll) in orderJaminan"
+          :key="coll" :title="coll.type">
           <template #header-extra>
             <div class="flex gap-2">
               <n-button type="warning" @click="viewModal(coll)" secondary>
                 <n-icon>
-                  <edit-icon/>
+                  <edit-icon />
                 </n-icon>
                 ubah
               </n-button>
-              <n-popconfirm @positive-click="removeJaminan(coll.id)"
-                            @negative-click="handleNegativeClick" positive-text="ya" negative-text="tidak">
+              <n-popconfirm @positive-click="removeJaminan(coll.id)" @negative-click="handleNegativeClick"
+                positive-text="ya" negative-text="tidak">
                 <template #trigger>
                   <n-button type="error" secondary>
                     <n-icon>
-                      <delete-icon/>
+                      <delete-icon />
                     </n-icon>
                     hapus
                   </n-button>
@@ -47,26 +47,22 @@
           <div>
             <div>
               <div class="pt-2">
-                <n-descriptions v-if="coll.type === 'kendaraan'"
-                                :label-placement="width < 720 ? 'left' : 'top'" bordered
-                                :column="width < 720 ? 1 : 8">
-                  <n-descriptions-item v-for="item in modelKendaraan" :key="item"
-                                       :label="item.toUpperCase()">
+                <n-descriptions v-if="coll.type === 'kendaraan'" :label-placement="width < 720 ? 'left' : 'top'"
+                  bordered :column="width < 720 ? 1 : 8">
+                  <n-descriptions-item v-for="item in modelKendaraan" :key="item" :label="item.toUpperCase()">
                     <b>{{
-                        item === 'nilai' ? coll.atr[item].toLocaleString('US') :
-                            coll.atr[item] ? coll.atr[item] : '--'
-                      }}</b>
+                      item === 'nilai' ? coll.atr[item].toLocaleString('US') :
+                        coll.atr[item] ? coll.atr[item] : '--'
+                    }}</b>
                   </n-descriptions-item>
                 </n-descriptions>
-                <n-descriptions v-if="coll.type === 'sertifikat'"
-                                :label-placement="width < 720 ? 'left' : 'top'" bordered
-                                :column="width < 720 ? 1 : 8">
-                  <n-descriptions-item v-for="item in modelSertifikat" :key="item"
-                                       :label="item.toUpperCase()">
+                <n-descriptions v-if="coll.type === 'sertifikat'" :label-placement="width < 720 ? 'left' : 'top'"
+                  bordered :column="width < 720 ? 1 : 8">
+                  <n-descriptions-item v-for="item in modelSertifikat" :key="item" :label="item.toUpperCase()">
                     <b>{{
-                        item === 'nilai' ? coll.atr[item].toLocaleString('US') :
-                            coll.atr[item] ? coll.atr[item] : '--'
-                      }}</b>
+                      item === 'nilai' ? coll.atr[item].toLocaleString('US') :
+                        coll.atr[item] ? coll.atr[item] : '--'
+                    }}</b>
                   </n-descriptions-item>
                 </n-descriptions>
               </div>
@@ -75,43 +71,34 @@
                   <n-divider title-placement="left"> UPLOAD DOKUMEN JAMINAN</n-divider>
                   <div class="flex flex-col md:flex-row gap-2">
 
-                    <file-upload :reff="coll.counter_id" title="No Rangka"
-                                 endpoint="image_upload_prospect" :type="`no_rangka`"
-                                 :idapp="dynamicForm.id"
-                                 :def_value="findDocByType(coll.atr.document, 'no_rangka')"/>
+                    <file-upload :reff="coll.counter_id" title="No Rangka" endpoint="image_upload_prospect"
+                      :type="`no_rangka`" :idapp="dynamicForm.id"
+                      :def_value="findDocByType(coll.atr.document, 'no_rangka')" />
                     <file-upload :reff="coll.counter_id" title="No Mesin"
-                                 :def_value="findDocByType(coll.atr.document, 'no_mesin')"
-                                 endpoint="image_upload_prospect" :type="`no_mesin`"
-                                 :idapp="dynamicForm.id"/>
+                      :def_value="findDocByType(coll.atr.document, 'no_mesin')" endpoint="image_upload_prospect"
+                      :type="`no_mesin`" :idapp="dynamicForm.id" />
                     <file-upload :reff="coll.counter_id" title="STNK"
-                                 :def_value="findDocByType(coll.atr.document, 'stnk')"
-                                 endpoint="image_upload_prospect" :type="`stnk`"
-                                 :idapp="dynamicForm.id"/>
+                      :def_value="findDocByType(coll.atr.document, 'stnk')" endpoint="image_upload_prospect"
+                      :type="`stnk`" :idapp="dynamicForm.id" />
                   </div>
                 </div>
                 <n-divider title-placement="left" class="uppercase"> Upload Dokumen {{ coll.type }}
                 </n-divider>
                 <div v-if="coll.type == 'kendaraan'" class="flex flex-col md:flex-row gap-2">
-                  <file-upload title="Depan" endpoint="image_upload_prospect" :type="`depan`"
-                               :idapp="dynamicForm.id" :reff="coll.counter_id"
-                               :def_value="findDocByType(coll.atr.document, 'depan')"/>
+                  <file-upload title="Depan" endpoint="image_upload_prospect" :type="`depan`" :idapp="dynamicForm.id"
+                    :reff="coll.counter_id" :def_value="findDocByType(coll.atr.document, 'depan')" />
                   <file-upload title="Belakang" :reff="coll.counter_id"
-                               :def_value="findDocByType(coll.atr.document, 'belakang')"
-                               endpoint="image_upload_prospect" :type="`belakang`"
-                               :idapp="dynamicForm.id"/>
-                  <file-upload title="Kanan" :reff="coll.counter_id"
-                               endpoint="image_upload_prospect"
-                               :def_value="findDocByType(coll.atr.document, 'kanan')" :type="`kanan`"
-                               :idapp="dynamicForm.id"/>
-                  <file-upload title="Kiri" :reff="coll.counter_id"
-                               endpoint="image_upload_prospect" :type="`kiri`"
-                               :def_value="findDocByType(coll.atr.document, 'kiri')"
-                               :idapp="dynamicForm.id"/>
+                    :def_value="findDocByType(coll.atr.document, 'belakang')" endpoint="image_upload_prospect"
+                    :type="`belakang`" :idapp="dynamicForm.id" />
+                  <file-upload title="Kanan" :reff="coll.counter_id" endpoint="image_upload_prospect"
+                    :def_value="findDocByType(coll.atr.document, 'kanan')" :type="`kanan`" :idapp="dynamicForm.id" />
+                  <file-upload title="Kiri" :reff="coll.counter_id" endpoint="image_upload_prospect" :type="`kiri`"
+                    :def_value="findDocByType(coll.atr.document, 'kiri')" :idapp="dynamicForm.id" />
                 </div>
                 <div v-else class="flex flex-col w-full">
-                  <file-upload :title="`dokumen`" :def_preview="true" :multi="true"
-                               :data_multi="coll.atr.document" endpoint="image_upload_prospect"
-                               :type="`sertifikat`" :reff="coll.counter_id" :idapp="dynamicForm.id"/>
+                  <file-upload :title="`dokumen`" :def_preview="true" :multi="true" :data_multi="coll.atr.document"
+                    endpoint="image_upload_prospect" :type="`sertifikat`" :reff="coll.counter_id"
+                    :idapp="dynamicForm.id" />
                 </div>
               </div>
             </div>
@@ -121,22 +108,20 @@
       </n-card>
     </div>
     <n-modal v-model:show="showModal">
-      <n-card class="md:w-1/2" closable @close="showModal = false" :segmented="true"
-              :title="`form ${jenisJaminan}`">
-        <component :is="JaminanKendaraan" v-if="jenisJaminan.toLowerCase() == 'kendaraan'"
-                   @childData="handleChildData" :def_data="dataProp"/>
+      <n-card class="md:w-1/2" closable @close="showModal = false" :segmented="true" :title="`form ${jenisJaminan}`">
+        <component :is="JaminanKendaraan" v-if="jenisJaminan.toLowerCase() == 'kendaraan'" @childData="handleChildData"
+          :def_data="dataProp" />
         <component :is="JaminanSertifikat" v-if="jenisJaminan.toLowerCase() == 'sertifikat'"
-                   @childData="handleChildData" :def_data="dataProp"/>
-        <component :is="JaminanBillyet" v-if="jenisJaminan.toLowerCase() == 'deposito'"
-                   @childData="handleChildData" :def_data="dataProp"/>
-        <component :is="JaminanBillyet" v-if="jenisJaminan == 'billyet'" @childData="handleChildData"/>
-        <component :is="JaminanEmas" v-if="jenisJaminan == 'emas'" @childData="handleChildData"/>
+          @childData="handleChildData" :def_data="dataProp" />
+        <component :is="JaminanBillyet" v-if="jenisJaminan.toLowerCase() == 'deposito'" @childData="handleChildData"
+          :def_data="dataProp" />
+        <component :is="JaminanBillyet" v-if="jenisJaminan == 'billyet'" @childData="handleChildData" />
+        <component :is="JaminanEmas" v-if="jenisJaminan == 'emas'" @childData="handleChildData" />
         <template #footer>
           <n-space>
 
             <n-button type="primary" @click="ubahJaminan(jenisJaminan)" v-if="dataProp">ubah</n-button>
-            <n-button type="primary" @click="pushJaminan(jenisJaminan)" v-else
-                      :disabled="!receivedData?.nilai">tambah
+            <n-button type="primary" @click="pushJaminan(jenisJaminan)" v-else :disabled="!receivedData?.nilai">tambah
             </n-button>
             <n-button type="warning" @click="showModal = false">batal</n-button>
           </n-space>
@@ -146,29 +131,26 @@
   </n-scrollbar>
 </template>
 <script setup>
-import {ref, reactive, onMounted} from "vue";
-import {v4 as uuidv4} from "uuid";
 import {
-  ArrowBackOutlined as ArrowBack,
   AddFilled as AddIcon,
-  EditOutlined as EditIcon,
   DeleteOutlineFilled as DeleteIcon,
-  ArrowForwardOutlined as ArrowForward,
-
+  EditOutlined as EditIcon
 } from "@vicons/material";
-import {useMessage} from "naive-ui";
-import {useWindowSize} from "@vueuse/core";
+import { useWindowSize } from "@vueuse/core";
+import { useMessage } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
+import { onMounted, reactive, ref } from "vue";
 
 import _ from "lodash";
-import {computed} from "vue";
-import {useJaminanStore} from "../../../../stores/jaminan";
-import {useApi} from "../../../../helpers/axios";
-import JaminanKendaraan from "../analisa/jaminan/JaminanKendaraan.vue";
-import JaminanSertifikat from "../analisa/jaminan/JaminanSertifikat.vue";
+import { computed } from "vue";
+import { useApi } from "../../../../helpers/axios";
+import { useJaminanStore } from "../../../../stores/jaminan";
 import JaminanBillyet from "../analisa/jaminan/JaminanBillyet.vue";
 import JaminanEmas from "../analisa/jaminan/JaminanEmas.vue";
+import JaminanKendaraan from "../analisa/jaminan/JaminanKendaraan.vue";
+import JaminanSertifikat from "../analisa/jaminan/JaminanSertifikat.vue";
 
-const {width} = useWindowSize();
+const { width } = useWindowSize();
 const message = useMessage();
 const uuid = uuidv4();
 const current = ref(1);
@@ -223,14 +205,14 @@ const sumJaminan = computed(() => {
 const orderJaminan = computed(() => _.orderBy(jaminanStore.listJaminan, 'counter_id', 'desc'));
 const jenisJaminan = ref('kendaraan');
 const viewModal = (e) => {
-  let findData = _.findIndex(jaminanStore.listJaminan, {'counter_id': e.counter_id});
+  let findData = _.findIndex(jaminanStore.listJaminan, { 'counter_id': e.counter_id });
   let selectedData = jaminanStore.listJaminan[findData];
   jenisJaminan.value = e.type;
   dataProp.value = selectedData;
   showModal.value = !showModal.value;
 }
 const removeJaminan = (e) => {
-  let index = _.findIndex(anyJaminan.value, {'id': e});
+  let index = _.findIndex(anyJaminan.value, { 'id': e });
   anyJaminan.value.splice(index, 1);
   jaminanStore.removeJaminan(e);
 }
@@ -379,7 +361,7 @@ const initPelanggan = {
   kecamatan: "",
   kelurahan: "",
 };
-const pelanggan = reactive({...initPelanggan});
+const pelanggan = reactive({ ...initPelanggan });
 var dt = new Date();
 let year = dt.getFullYear();
 let month = (dt.getMonth() + 1).toString().padStart(2, "0");
@@ -455,7 +437,7 @@ const handleKtp = async (e) => {
 };
 
 const findDocByType = (c, e) => {
-  const docPath = ref(_.find(c, {TYPE: e}));
+  const docPath = ref(_.find(c, { TYPE: e }));
   if (docPath.value) return docPath.value.PATH;
 };
 const handleTipe = (e) => {
@@ -580,7 +562,7 @@ const handleSave = async (type) => {
   } else {
     message.success("data berhasil disimpan");
     loading.value = false;
-    router.push({name: 'survey'});
+    router.push({ name: 'survey' });
   }
 };
 const plafondValidator = (rule, value) => {

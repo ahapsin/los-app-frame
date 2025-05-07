@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-space vertical>
-      <n-card title="Data Survey" :segmented="{
+      <n-card title="Data Prospek" :segmented="{
         content: true,
         footer: 'soft',
       }" size="small">
@@ -37,9 +37,7 @@
             <div>
               <n-button type="primary" strong @click="handleAdd" :circle="width <= 520 ? true : false">
                 <template #icon>
-                  <n-icon>
-                    <add-icon />
-                  </n-icon>
+                  <v-icon name="bi-plus-lg" />
                 </template>
                 <span v-if="width >= 520">Tambah</span>
               </n-button>
@@ -47,39 +45,39 @@
           </n-space>
         </template>
         <n-space vertical :size="12" class="pt-4">
-          <n-data-table striped ref="tableRef" :scroll-x="750" size="small" :columns="columns" :data="showData"
-            :pagination="pagination" :loading="loadData" />
+          <n-data-table striped ref="tableRef" :scroll-x="750" size="small" :columns="columns"
+            :data="visitStore.listData" :pagination="pagination" :loading="visitStore.loading" />
         </n-space>
       </n-card>
     </n-space>
+    <n-modal :mask-closable="false" v-model:show="modalView" class="w-11/12">
+      <AddVisit />
+    </n-modal>
   </div>
 </template>
 <script setup>
-import { computed, h, onMounted, ref } from "vue";
+import { computed, defineAsyncComponent, h, onMounted, ref } from "vue";
 import { useApi } from "../../../../helpers/axios.js";
 import { useSearch } from "../../../../helpers/searchObject";
 import router from "../../../../router";
 
 import {
-  AddCircleOutlineRound as AddIcon,
   DeleteOutlined as DeleteIcon,
   ListAltOutlined as DetailIcon,
   FileDownloadOutlined as DownloadIcon,
   EditOutlined as EditIcon,
-  SearchOutlined as SearchIcon,
+  SearchOutlined as SearchIcon
 } from "@vicons/material";
 import { useWindowSize } from "@vueuse/core";
 import {
   NButton,
-  NDropdown,
   NIcon,
-  NTag,
   useDialog,
-  useLoadingBar,
-  useMessage,
+  useMessage
 } from "naive-ui";
+import { useVisitStore } from "../../../../stores/visit.js";
 
-const loadingBar = useLoadingBar();
+const AddVisit = defineAsyncComponent(() => import("../../task/visit/AddVisit.vue"));
 const message = useMessage();
 const dialog = useDialog();
 const loadData = ref(false);
@@ -94,93 +92,18 @@ const columns = [
   {
     title: "Tanggal",
     sorter: "default",
-    key: "visit_date",
+    key: "tgl_kunjungan",
     width: 100,
   },
   {
-    title: "Nama",
+    title: "Nama Nasabah",
     sorter: "default",
-    key: "nama_debitur",
+    key: "nama_nasabah",
     fixed: "left",
     ellipsis: {
       tooltip: true,
     },
     width: 200,
-  },
-  {
-    title: "Plafond",
-    sorter: "default",
-    align: 'right',
-    key: "plafond",
-    wisth: 100,
-    render(row) {
-      return h("div", format(row.plafond));
-    },
-  },
-  {
-    title: "Tipe",
-    sorter: "default",
-    align: 'right',
-    key: "jenis_angsuran",
-    width: 100,
-    render(row) {
-      return h("div", row.jenis_angsuran);
-    },
-  },
-  {
-    title: "Status",
-    sorter: "default",
-    key: "status",
-    width: 150,
-    render(row) {
-      return h(
-        NTag,
-        {
-          round: true,
-          type: statusTag(row.status_code),
-          size: "small",
-        },
-        { default: () => statusLabel(row.status) }
-      );
-    },
-  },
-  {
-    title: "",
-    align: "right",
-    key: "more",
-    fixed: "left",
-    width: 100,
-    render(row, index) {
-      return h(
-        NDropdown,
-        {
-          options: options(row),
-          size: "small",
-          onSelect: (e) => {
-            if (e === "hapus") {
-              handleConfirm(row, index);
-            }
-            if (e === "detail") {
-              handleDetail(row);
-            }
-            if (e === "edit") {
-              handleEdit(row);
-            }
-          },
-        },
-        {
-          default: () => h(
-            NButton,
-            {
-              round: true,
-              type: statusTag(row.status_code),
-              size: "small",
-            },
-            { default: () => "Action" }
-          ),
-        }
-      );
-    },
   },
 ];
 const searchBox = ref();
@@ -252,25 +175,12 @@ const handleDetail = (evt) => {
 const handleEdit = (evt) => {
   router.push({ name: "edit survey", params: { idsurvey: evt.id } });
 };
+const modalView = ref(false);
 const handleAdd = () => {
-  router.push("/task/new-survey");
+  // modalView.value = true;
+  router.push({ name: 'addvisit' });
 };
-const getData = async () => {
-  loadData.value = true;
-  let userToken = localStorage.getItem("token");
-  const response = await useApi({
-    method: "GET",
-    api: "kunjungan",
-    token: userToken,
-  });
-  if (!response.ok) {
-    console.log(response.error);
-  } else {
-    loadingBar.finish();
-    loadData.value = false;
-    dataTable.value = response.data.response;
-  }
-};
+
 
 const showData = computed(() => {
   return useSearch(dataTable.value, searchBox.value?.toLowerCase());
@@ -311,5 +221,6 @@ const options = (e) => {
 const pagination = {
   pageSize: 10,
 };
-onMounted(() => getData());
+const visitStore = useVisitStore();
+onMounted(() => visitStore.getData());
 </script>

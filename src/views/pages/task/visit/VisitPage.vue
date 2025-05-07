@@ -11,8 +11,8 @@
 </template>
 
 <script setup>
-import router from '../../../../router';
 import { useLoadingBar } from 'naive-ui';
+import router from '../../../../router';
 
 
 const loadingBar = useLoadingBar();
@@ -44,6 +44,7 @@ const columnKunjungan = [{
 ];
 
 const dataKunjungan = [];
+
 
 const handleAddButton = () => router.push({ name: 'addvisit' });
 

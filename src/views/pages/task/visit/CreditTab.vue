@@ -1,74 +1,62 @@
 <template>
-    <n-scrollbar style="max-height: 400px">
-        <div>
-            <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging">
-                <div class="md:flex gap-2">
-                    <n-form-item label="Jumlah yang diajukan" path="plafond" class="w-full">
-                        <n-input-number :parse="parse" :format="format" :min="999999" v-model:value="order.plafond"
-                            placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full" clearable
-                            :on-update:value="handlePlafond" />
-                    </n-form-item>
-                    <n-form-item label="Jenis Kredit" path="jenis_angsuran" class="w-full">
-                        <n-select filterable placeholder="Jenis Angsuran" :options="jenisKredit"
-                            v-model:value="order.jenis_kredit" :on-update:value="handleTipe"
-                            :disabled="order.plafond != 0 ? false : true" />
-                    </n-form-item>
-                    <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
-                        <n-select filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
-                            v-model:value="order.jenis_angsuran" :on-update:value="handleTipe"
-                            :disabled="order.plafond != 0 ? false : true" />
-                    </n-form-item>
-                    <n-form-item label="Cara Pembayaran" path="jenis_angsuran" class="w-full">
-                        <n-radio-group v-model:value="value" name="radiogroup">
-                            <n-space>
-                                <n-radio v-for="cara in optCaraPembayaran" :key="cara.value" :value="cara.value"
-                                    :label="cara.label" />
-                            </n-space>
-                        </n-radio-group>
-                    </n-form-item>
-                </div>
-                <div class="md:flex gap-2">
-                    <n-form-item label="Tenor " path="tenor" class="w-full">
-                        <n-select :options="tenor" label-field="label" value-field="value"
-                            v-model:value="order.tenor" />''
-                    </n-form-item>
-                    <n-form-item label="Bunga " path="bunga" class="w-full">
-                        <div class="flex gap-2">
-                            <n-input-number :show-button="false" v-model:value="order.bunga" :min="0" :max="100">
-                                <template #suffix>% /bulan</template>
-                            </n-input-number>
-                            <n-input pacleholder="tahunan" v-model:value="order.bunga_tahunan" :min="1" :max="100"
-                                readonly>
-                                <template #suffix>% / tahun</template>
-                            </n-input>
-                        </div>
-                    </n-form-item>
-                    <n-form-item label="Angsuran " path="angsuran" class="w-full">
-                        <n-input-number class="w-full" readonly :parse="parse" :format="format"
-                            v-model:value="order.angsuran" placeholder="angsuran" :show-button="false" />
-                    </n-form-item>
-                    <n-form-item label="Tujuan Kredit" path="tujuan_kredit" class="w-full">
-                        <n-select filterable placeholder="Tujuan Kredit" :options="tujuanKredit"
-                            v-model:value="order.tujuan_kredit" />
-                    </n-form-item>
-                </div>
-            </n-form>
+  <n-scrollbar style="max-height: 400px" class="border p-2 rounded-xl">
+    <div>
+      <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging">
+        <div class="md:flex gap-2">
+          <n-form-item label="Jumlah yang diajukan" path="plafond" class="w-full">
+            <n-input-number :parse="parse" :format="format" :min="999999" v-model:value="order.plafond"
+              placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full" clearable
+              :on-update:value="handlePlafond" />
+          </n-form-item>
+          <n-form-item label="Jenis Kredit" path="jenis_angsuran" class="w-full">
+            <n-select filterable placeholder="Jenis Angsuran" :options="jenisKredit" v-model:value="order.jenis_kredit"
+              :on-update:value="handleTipe" :disabled="order.plafond != 0 ? false : true" />
+          </n-form-item>
+          <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
+            <n-select filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
+              v-model:value="order.jenis_angsuran" :on-update:value="handleTipe"
+              :disabled="order.plafond != 0 ? false : true" />
+          </n-form-item>
+          <n-form-item label="Cara Pembayaran" path="jenis_angsuran" class="w-full">
+            <n-radio-group v-model:value="value" name="radiogroup">
+              <n-space>
+                <n-radio v-for="cara in optCaraPembayaran" :key="cara.value" :value="cara.value" :label="cara.label" />
+              </n-space>
+            </n-radio-group>
+          </n-form-item>
         </div>
-    </n-scrollbar>
+        <div class="md:flex gap-2">
+          <n-form-item label="Tenor " path="tenor" class="w-full">
+            <n-select :options="tenor" label-field="label" value-field="value" v-model:value="order.tenor" />''
+          </n-form-item>
+          <n-form-item label="Bunga " path="bunga" class="w-full">
+            <div class="flex gap-2">
+              <n-input-number :show-button="false" v-model:value="order.bunga" :min="0" :max="100">
+                <template #suffix>% /bulan</template>
+              </n-input-number>
+              <n-input pacleholder="tahunan" v-model:value="order.bunga_tahunan" :min="1" :max="100" readonly>
+                <template #suffix>% / tahun</template>
+              </n-input>
+            </div>
+          </n-form-item>
+          <n-form-item label="Angsuran " path="angsuran" class="w-full">
+            <n-input-number class="w-full" readonly :parse="parse" :format="format" v-model:value="order.angsuran"
+              placeholder="angsuran" :show-button="false" />
+          </n-form-item>
+          <n-form-item label="Tujuan Kredit" path="tujuan_kredit" class="w-full">
+            <n-select filterable placeholder="Tujuan Kredit" :options="tujuanKredit"
+              v-model:value="order.tujuan_kredit" />
+          </n-form-item>
+        </div>
+      </n-form>
+    </div>
+  </n-scrollbar>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { v4 as uuidv4 } from "uuid";
-import {
-  ArrowBackOutlined as ArrowBack,
-  AddFilled as AddIcon,
-  EditOutlined as EditIcon,
-  DeleteOutlineFilled as DeleteIcon,
-  ArrowForwardOutlined as ArrowForward,
-
-} from "@vicons/material";
-import { useMessage } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
+import { useMessage } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
+import { reactive, ref } from "vue";
 
 import _ from "lodash";
 import { computed } from "vue";
@@ -153,21 +141,21 @@ const jenisKredit = ["KAMU", "KAMA"].map((v) => ({
 }));
 
 const optCaraPembayaran = [
-    {
-        value: 'diangsur',
-        label: 'Diangsur'
-    },
-    {
-        value: 'sekaligus',
-        label: 'sekaligus'
-    },
-    {
-        value: '...',
-        label: '...'
-    }
+  {
+    value: 'diangsur',
+    label: 'Diangsur'
+  },
+  {
+    value: 'sekaligus',
+    label: 'sekaligus'
+  },
+  {
+    value: '...',
+    label: '...'
+  }
 ].map((s) => {
-    s.value = s.value.toLowerCase()
-    return s
+  s.value = s.value.toLowerCase()
+  return s
 })
 
 const optKategori = ["BARU", "RO"].map((v) => ({

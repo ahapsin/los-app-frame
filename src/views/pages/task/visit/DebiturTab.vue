@@ -1,5 +1,5 @@
 <template>
-    <n-scrollbar style="max-height: 400px">
+    <n-scrollbar class="border p-2 rounded-xl">
         <n-form ref="formPelanggan" :model="pelanggan" :rules="rulesPelanggan" require-mark-placement="right-hanging">
             <n-collapse accordion :header="false">
                 <n-collapse-item title="DATA PRIBADI PEMOHON" class="item-collapse">
@@ -204,7 +204,8 @@
                                 <n-date-picker placeholder="Tanggal Lahir" class="w-full"
                                     v-model:formatted-value="pelanggan.tgl_lahir" value-format="yyyy-MM-dd"
                                     format="dd-MM-yyyy" type="date" @update:value="handleTanggalLahir" />
-                                <span class="absolute text-xs text-orange-500 bg-orange-50 w-full p-0.5 mt-2 animate-pulse"
+                                <span
+                                    class="absolute text-xs text-orange-500 bg-orange-50 w-full p-0.5 mt-2 animate-pulse"
                                     v-show="notifUsia">{{ noteUsia }}</span>
                             </div>
                         </n-form-item>
@@ -216,14 +217,14 @@
                     <n-form-item label="No KTP" path="no_ktp" class="w-full">
                         <div class="flex gap-2">
                             <n-input :show-button="false" :allow-input="onlyAllowNumber" placeholder="NO KTP"
-                                v-model:value="pelanggan.no_ktp" :loading="loadingKTP" @change="handleKtp" class="w-full"
-                                maxlength="16" clearable />
+                                v-model:value="pelanggan.no_ktp" :loading="loadingKTP" @change="handleKtp"
+                                class="w-full" maxlength="16" clearable />
                             <n-date-picker placeholder="Tanggal Terbit" class="w-full"
-                                v-model:formatted-value="pelanggan.tgl_lahir" value-format="yyyy-MM-dd" format="dd-MM-yyyy"
-                                type="date" @update:value="handleTanggalTerbit" />
+                                v-model:formatted-value="pelanggan.tgl_lahir" value-format="yyyy-MM-dd"
+                                format="dd-MM-yyyy" type="date" @update:value="handleTanggalTerbit" />
                             <n-date-picker placeholder="Tanggal Terbit" class="w-full"
-                                v-model:formatted-value="pelanggan.tgl_lahir" value-format="yyyy-MM-dd" format="dd-MM-yyyy"
-                                type="date" @update:value="handleTanggalTerbit" />
+                                v-model:formatted-value="pelanggan.tgl_lahir" value-format="yyyy-MM-dd"
+                                format="dd-MM-yyyy" type="date" @update:value="handleTanggalTerbit" />
                         </div>
                     </n-form-item>
                     <div class="flex gap-2">
@@ -232,7 +233,8 @@
                                 v-model:value="order.opt_pekerjaan" />
                         </n-form-item>
                         <n-form-item label="Nama Perusahaan" path="nm_perusahaan" class="w-full">
-                            <n-input placeholder="Nama Perusahaan" v-model:value="pelanggan.nm_perusahaan" maxlength="16" />
+                            <n-input placeholder="Nama Perusahaan" v-model:value="pelanggan.nm_perusahaan"
+                                maxlength="16" />
                         </n-form-item>
                         <n-form-item label="Bidang Usaha" path="bidang_usaha" class="w-full">
                             <n-input placeholder="Bidang Usaha" v-model:value="pelanggan.bidang_usaha" maxlength="16" />
@@ -267,8 +269,8 @@
     </n-scrollbar>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
 import { v4 as uuidv4 } from "uuid";
+import { onMounted, reactive, ref } from "vue";
 
 import { useMessage } from "naive-ui";
 
@@ -276,7 +278,6 @@ import { useMessage } from "naive-ui";
 import _ from "lodash";
 import { computed } from "vue";
 import { useJaminanStore } from "../../../../stores/jaminan";
-import { useApi } from "../../../../helpers/axios";
 
 const message = useMessage();
 const uuid = uuidv4();

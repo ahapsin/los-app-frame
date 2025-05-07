@@ -1,6 +1,5 @@
 <template>
     <div class="w-full bg-white h-full md:h-fit p-10 md:rounded-xl shadow-xl">
-
         <n-form ref="formRef" :model="dynamicForm">
             <div class="flex md:flex-row gap-4 items-center pb-8">
                 <img :src="applogo" alt="logo_company" class="h-14 md:h-16 ">
@@ -33,11 +32,11 @@
     </div>
 </template>
 <script setup>
-import { onMounted, reactive, ref } from "vue";
 import { useMessage } from "naive-ui";
-import router from '../../router';
-import { useApi } from "../../helpers/axios";
+import { onMounted, reactive, ref } from "vue";
 import pjson from '../../../package.json';
+import { useApi } from "../../helpers/axios";
+import router from '../../router';
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
@@ -101,6 +100,7 @@ const handleLogin = async (e) => {
 
 const logged = ref(false);
 onMounted(() => {
+    router.push('/');
     logged.value = true;
     if (localStorage.getItem("token")) {
         const userToken = localStorage.getItem("token");

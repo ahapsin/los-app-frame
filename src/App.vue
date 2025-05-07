@@ -1,22 +1,21 @@
 <template>
   <div id="app">
-<!--    <LoadingScreen class="absolute" :isLoading="isLoading"/>-->
-<!--    <main v-if="!isLoading">-->
-      <n-config-provider :theme-overrides="themeOverrides">
-        <n-message-provider>
-          <n-dialog-provider>
-            <n-loading-bar-provider>
-              <RouterView/>
-            </n-loading-bar-provider>
-          </n-dialog-provider>
-        </n-message-provider>
-      </n-config-provider>
-<!--    </main>-->
+    <!--    <LoadingScreen class="absolute" :isLoading="isLoading"/>-->
+    <!--    <main v-if="!isLoading">-->
+    <n-config-provider :theme-overrides="themeOverrides">
+      <n-message-provider>
+        <n-dialog-provider>
+          <n-loading-bar-provider>
+            <RouterView />
+          </n-loading-bar-provider>
+        </n-dialog-provider>
+      </n-message-provider>
+    </n-config-provider>
+    <!--    </main>-->
   </div>
 </template>
 <script setup>
-import {ref, onMounted} from "vue";
-import LoadingScreen from "../src/components/organism/LoadingScreen.vue";
+import { onMounted, ref } from "vue";
 
 const appcolor = import.meta.env.VITE_APP_BASE_COLOR;
 const appInfoColor = import.meta.env.VITE_APP_INFO_COLOR;
@@ -25,7 +24,8 @@ const themeOverrides = {
   common: {
     primaryColor: appcolor,
     primaryColorHover: appAccentColor,
-    borderRadius: "10px",
+    primaryColorPressed: appcolor,
+    borderRadius: "20px",
     textColorBase: appcolor,
     infoColor: appInfoColor,
     infoColorHover: appInfoColor,

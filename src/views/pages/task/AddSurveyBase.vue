@@ -12,13 +12,11 @@
         </n-scrollbar>
         <!-- card -->
         <n-alert type="warning" v-if="sumJaminan != 0 && order.plafond > sumJaminan / 2">Nilai Plafon <b>{{
-                order.plafond.toLocaleString()
+            order.plafond.toLocaleString()
                 }}</b> > Nilai Jaminan {{ (sumJaminan / 2).toLocaleString() }}
             (50%)
         </n-alert>
-        <n-card :bordered="true" :title="`${current}. ${steps[current - 1]}`" :segmented="{
-            content: true,
-        }">
+        <n-card size="small" :bordered="true" :title="`${current}. ${steps[current - 1]}`">
             <!-- container 1 -->
             <div v-show="current == 1">
                 <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging"
@@ -185,8 +183,8 @@
                                             :label="item.toUpperCase()">
                                             <b>{{
                                                 item === 'nilai' ? coll.atr[item].toLocaleString('US') :
-                                                coll.atr[item] ? coll.atr[item] : '--'
-                                                }}</b>
+                                                    coll.atr[item] ? coll.atr[item] : '--'
+                                            }}</b>
                                         </n-descriptions-item>
                                     </n-descriptions>
                                     <n-descriptions v-if="coll.type === 'sertifikat'"
@@ -196,8 +194,8 @@
                                             :label="item.toUpperCase()">
                                             <b>{{
                                                 item === 'nilai' ? coll.atr[item].toLocaleString('US') :
-                                                coll.atr[item] ? coll.atr[item] : '--'
-                                                }}</b>
+                                                    coll.atr[item] ? coll.atr[item] : '--'
+                                            }}</b>
                                         </n-descriptions-item>
                                     </n-descriptions>
                                 </div>
@@ -337,8 +335,8 @@
                     </n-form-item>
                     <n-divider title-placement="left"> Dokumen Pendukung</n-divider>
                     <file-upload :def_preview="true" title="dokumen pendukung" endpoint="image_upload_prospect"
-                        type="other" :idapp="dynamicForm.id" :view-mode="props.viewMode"
-                        :data_multi="dok_pendukung" :multi="true" />
+                        type="other" :idapp="dynamicForm.id" :view-mode="props.viewMode" :data_multi="dok_pendukung"
+                        :multi="true" />
                 </n-form>
             </div>
             <template #action>
@@ -372,30 +370,27 @@
     </div>
 </template>
 <script setup>
-import { ref, reactive, onMounted, toRef } from "vue";
-import { v4 as uuidv4 } from "uuid";
 import {
-    ArrowBackIosNewRound as BackIcon,
-    ArrowBackOutlined as ArrowBack,
     AddFilled as AddIcon,
-    EditOutlined as EditIcon,
-    DeleteOutlineFilled as DeleteIcon,
+    ArrowBackOutlined as ArrowBack,
     ArrowForwardOutlined as ArrowForward,
-    RepeatOneSharp,
-
+    DeleteOutlineFilled as DeleteIcon,
+    EditOutlined as EditIcon
 } from "@vicons/material";
-import { NButton, NIcon, useMessage } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
+import { NButton, NIcon, useMessage } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
+import { onMounted, reactive, ref } from "vue";
 
 import _ from "lodash";
 import { computed } from "vue";
-import { useJaminanStore } from "../../../stores/jaminan";
+import { useRoute } from "vue-router";
 import { useApi } from "../../../helpers/axios";
 import router from "../../../router";
+import { useJaminanStore } from "../../../stores/jaminan";
+import JaminanBillyet from "./survey/JaminanBillyet.vue";
 import JaminanKendaraan from "./survey/JaminanKendaraan.vue";
 import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
-import JaminanBillyet from "./survey/JaminanBillyet.vue";
-import { useRoute } from "vue-router";
 
 
 const { width } = useWindowSize();
