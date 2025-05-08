@@ -22,7 +22,7 @@
                 <n-input class="w-full" v-model:value="initVisit.nama_nasabah" />
               </n-form-item>
               <n-form-item label="No Handphone">
-                <n-input class="w-full" v-model:value="initVisit.no_handphone" />
+                <n-input class="w-full" v-model:value="initVisit.no_handphone" ref="no_hp" />
               </n-form-item>
             </div>
             <SelectStateRegion v-model:provinsi="initVisit.provinsi" v-model:kota="initVisit.kota"
@@ -39,7 +39,7 @@
             </n-form-item> -->
             <n-form-item label="Lampiran Kunjungan">
               <file-upload :def_preview="true" title="dokumen pendukung" endpoint="image_upload_prospect"
-                type="other" />
+                type="attch_kunjungan" :idapp="initVisit.id"/>
             </n-form-item>
             <n-alert :show-icon="false" type="warning">
               <div class="flex items-center justify-between">
@@ -64,7 +64,7 @@
                   endpoint="image_upload_prospect" type="kk" :idapp="initVisit.id" />
                 <file-upload title="KTP Pasangan" endpoint="image_upload_prospect" type="ktp_pasangan"
                   :def_value="findDocByType(initVisit.dokumen_indentitas, 'ktp_pasangan')" :idapp="initVisit.id" />
-                <file-upload title="Buku Nikah" endpoint="image_upload_prospect" type="ktp_pasangan"
+                <file-upload title="Buku Nikah" endpoint="image_upload_prospect" type="buku_nikah"
                   :def_value="findDocByType(initVisit.dokumen_indentitas, 'buku_nikah')" :idapp="initVisit.id" />
               </div>
             </div>
@@ -96,7 +96,7 @@
             Penjamin
           </div>
         </template>
-        <PenjaminTab />
+        <!-- <PenjaminTab /> -->
       </n-tab-pane>
       <n-tab-pane name="jaminan" tab="Jaminan" :disabled="!initVisit.slik_request">
         <template #tab>
@@ -123,7 +123,7 @@
         <n-button type="primary" @click="handleSave">
           Simpan
         </n-button>
-        <n-button type="error" secondary @click="handleReset">
+        <n-button type="error" secondary @click="visitStore.$reset()">
           Reset
         </n-button>
       </n-space>
@@ -141,9 +141,10 @@ import AnalisaForm from "../analisa/AnalisaForm.vue";
 import CreditTab from "./CreditTab.vue";
 import DebiturTab from "./DebiturTab.vue";
 import JaminanTab from "./JaminanTab.vue";
-
 const visitStore = useVisitStore();
 const { initVisit } = storeToRefs(visitStore);
+
+
 
 const handleSave = () => {
   visitStore.storeVisit(initVisit.value);

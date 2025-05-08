@@ -31,7 +31,7 @@
       </div>
     </div>
     <n-upload accept="image/png, image/jpeg,image/jpg" @change="beforeUpload" :show-file-list="props.def_preview"
-      list-type="image" multiple :show-cancel-button="false" v-show="!props.viewMode">
+      list-type="image" multiple :show-cancel-button="true" :show-retry-button="true" v-show="!props.viewMode">
       <div class="flex flex-col">
         <n-button tertiary :type="errorCapture ? 'error' : 'primary'">
           <div class="flex gap-2">
@@ -52,15 +52,15 @@
 </template>
 
 <script setup>
-import { CloudUploadFilled as UploadIcon, RemoveRound as RemoveIcon } from "@vicons/material";
 import { lyla } from "@lylajs/web";
+import { RemoveRound as RemoveIcon, CloudUploadFilled as UploadIcon } from "@vicons/material";
+import _ from "lodash";
 import { useMessage } from "naive-ui";
+import { computed, reactive, ref, toRef } from "vue";
+import { useApi } from "../../helpers/axios";
 
 const message = useMessage();
 const userToken = localStorage.getItem("token");
-import { computed, reactive, ref, toRef } from "vue";
-import _ from "lodash";
-import { useApi } from "../../helpers/axios";
 
 const canvas = ref(null); // Reference to the canvas element
 

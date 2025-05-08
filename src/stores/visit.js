@@ -6,10 +6,10 @@ import { useMessage } from "naive-ui";
 import { v4 as uuidv4 } from "uuid";
 
 export const useVisitStore = defineStore("visit", () => {
-  const uuid = uuidv4();
   const listData = ref();
-  const initVisit = ref({
-    id: uuid,
+
+  const modelVisit = () => ({
+    id: uuidv4(),
     no_handphone: null,
     tgl_kunjungan: null,
     nama_nasabah: null,
@@ -21,7 +21,11 @@ export const useVisitStore = defineStore("visit", () => {
     alamat_detail: null,
     lampiran_kunjungan: [],
     slik_request: false,
+    no_ktp: null,
+    no_kk: null,
+    keterangan: null,
   });
+  const initVisit = ref(modelVisit());
   const message = useMessage();
   const loading = ref(false);
 
@@ -57,6 +61,9 @@ export const useVisitStore = defineStore("visit", () => {
       listData.value = response.data.response;
     }
   };
+  const $reset = () => {
+    initVisit.value = modelVisit();
+  };
 
-  return { storeVisit, initVisit, getData, listData, loading };
+  return { storeVisit, initVisit, getData, listData, loading, $reset };
 });

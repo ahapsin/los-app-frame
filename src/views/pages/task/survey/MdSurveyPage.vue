@@ -45,8 +45,8 @@
           </n-space>
         </template>
         <n-space vertical :size="12" class="pt-4">
-          <n-data-table striped ref="tableRef" :scroll-x="750" size="small" :columns="columns"
-            :data="visitStore.listData" :pagination="pagination" :loading="visitStore.loading" />
+          <n-data-table striped ref="tableRef" :scroll-x="750" size="small" :columns :data="visitStore.listData"
+            :pagination="pagination" :loading="visitStore.loading" />
         </n-space>
       </n-card>
     </n-space>
@@ -66,9 +66,11 @@ import {
   ListAltOutlined as DetailIcon,
   FileDownloadOutlined as DownloadIcon,
   EditOutlined as EditIcon,
+  MoreHorizTwotone as MoreIcon,
   SearchOutlined as SearchIcon
 } from "@vicons/material";
 import { useWindowSize } from "@vueuse/core";
+import moment from "moment";
 import {
   NButton,
   NIcon,
@@ -77,10 +79,10 @@ import {
 } from "naive-ui";
 import { useVisitStore } from "../../../../stores/visit.js";
 
+
 const AddVisit = defineAsyncComponent(() => import("../../task/visit/AddVisit.vue"));
 const message = useMessage();
 const dialog = useDialog();
-const loadData = ref(false);
 const dataTable = ref([]);
 const tableRef = ref();
 const downloadCsv = () =>
@@ -93,7 +95,9 @@ const columns = [
     title: "Tanggal",
     sorter: "default",
     key: "tgl_kunjungan",
-    width: 100,
+    render(row) {
+      return h("div", moment(row.tgl_kunjungan).format('L'));
+    }
   },
   {
     title: "Nama Nasabah",
@@ -103,8 +107,47 @@ const columns = [
     ellipsis: {
       tooltip: true,
     },
-    width: 200,
   },
+  {
+    title: "No HP",
+    sorter: "default",
+    key: "no_handphone",
+    fixed: "left",
+    ellipsis: {
+      tooltip: true,
+    },
+  },
+  {
+    title: "SLIK",
+    sorter: "default",
+    key: "slik_request",
+    fixed: "left",
+    ellipsis: {
+      tooltip: true,
+    },
+  }, {
+    width: 100,
+    align: "right",
+    key: "action",
+    render(row) {
+      return h(
+        NButton,
+        {
+          size: "small",
+          circle: true,
+          type: "primary",
+          secondary: true,
+          round: true,
+          onClick: () => {
+
+          },
+        },
+        {
+          default: () => { return h(NIcon, { component: MoreIcon }) },
+        }
+      );
+    },
+  }
 ];
 const searchBox = ref();
 const statusTag = (e) => {
@@ -176,7 +219,9 @@ const handleEdit = (evt) => {
   router.push({ name: "edit survey", params: { idsurvey: evt.id } });
 };
 const modalView = ref(false);
+const storeVisit = useVisitStore()
 const handleAdd = () => {
+  storeVisit.$reset();
   // modalView.value = true;
   router.push({ name: 'addvisit' });
 };

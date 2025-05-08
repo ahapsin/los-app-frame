@@ -8,7 +8,7 @@
         <div class="flex  gap-2 flex-col p-2 px-4 bg-white">
             <n-input placeholder="cari" size="large" v-model:value="searchBox" clearable />
             <n-tabs type="segment" animated @before-leave="handleBeforeLeave">
-                <n-tab name="all" tab="Semua Order" >
+                <n-tab name="all" tab="Semua Order">
                     <div class="flex gap-2">
                         Semua
                         <n-tag round type="warning" size="small">{{ showData.length }}</n-tag>
@@ -116,23 +116,23 @@
     </n-modal>
 </template>
 <script setup>
-import { ref, onMounted, h, computed, reactive } from "vue";
-import { useApi } from "../../../../helpers/axios.js";
-import { useSearch } from "../../../../helpers/searchObject.js";
-import router from "../../../../router/index.js";
-import {
-    useDialog,
-    useMessage,
-    NIcon,
-    NTag,
-    NButton,
-} from "naive-ui";
 import {
     DirectionsRunOutlined as NodataIcon,
 } from "@vicons/material";
+import {
+    NButton,
+    NIcon,
+    NTag,
+    useDialog,
+    useMessage,
+} from "naive-ui";
+import { computed, onMounted, reactive, ref } from "vue";
+import { useApi } from "../../../../helpers/axios.js";
+import { useSearch } from "../../../../helpers/searchObject.js";
+import router from "../../../../router/index.js";
 
-import { useLoadingBar } from "naive-ui";
 import _ from "lodash";
+import { useLoadingBar } from "naive-ui";
 
 const applogo = import.meta.env.VITE_APP_LOGO;
 const app_base_color = import.meta.env.VITE_APP_BASE_COLOR;

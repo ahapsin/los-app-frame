@@ -128,17 +128,15 @@
 
 <script setup>
 import { useWindowSize } from "@vueuse/core";
-import { useLoadingBar } from "naive-ui";
 import { ref } from "vue";
 import { useSidebar } from "../../stores/sidebar";
 const appAccentColor = import.meta.env.VITE_APP_ACCENT_COLOR;
 const { width } = useWindowSize();
 const sideMenu = useSidebar();
 
-const loadingBar = useLoadingBar();
 const disabledRef = ref(true);
 const handleStart = () => {
-  loadingBar.start();
+
   disabledRef.value = false;
 };
 const props = defineProps({
