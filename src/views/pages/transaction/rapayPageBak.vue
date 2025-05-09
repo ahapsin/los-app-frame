@@ -485,7 +485,7 @@ const handleProses = async () => {
       token: userToken,
     });
     if (!response.ok) {
-      message.error('ERROR API');
+      console.log(reponse.error);
     } else {
       loadProses.value = false;
       paymentData.value = response.data;
@@ -509,7 +509,7 @@ const handleSearch = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     displayFasilitas.value = true;
     loadSearch.value = false;
@@ -647,7 +647,7 @@ const getDataPelunasan = async (e) => {
     token: userToken,
   });
   if (!response.ok) {
-    message.error('ERROR API');
+    console.log(reponse.error);
   } else {
     spinnerShow.value = false;
     dataPelunasan.value = response.data;

@@ -30,6 +30,10 @@ const columnsWithSelection = [
         title: "No BPKB",
         key: "BPKB_NUMBER",
         sorter: "default",
+    }, {
+        title: "Atas Nama",
+        key: "ON_BEHALF",
+        sorter: "default",
     },
     {
         title: "Lokasi Jaminan",

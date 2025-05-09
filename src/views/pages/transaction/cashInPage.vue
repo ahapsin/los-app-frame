@@ -441,7 +441,7 @@ const getDataPelunasan = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-        message.error('ERROR API');
+      console.log(reponse.error);
     } else {
         dataRepayment.value = response.data;
         pageData.denda = dataRepayment.value[0].DENDA;
