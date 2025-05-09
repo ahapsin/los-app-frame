@@ -60,6 +60,9 @@
         <n-form-item label="NO BPKB" path="nama" class="w-full">
           <n-input placeholder="NO BPKB" v-model:value="bodyModal.no_bpkb"/>
         </n-form-item>
+        <n-form-item label="Alamat BPKB" path="nama" class="w-full">
+          <n-input placeholder="Alamat BPKB" v-model:value="bodyModal.alamat_bpkb"/>
+        </n-form-item>
         <n-form-item label="NO STNK" path="nama" class="w-full">
           <n-input placeholder="NO STNK" v-model:value="bodyModal.no_stnk"/>
         </n-form-item>
@@ -82,20 +85,12 @@
   </n-modal>
 </template>
 <script setup>
-import {ref, onMounted, h} from "vue";
-import {useApi} from "../../../../helpers/axios";
-import {useDialog, useMessage, NDropdown, NIcon, NButton} from "naive-ui";
 import {
-  AddCircleOutlineRound as AddIcon,
-  SearchOutlined as SearchIcon,
-  FileDownloadOutlined as DownloadIcon,
-
-} from "@vicons/material"
-import {
-  EditOutlined as EditIcon,
-  DeleteOutlined as DeleteIcon,
   ListAltOutlined as DetailIcon
 } from "@vicons/material";
+import { NButton, NDropdown, NIcon, useDialog, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
+import { useApi } from "../../../../helpers/axios";
 
 const dynamicSearch = reactive({
   no_polisi: "",

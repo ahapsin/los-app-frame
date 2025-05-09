@@ -1,19 +1,18 @@
 <template>
   <n-card title="Inquery Piutang" :segmented="true" size="small">
     <TabInqPinjaman :columns="columnsPinjaman" :data="dataInqPinjaman" :loading="loadInqPinjaman"
-                    @cari="handleCariInqPinjaman" :available="inqView"/>
+      @cari="handleCariInqPinjaman" :available="inqView" />
   </n-card>
   <n-modal v-model:show="modalDetail">
     <n-card content-style="padding: 0;" class="w-11/12">
       <n-tabs type="line" :tabs-padding="20" pane-style="padding: 20px;" @before-leave="handleBeforeLeaveModal">
         <n-tab-pane name="Kartu Piutang">
-          <n-spin v-if="spinAngsuran"/>
+          <n-spin v-if="spinAngsuran" />
           <n-card v-else>
             <div ref="printKartuRef" class="p-4">
-              <div
-                  class="flex items-center gap-2 pb-2 justify-between border-b border-dashed border-black">
+              <div class="flex items-center gap-2 pb-2 justify-between border-b border-dashed border-black">
                 <div class="flex gap-2 items-center">
-                  <img class="h-10 md:h-10" :src="applogo" alt="logo_company"/>
+                  <img class="h-10 md:h-10" :src="applogo" alt="logo_company" />
                   <div class="flex-col">
                     <div class="text-xl font-bold">{{ apptitle }}</div>
                     <div class="small">POS {{ me.me.cabang_nama }}</div>
@@ -54,8 +53,8 @@
               <div class="font-mono border-b border-dashed border-black">
                 <table class="w-full">
                   <tr class="border-b border-dashed border-black">
-                    <th class="p-2" align="right"
-                        v-for="head in convertObjectToArray(dataDetailAngsuran)" :key="head.id">{{
+                    <th class="p-2" align="right" v-for="head in convertObjectToArray(dataDetailAngsuran)"
+                      :key="head.id">{{
                         head.title
                       }}
                     </th>
@@ -72,7 +71,7 @@
                     </th>
 
                     <th align="right">
-                      {{ dataFooter.ttlAmtBayar.toLocaleString()}}
+                      {{ dataFooter.ttlAmtBayar.toLocaleString() }}
                     </th>
                     <th align="right">
                       {{ dataFooter.ttlSisaAngs.toLocaleString() }}
@@ -95,57 +94,67 @@
           </n-card>
         </n-tab-pane>
         <n-tab-pane name="Pelanggan">
-          <n-scrollbar style="max-height: 500px" trigger="none">
-            <div class="grid grid-cols-5 gap-4">
-              <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.pelanggan"
-                   :key="val.id">
-                <small class="text-reg">{{ name.toUpperCase() }}</small>
-                <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
-              </div>
-              <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.pekerjaan"
-                   :key="val.id">
-                <small class="text-reg">{{ name.toUpperCase() }}</small>
-                <n-text strong class="text-md border-b "> {{ val ? val : 'N/A' }}</n-text>
-              </div>
-            </div>
+          <n-tabs type="card" placement="left">
+            <n-tab-pane name="Pelanggan">
+              <n-scrollbar style="max-height: 500px" trigger="none">
+                <div class="grid grid-cols-5 gap-4">
+                  <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.pelanggan" :key="val.id">
+                    <small class="text-reg">{{ name.toUpperCase() }}</small>
+                    <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
+                  </div>
+                  <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.pekerjaan" :key="val.id">
+                    <small class="text-reg">{{ name.toUpperCase() }}</small>
+                    <n-text strong class="text-md border-b "> {{ val ? val : 'N/A' }}</n-text>
+                  </div>
+                </div>
+              </n-scrollbar>
+            </n-tab-pane>
+            <n-tab-pane name="Pasangan">
+              <n-scrollbar style="max-height: 500px" trigger="none">
+                <div class="grid grid-cols-5 gap-4 font-mono">
+                  <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.pasangan" :key="val.id">
+                    <small class="text-reg">{{ name.toUpperCase() }}</small>
+                    <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
+                  </div>
+                </div>
+              </n-scrollbar>
+            </n-tab-pane>
+            <n-tab-pane name="Kontak Darurat">
+              <n-scrollbar style="max-height: 500px" trigger="none">
+                <div class="grid grid-cols-5 gap-4 font-mono">
+                  <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.kerabat_darurat" :key="val.id">
+                    <small class="text-reg">{{ name.toUpperCase() }}</small>
+                    <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
+                  </div>
+                </div>
+              </n-scrollbar></n-tab-pane>
+            <n-tab-pane name="Alamat Identitas">
+              <n-scrollbar style="max-height: 500px" trigger="none">
+                <div class="grid grid-cols-5 gap-4 font-mono">
+                  <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.alamat_identitas" :key="val.id">
+                    <small class="text-reg">{{ name.toUpperCase() }}</small>
+                    <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
+                  </div>
+                </div>
+              </n-scrollbar>
+            </n-tab-pane>
+            <n-tab-pane name="Alamat Tagih ">
+              <n-scrollbar style="max-height: 500px" trigger="none">
+                <div class="grid grid-cols-5 gap-4 font-mono">
+                  <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.alamat_tagih" :key="val.id">
+                    <small class="text-reg">{{ name.toUpperCase() }}</small>
+                    <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
+                  </div>
+                </div>
+              </n-scrollbar>
+            </n-tab-pane>
+          </n-tabs>
 
-            <n-divider title-placement="left">
-              Kontak Darurat
-            </n-divider>
-            <div class="grid grid-cols-5 gap-4 font-mono">
-              <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.kerabat_darurat"
-                   :key="val.id">
-                <small class="text-reg">{{ name.toUpperCase() }}</small>
-                <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
-              </div>
-            </div>
-            <n-divider title-placement="left">
-              Informasi Alamat Identitas
-            </n-divider>
-            <div class="grid grid-cols-5 gap-4 font-mono">
-              <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.alamat_identitas"
-                   :key="val.id">
-                <small class="text-reg">{{ name.toUpperCase() }}</small>
-                <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
-              </div>
-            </div>
-            <n-divider title-placement="left">
-              Informasi Alamat Tagih
-            </n-divider>
-            <div class="grid grid-cols-5 gap-4 font-mono">
-              <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.alamat_tagih"
-                   :key="val.id">
-                <small class="text-reg">{{ name.toUpperCase() }}</small>
-                <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
-              </div>
-            </div>
-          </n-scrollbar>
         </n-tab-pane>
         <n-tab-pane name="Pinjaman">
           <n-spin :show="spinPinjaman">
             <div class="grid grid-rows-4 grid-flow-col gap-4 font-mono" v-if="dataDetailPinjaman">
-              <div class="flex flex-col" v-for="list in dataDetailPinjaman"
-                   :key="list.id">
+              <div class="flex flex-col" v-for="list in dataDetailPinjaman" :key="list.id">
                 <small class="text-reg">{{ list.title.toUpperCase() }}</small>
                 <n-text strong class="text-md border-b"> {{ list.value ? list.value : 'N/A' }}</n-text>
               </div>
@@ -154,43 +163,42 @@
         </n-tab-pane>
         <n-tab-pane name="Jaminan">
           <n-spin :show="spinJaminan">
-            <table class="font-mono">
+            <table class="font-mono w-full">
               <thead>
-              <th v-for="head in convertObjectToArray(dataDetailJaminan)" class="py-2 px-1 border border-black"
+                <th v-for="head in convertObjectToArray(dataDetailJaminan)" class="py-2 px-1 border border-black"
                   :key="head.id">{{ head.title }}
-              </th>
+                </th>
               </thead>
               <tbody>
-              <tr v-for="body in dataDetailJaminan" :key="body.id">
-                <td v-for="head in convertObjectToArray(dataDetailJaminan)" class="text-[12px] px-1 border border-black"
-                    :key="head.id">
-                  {{ body[head.title] }}
-                </td>
-              </tr>
+                <tr v-for="body in dataDetailJaminan" :key="body.id">
+                  <td v-for="head in convertObjectToArray(dataDetailJaminan)"
+                    class="text-[12px] px-1 border border-black" :key="head.id">
+                    {{ body[head.title] }}
+                  </td>
+                </tr>
               </tbody>
             </table>
           </n-spin>
         </n-tab-pane>
-        <n-tab-pane name="Pembayaran">
-          <n-spin :show="spinPembayaran">
+        <!-- <n-tab-pane n - tab - pane name="Pembayaran">
+          <n-spin : show="spinPembayaran">
             <table class="font-mono">
               <thead>
-              <th v-for="head in convertObjectToArray(dataDetailPembayaran)" class="py-2 border border-black"
-                  :key="head.id">{{ head.title }}
-              </th>
+                <th v -for="head in convertObjectToArray(dataDetailPembayaran)" class="py-2 border border-black" :
+                  key="head.id"> {{ head.title }}
+                </th>
               </thead>
               <tbody>
-              <tr v-for="body in dataDetailPembayaran" :key="body.id">
-                <td v-for="head in convertObjectToArray(dataDetailPembayaran)"
-                    class="text-[12px] px-1 border border-black"
-                    :key="head.id">{{ body[head.title] }}
-                </td>
-              </tr>
+                <tr v-for="body in dataDetailPembayaran" :key="body.id">
+                  <td v-for="head in convertObjectToArray(dataDetailPembayaran)"
+                    class="text-[12px] px-1 border border-black" :key="head.id">{{ body[head.title] }}
+                  </td>
+                </tr>
               </tbody>
             </table>
           </n-spin>
-        </n-tab-pane>
-        <n-tab-pane name="Tunggakan">
+          </n-tab-pane> -->
+        <!-- <n-tab-pane name="Tunggakan">
           <table class="font-mono">
             <thead>
             <th v-for="head in convertObjectToArray(dataDetailTunggakan)" class="py-2 border border-black"
@@ -205,26 +213,24 @@
             </tr>
             </tbody>
           </table>
-        </n-tab-pane>
+        </n-tab-pane> -->
       </n-tabs>
     </n-card>
   </n-modal>
 </template>
 
 <script setup>
-import {ref, h} from "vue";
-import {useApi} from "../../../helpers/axios";
+import { h, ref } from "vue";
+import { useApi } from "../../../helpers/axios";
 
 
 import {
-  useMessage, NButton,
+  NButton,
+  useMessage,
 } from "naive-ui";
-
+import { useVueToPrint } from "vue-to-print";
+import { useMeStore } from "../../../stores/me.js";
 import TabInqPinjaman from "./TabInqPinjaman.vue";
-
-import {useMeStore} from "../../../stores/me.js";
-import {useVueToPrint} from "vue-to-print";
-
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const message = useMessage();
@@ -235,7 +241,7 @@ const spinPinjaman = ref(false);
 const spinJaminan = ref(false);
 
 const printKartuRef = ref(null);
-const {handlePrint} = useVueToPrint({
+const { handlePrint } = useVueToPrint({
   content: printKartuRef,
   documentTitle: "Kartu Piutang",
 });
@@ -295,7 +301,7 @@ const convertObjectToArray = (obj) => {
     return [];
   }
   const keys = Object.keys(obj[0]);
-  return keys.map(key => ({title: key, key: key}));
+  return keys.map(key => ({ title: key, key: key }));
 }
 
 function convertToValuesArray(dataArray) {
@@ -335,15 +341,15 @@ const columnsPinjaman = [
     key: "more",
     render(row) {
       return h(
-          NButton,
-          {
-            secondary: false,
-            size: "small",
-            onClick: () => handleDetailRow(row),
-          },
-          {
-            default: "detail",
-          }
+        NButton,
+        {
+          secondary: false,
+          size: "small",
+          onClick: () => handleDetailRow(row),
+        },
+        {
+          default: "detail",
+        }
       );
     },
   },
@@ -528,7 +534,7 @@ const loadListingBeban = ref(false);
 
 
 const getListBan = async () => {
-  messageReactive = message.loading('memuat data listing beban', {duration: 0});
+  messageReactive = message.loading('memuat data listing beban', { duration: 0 });
   loadListingBeban.value = true;
   let userToken = localStorage.getItem("token");
   const response = await useApi({

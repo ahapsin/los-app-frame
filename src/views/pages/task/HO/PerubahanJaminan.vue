@@ -1,6 +1,6 @@
 <template>
-  <n-card :segmented="true" size="small">
-    <template #header>Pending Transfer</template>
+  <n-card size="small" :segmented="true">
+    <template #header>Perubahan Jaminan</template>
     <template #header-extra>
       <n-space>
         <n-badge :value="dataPending.length" :max="99" type="warning">
@@ -17,101 +17,12 @@
     </template>
     <div>
       <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="dataPayment"
-        :max-height="300" class="pb-2" :pagination="pagination" :loading="loadDataPayment"/>
+        :max-height="300" class="pb-2" :pagination="pagination" />
     </div>
   </n-card>
-  <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal">
-    <n-card :bordered="false" aria-modal="true" title="Detail" :segmented="{
-      content: true,
-      footer: 'soft',
-    }" size="small">
-      <template #header-extra>
-        <n-popconfirm :show-icon="false" @positive-click="handlePositiveClick(bodyModal.no_transaksi)"
-          positive-text="konfirmasi" negative-text="reject"
-          @negative-click="handleNegativeClick(bodyModal.no_transaksi)">
-          <template #activator>
-            <n-button :loading="loadingConf"  type="primary"
-              v-show="bodyModal.STATUS == 'PENDING'">Konfirmasi</n-button>
-          </template>
-          <n-input type="textarea" placeholder="keterangan" v-model:value="keterangan"></n-input>
-        </n-popconfirm>
-      </template>
-      <div class="flex justify-between">
-        <div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Status</label><span>
-              <n-tag strong :type="statusTag(bodyModal.STATUS)">
-                {{ bodyModal.STATUS }}</n-tag></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Tanggal</label><span>
-              <n-text strong> {{ bodyModal.tgl_transaksi }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">No Kontrak</label><span>
-              <n-text strong> {{ bodyModal.no_fasilitas }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">No Transaksi</label><span>
-              <n-text strong> {{ bodyModal.no_transaksi }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Atas Nama </label><span>
-              <n-text strong> {{ bodyModal.nama }}</n-text></span>
-          </div>
-          <div class="flex justify-between">
-            <div class="w-36">Alamat</div>
-            <n-text strong> {{ bodyModal.alamat }}</n-text>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Total Bayar</label><span>
-              <n-text strong>
-                {{ bodyModal.total_bayar.toLocaleString("US") }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Jumlah Uang</label><span>
-              <n-text strong>
-                {{ bodyModal.jumlah_uang.toLocaleString("US") }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Pembulatan</label><span>
-              <n-text strong>
-                {{ bodyModal.pembulatan.toLocaleString("US") }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Metode Pembayaran</label><span>
-              <n-text strong> {{ bodyModal.payment_method }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">kembalian</label><span>
-              <n-text strong>
-                {{ bodyModal.kembalian.toLocaleString("US") }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Untuk Pembayaran</label>
-            <n-space>
-              <n-tag size="small" v-for="pembayaran in bodyModal.pembayaran" :bordered="false" :key="pembayaran">{{
-                pembayaran.title }}
-                {{ parseInt(pembayaran.bayar_angsuran).toLocaleString("US") }}
-                <span v-show="pembayaran.bayar_denda > 0">,denda
-                  {{
-                    parseInt(pembayaran.bayar_denda).toLocaleString("US")
-                  }}</span>
-              </n-tag>
-            </n-space>
-          </div>
-        </div>
-      </div>
-      <div v-show="bodyModal.payment_method == 'transfer'">
-        <n-divider>bukti transfer</n-divider>
-        <n-image :src="bodyModal.attachment" class="max-w-36 w-20 h-20" />
-      </div>
-    </n-card>
-  </n-modal>
+  
 </template>
 <script setup>
-import { useApi } from "../../../../helpers/axios";
-// import { useSearch } from "../../../../helpers/searchObject";
 import {
   AccessTimeRound as pendingIcon
 } from "@vicons/material";
@@ -120,13 +31,13 @@ import {
   NBadge,
   NButton,
   NIcon,
-  NInput,
   NTag,
+  useLoadingBar,
   useMessage
 } from "naive-ui";
 import { computed, h, onMounted, reactive, ref } from "vue";
+import { useApi } from "../../../../helpers/axios";
 import router from "../../../../router";
-const searchField = ref(false);
 const checkedRowCredit = ref([]);
 const pagination = ref({ pageSize: 10 });
 const totalPay = computed(() => {
@@ -329,25 +240,23 @@ const dataPayment = ref([]);
 const loadDataPayment = ref(false);
 const dataPending = ref([]);
 const message = useMessage();
+const loadingBar = useLoadingBar();
 const getDataPayment = async () => {
   loadDataPayment.value = true;
   let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "GET",
-    api: "payment",
+    api: "collateral_approval_list",
     token: userToken,
   });
   if (!response.ok) {
     console.log(response.error);
   } else {
+    loadingBar.finish();
     loadDataPayment.value = false;
     dataPayment.value = response.data;
     dataPending.value = _.filter(dataPayment.value, { STATUS: "PENDING" });
   }
-};
-const handleExpand = () => {
-  const fullPage = router.resolve({ name: "expand transaction" });
-  window.open(fullPage.href, "_blank");
 };
 onMounted(() => getDataPayment());
 </script>
