@@ -78,7 +78,7 @@
     </n-dropdown>
   </div>
 
-  <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="modalNotif" :on-after-leave="onAfterLeave">
+  <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="modalNotif">
     <kwitansi-pembayaran :id="bodyModal.type_id" :type="bodyModal.type" :route="bodyModal.route" @save="handleModal"
       :label="bodyModal.title" />
   </n-modal>

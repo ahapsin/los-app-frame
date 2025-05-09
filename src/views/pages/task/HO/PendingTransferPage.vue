@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <n-card :segmented="true" size="small">
     <template #header>Pending Transfer</template>
     <template #header-extra>
       <n-space>
@@ -13,18 +13,11 @@
             acc HO
           </n-button>
         </n-badge>
-        <n-button v-show="!searchField" strong secondary circle @click="handleExpand">
-          <template #icon>
-            <n-icon>
-              <full-icon />
-            </n-icon>
-          </template>
-        </n-button>
       </n-space>
     </template>
     <div>
       <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="dataPayment"
-        :max-height="300" class="pb-2" :pagination="pagination" />
+        :max-height="300" class="pb-2" :pagination="pagination" :loading="loadDataPayment"/>
     </div>
   </n-card>
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal">
@@ -119,23 +112,20 @@
 <script setup>
 import { useApi } from "../../../../helpers/axios";
 // import { useSearch } from "../../../../helpers/searchObject";
-import router from "../../../../router";
+import {
+  AccessTimeRound as pendingIcon
+} from "@vicons/material";
 import _ from "lodash";
 import {
-  AccessTimeRound as pendingIcon,
-  OpenInFullRound as fullIcon,
-} from "@vicons/material";
-import {
-  useMessage,
-  NIcon,
-  NTag,
-  NButton,
   NBadge,
+  NButton,
+  NIcon,
   NInput,
-  useLoadingBar,
-  ellipsisProps,
+  NTag,
+  useMessage
 } from "naive-ui";
-import { computed, onMounted, reactive, h, ref } from "vue";
+import { computed, h, onMounted, reactive, ref } from "vue";
+import router from "../../../../router";
 const searchField = ref(false);
 const checkedRowCredit = ref([]);
 const pagination = ref({ pageSize: 10 });
@@ -339,7 +329,6 @@ const dataPayment = ref([]);
 const loadDataPayment = ref(false);
 const dataPending = ref([]);
 const message = useMessage();
-const loadingBar = useLoadingBar();
 const getDataPayment = async () => {
   loadDataPayment.value = true;
   let userToken = localStorage.getItem("token");
@@ -349,9 +338,8 @@ const getDataPayment = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    console.log(reponse.error);
+    console.log(response.error);
   } else {
-    loadingBar.finish();
     loadDataPayment.value = false;
     dataPayment.value = response.data;
     dataPending.value = _.filter(dataPayment.value, { STATUS: "PENDING" });

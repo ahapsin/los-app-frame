@@ -31,7 +31,7 @@
     </n-space>
   </div>
   <n-modal v-model:show="modalDetail">
-    <n-card class="w-11/12  overflow-x-auto " title="Jaminan">
+    <n-card class="w-11/12  overflow-x-auto " title="Jaminan" :segmented="true" size="small">
       <div class="grid grid-cols-4 w-full gap-2">
         <n-form-item label="TIPE" path="nama" class="w-full">
           <n-input placeholder="TIPE" v-model:value="bodyModal.tipe" disabled/>
@@ -60,6 +60,9 @@
         <n-form-item label="NO BPKB" path="nama" class="w-full">
           <n-input placeholder="NO BPKB" v-model:value="bodyModal.no_bpkb"/>
         </n-form-item>
+        <n-form-item label="Alamat BPKB" path="nama" class="w-full">
+          <n-input placeholder="Alamat BPKB" v-model:value="bodyModal.alamat_bpkb"/>
+        </n-form-item>
         <n-form-item label="NO STNK" path="nama" class="w-full">
           <n-input placeholder="NO STNK" v-model:value="bodyModal.no_stnk"/>
         </n-form-item>
@@ -75,27 +78,24 @@
           <n-input placeholder="NILAI TAKSASI" v-model:value="bodyModal.nilai" disabled/>
         </n-form-item>
       </div>
+      <div>
+          <n-form-item label="Keterangan" path="nama" class="w-full" required>
+          <n-input placeholder="keterangan" v-model:value="bodyModal.keterangan"/>
+        </n-form-item>
+      </div>
       <n-form-item path="nama" class="w-full">
-        <n-button type="primary" @click="handleUbah">Ubah</n-button>
+        <n-button type="primary" @click="handleUbah" :disabled="!bodyModal.keterangan">Ubah</n-button>
       </n-form-item>
     </n-card>
   </n-modal>
 </template>
 <script setup>
-import {ref, onMounted, h} from "vue";
-import {useApi} from "../../../../helpers/axios";
-import {useDialog, useMessage, NDropdown, NIcon, NButton} from "naive-ui";
 import {
-  AddCircleOutlineRound as AddIcon,
-  SearchOutlined as SearchIcon,
-  FileDownloadOutlined as DownloadIcon,
-
-} from "@vicons/material"
-import {
-  EditOutlined as EditIcon,
-  DeleteOutlined as DeleteIcon,
   ListAltOutlined as DetailIcon
 } from "@vicons/material";
+import { NButton, NDropdown, NIcon, useDialog, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
+import { useApi } from "../../../../helpers/axios";
 
 const dynamicSearch = reactive({
   no_polisi: "",
@@ -213,7 +213,7 @@ const handleUbah = () => {
       } else {
         getData();
         modalDetail.value = false;
-        message.success("Data berhasil diubah");
+        message.success("Data perubahan menunggu persetujuan");
       }
 
     },
