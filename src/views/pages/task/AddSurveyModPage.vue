@@ -426,24 +426,22 @@
     </n-card>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { v4 as uuidv4 } from "uuid";
 import {
-    ArrowBackOutlined as ArrowBack,
     AddFilled as AddIcon,
-    EditOutlined as EditIcon,
-    DeleteOutlineFilled as DeleteIcon,
+    ArrowBackOutlined as ArrowBack,
     ArrowForwardOutlined as ArrowForward,
-
+    DeleteOutlineFilled as DeleteIcon,
+    EditOutlined as EditIcon,
 } from "@vicons/material";
-import { useMessage } from "naive-ui";
-import router from "../../../router";
 import { useWindowSize } from "@vueuse/core";
+import _ from "lodash";
+import { useMessage } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useApi } from "../../../helpers/axios";
 import { useBlacklist } from "../../../helpers/blacklist";
+import router from "../../../router";
 import JaminanKendaraan from "./survey/JaminanKendaraan.vue";
-import _ from "lodash";
-import { computed } from "vue";
 import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
 // import JaminanBillyet from "./survey/JaminanBillyet.vue";
 // import JaminanEmas from "./survey/JaminanEmas.vue";
@@ -862,7 +860,7 @@ const handleSave = async (type) => {
     }
 };
 const plafondValidator = (rule, value) => {
-    return value >= 1000000;
+    return value >= 999999;
 };
 const numberValidator = (rule, value) => {
     return value > 0;
