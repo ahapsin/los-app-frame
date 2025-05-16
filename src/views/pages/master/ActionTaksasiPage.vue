@@ -3,11 +3,14 @@
         content: true,
         footer: 'soft',
     }" :title="`Form ${$route.name}`">
-        <n-form ref="formRef" :model="dynamicForm" :rules="rules" :label-placement="width <= 920 ? 'top' : 'left'"
+        <n-form ref="formRef" :model="dynamicForm" :rules="rules" :label-placement="width <= 920 ? 'top' : 'top'"
             require-mark-placement="right-hanging" :size="size" label-width="auto">
             <n-alert v-show="errorAPI" title="Peringatan" type="warning" closable class="my-4">
                 {{ errorAPI }}
             </n-alert>
+            <n-form-item label="Jenis Kendaraan">
+                <n-select :options="optJenis" v-model:value="dynamicForm.jenis_kendaraan" />
+            </n-form-item>
             <n-form-item label="Brand">
                 <n-input placeholder="ex. HONDA / YAMAHA / SUZUKI, dll" v-model:value="dynamicForm.brand" />
             </n-form-item>
@@ -18,7 +21,8 @@
                 <n-input placeholder="ex. PS5E549202 MT / SUPRA X 125 TLD" v-model:value="dynamicForm.model" />
             </n-form-item>
             <n-form-item label="Descr">
-                <n-input type="textarea" v-model:value="dynamicForm.descr" placeholder="ex. Vario Tecno / Supra X 125 / Satria FU, dll " />
+                <n-input type="textarea" v-model:value="dynamicForm.descr"
+                    placeholder="ex. Vario Tecno / Supra X 125 / Satria FU, dll " />
             </n-form-item>
             <div class="flex gap-2">
                 <n-form-item label="Dari" path="tahun_kendaraan" :rule="rules.tahun_jaminan">
@@ -44,14 +48,14 @@
     </n-card>
 </template>
 <script setup>
-import { useMessage, NInput, NInputNumber } from "naive-ui";
-import { ref, reactive, onMounted, computed } from "vue";
 import { useWindowSize } from "@vueuse/core";
-const { width } = useWindowSize();
+import _ from "lodash";
+import { NInput, NInputNumber, useMessage } from "naive-ui";
+import { computed, onMounted, reactive, ref } from "vue";
+import { useRoute } from "vue-router";
 import { useApi } from "../../../helpers/axios";
 import router from "../../../router";
-import { useRoute } from "vue-router";
-import _ from "lodash";
+const { width } = useWindowSize();
 const loading = ref(false);
 const action = ref("POST");
 const url = ref();
@@ -81,6 +85,7 @@ const handleCancel = () => router.push("/master/taksasi");
 const price = ref([]);
 
 const dynamicForm = reactive({
+    jenis_kendaraan: null,
     brand: null,
     code: null,
     model: null,
@@ -99,10 +104,10 @@ const response = () =>
         if (res.ok) {
             message.loading("memuat taksasi");
             PageData.value = res.data;
-            price.value = _.sortBy(res.data.price,"name");
+            price.value = _.sortBy(res.data.price, "name");
             Object.assign(dynamicForm, res.data);
             dari.value = res.data.dari.toString();
-            sampai.value=res.data.sampai.toString();
+            sampai.value = res.data.sampai.toString();
         }
     });
 
@@ -167,7 +172,7 @@ const createColumns = () => [
         key: "value",
         render(row, index) {
             return h(NInputNumber, {
-                value: row.harga ? row.harga :0,
+                value: row.harga ? row.harga : 0,
                 parse: parse,
                 showButton: false,
                 format: format,
@@ -186,13 +191,13 @@ const columns = ref(createColumns());
 
 const maxYear = () => {
     price.value = [];
-    const harga=ref();
+    const harga = ref();
 
     for (let i = dari.value; i <= sampai.value; i++) {
         const item = _.find(PageData.value.price, (o) => o.name === i);
         price.value.push({
             name: i,
-            harga:  item ? item.harga:0,
+            harga: item ? item.harga : 0,
         });
     }
     // Object.assign(price.value,PageData.value.price);
@@ -206,4 +211,14 @@ const format = (value) => {
     if (value === null) return "";
     return value.toLocaleString("en-US");
 };
+const optJenis = [
+    {
+        label: 'Motor',
+        value: 'motor'
+    },
+    {
+        label: 'Mobil',
+        value: 'mobil'
+    },
+];
 </script>
