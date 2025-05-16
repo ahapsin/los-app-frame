@@ -113,11 +113,12 @@ const response = () =>
 
 const handleSave = async () => {
 
-    formRef.value?.validate((errors) => {
+    formRef.value?.validate(() => {
         return null;
     });
     loading.value = true;
     const putBody = ref({
+        jenis_kendaraan: dynamicForm.jenis_kendaraan,
         brand: dynamicForm.brand,
         code: dynamicForm.code,
         model: dynamicForm.model,
