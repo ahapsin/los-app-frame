@@ -51,7 +51,7 @@
 import { useWindowSize } from "@vueuse/core";
 import _ from "lodash";
 import { NInput, NInputNumber, useMessage } from "naive-ui";
-import { computed, onMounted, reactive, ref } from "vue";
+import { computed, h, onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useApi } from "../../../helpers/axios";
 import router from "../../../router";
@@ -135,7 +135,7 @@ const handleSave = async () => {
     const response = await useApi({
         method: action.value,
         api: url.value,
-        data: param ? putBody.value : dynamicForm,
+        data: putBody.value,
         token: userToken,
     });
 
@@ -185,11 +185,6 @@ const createColumns = () => [
     },
 ];
 const columns = ref(createColumns());
-
-
-
-
-
 const maxYear = () => {
     price.value = [];
     const harga = ref();
