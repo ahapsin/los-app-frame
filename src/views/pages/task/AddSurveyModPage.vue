@@ -194,7 +194,7 @@
                 <div>
                     <select-state-region v-model:provinsi="pelanggan.provinsi" v-model:kota="pelanggan.kota"
                         v-model:kecamatan="pelanggan.kecamatan" v-model:desa="pelanggan.kelurahan"
-                        v-model:kodepos="pelanggan.kode_pos"/>
+                        v-model:kodepos="pelanggan.kode_pos" />
                 </div>
                 <n-divider title-placement="left"> UPLOAD DOKUMEN IDENTITAS</n-divider>
 
@@ -392,9 +392,11 @@
                             maxRows: 5,
                         }" type="textarea" placeholder="catatan survey" />
                 </n-form-item>
-                <n-divider title-placement="left"> Dokumen Pendukung </n-divider>
-                <file-upload :def_preview="true" title="dokumen pendukung" endpoint="image_upload_prospect" type="other"
-                    :idapp="dynamicForm.id" />
+                <n-form-item label="Dokumen Pendukung" path="dok_pendukung">
+                    <!-- <n-alert type="warning">Dokumen Pendukung wajib diisi minimal 2 dokumen</n-alert> -->
+                    <file-upload :def_preview="true" title="upload dokumen pendukung" endpoint="image_upload_prospect"
+                        type="other" :idapp="dynamicForm.id" @length="lengthDok" />
+                </n-form-item>
             </n-form>
         </div>
         <template #action>
@@ -467,7 +469,7 @@ const refAdmin = async (body) => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(response.error);
     } else {
         loading.value = false;
         skemaAngsuran.value = response.data;
@@ -615,6 +617,10 @@ const optJaminan = ["KENDARAAN", "SERTIFIKAT"].map((v) => ({
     label: v,
     value: v.toLowerCase(),
 }));
+
+const lengthDok = (data) => {
+    survey.dok_pendukung = data;
+}
 const optSektor = [
     "BURUH HARIAN LEPAS",
     "BURUH PABRIK",
@@ -698,7 +704,6 @@ const loadingKTP = ref(false);
 const bl_pesan = ref();
 
 const dataRo = ref();
-const jaminan = ref();
 const handleKtp = async (e) => {
     loadingKTP.value = true;
     const bodyForm = {
@@ -865,6 +870,9 @@ const plafondValidator = (rule, value) => {
 const numberValidator = (rule, value) => {
     return value > 0;
 };
+const dokumenValidator = (rule, value) => {
+    return value > 1;
+};
 const rulesOrder = {
     plafond: {
         trigger: "blur",
@@ -947,6 +955,12 @@ const rulesSurvey = {
         validator: numberValidator,
         message: "harus diisi",
     },
+    dok_pendukung: {
+        trigger: "blur",
+        required: true,
+        validator: dokumenValidator,
+        message: "minimal memiliki 2 dokumen pendukung",
+    }
 
 };
 const isRtl = true;
