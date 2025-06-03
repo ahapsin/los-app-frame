@@ -102,24 +102,24 @@
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
                     <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
-                        v-model:value="totalPay" :show-button="false" :parse="parse" :format="format" clearable
+                        v-model:value="totalPay" :show-button="false" :parse="parseCurrency" :format="formatCurrency" clearable
                         class="w-full" readonly>
                     </n-input-number>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
                     <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
                         @focus="handleFocus" ref="inputFocus" v-model:value="pageData.jumlah_uang" :show-button="false"
-                        :parse="parse" :format="format" clearable class="w-full">
+                        :parse="parseCurrency" :format="formatCurrency" clearable class="w-full">
                     </n-input-number>
                 </n-form-item>
                 <n-form-item label="Pembulatan" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parse" min="0"
-                        :format="format" :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan"
+                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parseCurrency" min="0"
+                        :format="formatCurrency" :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan"
                         clearable class="w-full" />
                 </n-form-item>
                 <n-form-item label="Kembalian" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" min="0;" :parse="parse"
-                        :format="format" v-model:value="pageData.kembalian" readonly class="w-full" />
+                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" min="0;" :parse="parseCurrency"
+                        :format="formatCurrency" v-model:value="pageData.kembalian" readonly class="w-full" />
                 </n-form-item>
                 <n-form-item class="w-full">
                     <n-button type="primary" @click="handleProses" :loading="loadProses" class="w-full" :disabled="pageData.bayar_dengan_diskon === 'ya' && totalPay === 0 && pageData.jumlah_uang === 0
@@ -774,9 +774,17 @@ const getSkalaCredit = async (e) => {
 const message = useMessage();
 
 
-const handleBack = () => {
-    router.push({ name: "pembayaran" });
-};
+const parseCurrency = (value) => {
+    const nums = value.replace(/(,|\$|\s)/g, "").trim();
+    if (/^\d+(\.(\d+)?)?$/.test(nums))
+        return Number(nums);
+    return nums === "" ? null : Number.NaN;
+}
+const formatCurrency = (value) => {
+    if (value === null)
+        return "";
+    return value.toLocaleString("en-US");
+}
 const rowClassName = (row) => {
     if (row.loan_number == selectedFasilitas.value) {
         return "row-active";
