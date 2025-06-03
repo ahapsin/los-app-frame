@@ -152,7 +152,8 @@
                     </n-form-item>
                     <n-form-item label="Pembulatan" class="w-full">
                         <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parse"
-                            :format="format" v-model:value="pelunasan.PEMBULATAN" clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
+                            :format="format" :max="pelunasan.UANG_PELANGGAN - pelunasan.JUMLAH_TAGIHAN"
+                            v-model:value="pelunasan.PEMBULATAN" clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
                     <n-form-item label="Kembalian" class="w-full">
@@ -340,22 +341,22 @@
     </n-modal>
 </template>
 <script setup>
-import { useApi } from "../../../helpers/axios";
-import router from "../../../router";
 import {
-    CheckCircleRound as checkIcon,
     ChevronLeftRound as backIcon,
+    CheckCircleRound as checkIcon,
 } from "@vicons/material";
 import {
-    NIcon,
     NButton,
+    NIcon,
     NInput,
     NInputNumber,
-    useMessage,
     useDialog,
+    useMessage,
 } from "naive-ui";
-import { computed, reactive, ref, h, onMounted } from "vue";
+import { computed, h, onMounted, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
+import { useApi } from "../../../helpers/axios";
+import router from "../../../router";
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const searchField = ref(false);
@@ -668,7 +669,7 @@ const getDataPelunasan = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         spinnerShow.value = false;
         dataPelunasan.value = response.data;
