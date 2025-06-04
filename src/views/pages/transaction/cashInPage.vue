@@ -101,24 +101,24 @@
                     </div>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
+                    <n-input-number  placeholder="Jumlah Pembayaran"
                         v-model:value="totalPay" :show-button="false" :parse="parseCurrency" :format="formatCurrency" clearable
                         class="w-full" readonly>
                     </n-input-number>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
+                    <n-input-number placeholder="Jumlah Pembayaran"
                         @focus="handleFocus" ref="inputFocus" v-model:value="pageData.jumlah_uang" :show-button="false"
                         :parse="parseCurrency" :format="formatCurrency" clearable class="w-full">
                     </n-input-number>
                 </n-form-item>
                 <n-form-item label="Pembulatan" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parseCurrency" min="0"
+                    <n-input-number :show-button="false" :parse="parseCurrency" min="0"
                         :format="formatCurrency" :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan"
                         clearable class="w-full" />
                 </n-form-item>
                 <n-form-item label="Kembalian" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" min="0;" :parse="parseCurrency"
+                    <n-input-number  :show-button="false" min="0;" :parse="parseCurrency"
                         :format="formatCurrency" v-model:value="pageData.kembalian" readonly class="w-full" />
                 </n-form-item>
                 <n-form-item class="w-full">
