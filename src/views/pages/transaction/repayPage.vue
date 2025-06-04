@@ -132,32 +132,32 @@
                         </div>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
+                        <n-input-number placeholder="Jumlah Pembayaran"
                             v-model:value="pelunasan.JUMLAH_TAGIHAN" :show-button="false" :parse="parse"
                             :format="format" readonly class="w-full">
                         </n-input-number>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran" size="large"
+                        <n-input-number placeholder="Jumlah Pembayaran" size="large"
                             v-model:value="pelunasan.UANG_PELANGGAN" :show-button="false" :parse="parseCurrency"
                             :format="formatCurrency" clearable @clear="clearUangPelaanggan" @blur="pushJumlahUang"
                             class="w-full" ref="uangPelangganRef" @click="handleUangPelangganFocus">
                         </n-input-number>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Jumlah Diskon" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
+                        <n-input-number  placeholder="Jumlah Pembayaran"
                             v-model:value="pelunasan.JUMLAH_DISKON" :show-button="false" :parse="parseCurrency"
                             :format="formatCurrency" clearable class="w-full" readonly>
                         </n-input-number>
                     </n-form-item>
                     <n-form-item label="Pembulatan" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parseCurrency"
+                        <n-input-number :show-button="false" :parse="parseCurrency"
                             :format="formatCurrency" :max="pelunasan.UANG_PELANGGAN - pelunasan.JUMLAH_TAGIHAN"
                             v-model:value="pelunasan.PEMBULATAN" clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
                     <n-form-item label="Kembalian" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parseCurrency"
+                        <n-input-number :show-button="false" :parse="parseCurrency"
                             :format="formatCurrency" v-model:value="pelunasan.KEMBALIAN" readonly class="w-full"
                             :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
