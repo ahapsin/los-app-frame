@@ -22,7 +22,7 @@
             <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging">
                 <div class="md:flex gap-2">
                     <n-form-item label="Plafond" path="plafond" class="w-full">
-                        <n-input-number :parse="parse" :format="format" :min="999999" v-model:value="order.plafond"
+                        <n-input-number :parse="parse" :format="format" v-model:value="order.plafond"
                             placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full" clearable
                             :on-update:value="handlePlafond" />
                     </n-form-item>
@@ -865,7 +865,7 @@ const handleSave = async (type) => {
     }
 };
 const plafondValidator = (rule, value) => {
-    return value >= 999999;
+    return value >= 1000000;
 };
 const numberValidator = (rule, value) => {
     return value > 0;

@@ -30,6 +30,7 @@
         </table>
 
       </n-card>
+      {{ dataTaksasi }}
       <n-data-table :columns="columns" :data="dataTakasasi" :pagination="{ pageSize: 10 }" ref="tableRef"></n-data-table>
     </n-card>
 
@@ -72,6 +73,11 @@ const handleFileUpload = async (event) => {
 
 const columns = [
   {
+    title: "Jenis",
+    sorter: 'default',
+    key: "jenis"
+  },
+  {
     title: "Merk",
     sorter: 'default',
     key: "brand"
@@ -99,7 +105,7 @@ const columns = [
     align: "right",
     key: "price",
     render(row) {
-      return h("div", row.price.toLocaleString("US"));
+      return h("div", row.price?.toLocaleString("US"));
     },
   },
 ]
@@ -107,12 +113,13 @@ const formattedData = (e) => {
   console.log(csvHeaders.value);
   const retData = e.map(item => (
     {
-      brand: item[0],
-      vehicle: item[1],
-      type: item[2],
-      model: item[3],
-      year: item[4],
-      price: item[5],
+      jenis: item[0],
+      brand: item[1],
+      vehicle: item[2],
+      type: item[3],
+      model: item[4],
+      year: item[5],
+      price: item[6],
     }));
   return retData;
 }
