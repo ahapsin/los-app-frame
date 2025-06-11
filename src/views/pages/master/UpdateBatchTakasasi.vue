@@ -117,11 +117,10 @@ const formattedData = (e) => {
     {
       jenis: item[0],
       brand: item[1],
-      vehicle: item[2],
-      type: item[3],
-      model: item[4],
-      year: item[5],
-      price: item[6],
+      model: item[2],
+      descr: item[3],
+      year: item[4],
+      price: item[5],
     }));
   return retData;
 }
@@ -167,8 +166,11 @@ const getTaksasi = async () => {
 }
 
 const tableRef = ref();
+const time = Date.now();
+
 const downloadCsv = () => tableRef.value?.downloadCsv({
-  fileName: `format_taksasi`,
+
+  fileName: `format_taksasi${time}`,
   keepOriginalData: true
 });
 
