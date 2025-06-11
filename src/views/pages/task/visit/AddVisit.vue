@@ -23,7 +23,6 @@
               <n-input type="textarea"/>
             </n-form-item>
             <n-form-item label="Pin Poin">
-
               <div class="w-full h-[300px] z-0 rounded-md overflow-clip">
                 <Maps_point></Maps_point>
               </div>
@@ -68,18 +67,16 @@
 </template>
 
 <script setup>
-import {useLoadingBar} from "naive-ui";
-import SelectStateRegion from "../../../../components/molecules/SelectStateRegion.vue";
+import { useLoadingBar } from "naive-ui";
+import { reactive } from "vue";
 import FileUpload from "../../../../components/atoms/FileUpload.vue";
-import {reactive} from "vue";
+import SelectStateRegion from "../../../../components/molecules/SelectStateRegion.vue";
 import Maps_point from "../../../aftersand/maps_point.vue";
-import AnalisaPage from "../analisa/AnalisaPage.vue";
 import AnalisaForm from "../analisa/AnalisaForm.vue";
 import CreditTab from "./CreditTab.vue";
 import DebiturTab from "./DebiturTab.vue";
 // import PenjaminTab from "./PenjaminTab.vue";
 import JaminanTab from "./JaminanTab.vue";
-import FormAnalisaPage from "../analisa/FormAnalisaPage.vue";
 
 
 const progres = useLoadingBar();

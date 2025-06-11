@@ -1,5 +1,6 @@
 <template>
   <div id="app">
+    asdasd
     <n-card title="Update taksasi">
       <template #header-extra>
         <n-space>
@@ -37,12 +38,11 @@
 </template>
 
 <script setup>
-import {h, ref} from "vue";
 import Papa from 'papaparse'; // Import PapaParse
-import _ from "lodash";
+import { h, onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios";
 
-import {useMessage} from "naive-ui";
+import { useMessage } from "naive-ui";
 
 const csvData = ref([]);
 const csvHeaders = ref([]);

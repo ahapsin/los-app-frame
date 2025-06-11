@@ -187,7 +187,6 @@ const createColumns = () => [
 const columns = ref(createColumns());
 const maxYear = () => {
     price.value = [];
-    const harga = ref();
 
     for (let i = dari.value; i <= sampai.value; i++) {
         const item = _.find(PageData.value.price, (o) => o.name === i);
