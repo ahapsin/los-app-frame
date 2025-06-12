@@ -5,21 +5,23 @@
         <n-space v-if="!loadDataRef">
           <input id="files" type="file" @change="handleFileUpload" class="hidden" accept=".csv" />
           <label for="files"
-            class="border-2 bg-pr  text-white flex p-2  hover:shadow justify-center rounded-xl cursor-pointer">Import</label>
+            class="border-2 bg-pr  text-white flex p-2  hover:shadow justify-center rounded-xl cursor-pointer">
+            <v-icon name="bi-trash"></v-icon>Import
+          </label>
           <div class="border-2 border-pr  text-pr flex p-2  hover:shadow justify-center rounded-xl cursor-pointer"
-            @click="downloadCsv" v-if="dataTakasasi.length > 0">Download Taksasi</div>
+            @click="downloadCsv" v-if="dataTakasasi.length > 0"><v-icon name="bi-trash"></v-icon>Download Taksasi</div>
         </n-space>
       </template>
+
       <n-card v-if="importChange">
         <n-alert type="warning" :show-icon="false">
           <div class="flex justify-between items-center">
-            <div class="text-xl">{{ csvData.length }} baris data</div>
+            <div class="text-xl">{{ csvData.length?.toLocaleString() }} baris data</div>
             <n-button type="primary" @click="importData">update data</n-button>
           </div>
         </n-alert>
         <table class="table table-striped">
           <thead class="sticky top-0">
-
             <th v-for="head in csvHeaders" :key="head">{{ head }}</th>
           </thead>
           <tbody class="h-96 overflow-y-auto">
@@ -85,19 +87,16 @@ const columns = [
     key: "brand"
   },
   {
-    title: "Code",
-    sorter: 'default',
-    key: "code"
-  },
-  {
-    title: "Type",
-    sorter: 'default',
-    key: "model"
-  }, {
     title: "Model",
     sorter: 'default',
+    key: "model"
+  },
+  {
+    title: "Descr",
+    sorter: 'default',
     key: "descr"
-  }, {
+  },
+  {
     title: "Year",
     sorter: 'default',
     key: "year"

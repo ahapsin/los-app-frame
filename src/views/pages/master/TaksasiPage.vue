@@ -73,6 +73,7 @@
                     </n-space>
                 </template>
                 <n-space vertical :size="12" class="pt-4">
+                    {{ showData.length }}
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
                         :loading="loading" />
                 </n-space>
