@@ -8,20 +8,17 @@
             <n-alert v-show="errorAPI" title="Peringatan" type="warning" closable class="my-4">
                 {{ errorAPI }}
             </n-alert>
-            <n-form-item label="Jenis Kendaraan">
-                <n-select :options="optJenis" v-model:value="dynamicForm.jenis_kendaraan" />
+            <n-form-item label="Jenis">
+                <n-select :options="optJenis" v-model:value="dynamicForm.jenis" />
             </n-form-item>
-            <n-form-item label="Brand">
-                <n-input placeholder="ex. HONDA / YAMAHA / SUZUKI, dll" v-model:value="dynamicForm.brand" />
+            <n-form-item label="Merk">
+                <n-input placeholder="ex. HONDA / YAMAHA / SUZUKI, dll" v-model:value="dynamicForm.merk" />
             </n-form-item>
-            <n-form-item label="Vehicle">
-                <n-input placeholder="ex. ADB / CG6 / NB1" v-model:value="dynamicForm.code" />
+            <n-form-item label="Tipe">
+                <n-input placeholder="ex. PS5E549202 MT / SUPRA X 125 TLD" v-model:value="dynamicForm.tipe" />
             </n-form-item>
-            <n-form-item label="Type">
-                <n-input placeholder="ex. PS5E549202 MT / SUPRA X 125 TLD" v-model:value="dynamicForm.model" />
-            </n-form-item>
-            <n-form-item label="Descr">
-                <n-input type="textarea" v-model:value="dynamicForm.descr"
+            <n-form-item label="Keterangan">
+                <n-input type="textarea" v-model:value="dynamicForm.keterangan"
                     placeholder="ex. Vario Tecno / Supra X 125 / Satria FU, dll " />
             </n-form-item>
             <div class="flex gap-2">
@@ -85,11 +82,10 @@ const handleCancel = () => router.push("/master/taksasi");
 const price = ref([]);
 
 const dynamicForm = reactive({
-    jenis_kendaraan: null,
-    brand: null,
-    code: null,
-    model: null,
-    descr: null,
+    jenis: null,
+    merk: null,
+    tipe: null,
+    keterangan: null,
     price: price.value,
     min_year: null,
     max_year: null,
@@ -104,7 +100,7 @@ const response = () =>
         if (res.ok) {
             message.loading("memuat taksasi");
             PageData.value = res.data;
-            price.value = _.sortBy(res.data.price, "name");
+            price.value = _.sortBy(res.data.harga, "tahun");
             Object.assign(dynamicForm, res.data);
             dari.value = res.data.dari.toString();
             sampai.value = res.data.sampai.toString();
@@ -118,11 +114,10 @@ const handleSave = async () => {
     });
     loading.value = true;
     const putBody = ref({
-        jenis_kendaraan: dynamicForm.jenis_kendaraan,
-        brand: dynamicForm.brand,
-        code: dynamicForm.code,
-        model: dynamicForm.model,
-        descr: dynamicForm.descr,
+        jenis: dynamicForm.jenis,
+        merk: dynamicForm.merk,
+        tipe: dynamicForm.tipe,
+        keterangan: dynamicForm.keterangan,
         price: price.value
     });
     if (param) {
@@ -160,10 +155,10 @@ const createColumns = () => [
         key: "year",
         render(row, index) {
             return h(NInput, {
-                value: row.name,
+                value: row.tahun,
                 disabled: true,
                 onUpdateValue(v) {
-                    price.value[index].name = v;
+                    price.value[index].tahun = v;
                 },
             });
         },
@@ -187,16 +182,14 @@ const createColumns = () => [
 const columns = ref(createColumns());
 const maxYear = () => {
     price.value = [];
-    const harga = ref();
 
     for (let i = dari.value; i <= sampai.value; i++) {
-        const item = _.find(PageData.value.price, (o) => o.name === i);
+        const item = _.find(PageData.value.harga, (o) => o.tahun === i.toString());
         price.value.push({
-            name: i,
+            tahun: i,
             harga: item ? item.harga : 0,
         });
     }
-    // Object.assign(price.value,PageData.value.price);
 };
 const parse = (input) => {
     const nums = input.replace(/,/g, "").trim();
@@ -207,14 +200,13 @@ const format = (value) => {
     if (value === null) return "";
     return value.toLocaleString("en-US");
 };
-const optJenis = [
-    {
-        label: 'Motor',
-        value: 'motor'
-    },
-    {
-        label: 'Mobil',
-        value: 'mobil'
-    },
+const optJenis =  [
+  { label: "MOBIL PENUMPANG", value: "MOBIL PENUMPANG" },
+  { label: "SEPEDA MOTOR", value: "SEPEDA MOTOR" },
+  { label: "MOBIL BUS", value: "MOBIL BUS" },
+  { label: "MOBIL BARANG", value: "MOBIL BARANG" },
+  { label: "KENDARAAN KHUSUS", value: "KENDARAAN KHUSUS" },
+  { label: "KERETA API", value: "KERETA API" },
+  { label: "KENDARAAN BERBASIS ENERGI TERBARUKAN", value: "KENDARAAN BERBASIS ENERGI TERBARUKAN" }
 ];
 </script>

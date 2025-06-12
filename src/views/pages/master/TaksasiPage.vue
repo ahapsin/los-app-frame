@@ -1,7 +1,7 @@
 <template>
-    <div class="pt-4">
+    <div>
         <n-space vertical>
-            <n-card :title="`Tabel ${$route.name}`"  :segmented="true" size="small">
+            <n-card :title="`Tabel ${$route.name}`" :segmented="true" size="small">
                 <template #header-extra>
                     <n-space class="!gap-1">
                         <div class="me-1">
@@ -45,7 +45,7 @@
                                 </template>
                                 <strong>tambah</strong>
                             </n-button>
-                          <n-button type="warning" @click="handleUpdateBatch">
+                            <n-button type="warning" @click="handleUpdateBatch">
                                 <template #icon>
                                     <n-icon>
                                         <edit-icon />
@@ -62,7 +62,7 @@
                                     </n-icon>
                                 </template>
                             </n-button>
-                          <n-button type="warning" @click="handleUpdateBatch">
+                            <n-button type="warning" @click="handleUpdateBatch">
                                 <template #icon>
                                     <n-icon>
                                         <edit-icon />
@@ -73,6 +73,7 @@
                     </n-space>
                 </template>
                 <n-space vertical :size="12" class="pt-4">
+
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
                         :loading="loading" />
                 </n-space>
@@ -81,22 +82,19 @@
     </div>
 </template>
 <script setup>
-import { ref, onMounted, h } from "vue";
+import {
+    AddCircleOutlineRound as AddIcon,
+    DeleteOutlined as DeleteIcon,
+    ListAltOutlined as DetailIcon,
+    FileDownloadOutlined as DownloadIcon,
+    SyncFilled as EditIcon,
+    SearchOutlined as SearchIcon,
+} from "@vicons/material";
+import { NButton, NDropdown, NIcon, useDialog, useLoadingBar, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios";
 import { useSearch } from "../../../helpers/searchObject";
 import router from '../../../router';
-import { useDialog, useMessage, NDropdown, NIcon, NButton, useLoadingBar } from "naive-ui";
-import {
-    AddCircleOutlineRound as AddIcon,
-    SearchOutlined as SearchIcon,
-    FileDownloadOutlined as DownloadIcon,
-
-} from "@vicons/material"
-import {
-  SyncFilled as EditIcon,
-    DeleteOutlined as DeleteIcon,
-    ListAltOutlined as DetailIcon
-} from "@vicons/material";
 
 
 const message = useMessage();
@@ -105,25 +103,34 @@ const dataTable = ref([]);
 const searchBox = ref();
 
 const columns = [
-    {
-        title: "Brand",
+     {
+        title: "MERK",
         sorter: 'default',
-        key: "brand"
+        key: "merk"
     },
     {
-        title: "Code",
+        title: "TIPE",
         sorter: 'default',
-        key: "code"
+        key: "tipe"
+    },
+   
+    {
+        title: "JENIS",
+        sorter: 'default',
+        key: "jenis"
     },
     {
-        title: "Model",
+        title: "KETERANGAN",
         sorter: 'default',
-        key: "model"
+        key: "keterangan"
     },
     {
-        title: "Descr",
+        title: "TAHUN",
         sorter: 'default',
-        key: "descr"
+        key: "tahun",
+        render(row){
+return h("div",`${row.dari} - ${row.sampai}`)
+        }
     },
     {
         title: "",
@@ -148,7 +155,7 @@ const columns = [
                     }
                 },
                 {
-                    default:()=> h(NButton, {
+                    default: () => h(NButton, {
                         size: "small",
                     }, { default: () => 'Action' })
                 }
@@ -156,15 +163,6 @@ const columns = [
         }
     }
 ];
-
-const statusTag = (e) => {
-    if (e === "Active") {
-        return "success";
-    } else if (e === "Non-Active") {
-        return "warning";
-    }
-
-}
 const handleConfirm = (row, index) => {
     dialog.warning({
         title: "Confirm",
@@ -175,7 +173,7 @@ const handleConfirm = (row, index) => {
             let userToken = localStorage.getItem("token");
             const response = await useApi({
                 method: 'DELETE',
-                api: `cabang/${row.id}`,
+                api: `taksasi/${row.id}`,
                 token: userToken
             });
             if (!response.ok) {
@@ -201,10 +199,10 @@ const handleAdd = () => {
     router.push('/master/taksasi-action');
 }
 const handleUpdateBatch = () => {
-    router.push({name:"taksasi batch"});
+    router.push({ name: "taksasi batch" });
 }
 const loading = ref(false);
-const loadingBar=useLoadingBar();
+const loadingBar = useLoadingBar();
 const getData = async () => {
     loading.value = true;
     let userToken = localStorage.getItem("token");
@@ -214,7 +212,7 @@ const getData = async () => {
         token: userToken
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         loadingBar.finish();
         loading.value = false;

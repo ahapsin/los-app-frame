@@ -132,32 +132,34 @@
                         </div>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
+                        <n-input-number placeholder="Jumlah Pembayaran"
                             v-model:value="pelunasan.JUMLAH_TAGIHAN" :show-button="false" :parse="parse"
                             :format="format" readonly class="w-full">
                         </n-input-number>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran" size="large"
-                            v-model:value="pelunasan.UANG_PELANGGAN" :show-button="false" :parse="parse"
-                            :format="format" clearable @clear="clearUangPelaanggan" @blur="pushJumlahUang"
+                        <n-input-number placeholder="Jumlah Pembayaran" size="large"
+                            v-model:value="pelunasan.UANG_PELANGGAN" :show-button="false" :parse="parseCurrency"
+                            :format="formatCurrency" clearable @clear="clearUangPelaanggan" @blur="pushJumlahUang"
                             class="w-full" ref="uangPelangganRef" @click="handleUangPelangganFocus">
                         </n-input-number>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Jumlah Diskon" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
-                            v-model:value="pelunasan.JUMLAH_DISKON" :show-button="false" :parse="parse" :format="format"
-                            clearable class="w-full" readonly>
+                        <n-input-number  placeholder="Jumlah Pembayaran"
+                            v-model:value="pelunasan.JUMLAH_DISKON" :show-button="false" :parse="parseCurrency"
+                            :format="formatCurrency" clearable class="w-full" readonly>
                         </n-input-number>
                     </n-form-item>
                     <n-form-item label="Pembulatan" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parse"
-                            :format="format" v-model:value="pelunasan.PEMBULATAN" clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
+                        <n-input-number :show-button="false" :parse="parseCurrency"
+                            :format="formatCurrency" :max="pelunasan.UANG_PELANGGAN - pelunasan.JUMLAH_TAGIHAN"
+                            v-model:value="pelunasan.PEMBULATAN" clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
                     <n-form-item label="Kembalian" class="w-full">
-                        <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parse"
-                            :format="format" v-model:value="pelunasan.KEMBALIAN" readonly class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
+                        <n-input-number :show-button="false" :parse="parseCurrency"
+                            :format="formatCurrency" v-model:value="pelunasan.KEMBALIAN" readonly class="w-full"
+                            :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
                     <n-form-item class="w-full">
@@ -215,19 +217,19 @@
                                     <small class="text-reg">No Transaksi : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.no_transaksi
-                                    }}
+                                        }}
                                     </n-text>
                                     <small class="text-reg">No Pelanggan : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.cust_code
-                                    }}
+                                        }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col py-4">
                                     <small class="text-reg">Terima dari (No Kontrak)</small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.nama
-                                    }}
+                                        }}
                                     </n-text>
                                     <small class="text-lg">{{ responseProsesPayment.res.no_fasilitas }}</small>
                                 </div>
@@ -238,7 +240,7 @@
                                     <small class="text-reg">Tanggal & Waktu</small>
                                     <n-text strong class="text-md">{{
                                         responseProsesPayment.res.tgl_transaksi
-                                    }}
+                                        }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col">
@@ -260,7 +262,7 @@
                                     <td>
                                         <n-text strong class="text-md"> {{
                                             responseProsesPayment.res.kembalian
-                                        }}
+                                            }}
                                         </n-text>
                                     </td>
                                 </div>
@@ -268,7 +270,7 @@
                                     <small class="text-reg">Metode Pembayaran</small>
                                     <n-text strong class="text-md"> {{
                                         responseProsesPayment.res.payment_method
-                                    }}
+                                        }}
                                     </n-text>
                                 </div>
                             </div>
@@ -286,11 +288,11 @@
                                     <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                    }}
+                                        }}
                                     </td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_denda).toLocaleString('US')
-                                    }}
+                                        }}
                                     </td>
                                     <td align="right" class="border pe-2 border-black">
                                         {{
@@ -304,7 +306,7 @@
                                     <td colspan="3" align="right" class="pe-2">
                                         <strong>{{
                                             responseProsesPayment.res.total_bayar.toLocaleString("US")
-                                        }}</strong>
+                                            }}</strong>
                                     </td>
                                 </tr>
                             </table>
@@ -314,13 +316,13 @@
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.created_by
-                                    }}
+                                        }}
                                     </n-text>
                                 </div>
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.nama
-                                    }}
+                                        }}
                                     </n-text>
                                 </div>
                             </div>
@@ -340,22 +342,22 @@
     </n-modal>
 </template>
 <script setup>
-import { useApi } from "../../../helpers/axios";
-import router from "../../../router";
 import {
-    CheckCircleRound as checkIcon,
     ChevronLeftRound as backIcon,
+    CheckCircleRound as checkIcon,
 } from "@vicons/material";
 import {
-    NIcon,
     NButton,
+    NIcon,
     NInput,
     NInputNumber,
-    useMessage,
     useDialog,
+    useMessage,
 } from "naive-ui";
-import { computed, reactive, ref, h, onMounted } from "vue";
+import { computed, h, onMounted, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
+import { useApi } from "../../../helpers/axios";
+import router from "../../../router";
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const searchField = ref(false);
@@ -479,6 +481,18 @@ const format = (value) => {
     if (value === null) return "";
     return value.toLocaleString("en-US");
 };
+
+const parseCurrency = (value) => {
+    const nums = value.replace(/(,|\$|\s)/g, "").trim();
+    if (/^\d+(\.(\d+)?)?$/.test(nums))
+        return Number(nums);
+    return nums === "" ? null : Number.NaN;
+}
+const formatCurrency = (value) => {
+    if (value === null)
+        return "";
+    return value.toLocaleString("en-US");
+}
 const columns = createColumns();
 const loadingAngsuran = ref(false);
 const displayDetail = ref(false);
@@ -668,7 +682,7 @@ const getDataPelunasan = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         spinnerShow.value = false;
         dataPelunasan.value = response.data;
