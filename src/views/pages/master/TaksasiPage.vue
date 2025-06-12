@@ -73,7 +73,7 @@
                     </n-space>
                 </template>
                 <n-space vertical :size="12" class="pt-4">
-                    {{ showData.length }}
+
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
                         :loading="loading" />
                 </n-space>
@@ -103,30 +103,34 @@ const dataTable = ref([]);
 const searchBox = ref();
 
 const columns = [
+     {
+        title: "MERK",
+        sorter: 'default',
+        key: "merk"
+    },
     {
-        title: "Jenis",
+        title: "TIPE",
+        sorter: 'default',
+        key: "tipe"
+    },
+   
+    {
+        title: "JENIS",
         sorter: 'default',
         key: "jenis"
     },
     {
-        title: "Brand",
+        title: "KETERANGAN",
         sorter: 'default',
-        key: "brand"
+        key: "keterangan"
     },
     {
-        title: "Code",
+        title: "TAHUN",
         sorter: 'default',
-        key: "code"
-    },
-    {
-        title: "Model",
-        sorter: 'default',
-        key: "model"
-    },
-    {
-        title: "Descr",
-        sorter: 'default',
-        key: "descr"
+        key: "tahun",
+        render(row){
+return h("div",`${row.dari} - ${row.sampai}`)
+        }
     },
     {
         title: "",
@@ -159,15 +163,6 @@ const columns = [
         }
     }
 ];
-
-const statusTag = (e) => {
-    if (e === "Active") {
-        return "success";
-    } else if (e === "Non-Active") {
-        return "warning";
-    }
-
-}
 const handleConfirm = (row, index) => {
     dialog.warning({
         title: "Confirm",
@@ -178,7 +173,7 @@ const handleConfirm = (row, index) => {
             let userToken = localStorage.getItem("token");
             const response = await useApi({
                 method: 'DELETE',
-                api: `cabang/${row.id}`,
+                api: `taksasi/${row.id}`,
                 token: userToken
             });
             if (!response.ok) {

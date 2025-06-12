@@ -12,7 +12,6 @@
             @click="downloadCsv" v-if="dataTakasasi.length > 0"><v-icon name="bi-trash"></v-icon>Download Taksasi</div>
         </n-space>
       </template>
-
       <n-card v-if="importChange">
         <n-alert type="warning" :show-icon="false">
           <div class="flex justify-between items-center">
@@ -76,37 +75,38 @@ const handleFileUpload = async (event) => {
 }
 
 const columns = [
+    {
+    title: "MERK",
+    sorter: 'default',
+    key: "merk"
+  },
   {
-    title: "Jenis",
+    title: "TIPE",
+    sorter: 'default',
+    key: "tipe"
+  },
+
+  {
+    title: "JENIS",
     sorter: 'default',
     key: "jenis"
   },
   {
-    title: "Merk",
+    title: "KETERANGAN",
     sorter: 'default',
-    key: "brand"
+    key: "keterangan"
   },
   {
-    title: "Model",
+    title: "TAHUN",
     sorter: 'default',
-    key: "model"
-  },
-  {
-    title: "Descr",
-    sorter: 'default',
-    key: "descr"
-  },
-  {
-    title: "Year",
-    sorter: 'default',
-    key: "year"
+    key: "tahun"
   }, {
-    title: "Price",
+    title: "HARGA",
     sorter: 'default',
     align: "right",
-    key: "price",
+    key: "harga",
     render(row) {
-      return h("div", row.price?.toLocaleString("US"));
+      return h("div", row.harga?.toLocaleString("US"));
     },
   },
 ]
@@ -114,12 +114,12 @@ const formattedData = (e) => {
   console.log(csvHeaders.value);
   const retData = e.map(item => (
     {
-      jenis: item[0],
-      brand: item[1],
-      model: item[2],
-      descr: item[3],
-      year: item[4],
-      price: item[5],
+      merk: item[0],
+      tipe: item[1],
+      jenis: item[2],
+      keterangan: item[3],
+      tahun: item[4],
+      harga: item[5],
     }));
   return retData;
 }

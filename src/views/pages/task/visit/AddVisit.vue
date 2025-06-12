@@ -1,26 +1,26 @@
 <template>
   <n-card size="small" :segmented="{
-        content: true,
-        footer: 'soft',
-    }">
+    content: true,
+    footer: 'soft',
+  }">
     <n-tabs type="segment" animated>
       <n-tab-pane name="kunjungan" tab="Kunjungan">
         <n-scrollbar style="max-height: 400px">
           <form>
             <div class="grid md:grid-cols-3 gap-2">
               <n-form-item label="Tanggal Kunjungan">
-                <n-date-picker class="w-full" foramat="dd-MM-yyyy" :default-value="Date.now()"/>
+                <n-date-picker class="w-full" foramat="dd-MM-yyyy" :default-value="Date.now()" />
               </n-form-item>
               <n-form-item label="Nama Nasabah">
-                <n-input class="w-full"/>
+                <n-input class="w-full" />
               </n-form-item>
               <n-form-item label="No Handphone">
-                <n-input class="w-full"/>
+                <n-input class="w-full" />
               </n-form-item>
             </div>
-            <SelectStateRegion/>
+            <SelectStateRegion />
             <n-form-item label="Alamat Detail">
-              <n-input type="textarea"/>
+              <n-input type="textarea" />
             </n-form-item>
             <n-form-item label="Pin Poin">
               <div class="w-full h-[300px] z-0 rounded-md overflow-clip">
@@ -29,34 +29,33 @@
             </n-form-item>
             <n-form-item label="Lampiran Kunjungan">
               <file-upload :def_preview="true" title="dokumen pendukung" endpoint="image_upload_prospect"
-                           type="other"/>
+                type="other" />
             </n-form-item>
             <n-alert :show-icon="false">
               <div class="flex items-center justify-between">
                 <n-text>Ajukan Slik</n-text>
-                <n-switch v-model:value="kunjunganForm.apply_slik" @update:value="handleChange"/>
+                <n-switch v-model:value="kunjunganForm.apply_slik" @update:value="handleChange" />
               </div>
             </n-alert>
           </form>
         </n-scrollbar>
       </n-tab-pane>
       <n-tab-pane name="credit" tab="Credit">
-        <CreditTab/>
+        <CreditTab />
       </n-tab-pane>
       <n-tab-pane name="debitur" tab="Debitur">
-        <DebiturTab/>
+        <DebiturTab />
       </n-tab-pane>
       <n-tab-pane name="penjamin" tab="Penjamin">
-       <PenjaminTab/>
+        <PenjaminTab />
       </n-tab-pane>
       <n-tab-pane name="jaminan" tab="Jaminan">
-       <JaminanTab/>
+        <JaminanTab />
       </n-tab-pane>
       <n-tab-pane name="analisa" tab="Analisa">
-        <AnalisaForm/>
+        <AnalisaForm />
       </n-tab-pane>
     </n-tabs>
-
     <template #action>
       <n-button type="primary">
         <span v-if="!kunjunganForm.apply_slik">Kirim</span>
