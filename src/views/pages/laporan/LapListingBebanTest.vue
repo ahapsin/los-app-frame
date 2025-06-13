@@ -33,12 +33,12 @@
   </n-card>
 </template>
 <script setup>
-import { ref, onMounted, computed } from "vue";
 import moment from "moment";
-import JsonExcel from "vue-json-excel3";
 import { useLoadingBar, useMessage } from "naive-ui";
-import { useMeStore } from "../../../stores/me";
+import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import JsonExcel from "vue-json-excel3";
 import { useApi } from "../../../helpers/axios.js";
+import { useMeStore } from "../../../stores/me";
 
 import * as XLSX from "xlsx";
 import { useSearch } from "../../../helpers/searchObject";
@@ -178,5 +178,9 @@ onMounted(() => {
 }
 )
   ;
+
+  onBeforeUnmount(()=>{
+    alert('keluar');
+  });
 
 </script>

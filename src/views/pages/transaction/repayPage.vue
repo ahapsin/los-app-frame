@@ -152,7 +152,7 @@
                     </n-form-item>
                     <n-form-item label="Pembulatan" class="w-full">
                         <n-input-number :show-button="false" :parse="parseCurrency"
-                            :format="formatCurrency" :max="pelunasan.UANG_PELANGGAN - pelunasan.JUMLAH_TAGIHAN"
+                            :format="formatCurrency"
                             v-model:value="pelunasan.PEMBULATAN" clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
