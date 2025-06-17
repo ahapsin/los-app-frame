@@ -1044,7 +1044,7 @@ const columnsJaminan = [
 ];
 
 const dynamicSearch = reactive({
-  status: 'SENDING',
+  status: 'SEMUA',
   tgl: null,
   no_surat: null,
 });
@@ -1108,7 +1108,7 @@ const optStatus = ["NORMAL", "TITIP", "SITA", "JUAL"].map((v) => ({
   label: v,
   value: v,
 }));
-const optStatusSurat = ["SELESAI", "REQUEST", "SENDING", "CANCEL"].map((v) => ({
+const optStatusSurat = ["SEMUA", "PENDING", "SELESAI"].map((v) => ({
   label: v,
   value: v,
 }));
