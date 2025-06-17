@@ -31,6 +31,7 @@ import HAppBar from '../../../components/molecules/HAppBar.vue';
 
 const { status, data, error, close } = useEventSource('https://dev.kspdjaya.id/tasks')
 
+
 const ProfileSection = defineAsyncComponent(() =>
   import('./ProfileSection.vue')
 );

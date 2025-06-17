@@ -1,4 +1,4 @@
-import {createRouter, createWebHistory} from "vue-router";
+import { createRouter, createWebHistory } from "vue-router";
 
 // slice
 
@@ -410,17 +410,25 @@ const routes = [
 ];
 
 const router = createRouter({
-    history: createWebHistory(),
-    routes,
+  history: createWebHistory(),
+  routes,
 });
 
 const apptitle = import.meta.env.VITE_APP_TITLE;
 router.beforeEach(async (to, from, next) => {
-    document.title = to.meta?.title ?? apptitle;
+  //   const isMobile = window.innerWidth <= 768;
+  document.title = to.meta?.title ?? apptitle;
 
-    if (to.name !== 'signin' && !localStorage.getItem('token')) next({name: 'signin'})
-    else next()
-})
-
+  if (to.name !== "signin" && !localStorage.getItem("token")) {
+    next({ name: "signin" });
+  } else {
+    // if (isMobile) {
+    //   next("/");
+    // } else {
+    //   next("/m");
+    // }
+    next();
+  }
+});
 
 export default router;

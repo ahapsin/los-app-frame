@@ -1,54 +1,57 @@
 <template>
   <div id="app">
-    <n-card title="Update taksasi">
+    <n-card title="Update taksasi" size="small" :segmented="true">
       <template #header-extra>
-        <n-space>
-          <input id="files" type="file" @change="handleFileUpload" class="hidden" accept=".csv"/>
+        <n-space v-if="!loadDataRef">
+          <input id="files" type="file" @change="handleFileUpload" class="hidden" accept=".csv" />
           <label for="files"
-                 class="border-2 bg-pr  text-white flex p-2  hover:shadow justify-center rounded-xl cursor-pointer">Import</label>
-          <div
-                 class="border-2 border-pr  text-pr flex p-2  hover:shadow justify-center rounded-xl cursor-pointer" @click="downloadCsv" v-if="dataTakasasi.length >0">Download Taksasi</div>
+            class="border-2 bg-pr  text-white flex p-2  hover:shadow justify-center rounded-xl cursor-pointer">
+            <v-icon name="bi-trash"></v-icon>Import
+          </label>
+          <div class="border-2 border-pr  text-pr flex p-2  hover:shadow justify-center rounded-xl cursor-pointer"
+            @click="downloadCsv" v-if="dataTakasasi.length > 0"><v-icon name="bi-trash"></v-icon>Download Taksasi</div>
         </n-space>
       </template>
       <n-card v-if="importChange">
         <n-alert type="warning" :show-icon="false">
           <div class="flex justify-between items-center">
-            <div class="text-xl">{{ csvData.length }} baris data</div>
+            <div class="text-xl">{{ csvData.length?.toLocaleString() }} baris data</div>
             <n-button type="primary" @click="importData">update data</n-button>
           </div>
         </n-alert>
         <table class="table table-striped">
           <thead class="sticky top-0">
-
-          <th v-for="head in csvHeaders" :key="head">{{ head }}</th>
+            <th v-for="head in csvHeaders" :key="head">{{ head }}</th>
           </thead>
           <tbody class="h-96 overflow-y-auto">
-          <tr v-for="body in csvData" :key="body">
-            <td v-for="item in body" :key="item">{{ item }}</td>
-          </tr>
+            <tr v-for="body in csvData" :key="body">
+              <td v-for="item in body" :key="item">{{ item }}</td>
+            </tr>
           </tbody>
         </table>
 
       </n-card>
-      <n-data-table :columns="columns" :data="dataTakasasi" :pagination="{pageSize:10}"  ref="tableRef"></n-data-table>
+
+      <n-data-table :columns="columns" :data="dataTakasasi" :pagination="{ pageSize: 10 }" ref="tableRef"
+        :loading="loadDataRef"></n-data-table>
+
     </n-card>
 
   </div>
 </template>
-
 <script setup>
-import {h, ref} from "vue";
+import { useMessage } from "naive-ui";
 import Papa from 'papaparse'; // Import PapaParse
-import _ from "lodash";
+import { h, onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios";
-
-import {useMessage} from "naive-ui";
 
 const csvData = ref([]);
 const csvHeaders = ref([]);
 const format = ref([]);
 const importChange = ref(false);
 
+
+const loadDataRef = ref(false);
 const handleFileUpload = async (event) => {
   // Get the file from the input element
   const file = event.target.files[0];
@@ -72,56 +75,59 @@ const handleFileUpload = async (event) => {
 }
 
 const columns = [
-  {
-    title: "Merk",
+    {
+    title: "MERK",
     sorter: 'default',
-    key: "brand"
+    key: "merk"
   },
   {
-    title: "Code",
+    title: "TIPE",
     sorter: 'default',
-    key: "code"
+    key: "tipe"
+  },
+
+  {
+    title: "JENIS",
+    sorter: 'default',
+    key: "jenis"
   },
   {
-    title: "Type",
+    title: "KETERANGAN",
     sorter: 'default',
-    key: "model"
-  },  {
-    title: "Model",
+    key: "keterangan"
+  },
+  {
+    title: "TAHUN",
     sorter: 'default',
-    key: "descr"
-  },  {
-    title: "Year",
-    sorter: 'default',
-    key: "year"
-  },  {
-    title: "Price",
+    key: "tahun"
+  }, {
+    title: "HARGA",
     sorter: 'default',
     align: "right",
-    key: "price",
+    key: "harga",
     render(row) {
-      return h("div", row.price.toLocaleString("US"));
+      return h("div", row.harga?.toLocaleString("US"));
     },
   },
 ]
 const formattedData = (e) => {
   console.log(csvHeaders.value);
   const retData = e.map(item => (
-      {
-        brand: item[0],
-        vehicle: item[1],
-        type: item[2],
-        model: item[3],
-        year: item[4],
-        price: item[5],
-      }));
+    {
+      merk: item[0],
+      tipe: item[1],
+      jenis: item[2],
+      keterangan: item[3],
+      tahun: item[4],
+      harga: item[5],
+    }));
   return retData;
 }
 const message = useMessage();
 
 const importData = async () => {
   let messageReactive = null;
-  messageReactive = message.loading("mengupdate data taksasi", {duration: 0});
+  messageReactive = message.loading("mengupdate data taksasi", { duration: 0 });
   const userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "post",
@@ -140,6 +146,8 @@ const importData = async () => {
 
 const dataTakasasi = ref([]);
 const getTaksasi = async () => {
+  loadDataRef.value = true;
+  message.loading("memuat data taksasi....");
   const userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "get",
@@ -148,20 +156,24 @@ const getTaksasi = async () => {
   });
   if (!response.ok) {
     message.error("sesi berakhir");
+
   } else {
     dataTakasasi.value = response.data;
-    console.log(response);
+    loadDataRef.value = false;
     message.success("data taksasi dimuat....");
   }
 }
 
 const tableRef = ref();
+const time = Date.now();
+
 const downloadCsv = () => tableRef.value?.downloadCsv({
-  fileName: `format_taksasi`,
+
+  fileName: `format_taksasi${time}`,
   keepOriginalData: true
 });
 
-onMounted(()=>getTaksasi());
+onMounted(() => getTaksasi());
 </script>
 
 <style scoped>

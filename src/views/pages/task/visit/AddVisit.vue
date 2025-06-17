@@ -4,6 +4,7 @@
     footer: 'soft',
   }">
     <n-tabs type="bar" placement="left">
+
       <n-tab-pane name="kunjungan" tab="Kunjungan">
         <template #tab>
           <div class="flex gap-2">
@@ -29,7 +30,6 @@
               <n-input type="textarea" />
             </n-form-item>
             <n-form-item label="Pin Poin">
-
               <div class="w-full h-[300px] z-0 rounded-md overflow-clip">
                 <Maps_point></Maps_point>
               </div>
@@ -93,7 +93,6 @@
         <AnalisaForm />
       </n-tab-pane>
     </n-tabs>
-
     <template #action>
       <n-button type="primary">
         <span v-if="!kunjunganForm.apply_slik">Kirim</span>

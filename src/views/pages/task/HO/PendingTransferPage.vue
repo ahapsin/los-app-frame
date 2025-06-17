@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <n-card :segmented="true" size="small">
     <template #header>Pending Transfer</template>
     <template #header-extra>
       <n-space>
@@ -13,69 +13,81 @@
             acc HO
           </n-button>
         </n-badge>
-        <n-button v-show="!searchField" strong secondary circle @click="handleExpand">
-          <template #icon>
-            <n-icon>
-              <full-icon />
-            </n-icon>
-          </template>
-        </n-button>
       </n-space>
     </template>
     <div>
       <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="dataPayment"
-        :max-height="300" class="pb-2" :pagination="pagination" />
+        :max-height="300" class="pb-2" :pagination="pagination" :loading="loadDataPayment"/>
     </div>
   </n-card>
-  <n-modal class="w-2/5" title="Upload Berkas Pencairan" v-model:show="showModal">
-    <n-card :bordered="false" aria-modal="true">
+  <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal">
+    <n-card :bordered="false" aria-modal="true" title="Detail" :segmented="{
+      content: true,
+      footer: 'soft',
+    }" size="small">
+      <template #header-extra>
+        <n-popconfirm :show-icon="false" @positive-click="handlePositiveClick(bodyModal.no_transaksi)"
+          positive-text="konfirmasi" negative-text="reject"
+          @negative-click="handleNegativeClick(bodyModal.no_transaksi)">
+          <template #activator>
+            <n-button :loading="loadingConf"  type="primary"
+              v-show="bodyModal.STATUS == 'PENDING'">Konfirmasi</n-button>
+          </template>
+          <n-input type="textarea" placeholder="keterangan" v-model:value="keterangan"></n-input>
+        </n-popconfirm>
+      </template>
       <div class="flex justify-between">
         <div>
-          <div class="flex">
+          <div class="flex border-b p-1">
+            <label class="w-36">Status</label><span>
+              <n-tag strong :type="statusTag(bodyModal.STATUS)">
+                {{ bodyModal.STATUS }}</n-tag></span>
+          </div>
+          <div class="flex border-b p-1">
             <label class="w-36">Tanggal</label><span>
               <n-text strong> {{ bodyModal.tgl_transaksi }}</n-text></span>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">No Kontrak</label><span>
               <n-text strong> {{ bodyModal.no_fasilitas }}</n-text></span>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">No Transaksi</label><span>
               <n-text strong> {{ bodyModal.no_transaksi }}</n-text></span>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">Atas Nama </label><span>
               <n-text strong> {{ bodyModal.nama }}</n-text></span>
           </div>
-          <div class="flex">
-            <label class="w-36">Alamat</label><span>
-              <n-text strong> {{ bodyModal.alamat }}</n-text></span>
+          <div class="flex justify-between">
+            <div class="w-36">Alamat</div>
+            <n-text strong> {{ bodyModal.alamat }}</n-text>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">Total Bayar</label><span>
               <n-text strong>
                 {{ bodyModal.total_bayar.toLocaleString("US") }}</n-text></span>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">Jumlah Uang</label><span>
               <n-text strong>
                 {{ bodyModal.jumlah_uang.toLocaleString("US") }}</n-text></span>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">Pembulatan</label><span>
               <n-text strong>
                 {{ bodyModal.pembulatan.toLocaleString("US") }}</n-text></span>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">Metode Pembayaran</label><span>
               <n-text strong> {{ bodyModal.payment_method }}</n-text></span>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">kembalian</label><span>
               <n-text strong>
                 {{ bodyModal.kembalian.toLocaleString("US") }}</n-text></span>
           </div>
-          <div class="flex">
+          <div class="flex border-b p-1">
             <label class="w-36">Untuk Pembayaran</label>
             <n-space>
               <n-tag size="small" v-for="pembayaran in bodyModal.pembayaran" :bordered="false" :key="pembayaran">{{
@@ -89,23 +101,10 @@
             </n-space>
           </div>
         </div>
-        <div class="flex gap-2">
-          <label>Status</label><span>
-            <n-tag strong :type="statusTag(bodyModal.STATUS)">
-              {{ bodyModal.STATUS }}</n-tag></span>
-        </div>
-        <n-popconfirm :show-icon="false" @positive-click="handlePositiveClick(bodyModal.no_transaksi)"
-          positive-text="konfirmasi" negative-text="reject"
-          @negative-click="handleNegativeClick(bodyModal.no_transaksi)">
-          <template #activator>
-            <n-button :loading="loadingConf" type="primary" v-show="bodyModal.STATUS == 'PENDING'">Konfirmasi</n-button>
-          </template>
-          <n-input type="textarea" placeholder="keterangan" v-model:value="keterangan"></n-input>
-        </n-popconfirm>
       </div>
       <div v-show="bodyModal.payment_method == 'transfer'">
         <n-divider>bukti transfer</n-divider>
-        <n-image :src="bodyModal.attachment" class="max-w-36" />
+        <n-image :src="bodyModal.attachment" class="max-w-36 w-20 h-20" />
       </div>
     </n-card>
   </n-modal>
@@ -113,23 +112,20 @@
 <script setup>
 import { useApi } from "../../../../helpers/axios";
 // import { useSearch } from "../../../../helpers/searchObject";
-import router from "../../../../router";
+import {
+  AccessTimeRound as pendingIcon
+} from "@vicons/material";
 import _ from "lodash";
 import {
-  AccessTimeRound as pendingIcon,
-  OpenInFullRound as fullIcon,
-} from "@vicons/material";
-import {
-  useMessage,
-  NIcon,
-  NTag,
-  NButton,
   NBadge,
+  NButton,
+  NIcon,
   NInput,
-  useLoadingBar,
-  ellipsisProps,
+  NTag,
+  useMessage
 } from "naive-ui";
-import { computed, onMounted, reactive, h, ref } from "vue";
+import { computed, h, onMounted, reactive, ref } from "vue";
+import router from "../../../../router";
 const searchField = ref(false);
 const checkedRowCredit = ref([]);
 const pagination = ref({ pageSize: 10 });
@@ -333,7 +329,6 @@ const dataPayment = ref([]);
 const loadDataPayment = ref(false);
 const dataPending = ref([]);
 const message = useMessage();
-const loadingBar = useLoadingBar();
 const getDataPayment = async () => {
   loadDataPayment.value = true;
   let userToken = localStorage.getItem("token");
@@ -343,9 +338,8 @@ const getDataPayment = async () => {
     token: userToken,
   });
   if (!response.ok) {
-    console.log(reponse.error);
+    console.log(response.error);
   } else {
-    loadingBar.finish();
     loadDataPayment.value = false;
     dataPayment.value = response.data;
     dataPending.value = _.filter(dataPayment.value, { STATUS: "PENDING" });

@@ -15,15 +15,14 @@
 </n-scrollbar>
 </template>
 <script setup>
-import {defineAsyncComponent} from 'vue'
+import { useWindowSize } from '@vueuse/core';
 import _ from "lodash";
+import { defineAsyncComponent } from 'vue';
+import { useMeStore } from "../../stores/me.js";
 import MenuContainer from "./../../components/organism/MenuContainer.vue";
-import {useMeStore} from "../../stores/me.js";
 
-
-const appbackdrop = import.meta.env.VITE_APP_BACKDROP;
-const appbase = import.meta.env.VITE_APP_BASE_COLOR;
 const me = useMeStore();
+const { width } = useWindowSize();
 
 
 const findAccessMenu = (e) => {
@@ -31,7 +30,7 @@ const findAccessMenu = (e) => {
 }
 
 const OrderBoard = defineAsyncComponent(() => import("./board/OrderBoard.vue"));
-const SurveyBoard = defineAsyncComponent(() => import("./board/SurveyBoard.vue"));
+// const SurveyBoard = defineAsyncComponent(() => import("./board/SurveyBoard.vue"));
 const PaymentBoard = defineAsyncComponent(() => import("./board/PaymentBoard.vue"));
 const JaminanBoard = defineAsyncComponent(() => import("./board/JaminanBoard.vue"));
 

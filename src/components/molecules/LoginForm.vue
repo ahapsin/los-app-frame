@@ -42,29 +42,29 @@ const appTitleClient = import.meta.env.VITE_APP_TITLE_CLIENT;
 const appLogoClient = import.meta.env.VITE_APP_LOGO_CLIENT;
 const appVersion = pjson.version;
 const dynamicForm = reactive({
-  username: "",
-  password: "",
-  device_info: "apple",
+    username: "",
+    password: "",
+    device_info: "apple",
 });
 const message = useMessage();
 const formRef = ref(null);
 const loading = ref(false);
 const rules = {
-  username: {
-    required: true,
-    message: 'username harus diisi',
-    trigger: ['input', 'blur']
-  },
-  password: {
-    required: true,
-    message: 'password harus diisi !',
-    trigger: ['input', 'blur']
-  }
+    username: {
+        required: true,
+        message: 'username harus diisi',
+        trigger: ['input', 'blur']
+    },
+    password: {
+        required: true,
+        message: 'password harus diisi !',
+        trigger: ['input', 'blur']
+    }
 }
 
 const alertStatus = ref(false);
 const handleLogin = async (e) => {
-  e.preventDefault(e);
+    e.preventDefault(e);
 
   formRef.value?.validate((errors) => {
     if (errors) {
@@ -89,35 +89,28 @@ const handleLogin = async (e) => {
       loading.value = false;
       alertStatus.value = true;
     }
-  } else {
-    message.success("login berhasil");
-    loading.value = false;
-    localStorage.token = response.data.token;
-    router.push('dashboard');
-    router.go();
-  }
 }
 
 const logged = ref(false);
 onMounted(() => {
-  logged.value = true;
-  if (localStorage.getItem("token")) {
-    const userToken = localStorage.getItem("token");
-    useApi({
-      method: 'get',
-      api: `me`,
-      token: userToken
-    }).then(res => {
-      if (!res.ok) {
-        localStorage.removeItem("token");
-        message.warning("sesi anda sudah berakhir");
-        router.go('/');
-      } else {
-        router.push('/');
-        logged.value = false;
-      }
-    });
+    logged.value = true;
+    if (localStorage.getItem("token")) {
+        const userToken = localStorage.getItem("token");
+        useApi({
+            method: 'get',
+            api: `me`,
+            token: userToken
+        }).then(res => {
+            if (!res.ok) {
+                localStorage.removeItem("token");
+                message.warning("sesi anda sudah berakhir");
+                router.go('/');
+            } else {
+                router.push('/');
+                logged.value = false;
+            }
+        });
 
-  }
+    }
 });
 </script>

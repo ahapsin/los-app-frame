@@ -10,7 +10,7 @@
     
         <template #header-extra>
             <n-space>
-                <n-button strong type="primary" @click="handleAddPay">
+                <n-button v-if="width > 480" strong type="primary" @click="handleAddPay">
                     <template #icon>
                         <n-icon>
                             <add-icon />
@@ -18,7 +18,14 @@
                     </template>
                     <span class="hidden md:flex">tambah</span>
                 </n-button>
-                <n-button strong type="warning" @click="searchField = !searchField">
+                <n-button circle type="primary" @click="handleAddPay" v-else>
+                    <template #icon>
+                        <n-icon>
+                            <add-icon />
+                        </n-icon>
+                    </template>
+                </n-button>
+                <n-button v-if="width > 480" strong type="warning" @click="searchField = !searchField">
                     <template #icon>
                         <n-icon v-if="!searchField">
                             <filter-icon />
@@ -29,71 +36,87 @@
                     </template>
                     <span class="hidden md:flex">Filter</span>
                 </n-button>
-                <n-date-picker class="w-32" v-model:formatted-value="filterDate" :default-value="Date.now()"
-                    format="dd-MM-yyyy" type="date" />
+                <n-button circle type="warning" @click="searchField = !searchField" v-else>
+                    <template #icon>
+                        <n-icon v-if="!searchField">
+                            <filter-icon />
+                        </n-icon>
+                        <n-icon v-else>
+                            <close-icon />
+                        </n-icon>
+                    </template>
+                </n-button>
+                <n-date-picker v-if="width > 480" class="w-32" v-model:formatted-value="filterDate"
+                    :default-value="Date.now()" format="dd-MM-yyyy" type="date" />
             </n-space>
         </template>
         <div>
-            <div class="flex gap-2 p-4 bg-sc-50/50 border-b" v-if="searchField">
-                <n-form-item label="NO TRANSAKSI" class="w-full">
-                    <n-input v-model:value="dynamicSearch.no_transaksi" type="text" placeholder="NO TRANSAKSI"
-                        clearable />
-                </n-form-item>
-                <n-form-item label="ATAS NAMA" class="w-full">
-                    <n-input v-model:value="dynamicSearch.atas_nama" type="text" placeholder="ATAS NAMA" clearable />
-                </n-form-item>
-                <n-form-item label="NO KONTRAK" class="w-full">
-                    <n-input v-model:value="dynamicSearch.no_kontrak" type="text" placeholder="NO KONTRAK" clearable />
-                </n-form-item>
-                <n-form-item label="TANGGAL" class="w-full">
-                    <n-date-picker placeholder="CARI TANGGAL" v-model:formatted-value="dynamicSearch.dari"
-                        :default-value="Date.now()" clearable format="yyyy-MM-dd" />
-                </n-form-item>
-                <n-form-item class="w-full">
-                    <n-button type="primary" @click="handleSearch" class="px-4"> Cari</n-button>
-                </n-form-item>
-            </div>
-
+            <n-drawer v-model:show="searchField" :placement="width > 480 ? 'right' : 'bottom'">
+                <n-drawer-content title="Filter">
+                    <div class="grid  gap-2 p-4 bg-sc-50/50 border-b" v-if="searchField">
+                        <n-form-item label="NO TRANSAKSI" class="w-full">
+                            <n-input v-model:value="dynamicSearch.no_transaksi" type="text" placeholder="NO TRANSAKSI"
+                                clearable />
+                        </n-form-item>
+                        <n-form-item label="ATAS NAMA" class="w-full">
+                            <n-input v-model:value="dynamicSearch.atas_nama" type="text" placeholder="ATAS NAMA"
+                                clearable />
+                        </n-form-item>
+                        <n-form-item label="NO KONTRAK" class="w-full">
+                            <n-input v-model:value="dynamicSearch.no_kontrak" type="text" placeholder="NO KONTRAK"
+                                clearable />
+                        </n-form-item>
+                        <n-form-item label="TANGGAL" class="w-full">
+                            <n-date-picker class="w-full" placeholder="CARI TANGGAL"
+                                v-model:formatted-value="dynamicSearch.dari" :default-value="Date.now()" clearable
+                                format="yyyy-MM-dd" />
+                        </n-form-item>
+                        <n-form-item class="w-full">
+                            <n-button type="primary" @click="handleSearch" class="w-full"> Cari</n-button>
+                        </n-form-item>
+                    </div>
+                </n-drawer-content>
+            </n-drawer>
             <n-data-table ref="tableRef" striped size="small" :row-key="(row) => row.loan_number" :columns="columns"
-                :scroll-x="870" :data="filterDate ? showData : dataPayment" :max-height="500"
+                :scroll-x="1070" :data="filterDate ? showData : dataPayment" :max-height="500"
                 :on-update:checked-row-keys="handleFasilitas" :loading="loadDataPayment" class="p-4"
                 :pagination="paginationReactive" />
         </div>
     </n-card>
+
     <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal" :on-after-leave="onAfterLeave">
         <n-card title="Detail Pembayaran" :segmented="{
             content: true,
             footer: 'soft',
-        }">
+        }" size="small">
             <template #header-extra>
                 <div class="flex gap-2">
                     <n-space>
-                        <n-tag strong
+                        <!-- <n-tag strong
                             :type="bodyModal.STATUS == 'PENDING' ? 'warning' : bodyModal.STATUS == 'PAID' ? 'success' : 'error'">
                             {{ bodyModal.STATUS }}
-                        </n-tag>
-                        <n-button circle secondary @click="showModal = false">X</n-button>
+                        </n-tag> -->
+                        <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
+                            :disabled="bodyModal.print_ke > 2" v-if="bodyModal.status != 'CANCEL'">
+                            <n-space>
+                                <n-icon>
+                                    <print-icon />
+                                </n-icon>
+                                <p>Sisa Cetak {{ printCount - bodyModal.print_ke }}</p>
+                            </n-space>
+                        </n-button>
+                        <n-button circle type="error" secondary @click="showModal = false">X</n-button>
                     </n-space>
                 </div>
             </template>
             <template #footer>
                 <n-space>
-                    <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
-                        v-show="bodyModal.STATUS == 'PAID'" :disabled="bodyModal.print_ke > 1500">
-                        <n-space>
-                            <n-icon>
-                                <print-icon />
-                            </n-icon>
-                            <p>Sisa Cetak {{ printCount - bodyModal.print_ke }}</p>
-                        </n-space>
-                    </n-button>
-
-                    <n-button type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS == 'PAID'">
+                    <n-button type="info" @click="uploadState = !uploadState" v-show="bodyModal.STATUS != 'CANCEL'">
                         <n-space>
                             <p>Lihat/Upload Nota</p>
                         </n-space>
                     </n-button>
-                    <n-button v-if="bodyModal.STATUS != 'CANCEL'" type="error"
+                    <n-button v-if="bodyModal.STATUS == 'PAID'" type="error"
                         @click="handleCancelPayment(bodyModal.tgl_transaksi)">
                         Ajukan Batal
                     </n-button>
@@ -148,7 +171,7 @@
                         <div class="grid border-b border-dashed border-black pb-2"
                             :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '"
                             v-if="bodyModal.payment_type != 'pelunasan'">
-                            <div class="flex flex-col">
+                            <div class="flex flex-row justify-between md:flex-col">
                                 <small class="text-reg">JML. ANGS</small>
                                 <n-text strong class="text-md"> {{
                                     bodyModal.bayar_angsuran.toLocaleString('US') ?
@@ -156,23 +179,23 @@
                                 }}
                                 </n-text>
                             </div>
-                            <div class="flex flex-col">
+                            <div class="flex flex-row justify-between md:flex-col">
                                 <small class="text-reg">JML. DENDA</small>
                                 <n-text strong class="text-md">
                                     {{ bodyModal.bayar_denda.toLocaleString() }}
                                 </n-text>
                             </div>
-                            <div class="flex flex-col">
+                            <div class="flex flex-row justify-between md:flex-col">
                                 <small class="text-reg">CUST. BAYAR</small>
                                 <n-text strong class="text-md"> {{ bodyModal.jumlah_uang.toLocaleString("US")
                                     }}</n-text>
                             </div>
-                            <div class="flex flex-col">
+                            <div class="flex flex-row justify-between md:flex-col">
                                 <small class="text-reg">PEMBULATAN</small>
                                 <n-text strong class="text-md"> {{ bodyModal.pembulatan.toLocaleString() }}</n-text>
                             </div>
 
-                            <div class="flex flex-col">
+                            <div class="flex flex-row justify-between md:flex-col">
                                 <small class="text-reg">KEMBALIAN</small>
                                 <td>
                                     <n-text strong class="text-md"> {{ bodyModal.kembalian.toLocaleString("US")
@@ -289,27 +312,27 @@
 </template>
 <script setup>
 import { useApi } from "../../../helpers/axios";
-import { useSearch } from "../../../helpers/searchObject";
 import router from "../../../router";
 
 import {
     PlusFilled as addIcon,
-    FilterAltSharp as filterIcon,
     CloseRound as closeIcon,
-    SearchRound as searchIcon,
     AttachFileFilled as fileIcon,
-    CloudUploadOutlined as uploadIcon,
-    LocalPrintshopOutlined as PrintIcon,
+    FilterAltSharp as filterIcon,
+    LocalPrintshopOutlined as PrintIcon
 } from "@vicons/material";
 import { useWindowSize } from "@vueuse/core";
 import _ from "lodash";
-import { useLoadingBar } from "naive-ui";
+import { NButton, NIcon, NImage, NInput, NTag, useLoadingBar, useMessage } from "naive-ui";
+import { computed, h, onMounted, reactive, ref } from "vue";
+import { useVueToPrint } from "vue-to-print";
 
 const loadingBar = useLoadingBar();
 import { useMessage, NIcon, NTag, NButton, NInput, NImage } from "naive-ui";
 import { computed, onMounted, reactive, ref, h } from "vue";
 import { useVueToPrint } from "vue-to-print";
 import HAppBar from "../../../components/molecules/HAppBar.vue";
+
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const uploadState = ref(false);
@@ -409,19 +432,142 @@ const handleCancelPayment = (e) => {
     }
 }
 
+// const createColumns = () => {
+//     return [
+//         {
+//             title: "#",
+//             width: 30,
+//             render(row) {
+//                 return row.attachment ? h(
+//                     NImage,
+//                     {
+//                         src: row.attachment,
+
+//                         class: 'w-6 ratio-square',
+
+//                     },
+//                     {
+//                         default: () => row.attachment,
+//                     }
+//                 ) : h(
+//                     NButton,
+//                     {
+//                         size: "small",
+//                         type: "error",
+//                         circle: true,
+//                         onClick: () => {
+//                             handleAction(row);
+//                         },
+//                     },
+//                     {
+//                         default: () => "!",
+//                     }
+//                 );
+//             },
+//         }, {
+//             title: "NO TRANSAKSI",
+//             width: 150,
+//             ellipsis: {
+//                 tooltip: true,
+//             },
+//             key: "no_transaksi",
+//             sorter: "default",
+//         },
+//         {
+//             title: "NO KONTRAK",
+//             width: 120,
+//             ellipsis: {
+//                 tooltip: true,
+//             },
+//             key: "no_fasilitas",
+//             sorter: "default",
+//         },
+//         {
+//             title: "TANGGAL",
+//             width: 100,
+//             ellipsis: {
+//                 tooltip: true,
+//             },
+//             key: "tgl_transaksi",
+//             sorter: "default",
+//         },
+//         {
+//             title: "ATAS NAMA",
+//             key: "nama",
+//             fixed: "left",
+//             width: 200,
+//         },
+//         {
+//             title: "METODE",
+//             width: 100,
+//             key: "payment_method",
+//             sorter: "default",
+//         },
+//         {
+//             title: "NOMINAL",
+//             width: 120,
+//             align: 'right',
+//             key: "total_bayar",
+//             render(row) {
+//                 return h("div", row.total_bayar.toLocaleString("US"));
+//             },
+//             sorter: "default",
+//         },
+//         {
+//             title: "STATUS",
+//             width: 80,
+//             key: "STATUS",
+//             defaultFilterOptionValues: ["PAID", "UNPAID"],
+//             render(row) {
+//                 return h(
+//                     NTag,
+//                     {
+//                         type: row.STATUS == "PENDING" ? "warning" : row.STATUS == "PAID" ? "success" : "error",
+//                         onClick: () => {
+//                             handleAction(row);
+//                         },
+//                     },
+//                     {
+//                         default: () => row.STATUS,
+//                     }
+//                 );
+//             },
+//         },
+//         {
+//             width: 100,
+//             align: "right",
+//             key: "action",
+//             render(row) {
+//                 return h(
+//                     NButton,
+//                     {
+//                         secondary: true,
+//                         round: true,
+//                         size: "small",
+//                         onClick: () => {
+//                             handleAction(row);
+//                         },
+//                     },
+//                     {
+//                         default: () => "detail",
+//                     }
+//                 );
+//             },
+//         },
+//     ];
+// };
 const createColumns = () => {
     return [
         {
-            title: "#",
+            title: "@",
             width: 30,
             render(row) {
                 return row.attachment ? h(
                     NImage,
                     {
                         src: row.attachment,
-
-                        class: 'w-6 ratio-square',
-
+                        width: 20,
+                        height: 20,
                     },
                     {
                         default: () => row.attachment,
@@ -441,30 +587,22 @@ const createColumns = () => {
                     }
                 );
             },
-        }, {
+        },
+        {
             title: "NO TRANSAKSI",
-            width: 150,
-            ellipsis: {
-                tooltip: true,
-            },
             key: "no_transaksi",
+            width: 200,
             sorter: "default",
         },
         {
             title: "NO KONTRAK",
-            width: 120,
-            ellipsis: {
-                tooltip: true,
-            },
+            width: 130,
             key: "no_fasilitas",
             sorter: "default",
         },
         {
             title: "TANGGAL",
-            width: 100,
-            ellipsis: {
-                tooltip: true,
-            },
+            width: 150,
             key: "tgl_transaksi",
             sorter: "default",
         },
@@ -475,15 +613,15 @@ const createColumns = () => {
             width: 200,
         },
         {
-            title: "METODE",
-            width: 100,
+            title: "VIA",
+            width: 80,
             key: "payment_method",
             sorter: "default",
         },
         {
             title: "NOMINAL",
-            width: 120,
             align: 'right',
+            width: 120,
             key: "total_bayar",
             render(row) {
                 return h("div", row.total_bayar.toLocaleString("US"));
@@ -511,7 +649,7 @@ const createColumns = () => {
             },
         },
         {
-            width: 100,
+            width: 80,
             align: "right",
             key: "action",
             render(row) {
@@ -598,6 +736,7 @@ const postCancelPayment = async () => {
 };
 
 const handleSearch = () => {
+    searchField.value = false;
     getDataPayment();
 }
 const getDataPayment = async () => {
@@ -634,7 +773,7 @@ const getSkalaCredit = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         dataStrukturKredit.value = response.data;
         dataAngsuran.value = true;

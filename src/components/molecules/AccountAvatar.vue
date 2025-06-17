@@ -22,8 +22,6 @@
           <div>{{ task.descr }}</div>
           <div class="text-[10px] text-slate-500">{{ task.created_at }}</div>
         </div> -->
-
-
         <div v-if="tasks.length != 0">
           <div v-for="task in tasks" :key="task" class="hover:bg-pr-50 rounded-lg p-2 cursor-pointer"
             @click="handleDetail(task)">
@@ -58,7 +56,6 @@
       </div>
     </n-dropdown>
   </div>
-
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="modalNotif" :on-after-leave="onAfterLeave">
         <n-card title="Detail Pembayaran" :segmented="{
             content: true,
@@ -293,11 +290,17 @@ import {
   LockOutlined as Locked,
   LogOutOutlined as SignOut,
 } from "@vicons/material";
+import _ from "lodash";
+import { NIcon, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
+import router from "../../router";
+import KwitansiPembayaran from "../molecules/KwitansiPembayaran.vue";
 
 import { useApi } from "../../helpers/axios";
 import { useMeStore } from "../../stores/me";
 import { useTaskStore } from "../../stores/task";
 import { useCollateralStore } from "../../stores/collateral.js";
+
 
 const message = useMessage();
 const me = useMeStore();
@@ -398,6 +401,7 @@ const handleTask = async () => {
 };
 const bodyModal = ref();
 
+
 const getDetailNotif = async (e) => {
   let userToken = localStorage.getItem("token");
   const response = await useApi({
@@ -409,7 +413,6 @@ const getDetailNotif = async (e) => {
     message.info('SESI BERAKHIR');
   } else {
     bodyModal.value=response.data;
-  }
 };
 
 const keterangan = ref();
@@ -436,6 +439,7 @@ const handleApprove = async (e) => {
     router.push({ name: "pending transfer" });
   }
 };
+
 
 const handleDetail = async (e) => {
   await getDetailNotif(e.type_id);

@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Laporan Listing Beban TEST(mode)" :segmented="true" size="small">
+  <n-card title="Laporan Listing Beban" :segmented="true" size="small">
     <div>
       <n-space vertical :size="12" class="pt-4">
         <n-space>
@@ -9,6 +9,7 @@
           <n-form-item label="POS" v-if="me.me.cabang_nama === 'Head Office'">
             <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama" value-field="id"
               :default-value="defBranch" :options="dataBranch" v-model:value="selectBranch" />
+
           </n-form-item>
           <n-form-item>
             <n-button @click="handleSubmit" type="primary" :disabled="disbaledButton">
@@ -24,6 +25,7 @@
         </n-space>
         <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x :scroll-x="10000"
           :min-row-height="48" virtual-scroll-header :columns="convertObjectToArray(dataListBan)" :data="dataListBan"
+
           :pagination="{ pageSize: 10 }" :loading="loadingData" />
       </n-space>
     </div>
@@ -42,6 +44,24 @@ const me = useMeStore();
 const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
+
+const selectedBranch = ref();
+const handleUpdateBranch = (value, option) => {
+  selectedBranch.value = option;
+}
+
+
+const periodeTarikan = computed(() => {
+  const range = moment(rangeDate.value, 'MMYYYY').format('YYYYMM');
+  const rangeMonth = moment(rangeDate.value, 'MMYYYY').format('MM');
+  const current = moment().format('MM');
+  if (rangeMonth === current) {
+    return moment().format('DD-MM-YYYY');
+  } else {
+    return moment(range).endOf('month').format('DD-MM-YYYY')
+  }
+}
+);
 const userToken = localStorage.getItem("token");
 const loadingBranch = ref(false);
 const getBranch = async () => {
@@ -74,7 +94,7 @@ const loadingBar = useLoadingBar();
 const handleSubmit = () => {
   let a = {
     dari: rangeDate.value,
-    cabang_id: selectBranch.value ? selectBranch.value : null
+    cabang_id: selectedBranch.value?.id ? selectedBranch.value.id : me.me.cabang_id,
   }
   messageReactive = message.loading('memuat data listing beban', { duration: 0 });
   grabListBan(a);
@@ -113,6 +133,7 @@ const grabListBan = async (e) => {
     disbaledButton.value = false;
     dataListBan.value = response.data;
     loadingData.value = false;
+    ctrDownload.value = false;
   }
 
 }
@@ -124,9 +145,11 @@ const convertObjectToArray = (obj) => {
   return keys.map(key => ({ title: key, key: key }));
 }
 
+
 onMounted(() => {
   loadingBar.finish();
   getBranch();
 });
+
 
 </script>

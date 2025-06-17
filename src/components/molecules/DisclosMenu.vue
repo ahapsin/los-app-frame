@@ -1,11 +1,11 @@
 <template>
   <div class="flex flex-col gap-1">
-
     <div v-for="menu in props.menus" :key="menu.menuid">
       <router-link to="/" v-if="menu.menuitem.labelmenu === 'home'">
         <div class="flex gap-2  rounded-xl p-2 w-full hover:bg-pr-500 hover:text-white'">
           <v-icon name="bi-grid" />
           Dashboard
+
         </div>
       </router-link>
       <div v-else>

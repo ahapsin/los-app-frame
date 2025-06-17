@@ -22,7 +22,7 @@
             <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging">
                 <div class="md:flex gap-2">
                     <n-form-item label="Plafond" path="plafond" class="w-full">
-                        <n-input-number :parse="parse" :format="format" :min="999999" v-model:value="order.plafond"
+                        <n-input-number :parse="parse" :format="format" v-model:value="order.plafond"
                             placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full" clearable
                             :on-update:value="handlePlafond" />
                     </n-form-item>
@@ -392,9 +392,11 @@
                             maxRows: 5,
                         }" type="textarea" placeholder="catatan survey" />
                 </n-form-item>
-                <n-divider title-placement="left"> Dokumen Pendukung </n-divider>
-                <file-upload :def_preview="true" title="dokumen pendukung" endpoint="image_upload_prospect" type="other"
-                    :idapp="dynamicForm.id" />
+                <n-form-item label="Dokumen Pendukung" path="dok_pendukung">
+                    <!-- <n-alert type="warning">Dokumen Pendukung wajib diisi minimal 2 dokumen</n-alert> -->
+                    <file-upload :def_preview="true" title="upload dokumen pendukung" endpoint="image_upload_prospect"
+                        type="other" :idapp="dynamicForm.id" @length="lengthDok" />
+                </n-form-item>
             </n-form>
         </div>
         <template #action>
@@ -426,24 +428,22 @@
     </n-card>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { v4 as uuidv4 } from "uuid";
 import {
-    ArrowBackOutlined as ArrowBack,
     AddFilled as AddIcon,
-    EditOutlined as EditIcon,
-    DeleteOutlineFilled as DeleteIcon,
+    ArrowBackOutlined as ArrowBack,
     ArrowForwardOutlined as ArrowForward,
-
+    DeleteOutlineFilled as DeleteIcon,
+    EditOutlined as EditIcon,
 } from "@vicons/material";
-import { useMessage } from "naive-ui";
-import router from "../../../router";
 import { useWindowSize } from "@vueuse/core";
+import _ from "lodash";
+import { useMessage } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useApi } from "../../../helpers/axios";
 import { useBlacklist } from "../../../helpers/blacklist";
+import router from "../../../router";
 import JaminanKendaraan from "./survey/JaminanKendaraan.vue";
-import _ from "lodash";
-import { computed } from "vue";
 import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
 // import JaminanBillyet from "./survey/JaminanBillyet.vue";
 // import JaminanEmas from "./survey/JaminanEmas.vue";
@@ -469,7 +469,7 @@ const refAdmin = async (body) => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(response.error);
     } else {
         loading.value = false;
         skemaAngsuran.value = response.data;
@@ -617,6 +617,10 @@ const optJaminan = ["KENDARAAN", "SERTIFIKAT"].map((v) => ({
     label: v,
     value: v.toLowerCase(),
 }));
+
+const lengthDok = (data) => {
+    survey.dok_pendukung = data;
+}
 const optSektor = [
     "BURUH HARIAN LEPAS",
     "BURUH PABRIK",
@@ -700,7 +704,6 @@ const loadingKTP = ref(false);
 const bl_pesan = ref();
 
 const dataRo = ref();
-const jaminan = ref();
 const handleKtp = async (e) => {
     loadingKTP.value = true;
     const bodyForm = {
@@ -867,6 +870,9 @@ const plafondValidator = (rule, value) => {
 const numberValidator = (rule, value) => {
     return value > 0;
 };
+const dokumenValidator = (rule, value) => {
+    return value > 1;
+};
 const rulesOrder = {
     plafond: {
         trigger: "blur",
@@ -949,6 +955,12 @@ const rulesSurvey = {
         validator: numberValidator,
         message: "harus diisi",
     },
+    dok_pendukung: {
+        trigger: "blur",
+        required: true,
+        validator: dokumenValidator,
+        message: "minimal memiliki 2 dokumen pendukung",
+    }
 
 };
 const isRtl = true;

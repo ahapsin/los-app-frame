@@ -23,18 +23,18 @@
                 <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging">
                     <div class="md:flex gap-2">
                         <n-form-item label="Plafond" path="plafond" class="w-full">
-                            <n-input-number :parse="parse" :format="format" :min="1000000" v-model:value="order.plafond"
+                            <n-input-number :parse="parse" :format="format" v-model:value="order.plafond"
                                 placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full"
                                 clearable :on-update:value="handlePlafond" />
                         </n-form-item>
-                        <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
-                            <n-select filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
+                        <n-form-item label="Jenis angsuran" path="jenis_angsuran" class="w-full">
+                            <n-select filterable placeholder="Jenis?.angsuran" :options="jenisAngsuran"
                                 v-model:value="order.jenis_angsuran" :on-update:value="handleTipe"
                                 :disabled="order.plafond != 0 ? false : true" />
                         </n-form-item>
                     </div>
                     <div class="md:flex gap-2">
-                        <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
+                        <n-form-item label="Tenor angsuran" path="tenor" class="w-full">
                             <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bulanan'">
                                 <n-radio-group v-model:value="order.tenor" name="radiogroup">
                                     <n-radio name="tenor" value="6">
@@ -42,7 +42,7 @@
                                             {{
                                                 skemaAngsuran.length == null
                                                     ? ` /
-                                            ${skemaAngsuran.tenor_6.angsuran.toLocaleString("US")}`
+                                            ${skemaAngsuran.tenor_6?.angsuran.toLocaleString("US")}`
                                                     : ""
                                             }}
                                         </n-text>
@@ -53,7 +53,7 @@
                                             {{
                                                 skemaAngsuran.length == null
                                                     ? ` /
-                                            ${skemaAngsuran.tenor_12.angsuran.toLocaleString("US")}`
+                                            ${skemaAngsuran.tenor_12?.angsuran.toLocaleString("US")}`
                                                     : ""
                                             }}
                                         </n-text>
@@ -64,7 +64,7 @@
                                             {{
                                                 skemaAngsuran.length == null
                                                     ? ` /
-                                            ${skemaAngsuran.tenor_18.angsuran.toLocaleString("US")}`
+                                            ${skemaAngsuran.tenor_18?.angsuran.toLocaleString("US")}`
                                                     : ""
                                             }}
                                         </n-text>
@@ -75,7 +75,7 @@
                                             {{
                                                 skemaAngsuran.length == null
                                                     ? ` /
-                                            ${skemaAngsuran.tenor_24.angsuran.toLocaleString("US")}`
+                                            ${skemaAngsuran.tenor_24?.angsuran.toLocaleString("US")}`
                                                     : ""
                                             }}
                                         </n-text>
@@ -89,7 +89,7 @@
                                             {{
                                                 skemaAngsuran.length == null
                                                     ? ` /
-                                            ${skemaAngsuran.tenor_6.angsuran.toLocaleString("US")}`
+                                            ${skemaAngsuran.tenor_6?.angsuran.toLocaleString("US")}`
                                                     : ""
                                             }}
                                         </n-text>
@@ -100,7 +100,7 @@
                                             {{
                                                 skemaAngsuran.length == null
                                                     ? ` /
-                                            ${skemaAngsuran.tenor_12.angsuran.toLocaleString("US")}`
+                                            ${skemaAngsuran.tenor_12?.angsuran.toLocaleString("US")}`
                                                     : ""
                                             }}
                                         </n-text>
@@ -111,7 +111,7 @@
                                             {{
                                                 skemaAngsuran.length == null
                                                     ? ` /
-                                            ${skemaAngsuran.tenor_18.angsuran.toLocaleString("US")}`
+                                            ${skemaAngsuran.tenor_18?.angsuran.toLocaleString("US")}`
                                                     : ""
                                             }}
                                         </n-text>
@@ -122,7 +122,7 @@
                                             {{
                                                 skemaAngsuran.length == null
                                                     ? ` /
-                                            ${skemaAngsuran.tenor_24.angsuran.toLocaleString("US")}`
+                                            ${skemaAngsuran.tenor_24?.angsuran.toLocaleString("US")}`
                                                     : ""
                                             }}
                                         </n-text>
@@ -430,26 +430,24 @@
     </n-card>
 </template>
 <script setup>
-import { ref, reactive, onMounted, toRef } from "vue";
-import { v4 as uuidv4 } from "uuid";
 import {
-    ArrowBackOutlined as ArrowBack,
     AddFilled as AddIcon,
-    EditOutlined as EditIcon,
-    DeleteOutlineFilled as DeleteIcon,
+    ArrowBackOutlined as ArrowBack,
     ArrowForwardOutlined as ArrowForward,
-
+    DeleteOutlineFilled as DeleteIcon,
+    EditOutlined as EditIcon,
 } from "@vicons/material";
-import { useMessage } from "naive-ui";
-import router from "../../../router";
 import { useWindowSize } from "@vueuse/core";
+import _ from "lodash";
+import { useMessage } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
+import { computed, onMounted, reactive, ref, toRef } from "vue";
+import { useRoute } from "vue-router";
 import { useApi } from "../../../helpers/axios";
 import { useBlacklist } from "../../../helpers/blacklist";
+import router from "../../../router";
 import JaminanKendaraan from "./survey/JaminanKendaraan.vue";
 import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
-import _ from "lodash";
-import { useRoute } from "vue-router";
-import { computed } from "vue";
 
 // import JaminanBillyet from "./survey/JaminanBillyet.vue";
 // import JaminanEmas from "./survey/JaminanEmas.vue";
@@ -484,7 +482,7 @@ const refAdmin = async (body) => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(response.error);
+        console.log(response.error);
     } else {
         loading.value = false;
         skemaAngsuran.value = response.data;
@@ -854,7 +852,7 @@ const handleSave = async (type) => {
 };
 
 const plafondValidator = (rule, value) => {
-    return value > 1000000;
+    return value >= 1000000;
 };
 const rulesOrder = {
     plafond: {
@@ -870,7 +868,7 @@ const rulesOrder = {
     tenor: {
         trigger: "blur",
         required: true,
-        message: "tenor / angsuran harus dipilih",
+        message: "tenor angsuran harus dipilih",
     },
     tujuan_kredit: {
         trigger: "blur",
