@@ -213,6 +213,11 @@ const routes = [
         component: () => import("../views/pages/master/TaksasiPage.vue"),
       },
       {
+        path: "referensi",
+        name: "referensi",
+        component: () => import("../views/pages/master/referensi/ReferensiPage.vue"),
+      },
+      {
         path: "taksasi-action",
         name: "Taksasi baru",
         component: () => import("../views/pages/master/ActionTaksasiPage.vue"),
@@ -368,6 +373,12 @@ const routes = [
         name: "Listing Beban",
         component: () =>
           import("../views/pages/laporan/LapListingBebanTest.vue"),
+      },
+      {
+        path: "dokumen",
+        name: "Dokumen",
+        component: () =>
+          import("../views/pages/laporan/LapDokumen.vue"),
       },
       {
         path: "lap_pembayaran",
