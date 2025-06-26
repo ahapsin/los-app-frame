@@ -35,16 +35,14 @@
                         <tr>
                             <th>#</th>
                             <th align="right">Tagihan</th>
-                            <th align="right">Bayar</th>
-
+                            <th align="right">Bunga Berjalan</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Pokok</td>
                             <td align="right">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.BAYAR_POKOK) }}</td>
-
+                            <td align="right">{{ formatter.format(pelunasan.TUNGGAKAN_BUNGA) }}</td>
                         </tr>
                     </tbody>
                 </n-table>
@@ -533,7 +531,7 @@ const optTipePay = [
     },
 ];
 const dataPelunasan = ref([]);
-const pelunasan = reactive({
+const  pelunasan = reactive({
     LOAN_NUMBER: null,
     METODE_PEMBAYARAN: "cash",
     SISA_POKOK: 0,
@@ -553,14 +551,11 @@ const pelunasan = reactive({
     DISKON_DENDA: 0,
     JUMLAH_TAGIHAN: computed(
         () =>
-            pelunasan.SISA_POKOK
+            pelunasan.SISA_POKOK+pelunasan.TUNGGAKAN_BUNGA
     ),
     TOTAL_BAYAR: computed(
         () =>
-            pelunasan.SISA_POKOK +
-            pelunasan.TUNGGAKAN_BUNGA +
-            pelunasan.PINALTI +
-            pelunasan.DENDA
+            pelunasan.SISA_POKOK 
     ),
     JUMLAH_BAYAR: computed(
         () =>
@@ -616,9 +611,9 @@ const getDataPelunasan = async (e) => {
 };
 const pushJumlahUang = async () => {
     Object.assign(pelunasan, formPelunasan);
-    let sisaBayarPokok = pelunasan.UANG_PELANGGAN - pelunasan.SISA_POKOK;
+    let sisaBayarPokok = pelunasan.UANG_PELANGGAN - (pelunasan.SISA_POKOK+pelunasan.TUNGGAKAN_BUNGA);
     if (sisaBayarPokok >= 0) {
-        pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK;
+        pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK+pelunasan.TUNGGAKAN_BUNGA;
         pelunasan.DISKON_POKOK = 0;
         let sisaBayarBunga = sisaBayarPokok - pelunasan.TUNGGAKAN_BUNGA;
         if (sisaBayarBunga > 0) {
@@ -649,7 +644,7 @@ const pushJumlahUang = async () => {
             pelunasan.DISKON_PINALTI = pelunasan.PINALTI;
         }
     } else {
-        pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK;
+        pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK ;
         pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.UANG_PELANGGAN;
         pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
         pelunasan.DISKON_DENDA = pelunasan.DENDA;
