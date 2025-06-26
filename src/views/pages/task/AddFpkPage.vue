@@ -336,36 +336,36 @@
                                 v-model:value="dataOrder.nama_ibu" />
                         </n-form-item>
                         <n-form-item label="Lama Bekerja" path="lama_bekerja" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false"  :readonly="viewMode"
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :readonly="viewMode"
                                 placeholder="lama bekerja" v-model:value="dataOrder.lama_bekerja" class="w-full">
                                 <template #suffix> bulan </template>
                             </n-input-number>
                         </n-form-item>
                         <n-form-item label="Tanggungan" path="tanggungan" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Tanggungan"  :readonly="viewMode"
-                                v-model:value="dataOrder.tanggungan" class="w-full" />
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Tanggungan"
+                                :readonly="viewMode" v-model:value="dataOrder.tanggungan" class="w-full" />
                         </n-form-item>
                     </div>
                     <div class="flex gap-2">
                         <n-form-item label="Pendapatan Pelanggan" path="pendapatan_pribadi" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"  :readonly="viewMode"
-                                v-model:value="dataOrder.pendapatan_pribadi" :show-button="false" class="flex !w-full"
-                                placeholder="Pribadi" />
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"
+                                :readonly="viewMode" v-model:value="dataOrder.pendapatan_pribadi" :show-button="false"
+                                class="flex !w-full" placeholder="Pribadi" />
                         </n-form-item>
                         <n-form-item label="Pendapatan Pasangan" path="pendapatan_pasangan" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"  :readonly="viewMode"
-                                v-model:value="dataOrder.pendapatan_pasangan" :show-button="false" class="flex !w-full"
-                                placeholder="Pasangan" />
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"
+                                :readonly="viewMode" v-model:value="dataOrder.pendapatan_pasangan" :show-button="false"
+                                class="flex !w-full" placeholder="Pasangan" />
                         </n-form-item>
                         <n-form-item label="Pendapatan Lainnya" path="pendapatan_lainnya" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"  :readonly="viewMode"
-                                v-model:value="dataOrder.pendapatan_lainnya" :show-button="false" class="flex !w-full"
-                                placeholder="Lainnya" />
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"
+                                :readonly="viewMode" v-model:value="dataOrder.pendapatan_lainnya" :show-button="false"
+                                class="flex !w-full" placeholder="Lainnya" />
                         </n-form-item>
                         <n-form-item label="Biaya" path="biaya_bulanan" class="w-full">
-                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"  :readonly="viewMode"
-                                v-model:value="dataOrder.biaya_bulanan" :show-button="false" class="flex !w-full"
-                                placeholder="Pengeluaran" />
+                            <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :parse="parse" :format="format"
+                                :readonly="viewMode" v-model:value="dataOrder.biaya_bulanan" :show-button="false"
+                                class="flex !w-full" placeholder="Pengeluaran" />
                         </n-form-item>
                     </div>
                     <n-divider title-placement="left"> NPWP </n-divider>
@@ -424,7 +424,7 @@
                                 <div class="pb-2"
                                     v-if="coll.type == 'KENDARAAN' && coll.atr.tahun && tahunJaminanValidate(coll.atr.tahun) > 10">
                                     <n-alert type="warning">usia KENDARAAN <b>{{ tahunJaminanValidate(coll.atr.tahun)
-                                    }}</b>
+                                            }}</b>
                                         tahun</n-alert>
                                 </div>
                                 <div class="pt-2">
@@ -498,9 +498,9 @@
                         <n-card class="md:w-1/2" closable @close="showModal = false" :segmented="true"
                             :title="`form ${jenisJaminan}`">
                             <component :is="JaminanKendaraan" v-if="jenisJaminan.toLowerCase() == 'kendaraan'"
-                                @childData="handleChildData" :def_data="dataProp"  :viewMode/>
+                                @childData="handleChildData" :def_data="dataProp" :viewMode />
                             <component :is="JaminanSertifikat" v-if="jenisJaminan.toLowerCase() == 'sertifikat'"
-                                @childData="handleChildData" :def_data="dataProp"  :viewMode />
+                                @childData="handleChildData" :def_data="dataProp" :viewMode />
                             <!-- <component :is="JaminanBillyet" v-if="jenisJaminan == 'billyet'" @childData="handleChildData" />
         <component :is="JaminanEmas" v-if="jenisJaminan == 'emas'" @childData="handleChildData" /> -->
                             <template #footer>
@@ -579,7 +579,8 @@
                         <n-form-item label="Alamat" path="alamat_pasangan" class="w-full">
                             <!-- <pre>{{ formAssign }}</pre> -->
                             <div class="w-full gap-2 flex flex-col">
-                                <n-checkbox v-model:checked="alamatPelanggan" @update:checked="handleAlamatPasangan" :disabled="viewMode">
+                                <n-checkbox v-model:checked="alamatPelanggan" @update:checked="handleAlamatPasangan"
+                                    :disabled="viewMode">
                                     sesuai dengan pelanggan
                                 </n-checkbox>
                                 <n-input :readonly="viewMode" type="textarea" ref="inputAlamatPasanganRef" :autosize="{
@@ -746,7 +747,7 @@
                                                 {{
                                                     skemaAngsuran.length == null
                                                         ? ` /
-                                                ${skemaAngsuran.tenor_6.angsuran.toLocaleString("US")}`
+                                                ${skemaAngsuran.tenor_6?.angsuran.toLocaleString("US")}`
                                                         : ""
                                                 }}
                                             </n-text>
@@ -757,7 +758,7 @@
                                                 {{
                                                     skemaAngsuran.length == null
                                                         ? ` /
-                                                ${skemaAngsuran.tenor_12.angsuran.toLocaleString("US")}`
+                                                ${skemaAngsuran.tenor_12?.angsuran.toLocaleString("US")}`
                                                         : ""
                                                 }}
                                             </n-text>
@@ -768,7 +769,7 @@
                                                 {{
                                                     skemaAngsuran.length == null
                                                         ? ` /
-                                                ${skemaAngsuran.tenor_18.angsuran.toLocaleString("US")}`
+                                                ${skemaAngsuran.tenor_18?.angsuran.toLocaleString("US")}`
                                                         : ""
                                                 }}
                                             </n-text>
@@ -779,7 +780,7 @@
                                                 {{
                                                     skemaAngsuran.length == null
                                                         ? ` /
-                                                ${skemaAngsuran.tenor_24.angsuran.toLocaleString("US")}`
+                                                ${skemaAngsuran.tenor_24?.angsuran.toLocaleString("US")}`
                                                         : ""
                                                 }}
                                             </n-text>
@@ -793,7 +794,7 @@
                                                 {{
                                                     skemaAngsuran.length == null
                                                         ? ` /
-                                                ${skemaAngsuran.tenor_6.angsuran.toLocaleString("US")}`
+                                                ${skemaAngsuran.tenor_6?.angsuran.toLocaleString("US")}`
                                                         : ""
                                                 }}
                                             </n-text>
@@ -804,7 +805,7 @@
                                                 {{
                                                     skemaAngsuran.length == null
                                                         ? ` /
-                                                ${skemaAngsuran.tenor_12.angsuran.toLocaleString("US")}`
+                                                ${skemaAngsuran.tenor_12?.angsuran.toLocaleString("US")}`
                                                         : ""
                                                 }}
                                             </n-text>
@@ -815,7 +816,7 @@
                                                 {{
                                                     skemaAngsuran.length == null
                                                         ? ` /
-                                                ${skemaAngsuran.tenor_18.angsuran.toLocaleString("US")}`
+                                                ${skemaAngsuran.tenor_18?.angsuran.toLocaleString("US")}`
                                                         : ""
                                                 }}
                                             </n-text>
@@ -826,7 +827,21 @@
                                                 {{
                                                     skemaAngsuran.length == null
                                                         ? ` /
-                                                ${skemaAngsuran.tenor_24.angsuran.toLocaleString("US")}`
+                                                ${skemaAngsuran.tenor_24?.angsuran.toLocaleString("US")}`
+                                                        : ""
+                                                }}
+                                            </n-text>
+                                        </n-radio>
+                                    </n-radio-group>
+                                </div>
+                                <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran == 'bunga_menurun'">
+                                    <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
+                                        <n-radio name="tenor" value="6">
+                                            6 bulan<n-text code>
+                                                {{
+                                                    skemaAngsuran.length == null
+                                                        ? ` /
+                                                ${skemaAngsuran.tenor_6?.angsuran.toLocaleString()}`
                                                         : ""
                                                 }}
                                             </n-text>
@@ -851,7 +866,8 @@
                             <n-form-item label="Nilai yang diterima" path="nilai_yang_diterima">
                                 <n-input-number :parse="parse" :format="format" :placeholder="calcCredit.plafond"
                                     :show-button="false" class="flex !w-full" @update:value="handlePlafond"
-                                    :loading="loading" v-model:value="calcCredit.nilai_yang_diterima" :readonly="props.viewMode"/>
+                                    :loading="loading" v-model:value="calcCredit.nilai_yang_diterima"
+                                    :readonly="props.viewMode" />
                                 <!-- <div class="absolute top-9 flex bg-yellow-50 gap-2 text-xs px-2" v-show="dataTaksasi.nilai != '' &&
                   calcCredit.nilai_yang_diterima > dataTaksasi.nilai
                   ">
@@ -1172,10 +1188,20 @@ const optJaminan = ["KENDARAAN", "SERTIFIKAT"].map((v) => ({
     label: v.toUpperCase(),
     value: v.toLowerCase(),
 }));
-const jenisAngsuran = ["Bulanan", "Musiman"].map((v) => ({
-    label: v.toUpperCase(),
-    value: v.toLowerCase(),
-}));
+const jenisAngsuran =[
+    {
+        label:'BULANAN',
+        value:'bulanan'
+    },
+    {
+        label:'MUSIMAN',
+        value:'musiman'
+    },
+    {
+        label:'BUNGA MENURUN',
+        value:'bunga_menurun'
+    },
+]
 const optStatusKawin = ["Kawin", "Belum Kawin", "Janda", "Duda"].map((v) => ({
     label: v.toUpperCase(),
     value: v.toUpperCase(),
@@ -1513,7 +1539,7 @@ const handlePlafond = (e) => {
     handleChange();
 };
 const handleEkstra = () => {
-    calcCredit.tenor = calcCredit.tenor ? calcCredit.tenor.toString() : null;
+    //calcCredit.tenor = calcCredit.tenor ? calcCredit.tenor.toString() : null;
     const body = {
         plafond: calcCredit.nilai_yang_diterima,
         jenis_angsuran: calcCredit.jenis_angsuran,

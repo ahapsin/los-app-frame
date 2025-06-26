@@ -7,8 +7,10 @@
         <n-dialog-provider>
           <n-loading-bar-provider>
             <div
-              class="py-2 bg-gradient-to-r from-slate-400 to-slate-950 text-white text-center shadow-xl bottom-0 text-bold"
-              v-if="appMode === 'debug'">DEVELOPER MODE</div>
+              class="py-2 bg-gradient-to-r from-red-500 to-purple-400 animate-pulse font-bold text-white text-center shadow-xl bottom-0 text-bold"
+              v-if="appMode === 'debug'">
+              DEVELOPER MODE
+            </div>
             <RouterView />
           </n-loading-bar-provider>
         </n-dialog-provider>
