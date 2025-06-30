@@ -475,7 +475,7 @@ const postDynamic = async () => {
     loadProses.value = true;
     const response = await useApi({
         method: "POST",
-        api: "payment_pelunasan",
+        api: "payment_bunga_menurun",
         data: pelunasan,
         token: userToken,
     });

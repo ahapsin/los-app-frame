@@ -603,7 +603,7 @@ const getDataPayment = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: `paymentd?dari=${dynamicSearch.dari}&notrx=${dynamicSearch.no_transaksi}&nama=${dynamicSearch.atas_nama}&no_kontrak=${dynamicSearch.no_kontrak}&tipe=pelunasan`,
+        api: `payments?dari=${dynamicSearch.dari}&notrx=${dynamicSearch.no_transaksi}&nama=${dynamicSearch.atas_nama}&no_kontrak=${dynamicSearch.no_kontrak}&tipe=pelunasan`,
         token: userToken,
     });
     if (!response.ok) {
