@@ -82,10 +82,10 @@
                                 </n-radio>
                             </n-radio-group>
                         </div>
-                        <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bunga_menurun'">
+                        <div class="flex flex-col md:flex-row" v-show="tipeAngsuran === 'bunga_menurun'">
                             <n-radio-group v-model:value="order.tenor" name="radiogroup">
-                                <n-radio name="tenor" value="6">
-                                    6 bulan<n-text code>
+                                <n-radio name="tenor" :value="5">
+                                    5 bulan<n-text code>
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
