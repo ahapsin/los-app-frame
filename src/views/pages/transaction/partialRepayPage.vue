@@ -3,7 +3,7 @@
         content: true,
         footer: 'soft',
     }" size="small">
-        <template #header>PELUNASAN
+        <template #header>PELUNASAN SEBAGIAN BUNGA MENURUN
             <!-- <n-icon v-if="width <=620">
 <phone-icon />
 </n-icon>
@@ -603,7 +603,7 @@ const getDataPayment = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: `payments?dari=${dynamicSearch.dari}&notrx=${dynamicSearch.no_transaksi}&nama=${dynamicSearch.atas_nama}&no_kontrak=${dynamicSearch.no_kontrak}&tipe=pelunasan`,
+        api: `payment?dari=${dynamicSearch.dari}&notrx=${dynamicSearch.no_transaksi}&nama=${dynamicSearch.atas_nama}&no_kontrak=${dynamicSearch.no_kontrak}&tipe=pelunasan_pokok_sebagian`,
         token: userToken,
     });
     if (!response.ok) {

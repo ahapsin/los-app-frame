@@ -35,14 +35,12 @@
                         <tr>
                             <th>#</th>
                             <th align="right">Tagihan</th>
-                            <th align="right">Bunga Berjalan</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Pokok</td>
-                            <td align="right">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.TUNGGAKAN_BUNGA) }}</td>
+                            <td align="right" class="font-bold">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
                         </tr>
                     </tbody>
                 </n-table>
@@ -551,7 +549,7 @@ const  pelunasan = reactive({
     DISKON_DENDA: 0,
     JUMLAH_TAGIHAN: computed(
         () =>
-            pelunasan.SISA_POKOK+pelunasan.TUNGGAKAN_BUNGA
+            pelunasan.SISA_POKOK
     ),
     TOTAL_BAYAR: computed(
         () =>

@@ -75,7 +75,7 @@ const routes = [
       },
       {
         path: "partialrepay",
-        name: "pelunasan sebagaian",
+        name: "pelunasan sebagian",
         component: () => import("../views/pages/transaction/partialRepayPage.vue"),
       },
       {
