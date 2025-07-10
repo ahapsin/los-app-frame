@@ -5,19 +5,6 @@
                 <n-card :title="`Tabel ${$route.name}`" :segmented="true" size="small">
                     <template #header-extra>
                         <n-space class="!gap-1">
-                            <div class="me-1">
-                                <n-popover trigger="click" placement="bottom-end">
-                                    <template #trigger>
-                                        <n-button circle>
-                                            <n-icon>
-                                                <search-icon />
-                                            </n-icon>
-                                        </n-button>
-                                    </template>
-                                    <n-input autofocus="true" clearable placeholder="cari disini.."
-                                        v-model:value="searchBox" />
-                                </n-popover>
-                            </div>
                             <!-- <div class="hidden md:flex">
                                 <n-button>
                                     <template #icon>
@@ -25,9 +12,9 @@
                                             <download-icon />
                                         </n-icon>
                                     </template>
-                                    <strong class="hidden md:!block">download</strong>
-                                </n-button>
-                            </div> -->
+<strong class="hidden md:!block">download</strong>
+</n-button>
+</div> -->
                             <div class="md:hidden">
                                 <n-button>
                                     <template #icon>
@@ -44,7 +31,7 @@
                                             <add-icon />
                                         </n-icon>
                                     </template>
-                                    <strong>Menu</strong>
+                                    <strong>Rekening</strong>
                                 </n-button>
                             </div>
                             <div class="hidden md:flex">
@@ -67,7 +54,8 @@
                         </n-space>
                     </template>
                     <n-space vertical :size="12" class="pt-4">
-                        <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination" :loading="isLoading"/>
+                        <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
+                            :loading="isLoading" />
                     </n-space>
                 </n-card>
             </n-space>
@@ -95,9 +83,6 @@
 </template>
 <script setup>
 import { ref, onMounted, h } from "vue";
-import { useApi } from "../../../../helpers/axios";
-import { useSearch } from "../../../../helpers/searchObject";
-import router from '../../../../router';
 import { useDialog, useMessage, NDropdown, NIcon, NButton } from "naive-ui";
 import {
     AddCircleOutlineRound as AddIcon,
@@ -111,11 +96,8 @@ import {
 } from "@vicons/material";
 
 import { OhVueIcon } from "oh-vue-icons";
-import { useMasterMenu } from "../../../../stores/masterMenu";
-import { storeToRefs } from "pinia";
-
-const { list, isLoading, isError } = storeToRefs(useMasterMenu());
-const { fetchData } = useMasterMenu();
+import { useSearch } from "../../../helpers/searchObject";
+import { useApi } from "../../../helpers/axios";
 
 const message = useMessage();
 const dialog = useDialog();
@@ -232,9 +214,9 @@ const pagination = {
     pageSize: 10
 }
 
-onMounted(() => fetchData());
+// onMounted(() => fetchData());
 const showData = computed(() => {
-    return useSearch(list.value, searchBox.value);
+    return useSearch([], searchBox.value);
     // return filterIt(dataTable.value, searchBox.value);
 });
 </script>

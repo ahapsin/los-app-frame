@@ -76,12 +76,68 @@ const routes = [
       {
         path: "partialrepay",
         name: "pelunasan sebagian",
-        component: () => import("../views/pages/transaction/partialRepayPage.vue"),
+        component: () =>
+          import("../views/pages/transaction/partialRepayPage.vue"),
       },
       {
         path: "addpartialrepay",
         name: "tambah pelunasan sebagian",
-        component: () => import("../views/pages/transaction/addPartialRepayPage.vue"),
+        component: () =>
+          import("../views/pages/transaction/addPartialRepayPage.vue"),
+      },
+      {
+        path: "jaminan",
+        name: "jaminan",
+        component: () => import("../views/pages/jaminan/jaminanPage.vue"),
+      },
+      {
+        path: "jaminan-action",
+        name: "jaminan action",
+        component: () => import("../views/pages/jaminan/trxJaminan.vue"),
+      },
+      {
+        path: "jaminan-update",
+        name: "jaminan update",
+        component: () => import("../views/pages/jaminan/updateJaminanPage.vue"),
+      },
+    ],
+  },
+  {
+    path: "/tabungan",
+    name: "transaction",
+    component: () => import("../views/pages/layout/DashboardLayout.vue"),
+    children: [
+      {
+        path: "rekening",
+        name: "rekening",
+        component: () => import("../views/pages/tabungan/savingsPages.vue"),
+      },
+      {
+        path: "addpayment",
+        name: "tambah penerimaan",
+        component: () => import("../views/pages/transaction/cashInPage.vue"),
+      },
+      {
+        path: "repayment",
+        name: "pelunasan",
+        component: () => import("../views/pages/transaction/repaymentPage.vue"),
+      },
+      {
+        path: "addrepayment",
+        name: "tambah pelunasan",
+        component: () => import("../views/pages/transaction/repayPage.vue"),
+      },
+      {
+        path: "partialrepay",
+        name: "pelunasan sebagian",
+        component: () =>
+          import("../views/pages/transaction/partialRepayPage.vue"),
+      },
+      {
+        path: "addpartialrepay",
+        name: "tambah pelunasan sebagian",
+        component: () =>
+          import("../views/pages/transaction/addPartialRepayPage.vue"),
       },
       {
         path: "jaminan",
@@ -118,7 +174,8 @@ const routes = [
       {
         path: "broadcast",
         name: "BROADCAST",
-        component: () => import("../views/pages/task/broadcast/BroadcastPage.vue"),
+        component: () =>
+          import("../views/pages/task/broadcast/BroadcastPage.vue"),
       },
       {
         path: "addvisit",
@@ -230,7 +287,8 @@ const routes = [
       {
         path: "referensi",
         name: "referensi",
-        component: () => import("../views/pages/master/referensi/ReferensiPage.vue"),
+        component: () =>
+          import("../views/pages/master/referensi/ReferensiPage.vue"),
       },
       {
         path: "taksasi-action",
@@ -392,8 +450,7 @@ const routes = [
       {
         path: "dokumen",
         name: "Dokumen",
-        component: () =>
-          import("../views/pages/laporan/LapDokumen.vue"),
+        component: () => import("../views/pages/laporan/LapDokumen.vue"),
       },
       {
         path: "lap_pembayaran",

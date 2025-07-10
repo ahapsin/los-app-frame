@@ -183,8 +183,8 @@ td {
   padding: 8px;
   text-align: left;
 }
-
-//pelunasan
+</style>
+<script setup>
 const pelunasan = reactive({
   LOAN_NUMBER: null,
   METODE_PEMBAYARAN: "cash",
