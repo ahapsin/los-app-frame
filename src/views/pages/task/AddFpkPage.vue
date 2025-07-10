@@ -834,19 +834,12 @@
                                         </n-radio>
                                     </n-radio-group>
                                 </div>
-                                <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran === 'bunga_menurun'">
-                                    <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
-                                        <n-radio name="tenor" :value="5" >
-                                            5 bulan<n-text code>
-                                                {{
-                                                    skemaAngsuran.length == null
-                                                        ? ` /
-                                                ${skemaAngsuran.tenor_6?.angsuran.toLocaleString()}`
-                                                        : ""
-                                                }}
-                                            </n-text>
-                                        </n-radio>
-                                    </n-radio-group>
+                            </n-form-item>
+                            <n-form-item label="Biaya Admin" path="biaya_admin" class="w-full">
+                                <div class="flex gap-2 w-full">
+                                    <n-input-number v-model:value="ekstra.biaya_admin" type="text" class="w-full"
+                                        :parse="parse" :format="format" :show-button="false">
+                                    </n-input-number>
                                 </div>
                             </n-form-item>
                         </div>
@@ -1454,6 +1447,20 @@ const rulesExtra = {
         message: "minimal 1.000.000",
     },
 }
+
+const ekstra = reactive({
+    jenis_angsuran: "bulanan",
+    tenor: 0,
+    bunga: 0,
+    bunga_tahunan: computed(() => (parseInt(ekstra.bunga) * 12).toFixed(2)),
+    biaya_admin: 0,
+    nilai_yang_diterima: computed(() => ekstra.pokok_pembayaran - ekstra.total_admin),
+    pokok_pembayaran: 0,
+    flat_rate: 0,
+    angsuran: computed(() => (Math.ceil(Math.round((ekstra.pokok_pembayaran * ekstra.bunga / 100) * ekstra.tenor + ekstra.pokok_pembayaran) / ekstra.tenor / 1000) * 1000)),
+
+});
+
 const bl_pesan = ref();
 const dok_identitas = ref([]);
 const dok_pendukung = ref([]);

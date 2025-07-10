@@ -184,7 +184,102 @@ td {
   text-align: left;
 }
 
-th {
-  background-color: #f4f4f4;
-}
-</style>
+//pelunasan
+const pelunasan = reactive({
+  LOAN_NUMBER: null,
+  METODE_PEMBAYARAN: "cash",
+  SISA_POKOK: 0,
+  BUNGA_BERJALAN: 0,
+  TUNGGAKAN_BUNGA: 0,
+  DENDA: 0,
+  PINALTI: 0,
+  UANG_PELANGGAN: 0,
+  DISKON: 0,
+  BAYAR_POKOK: 0,
+  BAYAR_BUNGA: 0,
+  BAYAR_PINALTI: 0,
+  BAYAR_DENDA: 0,
+  DISKON_POKOK: 0,
+  DISKON_PINALTI: 0,
+  DISKON_BUNGA: 0,
+  DISKON_DENDA: 0,
+  JUMLAH_TAGIHAN: computed(
+      () =>
+          pelunasan.SISA_POKOK +
+          pelunasan.TUNGGAKAN_BUNGA +
+          pelunasan.PINALTI +
+          pelunasan.DENDA
+  ),
+  TOTAL_BAYAR: computed(
+      () =>
+          pelunasan.SISA_POKOK +
+          pelunasan.TUNGGAKAN_BUNGA +
+          pelunasan.PINALTI +
+          pelunasan.DENDA
+  ),
+  JUMLAH_BAYAR: computed(
+      () =>
+          pelunasan.BAYAR_POKOK +
+          pelunasan.BAYAR_BUNGA +
+          pelunasan.BAYAR_PINALTI +
+          pelunasan.BAYAR_DENDA
+  ),
+  JUMLAH_DISKON: computed(
+      () =>
+          pelunasan.DISKON_POKOK +
+          pelunasan.DISKON_BUNGA +
+          pelunasan.DISKON_PINALTI +
+          pelunasan.DISKON_DENDA
+  ),
+  PEMBULATAN: 0,
+  KEMBALIAN: computed(() =>
+      pelunasan.UANG_PELANGGAN - pelunasan.JUMLAH_TAGIHAN - pelunasan.PEMBULATAN <
+      0
+          ? 0
+          : pelunasan.UANG_PELANGGAN -
+          pelunasan.JUMLAH_TAGIHAN -
+          pelunasan.PEMBULATAN
+  ),
+});
+const pushJumlahUang = async () => {
+  let sisaBayarPokok = pelunasan.UANG_PELANGGAN - pelunasan.SISA_POKOK;
+  if (sisaBayarPokok >= 0) {
+    pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK;
+    pelunasan.DISKON_POKOK = 0;
+    let sisaBayarBunga = sisaBayarPokok - pelunasan.TUNGGAKAN_BUNGA;
+    if (sisaBayarBunga > 0) {
+      pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+      pelunasan.DISKON_BUNGA = 0;
+      let sisaBayarPinalti = sisaBayarBunga - pelunasan.PINALTI;
+      if (sisaBayarPinalti > 0) {
+        pelunasan.BAYAR_PINALTI = pelunasan.PINALTI;
+        pelunasan.DISKON_PINALTI = 0;
+        let sisaBayarDenda = sisaBayarPinalti - pelunasan.DENDA;
+        if (sisaBayarDenda > 0) {
+          pelunasan.BAYAR_DENDA = pelunasan.DENDA;
+          pelunasan.DISKON_DENDA = 0;
+        } else {
+          pelunasan.BAYAR_DENDA = sisaBayarDenda + pelunasan.DENDA;
+          pelunasan.DISKON_DENDA = pelunasan.DENDA - pelunasan.BAYAR_DENDA;
+        }
+      } else {
+        pelunasan.BAYAR_PINALTI = sisaBayarPinalti + pelunasan.PINALTI;
+        pelunasan.DISKON_PINALTI = pelunasan.PINALTI - pelunasan.BAYAR_PINALTI;
+        pelunasan.DISKON_DENDA = pelunasan.DENDA;
+      }
+    } else {
+      pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA + sisaBayarBunga;
+      pelunasan.DISKON_POKOK = 0;
+      pelunasan.DISKON_BUNGA = Math.abs(sisaBayarBunga);
+      pelunasan.DISKON_DENDA = pelunasan.DENDA;
+      pelunasan.DISKON_PINALTI = pelunasan.PINALTI;
+    }
+  } else {
+    pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK;
+    pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.UANG_PELANGGAN;
+    pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+    pelunasan.DISKON_DENDA = pelunasan.DENDA;
+    pelunasan.DISKON_PINALTI = pelunasan.PINALTI;
+  }
+};
+</script>
