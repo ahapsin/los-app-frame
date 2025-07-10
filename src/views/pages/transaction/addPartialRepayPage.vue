@@ -1,44 +1,11 @@
 <template>
-    <n-card :segmented="{
+    <n-card size="small" :segmented="{
         content: true,
         footer: 'soft',
     }">
 
-        <template #header>Tambah Pelunasan</template>
+        <template #header>Tambah Pelunasan Sebagian</template>
         <span class="hidden">{{ pelunasan }}</span>
-        <template #header-extra>
-            <n-space v-if="!props.embed">
-                <n-button v-show="!searchField" strong type="warning" @click="handleBack">
-                    <template #icon>
-                        <n-icon>
-                            <back-icon />
-                        </n-icon>
-                    </template>
-                    <p class="hidden md:flex">kembali</p>
-                </n-button>
-                <!-- <n-button
-    v-show="!searchField"
-    strong
-    secondary
-    type="warning"
-    round
-    @click="handleBtnAngsuran"
-  >
-    <template #icon>
-      <n-icon>
-        <angsuran-icon />
-      </n-icon>
-    </template>
-    <span class="hidden md:flex">pindah ke penerimaan</span>
-  </n-button> -->
-
-            </n-space>
-            <!-- <n-space v-show="props.embed ? true : displayFasilitas">
-  <n-tag type="warning"
-    >No Kontrak <b>{{ props.atr }}</b></n-tag
-  >
-</n-space> -->
-        </template>
         <div class="flex flex-col md:flex-row gap-2" v-show="!props.embed">
             <n-form-item label="Nama Pelanggan" class="w-full">
                 <n-input v-model:value="dynamicSearch.nama" type="text" placeholder="Nama" @blur="handleSearch"
@@ -61,14 +28,6 @@
             :on-update:checked-row-keys="handleFasilitas" :loading="loadSearch" class="pb-2"
             v-show="props.embed ? true : displayFasilitas" />
         <n-spin v-if="displayDetail" :show="spinnerShow">
-            <n-alert type="warning" :show-icon="false" v-show="props.embed ? true : displayFasilitas">
-                <div class="flex items-center justify-between">
-                    <div>Penghapusan Bunga</div>
-                    <div>
-                        <n-text><strong>{{ formatter.format(pelunasan.DISC_BUNGA) }}</strong></n-text>
-                    </div>
-                </div>
-            </n-alert>
             <div>
                 <n-table size="small" v-show="props.embed ? true : displayFasilitas" class="mb-2" single-column
                     :single-line="false">
@@ -76,40 +35,12 @@
                         <tr>
                             <th>#</th>
                             <th align="right">Tagihan</th>
-                            <th align="right">Bayar</th>
-                            <th valign="right">Diskon</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>Pokok</td>
-                            <td align="right">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.BAYAR_POKOK) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.DISKON_POKOK) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Bunga</td>
-                            <td align="right">{{ formatter.format(pelunasan.TUNGGAKAN_BUNGA) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.BAYAR_BUNGA) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.DISKON_BUNGA) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Pinalti</td>
-                            <td align="right">{{ formatter.format(pelunasan.PINALTI) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.BAYAR_PINALTI) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.DISKON_PINALTI) }}</td>
-                        </tr>
-                        <tr>
-                            <td>Denda</td>
-                            <td align="right">{{ formatter.format(pelunasan.DENDA) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.BAYAR_DENDA) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.DISKON_DENDA) }}</td>
-                        </tr>
-                        <tr>
-                            <td class="bg-pr"><strong>Jumlah</strong></td>
-                            <td align="right"><strong>{{ formatter.format(pelunasan.JUMLAH_TAGIHAN) }}</strong></td>
-                            <td align="right"><strong>{{ formatter.format(pelunasan.JUMLAH_BAYAR) }}</strong></td>
-                            <td align="right"><strong>{{ formatter.format(pelunasan.JUMLAH_DISKON) }}</strong></td>
+                            <td align="right" class="font-bold">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
                         </tr>
                     </tbody>
                 </n-table>
@@ -132,9 +63,8 @@
                         </div>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
-                        <n-input-number placeholder="Jumlah Pembayaran"
-                            v-model:value="pelunasan.JUMLAH_TAGIHAN" :show-button="false" :parse="parse"
-                            :format="format" readonly class="w-full">
+                        <n-input-number placeholder="Jumlah Pembayaran" v-model:value="pelunasan.JUMLAH_TAGIHAN"
+                            :show-button="false" :parse="parse" :format="format" readonly class="w-full">
                         </n-input-number>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
@@ -144,22 +74,14 @@
                             class="w-full" ref="uangPelangganRef" @click="handleUangPelangganFocus">
                         </n-input-number>
                     </n-form-item>
-                    <n-form-item path="nestedValue.path2" label="Jumlah Diskon" class="w-full">
-                        <n-input-number  placeholder="Jumlah Pembayaran"
-                            v-model:value="pelunasan.JUMLAH_DISKON" :show-button="false" :parse="parseCurrency"
-                            :format="formatCurrency" clearable class="w-full" readonly>
-                        </n-input-number>
-                    </n-form-item>
                     <n-form-item label="Pembulatan" class="w-full">
-                        <n-input-number :show-button="false" :parse="parseCurrency"
-                            :format="formatCurrency"
+                        <n-input-number :show-button="false" :parse="parseCurrency" :format="formatCurrency"
                             v-model:value="pelunasan.PEMBULATAN" clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
                     <n-form-item label="Kembalian" class="w-full">
-                        <n-input-number :show-button="false" :parse="parseCurrency"
-                            :format="formatCurrency" v-model:value="pelunasan.KEMBALIAN" readonly class="w-full"
-                            :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
+                        <n-input-number :show-button="false" :parse="parseCurrency" :format="formatCurrency"
+                            v-model:value="pelunasan.KEMBALIAN" readonly class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
                     <n-form-item class="w-full">
@@ -217,19 +139,19 @@
                                     <small class="text-reg">No Transaksi : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.no_transaksi
-                                        }}
+                                    }}
                                     </n-text>
                                     <small class="text-reg">No Pelanggan : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.cust_code
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col py-4">
                                     <small class="text-reg">Terima dari (No Kontrak)</small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.nama
-                                        }}
+                                    }}
                                     </n-text>
                                     <small class="text-lg">{{ responseProsesPayment.res.no_fasilitas }}</small>
                                 </div>
@@ -240,7 +162,7 @@
                                     <small class="text-reg">Tanggal & Waktu</small>
                                     <n-text strong class="text-md">{{
                                         responseProsesPayment.res.tgl_transaksi
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col">
@@ -262,7 +184,7 @@
                                     <td>
                                         <n-text strong class="text-md"> {{
                                             responseProsesPayment.res.kembalian
-                                            }}
+                                        }}
                                         </n-text>
                                     </td>
                                 </div>
@@ -270,7 +192,7 @@
                                     <small class="text-reg">Metode Pembayaran</small>
                                     <n-text strong class="text-md"> {{
                                         responseProsesPayment.res.payment_method
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                             </div>
@@ -288,11 +210,11 @@
                                     <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_denda).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td align="right" class="border pe-2 border-black">
                                         {{
@@ -306,7 +228,7 @@
                                     <td colspan="3" align="right" class="pe-2">
                                         <strong>{{
                                             responseProsesPayment.res.total_bayar.toLocaleString("US")
-                                            }}</strong>
+                                        }}</strong>
                                     </td>
                                 </tr>
                             </table>
@@ -316,13 +238,13 @@
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.created_by
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.nama
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                             </div>
@@ -551,7 +473,7 @@ const postDynamic = async () => {
     loadProses.value = true;
     const response = await useApi({
         method: "POST",
-        api: "payment_pelunasan",
+        api: "payment_bunga_menurun",
         data: pelunasan,
         token: userToken,
     });
@@ -584,7 +506,7 @@ const handleSearch = async () => {
     loadSearch.value = true;
     const response = await useApi({
         method: "POST",
-        api: "search_customer",
+        api: "search_customer_bunga_menurun",
         data: dynamicSearch,
         token: userToken,
     });
@@ -607,7 +529,7 @@ const optTipePay = [
     },
 ];
 const dataPelunasan = ref([]);
-const pelunasan = reactive({
+const  pelunasan = reactive({
     LOAN_NUMBER: null,
     METODE_PEMBAYARAN: "cash",
     SISA_POKOK: 0,
@@ -627,17 +549,11 @@ const pelunasan = reactive({
     DISKON_DENDA: 0,
     JUMLAH_TAGIHAN: computed(
         () =>
-            pelunasan.SISA_POKOK +
-            pelunasan.TUNGGAKAN_BUNGA +
-            pelunasan.PINALTI +
-            pelunasan.DENDA
+            pelunasan.SISA_POKOK
     ),
     TOTAL_BAYAR: computed(
         () =>
-            pelunasan.SISA_POKOK +
-            pelunasan.TUNGGAKAN_BUNGA +
-            pelunasan.PINALTI +
-            pelunasan.DENDA
+            pelunasan.SISA_POKOK 
     ),
     JUMLAH_BAYAR: computed(
         () =>
@@ -693,9 +609,9 @@ const getDataPelunasan = async (e) => {
 };
 const pushJumlahUang = async () => {
     Object.assign(pelunasan, formPelunasan);
-    let sisaBayarPokok = pelunasan.UANG_PELANGGAN - pelunasan.SISA_POKOK;
+    let sisaBayarPokok = pelunasan.UANG_PELANGGAN - (pelunasan.SISA_POKOK+pelunasan.TUNGGAKAN_BUNGA);
     if (sisaBayarPokok >= 0) {
-        pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK;
+        pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK+pelunasan.TUNGGAKAN_BUNGA;
         pelunasan.DISKON_POKOK = 0;
         let sisaBayarBunga = sisaBayarPokok - pelunasan.TUNGGAKAN_BUNGA;
         if (sisaBayarBunga > 0) {
@@ -726,7 +642,7 @@ const pushJumlahUang = async () => {
             pelunasan.DISKON_PINALTI = pelunasan.PINALTI;
         }
     } else {
-        pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK;
+        pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK ;
         pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.UANG_PELANGGAN;
         pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
         pelunasan.DISKON_DENDA = pelunasan.DENDA;

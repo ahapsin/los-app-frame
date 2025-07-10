@@ -11,6 +11,7 @@
         filterable
         placeholder="Pilih Brand"
         v-model:value="props.brand"
+        :disabled="props.active"
         :options="col_brand"
         @update:value="brandChanged"
         :loading="loadingBrand"
@@ -19,6 +20,7 @@
     <n-form-item label="Tipe" path="Tipe" class="w-full">
       <n-select
         filterable
+        :disabled="props.active"
         placeholder="Pilih Tipe"
         label-field="label"
         value-field="value"
@@ -32,6 +34,7 @@
     <n-form-item label="Tahun" path="tahun" class="w-full">
       <n-select
         filterable
+        :disabled="props.active"
         placeholder="Pilih Tahun"
         label-field="label"
         value-field="value"
@@ -46,6 +49,7 @@
       <n-input-number
       v-bind:dir="isRtl ? 'rtl' : 'ltr'"
         :show-button="false"
+        :disabled="props.active"
         v-model:value="props.pasar"
         placeholder="Harga Pasar"
         readonly

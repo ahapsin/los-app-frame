@@ -8,9 +8,9 @@
 </template>
 
 <script setup>
+import { NButton, useLoadingBar } from 'naive-ui';
 import { h } from "vue";
 import router from '../../../../router';
-import { NButton, useLoadingBar } from 'naive-ui';
 
 
 const loadingBar = useLoadingBar();

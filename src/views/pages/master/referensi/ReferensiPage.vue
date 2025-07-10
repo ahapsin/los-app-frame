@@ -1,7 +1,7 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :title="`Tabel ${$route.name}`" size="small" :segmented="true">
+            <n-card :title="`Tabel ${$route.name}`"  :segmented="true" size="small">
                 <template #header-extra>
                     <n-space class="!gap-1">
                         <div class="me-1">
@@ -66,10 +66,7 @@
 </template>
 <script setup>
 import { ref, onMounted, h } from "vue";
-import { useApi } from "../../../../helpers/axios";
-import { useSearch } from "../../../../helpers/searchObject";
-import router from '../../../../router';
-import { useDialog, useMessage, NDropdown, NIcon, NTag, NButton, NEllipsis } from "naive-ui";
+import { useDialog, useMessage, NDropdown, NIcon, NButton, useLoadingBar } from "naive-ui";
 import {
     AddCircleOutlineRound as AddIcon,
     SearchOutlined as SearchIcon,
@@ -81,26 +78,43 @@ import {
     DeleteOutlined as DeleteIcon,
     ListAltOutlined as DetailIcon
 } from "@vicons/material";
+import { useApi } from "../../../../helpers/axios";
+import { useSearch } from "../../../../helpers/searchObject";
+import router from "../../../../router";
 
-import { useLoadingBar } from "naive-ui";
 
 const message = useMessage();
 const dialog = useDialog();
 const dataTable = ref([]);
 const searchBox = ref();
-const loadingBar=useLoadingBar();
+
 const columns = [
     {
-        title: "ID",
-        key: "id",
+        title: "Kode",
+        key: "kode",
         sorter: 'default',
     },
     {
-        title: "Jabatan",
-        key: "name",
+        title: "Nama",
+        key: "nama",
         sorter: 'default',
     },
-    
+    {
+        title: "Alamat",
+        key: "alamat",
+        sorter: 'default',
+        ellipsis: {
+            tooltip: true,
+        }
+    },
+    {
+        title: "Kota",
+        sorter: 'default',
+        key: "kota",
+        ellipsis: {
+            tooltip: true,
+        }
+    },
     {
         title: "",
         align: "right",
@@ -112,6 +126,9 @@ const columns = [
                     options: options,
                     size: "small",
                     onSelect: (e) => {
+                        if (e === "hapus") {
+                            handleConfirm(row, index);
+                        }
                         if (e === "detail") {
                             handleDetail(row);
                         }
@@ -171,21 +188,21 @@ const handleUpdate = (evt) => {
     router.push(`/master/branch-action/${evt.id}`);
 }
 const handleAdd = () => {
-    router.push({name:'position action'});
+    router.push('/master/branch-action');
 }
+const loadingBar=useLoadingBar();
 const getData = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: 'GET',
-        api: 'position',
+        api: 'cabang',
         token: userToken
     });
     if (!response.ok) {
-        message.error("sesi berakhir");
-        router.push('/');
+      console.log(reponse.error);
     } else {
         loadingBar.finish();
-        dataTable.value = response.data;
+        dataTable.value = response.data.response;
     }
 }
 const renderIcon = (icon) => {

@@ -1,28 +1,31 @@
 <template>
     <div class="flex md:flex-row flex-col w-full  gap-2">
         <n-form-item label="Provinsi" path="provinsi" class="w-full">
-            <n-select filterable placeholder="Pilih Provinsi" label-field="text" value-field="id"
+            <n-input :readonly="active" v-model:value="props.provinsi" v-if="props.viewMode"/>
+            <n-select v-else filterable placeholder="Pilih Provinsi" label-field="text" value-field="id"
                 v-model:value="props.provinsi" :options="col_provinsi" @update:value="provinsiChanged"
                 @blur="provUpdate" />
         </n-form-item>
         <n-form-item label="Kota" path="kota" class="w-full">
-            <n-select filterable placeholder="Pilih Kab/Kota" label-field="text" value-field="id"
+            <n-input :readonly="active" v-model:value="props.kota" v-if="props.viewMode"/>
+            <n-select v-else filterable placeholder="Pilih Kab/Kota" label-field="text" value-field="id"
                 v-model:value="props.kota" :options="col_kota" @update:value="kotaChanged" @blur="kotaUpdate" />
         </n-form-item>
         <n-form-item label="Kecamatan" path="kecamatan" class="w-full">
-            <n-select filterable placeholder="Pilih Kecamatan" label-field="text" value-field="id"
+            <n-input :readonly="active" v-model:value="props.kecamatan" v-if="props.viewMode"/>
+            <n-select v-else filterable placeholder="Pilih Kecamatan" label-field="text" value-field="id"
                 v-model:value="props.kecamatan" :options="col_kec" @update:value="kecChanged" @blur="kecUpdate" />
         </n-form-item>
       <n-form-item label="Desa" path="desa" class="w-full" v-if="col_desa.length <= 0 ">
-        <n-input v-model:value="props.desa" placeholder="Kelurahan / Desa" @update:value="desaPostUp" />
+        <n-input v-model:value="props.desa" placeholder="Kelurahan / Desa" @update:value="desaPostUp" :readonly="props.viewMode"/>
       </n-form-item>
 
         <n-form-item label="Desa" path="desa" class="w-full" v-else>
-            <n-select filterable placeholder="Pilih Desa" label-field="text" value-field="id" v-model:value="props.desa"
+            <n-select filterable placeholder="Pilih Desa" tag label-field="text" value-field="id" v-model:value="props.desa"
                 :options="col_desa" @update:value="desaChanged" @click="desaUpdate" />
         </n-form-item>
         <n-form-item label="Kode Pos" path="kodepos" class="w-full" v-if="col_kodepos.length <= 0">
-            <n-input v-model:value="props.kodepos" placeholder="Kode Pos" @update:value="kodePostUp" maxlength="5"/>
+            <n-input v-model:value="props.kodepos" placeholder="Kode Pos" @update:value="kodePostUp" maxlength="5" :readonly="props.viewMode"/>
         </n-form-item>
         <n-form-item label="Kode Pos" path="kodepos" class="w-full" v-else>
             <n-select filterable placeholder="Pilih Kodepos" label-field="text" value-field="id"
@@ -82,7 +85,8 @@ const props = defineProps({
     },
     loop: {
         type: [Number, Boolean]
-    }
+    },
+    viewMode: Boolean,
 });
 const dataAlamat = reactive({
     provinsi: props.kota,

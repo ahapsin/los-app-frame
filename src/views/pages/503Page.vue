@@ -5,9 +5,7 @@
                 <div class="flex w-full items-center justify-around px-10">
                     <img :src="applogo" class="w-[100px] h-[100px]" />
                     <div class="w-fit">
-                        <n-icon size="34px" class="animate-pulse" color="#ff0000">
-                            <off-icon />
-                        </n-icon>
+                      <v-icon name="bi-exclamation-diamond" animation="spin" hover />
                     </div>
                     <img :src="app503" class="w-[100px]" />
                 </div>
@@ -22,7 +20,6 @@
 </template>
 
 <script setup>
-import { LinkOffFilled as OffIcon } from "@vicons/material";
 import router from "../../router";
 const applogo = import.meta.env.VITE_APP_LOGO;
 const appAccentColor = import.meta.env.VITE_APP_ACCENT_COLOR;

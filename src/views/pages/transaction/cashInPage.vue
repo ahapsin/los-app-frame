@@ -5,21 +5,6 @@
     }" size="small">
         <!-- <pre>{{ pageData }}</pre> -->
         <template #header>Tambah Penerimaan Uang</template>
-        <template #header-extra>
-
-            <n-space>
-
-                <n-button v-show="!searchField" strong type="warning" @click="handleBack">
-                    <template #icon>
-                        <n-icon>
-                            <back-icon />
-                        </n-icon>
-                    </template>
-                    <p class="hidden md:flex">kembali</p>
-                </n-button>
-
-            </n-space>
-        </template>
         <div class="flex flex-col md:flex-row gap-2">
             <span v-show="false">{{
                 isLasted ? pageData.diskon_tunggakan = totalDenda : pageData.diskon_tunggakan = 0
@@ -76,27 +61,20 @@
                 class="py-2" />
             <n-space vertical>
                 <n-alert :type="pageData.penangguhan_denda === 'no' ? 'warning' : 'error'" :show-icon="false"
-                    class="mb-2" v-show="isLasted">
+                    class="mb-2" v-if="isLasted && totalInstallment() === totalInstallmentTertagih()">
                     <div class="flex justify-between gap-4">
 
                         <div class="flex w-full justify-between items-center gap-2">
 
                             <div class="flex items-center gap-2" v-if="pageData.diskon_tunggakan > 0">
-
                                 <n-checkbox v-model:checked="pageData.bayar_dengan_diskon" checked-value="ya"
                                     unchecked-value="tidak">
                                 </n-checkbox>
                                 <div>{{ pageData.bayar_dengan_diskon }}, diskon denda</div>
                                 <div class="flex gap-2">
-
                                     <strong class="font-bold">{{
                                         pageData.diskon_tunggakan.toLocaleString('US')
                                     }}</strong>
-                                    <!--                  <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :min="0"-->
-                                    <!--                                  :default-value="0" clearable icon size="" :parse="parse" :format="format"-->
-                                    <!--                                  :max="pageData.tunggakan_denda + dendaAngsuranBerjalan" @input="diskonFormat"-->
-                                    <!--                                  placeholder="Jumlah Diskon" v-model:value="pageData.diskon_tunggakan"/>-->
-
                                 </div>
                             </div>
                         </div>
@@ -123,25 +101,25 @@
                     </div>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
-                        v-model:value="totalPay" :show-button="false" :parse="parse" :format="format" clearable
+                    <n-input-number  placeholder="Jumlah Pembayaran"
+                        v-model:value="totalPay" :show-button="false" :parse="parseCurrency" :format="formatCurrency" clearable
                         class="w-full" readonly>
                     </n-input-number>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" placeholder="Jumlah Pembayaran"
+                    <n-input-number placeholder="Jumlah Pembayaran"
                         @focus="handleFocus" ref="inputFocus" v-model:value="pageData.jumlah_uang" :show-button="false"
-                        :parse="parse" :format="format" clearable class="w-full">
+                        :parse="parseCurrency" :format="formatCurrency" clearable class="w-full">
                     </n-input-number>
                 </n-form-item>
                 <n-form-item label="Pembulatan" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" :parse="parse" min="0"
-                        :format="format" :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan"
+                    <n-input-number :show-button="false" :parse="parseCurrency" min="0"
+                        :format="formatCurrency" :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan"
                         clearable class="w-full" />
                 </n-form-item>
                 <n-form-item label="Kembalian" class="w-full">
-                    <n-input-number v-bind:dir="isRtl ? 'rtl' : 'ltr'" :show-button="false" min="0;" :parse="parse"
-                        :format="format" v-model:value="pageData.kembalian" readonly class="w-full" />
+                    <n-input-number  :show-button="false" min="0;" :parse="parseCurrency"
+                        :format="formatCurrency" v-model:value="pageData.kembalian" readonly class="w-full" />
                 </n-form-item>
                 <n-form-item class="w-full">
                     <n-button type="primary" @click="handleProses" :loading="loadProses" class="w-full" :disabled="pageData.bayar_dengan_diskon === 'ya' && totalPay === 0 && pageData.jumlah_uang === 0
@@ -328,26 +306,25 @@
     </n-modal>
 </template>
 <script setup>
-import { v4 as uuidv4 } from "uuid";
-import { useApi } from "../../../helpers/axios";
-import router from "../../../router";
+import {
+    CheckCircleRound as checkIcon
+} from "@vicons/material";
+import { useWindowSize } from "@vueuse/core";
 import _ from "lodash";
 import {
-    CheckCircleRound as checkIcon,
-    ChevronLeftRound as backIcon,
-} from "@vicons/material";
-import {
-    useDialog,
-    useMessage,
-    NIcon,
-    NTag,
     NButton,
+    NIcon,
     NInput,
     NInputNumber,
+    NTag,
+    useDialog,
+    useMessage,
 } from "naive-ui";
-import { computed, reactive, ref, h } from "vue";
-import { useWindowSize } from "@vueuse/core";
+import { v4 as uuidv4 } from "uuid";
+import { computed, h, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
+import { useApi } from "../../../helpers/axios";
+import router from "../../../router";
 
 const searchField = ref(false);
 
@@ -374,13 +351,19 @@ const handleCetakKwitansi = () => {
     router.go(-1)
 }
 
+const totalInstallment = () =>
+    checkedRowCredit.value.reduce(
+        (total, installment) => total + installment.bayar_angsuran,
+        0
+    );
+
+const totalInstallmentTertagih = () => dataStrukturKredit.value.reduce(
+    (total, installment) => total + installment.installment,
+    0
+);
 
 const totalPay = computed(() => {
-    const totalInstallment = () =>
-        checkedRowCredit.value.reduce(
-            (total, installment) => total + installment.bayar_angsuran,
-            0
-        );
+
     const totalPenalty = () =>
         checkedRowCredit.value.reduce(
             (total, installment) => total + installment.bayar_denda,
@@ -389,6 +372,7 @@ const totalPay = computed(() => {
     const combinedTotal = () => totalInstallment() + totalPenalty();
     return combinedTotal();
 });
+
 
 const totalDenda = computed(() => {
     const totalPenalty = () =>
@@ -441,7 +425,7 @@ const getDataPelunasan = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         dataRepayment.value = response.data;
         pageData.denda = dataRepayment.value[0].DENDA;
@@ -790,9 +774,17 @@ const getSkalaCredit = async (e) => {
 const message = useMessage();
 
 
-const handleBack = () => {
-    router.push({ name: "pembayaran" });
-};
+const parseCurrency = (value) => {
+    const nums = value.replace(/(,|\$|\s)/g, "").trim();
+    if (/^\d+(\.(\d+)?)?$/.test(nums))
+        return Number(nums);
+    return nums === "" ? null : Number.NaN;
+}
+const formatCurrency = (value) => {
+    if (value === null)
+        return "";
+    return value.toLocaleString("en-US");
+}
 const rowClassName = (row) => {
     if (row.loan_number == selectedFasilitas.value) {
         return "row-active";

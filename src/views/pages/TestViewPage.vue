@@ -1,252 +1,187 @@
 <template>
-  <div class="flex justify-center p-0 md:p-8 bg-gradient-to-tr from-blue-800 to-orange-500 gap-2">
-    <div
-        class="p-8 h-screen border shadow rounded-none md:rounded-2xl w-1/3 flex bg-white justify-between flex-col">
-      <div class="text-lg flex items-center pb-8">
-        <n-icon color="#">
-          <history-icon/>
-        </n-icon>
-        history
-      </div>
-      <div class="h-[600px] overflow-auto flex flex-col gap-2 ">
-        <div v-for="history in pushedHistoryChat" @click="textArea = history"
-             class="bg-slate-100 rounded-lg cursor-pointer p-2"> {{ history }}
-        </div>
-      </div>
-
-    </div>
-    <div
-        class="p-8 h-screen border shadow rounded-none md:rounded-2xl w-1/2 flex bg-white justify-between flex-col">
-      <div class="flex justify-between h-20 ">
-        <div class="text-2xl flex items-center pb-8">
-          cheat<span :class="indikator ? 'animate-bounce' : 'animate-none'"><b> GPU 4.0</b></span>
-          <n-icon
-              color="#">
-            <verify-icon/>
-          </n-icon>
-        </div>
-
-        <n-button v-if="pushedInvoice.length > 0"
-                  @click="() => { pushedInvoice = []; count = 0; pushedErrorInvoice = [] }">
-          <n-icon>
-            <close-icon/>
-          </n-icon>
-          <div>hapus log</div>
-        </n-button>
-
-        <div class="font-bold flex rounded-full w-[50px]" v-if="count > 0">
-          {{ count }} / {{ noInvoice != null ? noInvoice.length : null }}
-        </div>
-      </div>
-      <div class="flex flex-col gap-4 h-[600px] overflow-auto">
-        <div v-for="inv in pushedInvoice" class="flex justify-between  p-2 rounded-lg"
-             :class="inv.stts ? 'bg-slate-100' : 'bg-red-300 '">
-                    <span>
-                        <pre>{{ inv.no_invoice }}</pre>
-                    </span>
-          <span>{{ inv.type }}</span>
-        </div>
-
-      </div>
-
-      <div class="">
-        <div class="flex flex-col p-2 shadow-md border rounded-2xl">
-                    <textarea v-model="textArea" style="resize:none" class="p-2 focus:outline-none"
-                              placeholder="no invoice dipisahkan dengan koma" @focus="indikator = true"
-                              @blur="indikator = !indikator">
-    </textarea>
-          <div class="flex justify-between items-center gap-2">
-            <div v-if="noInvoice != null" class="border  items-center flex w-full p-1 rounded-lg shadow">
-              {{ noInvoice != null ? noInvoice.length : null }} data
-            </div>
-            <div v-else></div>
-            <n-select v-model:value="optVal" :options="optType"/>
-            <div class="flex gap-2">
-              <n-button type="error" circle v-if="textArea != null" @click="textArea = null">
-                <n-icon>
-                  <close-icon/>
-                </n-icon>
-              </n-button>
-
-              <n-button @click="eksekusi(noInvoice)" type="primary" circle>
-                <n-icon>
-                  <up-icon/>
-                </n-icon>
-              </n-button>
-            </div>
+  <div id="app">
+    <n-card title="Update taksasi">
+      <template #header-extra>
+        <n-space>
+          <input id="files" type="file" @change="handleFileUpload" class="hidden" accept=".csv" />
+          <label for="files"
+            class="border-2 bg-pr  text-white flex p-2  hover:shadow justify-center rounded-xl cursor-pointer">Import</label>
+          <div class="border-2 border-pr  text-pr flex p-2  hover:shadow justify-center rounded-xl cursor-pointer"
+            @click="downloadCsv" v-if="dataTakasasi.length > 0">Download Taksasi</div>
+        </n-space>
+      </template>
+      <n-card v-if="importChange">
+        <n-alert type="warning" :show-icon="false">
+          <div class="flex justify-between items-center">
+            <div class="text-xl">{{ csvData.length }} baris data</div>
+            <n-button type="primary" @click="importData">update data</n-button>
           </div>
-        </div>
-      </div>
-    </div>
-    <div
-        class="p-8 h-screen border shadow rounded-none md:rounded-2xl w-1/3 flex bg-white justify-between flex-col">
-      <div class="text-lg flex items-center pb-8">
-        <n-icon color="#">
-          <log-icon/>
-        </n-icon>
-        Log Error
-      </div>
-      <div class="h-[600px] overflow-auto flex flex-col gap-2 ">
-        <div v-for="errHistory in pushedErrorInvoice" class="bg-slate-100 rounded-lg cursor-pointer p-2"> {{
-            errHistory.no_invoice
-          }}
-        </div>
-      </div>
-    </div>
+        </n-alert>
+        <table class="table table-striped">
+          <thead class="sticky top-0">
+
+            <th v-for="head in csvHeaders" :key="head">{{ head }}</th>
+          </thead>
+          <tbody class="h-96 overflow-y-auto">
+            <tr v-for="body in csvData" :key="body">
+              <td v-for="item in body" :key="item">{{ item }}</td>
+            </tr>
+          </tbody>
+        </table>
+
+      </n-card>
+      {{ dataTaksasi }}
+      <n-data-table :columns="columns" :data="dataTakasasi" :pagination="{ pageSize: 10 }" ref="tableRef"></n-data-table>
+    </n-card>
+
   </div>
 </template>
-<script setup>
-import {useMessage} from 'naive-ui';
-import {useApi} from '../../helpers/axios';
-import {
-  ArrowUpwardRound as UpIcon,
-  CloseRound as CloseIcon,
-  HistoryRound as HistoryIcon,
-  ChecklistRtlRound as LogIcon,
-  VerifiedRound as VerifyIcon
-} from "@vicons/material";
-import router from "../../router/index.js";
 
-const message = useMessage();
-const textArea = ref();
-const pushedInvoice = ref([]);
-const pushedHistoryChat = ref([]);
-const pushedErrorInvoice = ref([]);
-const noInvoice = computed(() => {
-  return textArea.value ? textArea.value.split(',').map(item => item.trim()) : null;
-});
-const active = ref(false);
-const placement = ref("right");
-const activate = (place) => {
-  active.value = true;
-  placement.value = place;
-};
-const optVal = ref("pembayaran");
-const optType = ref([
+<script setup>
+import Papa from 'papaparse'; // Import PapaParse
+import { h, onMounted, ref } from "vue";
+
+import { useMessage } from "naive-ui";
+import { useApi } from '../../helpers/axios';
+
+const csvData = ref([]);
+const csvHeaders = ref([]);
+const format = ref([]);
+const importChange = ref(false);
+
+const handleFileUpload = async (event) => {
+  // Get the file from the input element
+  const file = event.target.files[0];
+
+  if (file) {
+    importChange.value = true;
+    // Parse the CSV file using PapaParse
+    await Papa.parse(file, {
+      complete: (result) => {
+        console.log(result); // Output parsed CSV result for debugging
+
+        // Set the headers and data from parsed result
+        csvHeaders.value = result.data[0]; // Assuming the first row contains headers
+        csvData.value = result.data.slice(1); // Data starts from the second row
+        format.value = formattedData(csvData.value);
+      },
+      header: false, // Disable header processing (optional, if you want to keep it as data)
+      skipEmptyLines: true, // Skip empty lines
+    });
+  }
+}
+
+const columns = [
   {
-    label: 'pembayaran',
-    value: 'pembayaran'
+    title: "Jenis",
+    sorter: 'default',
+    key: "jenis"
   },
   {
-    label: 'pelunasan',
-    value: 'pelunasan',
-  },]);
-const count = ref(0);
-const indikator = ref(false);
-const eksekusi = (e) => {
-  pushedHistoryChat.value.unshift(textArea.value);
-  textArea.value = null;
-
-  //payment(e);
-  if (optVal.value == "pelunasan") {
-    message.loading("memproses pelunasan");
-    repayment(e);
-  } else if (optVal.value == "pembayaran") {
-    payment(e);
-  }
-
+    title: "Merk",
+    sorter: 'default',
+    key: "brand"
+  },
+  {
+    title: "Code",
+    sorter: 'default',
+    key: "code"
+  },
+  {
+    title: "Type",
+    sorter: 'default',
+    key: "model"
+  }, {
+    title: "Model",
+    sorter: 'default',
+    key: "descr"
+  }, {
+    title: "Year",
+    sorter: 'default',
+    key: "year"
+  }, {
+    title: "Price",
+    sorter: 'default',
+    align: "right",
+    key: "price",
+    render(row) {
+      return h("div", row.price?.toLocaleString("US"));
+    },
+  },
+]
+const formattedData = (e) => {
+  console.log(csvHeaders.value);
+  const retData = e.map(item => (
+    {
+      jenis: item[0],
+      brand: item[1],
+      vehicle: item[2],
+      type: item[3],
+      model: item[4],
+      year: item[5],
+      price: item[6],
+    }));
+  return retData;
 }
+const message = useMessage();
 
-const payment = async (e) => {
-  for (let invoice of e) {
-    const response = await useApi({
-      method: "POST",
-      api: "welcome",
-      data: {
-        "no_invoice": invoice,
-        "tipe": "angsuran"
-      },
-    });
-    if (!response.ok) {
-      message.error('ERROR API');
-      const date = Date.now();
-      pushedErrorInvoice.value.unshift({no_invoice: invoice, tgl: date, stts: false});
-      pushedInvoice.value.unshift({no_invoice: invoice, tgl: date, stts: false});
-      count.value += 1;
-    } else {
-      textArea.value = null;
-      message.success(invoice);
-      const date = Date.now();
-      pushedInvoice.value.unshift({no_invoice: invoice, tgl: date, stts: true, type: "pembayaran"});
-      count.value += 1;
-    }
-  }
-}
-
-const proPel = async (e) => {
+const importData = async () => {
+  let messageReactive = null;
+  messageReactive = message.loading("mengupdate data taksasi", { duration: 0 });
+  const userToken = localStorage.getItem("token");
   const response = await useApi({
-    method: "POST",
-    api: "propel",
-    data: e,
+    method: "post",
+    api: "taksasi_dump",
+    data: format.value,
+    token: userToken,
   });
   if (!response.ok) {
-    message.error('gagal ketua propel !');
-    const date = Date.now();
-    pushedErrorInvoice.value.unshift({no_invoice: e, tgl: date, stts: false});
-    pushedInvoice.value.unshift({no_invoice: e, tgl: date, stts: false});
-    count.value += 1;
+    message.error("sesi berakhir");
   } else {
-    Object.assign(pelunasan, response.data);
-    pushJumlahUang();
-    const bentukReport = {
-      loan: pelunasan.LOAN_NUMBER,
-      jenis_bayar: pelunasan.METODE_PEMBAYARAN,
-      total_bayar: pelunasan.TOTAL_BAYAR,
-      uang_pel: pelunasan.UANG_PELANGGAN,
-      jml_diskon: pelunasan.JUMLAH_DISKON,
-      pembulatan: pelunasan.PEMBULATAN,
-      kembalian: pelunasan.KEMBALIAN
-    }
-    textArea.value = null;
-    message.success("berhasil proses pelunasan");
-    const date = Date.now();
-    pushedInvoice.value.unshift({no_invoice: pelunasan, tgl: date, stts: true, type: "pelunasan"});
-    count.value += 1;
-  }
-
-
-}
-
-const repayment = async (e) => {
-  const date = Date.now();
-  for (let invoice of e) {
-    const response = await useApi({
-      method: "POST",
-      api: "botpel",
-      data: {
-        "no_invoice": invoice,
-      },
-    });
-    if (!response.ok) {
-      message.error('gagal ketua !');
-
-      pushedErrorInvoice.value.unshift({no_invoice: invoice, tgl: date, stts: false});
-      pushedInvoice.value.unshift({no_invoice: invoice, tgl: date, stts: false});
-      count.value += 1;
-    } else {
-      Object.assign(pelunasan, response.data);
-      pushJumlahUang();
-      proPel(pelunasan);
-    }
-
+    message.success("update taksasi selesai....");
+    messageReactive.destroy();
+    messageReactive = null;
   }
 }
-const dateFormat = (e) => {
-  var date = new Date(e * 1000);
 
-  // Hours part from the timestamp
-  var hours = date.getHours();
+const dataTakasasi = ref([]);
+const getTaksasi = async () => {
+  const userToken = localStorage.getItem("token");
+  const response = await useApi({
+    method: "get",
+    api: "taksasi_download",
+    token: userToken,
+  });
+  if (!response.ok) {
+    message.error("sesi berakhir");
+  } else {
+    dataTakasasi.value = response.data;
+    console.log(response);
+    message.success("data taksasi dimuat....");
+  }
+}
 
-  // Minutes part from the timestamp
-  var minutes = "0" + date.getMinutes();
+const tableRef = ref();
+const downloadCsv = () => tableRef.value?.downloadCsv({
+  fileName: `format_taksasi`,
+  keepOriginalData: true
+});
 
-  // Seconds part from the timestamp
-  var seconds = "0" + date.getSeconds();
+onMounted(() => getTaksasi());
+</script>
 
-  // Will display time in 10:30:23 format
-  var formattedTime = hours + ':' + minutes.substr(-2) + ':' + seconds.substr(-2);
+<style scoped>
+/* Simple styling for the table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
 
-  return formattedTime;
+th,
+td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: left;
 }
 
 //pelunasan

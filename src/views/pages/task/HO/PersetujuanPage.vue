@@ -34,20 +34,20 @@
         </template>
         <CancelPaymentPage :data="dataCancelPayment"/>
       </n-tab-pane>
-      <template #suffix>
-        <n-dropdown trigger="hover" :options="options" @select="handleSelect" v-if="addButtonDisplay">
-          <n-button type="primary">Tambah Transaksi</n-button>
-        </n-dropdown>
-      </template>
+      <n-tab-pane name="ubah_jaminan" tab="Perubahan Jaminan">
+        <PerubahanJaminan :data="dataPerubahanJaminan"/>
+      </n-tab-pane>
+     
     </n-tabs>
   </n-card>
 </template>
 <script setup>
-import PendingTransferPage from './PendingTransferPage.vue';
-import CancelOrderPage from './CancelOrderPage.vue';
-import {useApi} from '../../../../helpers/axios';
-import CancelPaymentPage from './CancelPaymentPage.vue';
+import { useApi } from '../../../../helpers/axios';
 import ApprovalHOPage from "../ApprovalHOPage.vue";
+import CancelOrderPage from './CancelOrderPage.vue';
+import CancelPaymentPage from './CancelPaymentPage.vue';
+import PendingTransferPage from './PendingTransferPage.vue';
+import PerubahanJaminan from './PerubahanJaminan.vue';
 
 const dataCancelOrder = ref([]);
 const dataCancelPayment = ref([]);

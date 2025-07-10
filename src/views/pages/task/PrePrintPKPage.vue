@@ -1,4 +1,5 @@
 <template>
+
     <n-card :segmented="{
         content: true,
         footer: 'soft',
@@ -39,6 +40,7 @@
                 </n-form-item>
             </n-form>
             <!-- <n-form-item class="w-full">
+
         <n-button type="primary" @click="handleProses">Proses</n-button>
     </n-form-item> -->
         </div>
@@ -47,6 +49,7 @@ title="PK"
 v-show="prosesPK"
 class="flex gap-2 border-t p-4 justify-end"
 ></div> -->
+
 
         <div class="sticky b bg-white z-50 flex gap-2 top-0 w-full justify-end p-2" v-if="prosesPK">
             <div class="sticky  flex bottom-0 w-full" v-if="pkData.no_perjanjian === ''">
@@ -74,6 +77,7 @@ class="flex gap-2 border-t p-4 justify-end"
                     Revisi Order
                 </n-button>
             </div>
+
         </div>
         <div class="flex bg-slate-100 justify-center overflow-auto p-2" v-show="prosesPK">
             <div class="flex flex-col min-w-[900px] p-10" ref="pk">
@@ -836,10 +840,12 @@ class="flex gap-2 border-t p-4 justify-end"
                             </div>
                         </div>
                     </n-watermark>
+
                 </div>
 
             </div>
         </div>
+
     </n-card>
     <n-modal v-model:show="confModal" preset="dialog" draggable title="Konfirmasi" positive-text="Ajukan Batal Order"
         negative-text="Tidak" @positive-click="handleCancel" @negative-click="cancelCallback">
@@ -865,6 +871,7 @@ table.tblprint {
 table.tblprint>tr>td {
     padding: 2px 2px 2px 4px;
     border: 1px solid;
+
 }
 
 .tblprint {
@@ -875,6 +882,7 @@ table.tblprint>tr>td {
 import { LocalPrintshopRound as PrintIcon, CancelFilled as CancelIcon, EditOutlined as EditIcon } from "@vicons/material";
 import { NButton, NIcon, useMessage } from "naive-ui";
 import { toRef, useDateFormat, useElementSize, useNow } from '@vueuse/core'
+
 import { computed, onMounted, reactive, ref } from "vue";
 import { useRoute } from "vue-router";
 import { useApi } from "../../../helpers/axios";
@@ -1016,6 +1024,7 @@ const getPrePK = async () => {
 
 
 const dayFull = reactive({
+
     print_date: computed(() => {
         return tgl_cetak.value ? tgl_cetak.value : thisday;
     }),
@@ -1034,6 +1043,7 @@ const dayFull = reactive({
 
 const areaPrintRef = ref();
 const { handlePrint } = useVueToPrint({
+
     content: areaPrintRef,
     documentTitle: "Perjanjian Kredit",
 });
@@ -1050,6 +1060,7 @@ const formatDate = (dateStr) => {
     return `${day}-${month}-${year}`;
 }
 const handlePrintAction = async (e) => {
+
     const bodySend = {
         tgl_awal: tgl_cetaks.value,
         order_number: idApp,
@@ -1118,6 +1129,7 @@ const bodyCancel = reactive({
     req_flag: "cancel",
 })
 const handleCancel = async (e) => {
+
     bodyCancel.req_flag = e;
     const userToken = localStorage.getItem("token");
     const response = await useApi({
