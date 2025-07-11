@@ -1,11 +1,44 @@
 <template>
-    <n-card size="small" :segmented="{
+    <n-card :segmented="{
         content: true,
         footer: 'soft',
     }">
 
         <template #header>Tambah Pelunasan Sebagian</template>
         <span class="hidden">{{ pelunasan }}</span>
+        <template #header-extra>
+            <n-space v-if="!props.embed">
+                <n-button v-show="!searchField" strong type="warning" @click="handleBack">
+                    <template #icon>
+                        <n-icon>
+                            <back-icon />
+                        </n-icon>
+                    </template>
+                    <p class="hidden md:flex">kembali</p>
+                </n-button>
+                <!-- <n-button
+    v-show="!searchField"
+    strong
+    secondary
+    type="warning"
+    round
+    @click="handleBtnAngsuran"
+  >
+    <template #icon>
+      <n-icon>
+        <angsuran-icon />
+      </n-icon>
+    </template>
+    <span class="hidden md:flex">pindah ke penerimaan</span>
+  </n-button> -->
+
+            </n-space>
+            <!-- <n-space v-show="props.embed ? true : displayFasilitas">
+  <n-tag type="warning"
+    >No Kontrak <b>{{ props.atr }}</b></n-tag
+  >
+</n-space> -->
+        </template>
         <div class="flex flex-col md:flex-row gap-2" v-show="!props.embed">
             <n-form-item label="Nama Pelanggan" class="w-full">
                 <n-input v-model:value="dynamicSearch.nama" type="text" placeholder="Nama" @blur="handleSearch"
@@ -28,6 +61,14 @@
             :on-update:checked-row-keys="handleFasilitas" :loading="loadSearch" class="pb-2"
             v-show="props.embed ? true : displayFasilitas" />
         <n-spin v-if="displayDetail" :show="spinnerShow">
+            <n-alert type="warning" :show-icon="false" v-show="props.embed ? true : displayFasilitas">
+                <div class="flex items-center justify-between">
+                    <div>Penghapusan Bunga</div>
+                    <div>
+                        <n-text><strong>{{ formatter.format(pelunasan.DISC_BUNGA) }}</strong></n-text>
+                    </div>
+                </div>
+            </n-alert>
             <div>
                 <n-table size="small" v-show="props.embed ? true : displayFasilitas" class="mb-2" single-column
                     :single-line="false">
@@ -35,12 +76,35 @@
                         <tr>
                             <th>#</th>
                             <th align="right">Tagihan</th>
+                            <th align="right">Bayar</th>
+                            <th valign="right">Diskon</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
+                            <td>Bunga</td>
+                            <td align="right">{{ formatter.format(pelunasan.TUNGGAKAN_BUNGA) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.BAYAR_BUNGA) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.DISKON_BUNGA) }}</td>
+                        </tr>
+                        <tr>
                             <td>Pokok</td>
-                            <td align="right" class="font-bold">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.BAYAR_POKOK) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.DISKON_POKOK) }}</td>
+                        </tr>
+
+                        <tr>
+                            <td>Denda</td>
+                            <td align="right">{{ formatter.format(pelunasan.DENDA) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.BAYAR_DENDA) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.DISKON_DENDA) }}</td>
+                        </tr>
+                        <tr>
+                            <td class="bg-pr"><strong>Jumlah</strong></td>
+                            <td align="right"><strong>{{ formatter.format(pelunasan.JUMLAH_TAGIHAN) }}</strong></td>
+                            <td align="right"><strong>{{ formatter.format(pelunasan.JUMLAH_BAYAR) }}</strong></td>
+                            <td align="right"><strong>{{ formatter.format(pelunasan.JUMLAH_DISKON) }}</strong></td>
                         </tr>
                     </tbody>
                 </n-table>
@@ -72,6 +136,12 @@
                             v-model:value="pelunasan.UANG_PELANGGAN" :show-button="false" :parse="parseCurrency"
                             :format="formatCurrency" clearable @clear="clearUangPelaanggan" @blur="pushJumlahUang"
                             class="w-full" ref="uangPelangganRef" @click="handleUangPelangganFocus">
+                        </n-input-number>
+                    </n-form-item>
+                    <n-form-item path="nestedValue.path2" label="Jumlah Diskon" class="w-full">
+                        <n-input-number placeholder="Jumlah Pembayaran" v-model:value="pelunasan.JUMLAH_DISKON"
+                            :show-button="false" :parse="parseCurrency" :format="formatCurrency" clearable
+                            class="w-full" readonly>
                         </n-input-number>
                     </n-form-item>
                     <n-form-item label="Pembulatan" class="w-full">
@@ -529,14 +599,13 @@ const optTipePay = [
     },
 ];
 const dataPelunasan = ref([]);
-const  pelunasan = reactive({
+const pelunasan = reactive({
     LOAN_NUMBER: null,
     METODE_PEMBAYARAN: "cash",
     SISA_POKOK: 0,
     BUNGA_BERJALAN: 0,
     TUNGGAKAN_BUNGA: 0,
     DENDA: 0,
-    PINALTI: 0,
     UANG_PELANGGAN: 0,
     DISKON: 0,
     BAYAR_POKOK: 0,
@@ -549,24 +618,29 @@ const  pelunasan = reactive({
     DISKON_DENDA: 0,
     JUMLAH_TAGIHAN: computed(
         () =>
-            pelunasan.SISA_POKOK
+            pelunasan.SISA_POKOK +
+            pelunasan.TUNGGAKAN_BUNGA +
+
+            pelunasan.DENDA
     ),
     TOTAL_BAYAR: computed(
         () =>
-            pelunasan.SISA_POKOK 
+            pelunasan.SISA_POKOK +
+            pelunasan.TUNGGAKAN_BUNGA +
+
+            pelunasan.DENDA
     ),
     JUMLAH_BAYAR: computed(
         () =>
             pelunasan.BAYAR_POKOK +
             pelunasan.BAYAR_BUNGA +
-            pelunasan.BAYAR_PINALTI +
+
             pelunasan.BAYAR_DENDA
     ),
     JUMLAH_DISKON: computed(
         () =>
             pelunasan.DISKON_POKOK +
             pelunasan.DISKON_BUNGA +
-            pelunasan.DISKON_PINALTI +
             pelunasan.DISKON_DENDA
     ),
     PEMBULATAN: 0,
@@ -609,45 +683,58 @@ const getDataPelunasan = async (e) => {
 };
 const pushJumlahUang = async () => {
     Object.assign(pelunasan, formPelunasan);
-    let sisaBayarPokok = pelunasan.UANG_PELANGGAN - (pelunasan.SISA_POKOK+pelunasan.TUNGGAKAN_BUNGA);
-    if (sisaBayarPokok >= 0) {
-        pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK+pelunasan.TUNGGAKAN_BUNGA;
-        pelunasan.DISKON_POKOK = 0;
-        let sisaBayarBunga = sisaBayarPokok - pelunasan.TUNGGAKAN_BUNGA;
-        if (sisaBayarBunga > 0) {
-            pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
-            pelunasan.DISKON_BUNGA = 0;
-            let sisaBayarPinalti = sisaBayarBunga - pelunasan.PINALTI;
-            if (sisaBayarPinalti > 0) {
-                pelunasan.BAYAR_PINALTI = pelunasan.PINALTI;
-                pelunasan.DISKON_PINALTI = 0;
-                let sisaBayarDenda = sisaBayarPinalti - pelunasan.DENDA;
-                if (sisaBayarDenda > 0) {
-                    pelunasan.BAYAR_DENDA = pelunasan.DENDA;
-                    pelunasan.DISKON_DENDA = 0;
-                } else {
-                    pelunasan.BAYAR_DENDA = sisaBayarDenda + pelunasan.DENDA;
-                    pelunasan.DISKON_DENDA = pelunasan.DENDA - pelunasan.BAYAR_DENDA;
-                }
-            } else {
-                pelunasan.BAYAR_PINALTI = sisaBayarPinalti + pelunasan.PINALTI;
-                pelunasan.DISKON_PINALTI = pelunasan.PINALTI - pelunasan.BAYAR_PINALTI;
-                pelunasan.DISKON_DENDA = pelunasan.DENDA;
-            }
-        } else {
-            pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA + sisaBayarBunga;
-            pelunasan.DISKON_POKOK = 0;
-            pelunasan.DISKON_BUNGA = Math.abs(sisaBayarBunga);
-            pelunasan.DISKON_DENDA = pelunasan.DENDA;
-            pelunasan.DISKON_PINALTI = pelunasan.PINALTI;
+    let BayarBunga = pelunasan.UANG_PELANGGAN - pelunasan.TUNGGAKAN_BUNGA;
+    if (BayarBunga >= 0) {
+        pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+        let sisaBayarBunga = BayarBunga - pelunasan.SISA_POKOK;
+        if(sisaBayarBunga > 0){
+            
+        }else{
+             pelunasan.BAYAR_POKOK = BayarBunga;
+             pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.BAYAR_POKOK;
         }
     } else {
-        pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK ;
-        pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.UANG_PELANGGAN;
-        pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+        pelunasan.BAYAR_BUNGA = pelunasan.UANG_PELANGGAN;
+        pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA - pelunasan.BAYAR_BUNGA;
         pelunasan.DISKON_DENDA = pelunasan.DENDA;
-        pelunasan.DISKON_PINALTI = pelunasan.PINALTI;
     }
+    // let sisaBayarPokok = pelunasan.UANG_PELANGGAN - pelunasan.TUNGGAKAN_BUNGA;
+    // if (sisaBayarPokok >= 0) {
+    //     pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK;
+    //     pelunasan.DISKON_POKOK = 0;
+    //     let sisaBayarBunga = sisaBayarPokok - pelunasan.TUNGGAKAN_BUNGA;
+    //     if (sisaBayarBunga > 0) {
+    //         pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+    //         pelunasan.DISKON_BUNGA = 0;
+    //         let sisaBayarPinalti = sisaBayarBunga - pelunasan.PINALTI;
+    //         if (sisaBayarPinalti > 0) {
+    //             pelunasan.BAYAR_PINALTI = pelunasan.PINALTI;
+    //             pelunasan.DISKON_PINALTI = 0;
+    //             let sisaBayarDenda = sisaBayarPinalti - pelunasan.DENDA;
+    //             if (sisaBayarDenda > 0) {
+    //                 pelunasan.BAYAR_DENDA = pelunasan.DENDA;
+    //                 pelunasan.DISKON_DENDA = 0;
+    //             } else {
+    //                 pelunasan.BAYAR_DENDA = sisaBayarDenda + pelunasan.DENDA;
+    //                 pelunasan.DISKON_DENDA = pelunasan.DENDA - pelunasan.BAYAR_DENDA;
+    //             }
+    //         } else {
+    //             pelunasan.BAYAR_PINALTI = sisaBayarPinalti + pelunasan.PINALTI;
+    //             pelunasan.DISKON_PINALTI = pelunasan.PINALTI - pelunasan.BAYAR_PINALTI;
+    //             pelunasan.DISKON_DENDA = pelunasan.DENDA;
+    //         }
+    //     } else {
+    //         pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA + sisaBayarBunga;
+    //         pelunasan.DISKON_POKOK = 0;
+    //         pelunasan.DISKON_BUNGA = Math.abs(sisaBayarBunga);
+    //         pelunasan.DISKON_DENDA = pelunasan.DENDA;
+    //     }
+    // } else {
+    //     pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK;
+    //     pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.UANG_PELANGGAN;
+    //     pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+    //     pelunasan.DISKON_DENDA = pelunasan.DENDA;
+    // }
 };
 const props = defineProps({
     embed: Boolean,
