@@ -93,8 +93,8 @@ const dataAlamat = reactive({
 });
 const provinsiChanged = async (value, option) => {
     try {
-        let getKota = await axios.get(`https://alamat.thecloudalert.com/api/kabkota/get/?d_provinsi_id=${value}`);
-        col_kota.value = getKota.data.result;
+        let getKota = await axios.get(`https://dev.kspdjaya.id/kota?id=${value}`);
+        col_kota.value = getKota.data;
         emit('update:provinsi', option.text);
     } catch (error) {
         console.log(error);
@@ -110,8 +110,8 @@ const kotaChanged = async (value, option) => {
 
     sel_kota.value = value;
     try {
-        let getKec = await axios.get(`https://alamat.thecloudalert.com/api/kecamatan/get/?d_kabkota_id=${value}`);
-        col_kec.value = getKec.data.result;
+        let getKec = await axios.get(`https://dev.kspdjaya.id/kecamatan?id=${value}`);
+        col_kec.value = getKec.data;
         emit('update:kota', option.text);
     } catch (error) {
         console.log(error);
@@ -120,8 +120,8 @@ const kotaChanged = async (value, option) => {
 const kecChanged = async (value, option) => {
     sel_kec.value = value;
     try {
-        let getKec = await axios.get(`https://alamat.thecloudalert.com/api/kelurahan/get/?d_kecamatan_id=${value}`);
-        col_desa.value = getKec.data.result;
+        let getKec = await axios.get(`https://dev.kspdjaya.id/kelurahan?id=${value}`);
+        col_desa.value = getKec.data;
         emit('update:kecamatan', option.text);
     } catch (error) {
         console.log(error);
@@ -174,8 +174,8 @@ const desaUpdate = async () => {
 const desaChanged = async (value, option) => {
     sel_desa.value = value;
     try {
-        let getKodepos =await  axios.get(`https://alamat.thecloudalert.com/api/kodepos/get/?d_kabkota_id=${sel_kota.value ? sel_kota.value:kotPlace.value}&d_kecamatan_id=${sel_kec.value ? sel_kec.value:kecPlace.value}`);
-        col_kodepos.value = getKodepos.data.result;
+        let getKodepos =await  axios.get(`https://dev.kspdjaya.id/kode_pos?id=${value}`);
+        col_kodepos.value = getKodepos.data;
         emit('update:desa', option.text);
     } catch (error) {
         console.log(error);
@@ -183,6 +183,6 @@ const desaChanged = async (value, option) => {
 
 };
 
-useOpenAPIget("https://alamat.thecloudalert.com/api/provinsi/get/").then(([res]) => { col_provinsi.value = res.result });
+useOpenAPIget("https://dev.kspdjaya.id/provinsi").then(([res]) => { col_provinsi.value = res });
 
 </script>
