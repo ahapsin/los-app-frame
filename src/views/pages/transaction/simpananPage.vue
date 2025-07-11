@@ -1,8 +1,31 @@
 <template>
+    <n-space class="mb-4">
+        {{ expandMenu }}
+        <n-button @click="expandMenu = true">
+            <v-icon name="bi-folder-plus" scale="1.2" />
+            Buka Rekening
+        </n-button>
+        <n-button>
+            <v-icon name="bi-x-square" scale="1.2" />
+            Tutup Rekening
+        </n-button>
+        <n-button>
+            <v-icon name="bi-arrow-clockwise" scale="1.2" />
+            Update Rekening
+        </n-button>
+        <n-button>
+            <v-icon name="bi-cash-coin" scale="1.2" />
+            Update Saldo
+        </n-button>
+        <n-button>
+            <v-icon name="bi-journals" scale="1.2" />
+            Pindah Buku
+        </n-button>
+    </n-space>
     <div class="flex gap-4">
         <div class="w-full">
             <n-space vertical>
-                <n-card :title="`Tabel ${$route.name}`" :segmented="true" size="small">
+                <n-card :title="`${$route.name}`" :segmented="true" size="small">
                     <template #header-extra>
                         <n-space class="!gap-1">
                             <!-- <div class="hidden md:flex">
@@ -25,9 +48,11 @@
                                 </n-button>
                             </div>
                             <div class="hidden md:flex gap-2">
-                                <n-button type="primary" @click="bukaRekening">
-                                    <strong>Buka Rekening</strong>
-                                </n-button>
+                                <n-dropdown :options="optAction">
+                                    <n-button circle quaternary>
+                                        <v-icon name="bi-three-dots-vertical" />
+                                    </n-button>
+                                </n-dropdown>
                             </div>
                             <div class=" md:hidden">
                                 <n-button type="primary" @click="handleAdd">
@@ -67,6 +92,10 @@
             </n-card>
         </div>
     </div>
+    <n-modal v-model:show="expandMenu">
+        asdasd
+        <!-- <component :is="currentComponent" /> -->
+    </n-modal>
 </template>
 <script setup>
 import { ref, onMounted, h } from "vue";
@@ -87,6 +116,8 @@ import { useSearch } from "../../../helpers/searchObject";
 import { useApi } from "../../../helpers/axios";
 import router from "../../../router";
 
+const expandMenu = ref(false);
+const currentComponent = ref('');
 const message = useMessage();
 const dialog = useDialog();
 const group = ref(false);
@@ -142,6 +173,33 @@ const columns = [
             );
         }
     }
+];
+
+const optAction = [
+    {
+        label: "Buka Rekening",
+        key: "buka_rekening",
+    },
+    {
+        label: "Tutup Rekening",
+        key: "tutup_rekening",
+    },
+    {
+        label: "Update Rekening",
+        key: "update_rekening",
+    },
+    {
+        label: "Update saldo",
+        key: "update_saldo",
+    },
+    {
+        label: "Pindah Buku",
+        key: "pindah_buku",
+    },
+    {
+        label: "Rekening Aktif",
+        key: "rekening_aktif",
+    },
 ];
 
 const bukaRekening = () => {

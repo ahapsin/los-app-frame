@@ -1,7 +1,7 @@
 <!-- components/Breadcrumb.vue -->
 <template>
   <n-breadcrumb>
-    <n-breadcrumb-item :key="home">
+    <n-breadcrumb-item>
        <router-link to="/"
           class="text-blue-500 hover:underline"
         >

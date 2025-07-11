@@ -54,6 +54,11 @@ const routes = [
     component: () => import("../views/pages/layout/DashboardLayout.vue"),
     children: [
       {
+        path: "simpanan",
+        name: "simpanan",
+        component: () => import("../views/pages/transaction/simpananPage.vue"),
+      },
+      {
         path: "payment",
         name: "pembayaran",
         component: () => import("../views/pages/transaction/paymentPage.vue"),
@@ -104,7 +109,7 @@ const routes = [
   },
   {
     path: "/tabungan",
-    name: "transaction",
+    name: "tabungan",
     component: () => import("../views/pages/layout/DashboardLayout.vue"),
     children: [
       {
@@ -113,9 +118,9 @@ const routes = [
         component: () => import("../views/pages/tabungan/savingsPages.vue"),
       },
       {
-        path: "addpayment",
-        name: "tambah penerimaan",
-        component: () => import("../views/pages/transaction/cashInPage.vue"),
+        path: "buka_rekening",
+        name: "pembukaan rekening",
+        component: () => import("../views/pages/tabungan/NewSaving.vue"),
       },
       {
         path: "repayment",

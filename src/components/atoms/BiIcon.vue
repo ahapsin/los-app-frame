@@ -1,7 +1,10 @@
 <template>
   <div class="p-4">
-    <div class="h-1/2 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-8 gap-4">
-      <v-icon v-for="icon in iconNames" :name="icon.dashed" scale="2" class="bg-slate-100 rounded-md hover:bg-pr-100 p-2" @click="handleClick(icon)"/>
+    <div class="h-1/2 grid grid-cols-2 sm:grid-cols-4 md:grid-cols-6 lg:grid-cols-5 justify-center gap-4">
+      <div v-for="icon in iconNames" class=" items-center justify-center  rounded hover:bg-slate-100">
+        <v-icon :name="icon.dashed" scale="2" @click="handleClick(icon)" />
+        <p class="text-[10px]">{{ icon.dashed }}</p>
+      </div>
     </div>
   </div>
 </template>
@@ -20,8 +23,8 @@ const iconNames = rawNames.map(name => ({
 function camelToDash(str) {
   return str.replace(/([a-z])([A-Z])/g, '$1-$2').toLowerCase();
 }
-const emit=defineEmits();
-const handleClick=(e)=>{
- emit('select',e);
+const emit = defineEmits();
+const handleClick = (e) => {
+  emit('select', e);
 }
 </script>
