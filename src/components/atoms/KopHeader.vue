@@ -4,9 +4,9 @@
         <div>
             <n-p>
                 <b>{{apptitle}}</b><br />
-                <p class="text-xs capitalize">
+                <!-- <p class="text-xs capitalize">
                     {{ props.cabang }}
-                </p>
+                </p> -->
                 <p class="text-xs capitalize">
                     {{ props.alamat_cabang }}
                 </p>
