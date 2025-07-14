@@ -56,7 +56,7 @@ const routes = [
       {
         path: "simpanan",
         name: "simpanan",
-        component: () => import("../views/pages/transaction/simpananPage.vue"),
+        component: () => import("../views/pages/transaction/simpanan/simpananLayout.vue"),
       },
       {
         path: "payment",
