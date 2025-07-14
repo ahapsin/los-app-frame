@@ -1,4 +1,5 @@
 import axios from "axios";
+
 export async function useApi({ ...args }) {
   try {
     const response = await axios({
@@ -10,7 +11,7 @@ export async function useApi({ ...args }) {
         "Content-Type": "application/json",
         Authorization: `Bearer ${args.token}`,
       },
-      baseURL: import.meta.env.VITE_APP_API_BASE + args.api,
+      baseURL: args.url ?? import.meta.env.VITE_APP_API_BASE + args.api,
     });
     return { ok: true, data: response.data };
   } catch (error) {

@@ -3,70 +3,69 @@
         <div class="w-full">
             <n-space vertical>
                 <n-card :title="`Data Rekening`" :segmented="true" size="small">
-                    <template #header-extra>
-                        <n-space class="!gap-1">
-                            <!-- <div class="hidden md:flex">
-                                <n-button>
-                                    <template #icon>
-                                        <n-icon>
-                                            <download-icon />
-                                        </n-icon>
-                                    </template>
-<strong class="hidden md:!block">download</strong>
-</n-button>
-</div> -->
-                            <div class="md:hidden">
-                                <n-button>
-                                    <template #icon>
-                                        <n-icon>
-                                            <download-icon />
-                                        </n-icon>
-                                    </template>
-                                </n-button>
-                            </div>
-                            <div class="hidden md:flex gap-2">
-                                <n-dropdown :options="optAction">
-                                    <n-button circle quaternary>
-                                        <v-icon name="bi-three-dots-vertical" />
-                                    </n-button>
-                                </n-dropdown>
-                            </div>
-                            <div class=" md:hidden">
-                                <n-button type="primary" @click="handleAdd">
-                                    <template #icon>
-                                        <n-icon>
-                                            <add-icon />
-                                        </n-icon>
-                                    </template>
-                                </n-button>
-                            </div>
-                        </n-space>
-                    </template>
-                    <n-space vertical :size="12" class="pt-4">
-                        <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
+                    <n-space vertical :size="12">
+                        <n-data-table size="small" :columns="columns" :data="data" :pagination="pagination"
                             :loading="isLoading" />
                     </n-space>
                 </n-card>
             </n-space>
         </div>
-        <div v-if="group" class="w-1/3">
-            <n-card size="small" title="Group Menu">
-                <template #header-extra>
-                    <n-space>
-                        <n-button type="primary">
-                            <template #icon>
-                                <v-icon name="bi-plus-circle"></v-icon>
-                            </template>
-                            Group</n-button>
-                        <n-button circle secondary @click="group = !group">
-                            <template #icon>
-                                <v-icon name="bi-x"></v-icon>
-                            </template>
-                        </n-button>
-                    </n-space>
-                </template>
-                group menu
-            </n-card>
-        </div>
     </div>
 </template>
+<script setup>
+import { onMounted } from 'vue';
+import { useApi } from '../../../../helpers/axios';
+import { NTag } from 'naive-ui';
+
+const data = ref([]);
+const isLoading = ref(false);
+
+const fetchData = async () => {
+    isLoading.value = true;
+    const response = await useApi({ url: 'http://localhost:3001/rekening' });
+    if (!response.ok) {
+        message.error("error");
+        isLoading.value = false;
+    } else {
+        isLoading.value = false;
+        data.value = response.data;
+    }
+}
+
+const columns = [
+    {
+        title: "No Rekening",
+        key: "no_rekening"
+    },
+    {
+        title: "Atas Nama",
+        key: "nama_pemilik"
+    },
+    {
+        title: "Alamat",
+        key: "alamat"
+    },
+    {
+        title: "Ibu Kandung",
+        key: "nama_ibu_kandung"
+    },
+    {
+        title: "Status",
+        key: "status",
+        render(row){
+           return h(
+                NTag,
+                {
+                    type: row.status === 'active'?'success':'error',
+                },
+                {
+                    default: () => row.status,
+                }
+            );
+        }
+    },
+]
+
+
+onMounted(() => fetchData());
+</script>
