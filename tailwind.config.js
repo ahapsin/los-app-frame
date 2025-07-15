@@ -1,5 +1,4 @@
 /** @type {import('tailwindcss').Config} */
-const appbackdrop = import.meta.env.VITE_APP_BACKDROP;
 module.exports = {
     darkMode: "class",
     content: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],

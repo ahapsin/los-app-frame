@@ -50,6 +50,10 @@ const columns = [
         key: "nama_ibu_kandung"
     },
     {
+        title: "Saldo",
+        key: "saldo"
+    },
+    {
         title: "Status",
         key: "status",
         render(row){

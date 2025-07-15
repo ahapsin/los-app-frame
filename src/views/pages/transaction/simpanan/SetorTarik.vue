@@ -19,15 +19,15 @@
                             </n-button>
                         </n-space>
                     </template>
-                    <n-space vertical :size="12" class="pt-4">
-                        <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
-                            :loading="isLoading" />
+                    <n-space vertical :size="12">
+                        <n-data-table size="small" :columns="columnsAktifitas" :data="dataAktifitas"
+                            :pagination="pagination" :loading="isLoading" />
                     </n-space>
                 </n-card>
             </n-space>
         </div>
     </div>
-    <n-modal v-model:show="modalSetor">
+    <n-modal v-model:show="modalSetor" :mask-closable="false">
         <n-card class="w-2/4" title="Setoran Tunai" :segmented="true" size="small">
             <n-card embedded>
                 <div class="flex gap-4">
@@ -61,29 +61,28 @@
 
                                 </n-form-item>
                                 <n-form-item label="Keterangan" class="w-full">
-                                    <n-input autosize class="w-full" />
+                                    <n-input autosize class="w-full" v-model:value="keterangan" />
                                 </n-form-item>
                             </div>
                         </n-form>
                     </n-card>
                     <n-space>
-                        <n-button type="primary">Simpan</n-button>
+                        <n-button type="primary" @click="handleSaveSetor">Simpan</n-button>
                         <n-button type="error" @click="handleBatalSetor">Batal</n-button>
                     </n-space>
                 </n-space>
             </n-card>
         </n-card>
     </n-modal>
-    <n-modal v-model:show="modalTarik">
+    <n-modal v-model:show="modalTarik" :mask-closable="false">
         <n-card class="w-2/4" title="Tarik Tunai" :segmented="true" size="small">
             <n-card embedded>
                 <div class="flex gap-4">
                     <n-form-item label="Tanggal Valuta">
-                        <n-date-picker type="date"></n-date-picker>
+                        <n-date-picker type="date" v-model:value="tgl_valuta"></n-date-picker>
                     </n-form-item>
                     <n-form-item label="Pilih Rekening" class="w-full">
-                        <n-select filterable v-model:value="rekening" :options="dataRekening"
-                            :render-label="renderLabel" label-field="nama_pemilik" value-field="id"
+                        <n-select filterable v-model:value="rekening" :options="selectOptions"
                             @update:value="handleUpdateValue" />
                     </n-form-item>
                 </div>
@@ -104,21 +103,26 @@
                         <n-form>
                             <div>
                                 <n-form-item label="Nominal" class="w-full">
-                                    <n-input size="large" />
+                                    <n-input-number :parse="parse" :format="format" :show-button="false"
+                                        v-model:value="nominal" size="large" />
                                 </n-form-item>
                                 <n-form-item label="Keterangan" class="w-full">
-                                    <n-input autosize class="w-full" />
+                                    <n-input autosize class="w-full" v-model:value="keterangan" />
                                 </n-form-item>
                             </div>
                         </n-form>
                     </n-card>
                     <n-space>
-                        <n-button type="primary">Simpan</n-button>
+                        <n-button type="primary" @click="handleSaveTarik">Simpan</n-button>
                         <n-button type="error" @click="handleBatalTarik">Batal</n-button>
                     </n-space>
                 </n-space>
             </n-card>
         </n-card>
+    </n-modal>
+    <n-modal v-model:show="modalPrint">
+        <n-dialog title="Transaksi Berhasil" content="Apakah ingin mencetak buku tabungan?" negative-text="Tidak"
+            positive-text="Ya" @positive-click="handlePositiveClick" @negative-click="modalPrint = false" @close="modalPrint = false" />
     </n-modal>
 </template>
 
@@ -129,12 +133,16 @@ import _ from 'lodash';
 
 const modalSetor = ref(false);
 const modalTarik = ref(false);
+const modalPrint = ref(false);
+const keterangan = ref();
 
 const dataRekening = ref([]);
+const dataAktifitas = ref([]);
 const isLoading = ref(false);
 const rekening = ref();
 const tgl_valuta = ref(new Date());
 const selectedRekening = ref(null);
+const nominal = ref(null);
 const selectOptions = ref([]);
 
 const fetchData = async () => {
@@ -154,22 +162,81 @@ const fetchData = async () => {
         }));
     }
 }
+const postData = async (e) => {
+    const response = await useApi({
+        url: 'http://localhost:3001/aktivitas',
+        method: 'POST',
+        data: e
+    });
+    if (!response.ok) {
+        message.error("error");
+        isLoading.value = false;
+    } else {
+        isLoading.value = false;
+    }
+}
+
+const fetchDataAktifitas = async () => {
+    isLoading.value = true;
+    const response = await useApi({ url: 'http://localhost:3001/aktivitas' });
+    if (!response.ok) {
+        message.error("error");
+        isLoading.value = false;
+    } else {
+        isLoading.value = false;
+        dataAktifitas.value = response.data;
+    }
+}
 
 const parse = (input) => {
     const nums = input.replace(/,/g, "").trim();
     if (/^\d+(\.(\d+)?)?$/.test(nums)) return Number(nums);
     return nums === "" ? null : Number.NaN;
 };
+
 const format = (value) => {
     if (value === null) return "";
     return value.toLocaleString("en-US");
 };
 
+const handleSaveSetor = async () => {
+    // const body = {
+    //     tgl_transaksi: tgl_valuta.value,
+    //     nomor_rekening: selectedRekening.value.no_rekening,
+    //     atas_nama: selectedRekening.value.nama_pemilik,
+    //     sandi_transaksi: '1001',
+    //     nominal: nominal.value,
+    //     saldo: selectedRekening.value.saldo,
+    //     keterangan: keterangan.value,
+    //     operator: "DEB"
+    // }
+    // await postData(body);
+    // await fetchDataAktifitas();
+    modalSetor.value = false;
+    modalPrint.value = true;
+}
+const handleSaveTarik = async () => {
+    const body = {
+        tgl_transaksi: tgl_valuta.value,
+        nomor_rekening: selectedRekening.value.no_rekening,
+        atas_nama: selectedRekening.value.nama_pemilik,
+        sandi_transaksi: '1002',
+        nominal: nominal.value,
+        saldo: selectedRekening.value.saldo,
+        keterangan: keterangan.value,
+        operator: "DEB"
+    }
+    await postData(body);
+    await fetchDataAktifitas();
+    modalTarik.value = false;
+
+}
 const handleBatalSetor = () => {
     modalSetor.value = false;
     selectedRekening.value = null;
     rekening.value = null;
 }
+
 const handleBatalTarik = () => {
     modalTarik.value = false;
     selectedRekening.value = null;
@@ -186,6 +253,35 @@ const handleUpdateValue = (val, options) => {
 function formatKey(key) {
     return key.replace(/_/g, ' ')
 }
+const columnsAktifitas = [
+    {
+        title: "Tgl Transaksi",
+        key: "tgl_transaksi"
+    },
+    {
+        title: "No Rekening",
+        key: "nomor_rekening"
+    },
+    {
+        title: "Pemilik",
+        key: "atas_nama"
+    },
+    {
+        title: "Sandi",
+        key: "sandi_transaksi"
+    },
+    {
+        title: "Nominal",
+        key: "nominal",
+        render(row) {
+            return h("div", row.nominal.toLocaleString())
+        }
+    },
+    {
+        title: "Operator",
+        key: "operator"
+    },
+];
 
-onMounted(() => fetchData());
+onMounted(() => { fetchData(); fetchDataAktifitas(); });
 </script>

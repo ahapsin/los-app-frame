@@ -3,7 +3,6 @@
         <div class="w-full">
             <n-space vertical>
                 <n-card :title="`Cetak Buku Rekening`" :segmented="true" size="small">
-                  
                     <n-space vertical :size="12" class="pt-4">
                         <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
                             :loading="isLoading" />

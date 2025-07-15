@@ -49,21 +49,23 @@
             require-mark-placement="right-hanging" label-width="auto">
             <div class="flex gap-4">
                 <n-form-item label="Pekerjaan" path="pekerjaan_id" class="w-full">
-                    <n-select v-model:value="modelCustomer.pekerjaan" filterable placeholder="pekerjaan" :options="optPekerjaan" />
+                    <n-select v-model:value="modelCustomer.pekerjaan" filterable placeholder="pekerjaan"
+                        :options="optPekerjaan" />
                 </n-form-item>
                 <n-form-item label="Nama Ibu" path="nama_ibu" class="w-full">
-                    <n-input v-model:value="modelCustomer.nama_ibu"/>
+                    <n-input v-model:value="modelCustomer.nama_ibu" />
                 </n-form-item>
-               
+
             </div>
             <div class="flex gap-2">
-                 <n-form-item label="Pendidikan" path="pendidikan" class="w-full">
-                    <n-select v-model:value="modelCustomer.pendidikan" filterable placeholder="pendidikan" :options="optPendidikan" />
+                <n-form-item label="Pendidikan" path="pendidikan" class="w-full">
+                    <n-select v-model:value="modelCustomer.pendidikan" filterable placeholder="pendidikan"
+                        :options="optPendidikan" />
                 </n-form-item>
                 <n-form-item label="No Handphone" path="telepon_selular" class="w-full">
                     <n-input v-model:value="modelCustomer.hp" :allow-input="onlyAllowNumber" maxlength="13" />
                 </n-form-item>
-               
+
             </div>
             <n-divider title-placement="left">Informasi Alamat Identitas</n-divider>
         </n-form>
@@ -72,18 +74,20 @@
             require-mark-placement="right-hanging" label-width="auto">
             <div class="flex gap-2">
                 <n-form-item label="Alamat" class="w-full" path="alamat">
-                    <n-input placeholder="Alamat" v-model:value="modelCustomer.alamat"/>
+                    <n-input placeholder="Alamat" v-model:value="modelCustomer.alamat" />
                 </n-form-item>
                 <n-form-item label="RT" path="rt">
-                    <n-input placeholder="RT" v-model:value="modelCustomer.rt" :allow-input="onlyAllowNumber" :maxlength="3" />
+                    <n-input placeholder="RT" v-model:value="modelCustomer.rt" :allow-input="onlyAllowNumber"
+                        :maxlength="3" />
                 </n-form-item>
                 <n-form-item label="RW" path="rw">
-                    <n-input placeholder="RW" :allow-input="onlyAllowNumber" v-model:value="modelCustomer.rw" :maxlength="3" />
+                    <n-input placeholder="RW" :allow-input="onlyAllowNumber" v-model:value="modelCustomer.rw"
+                        :maxlength="3" />
                 </n-form-item>
             </div>
             <select-state-region v-model:provinsi="modelCustomer.provinsi" v-model:kota="modelCustomer.kota"
-                v-model:kecamatan="modelCustomer.kecamatan" v-model:desa="modelCustomer.kelurahan" v-model:kodepos="modelCustomer.kodepos"
-                :viewMode />
+                v-model:kecamatan="modelCustomer.kecamatan" v-model:desa="modelCustomer.kelurahan"
+                v-model:kodepos="modelCustomer.kodepos" :viewMode />
         </n-form>
 
         <n-form ref="formPelangganAlamatTagih" :label-placement="width <= 920 ? 'top' : 'top'"
@@ -92,20 +96,23 @@
             <n-divider title-placement="left">Dokumen Identitas</n-divider>
             <n-space justify="space-between">
                 <n-space>
-                    <file-upload title="KTP" endpoint="image_upload_prospect" type="ktp" idApp="modelCustome.no_ktp"/>
+                    <file-upload title="KTP" endpoint="image_upload_prospect" type="ktp"
+                        :idapp="modelCustomer.no_ktp" />
                 </n-space>
             </n-space>
         </n-form>
         <template #action>
             <n-space>
-                <n-button type="primary">Simpan </n-button>
-                <n-button type="error" quaternary>Batal </n-button>
+                <n-button type="primary" @click="handleSave">Simpan</n-button>
             </n-space>
         </template>
     </n-card>
 </template>
 <script setup>
+import { useApi } from '../../../../helpers/axios';
+
 const viewMode = ref(false);
+const isLoading = ref(false);
 const props = defineProps({
     viewMode: false,
 })
@@ -136,6 +143,7 @@ const modelCustomer = ref({
     kode_pos: null,
     dok_ktp: null
 });
+
 const optPendidikan = [
     "SEKOLAH DASAR",
     "SEKOLAH MENENGAH PERTAMA",
@@ -156,7 +164,7 @@ const optJenisKelamin = [
     {
         v: 'laki-laki',
         l: "laki-laki"
-    },{
+    }, {
         v: 'perempuan',
         l: "Perempuan"
     }
@@ -180,4 +188,24 @@ const optPekerjaan = [
     label: v,
     value: v,
 }));
+const postData = async (e) => {
+    const response = await useApi({
+        url: 'http://localhost:3001/customers',
+        method: 'POST',
+        data: e
+    });
+    if (!response.ok) {
+        message.error("error");
+        isLoading.value = false;
+    } else {
+        isLoading.value = false;
+    }
+}
+
+const emit = defineEmits();
+
+const handleSave = async () => {
+    await postData(modelCustomer.value);
+    emit('saved', true);
+}
 </script>
