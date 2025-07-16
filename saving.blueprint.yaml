@@ -1,9 +1,9 @@
 models:
   CustomerProfile:
-    id: uuid
+    id: uuid primary
     nama: string
     nama_panggilan: string nullable
-    jenis_kelamin: "enum:Laki-laki,Perempuan"
+    jenis_kelamin: enum:Laki-laki,Perempuan
     tempat_lahir: string nullable
     tanggal_lahir: date nullable
     status_kawin: string nullable
@@ -27,26 +27,26 @@ models:
       hasMany: BankAccount
 
   SavingType:
-    id: uuid
+    id: uuid primary
     kode_jenis: string unique
     nama_jenis: string
     deskripsi: text nullable
-    bunga: "decimal:5,2"
+    bunga: decimal:5,2
     minimal_saldo: unsignedBigInteger
-    status: "enum:aktif,nonaktif"
+    status: enum:aktif,nonaktif
     timestamps: true
     relationships:
       hasMany: BankAccount
 
   BankAccount:
-    id: uuid
-    customer_profile_id: "uuid foreign:customer_profiles,id"
+    id: uuid primary
+    customer_profile_id: uuid foreign:customer_profiles.id
     no_rekening: unsignedBigInteger unique
     cabang: string
     jenis_tabungan: string
-    kode_jenis_tabungan: "string foreign:saving_types,kode_jenis"
+    kode_jenis_tabungan: string foreign:saving_types.kode_jenis
     saldo: unsignedBigInteger
-    status: "enum:active,inactive"
+    status: enum:active,inactive
     tgl_registrasi: timestamp nullable
     tgl_terakhir_transaksi: timestamp nullable
     timestamps: true
@@ -56,8 +56,8 @@ models:
       hasOne: ClosedBankAccount
 
   ClosedBankAccount:
-    id: uuid
-    bank_account_id: "uuid foreign:bank_accounts,id"
+    id: uuid primary
+    bank_account_id: uuid foreign:bank_accounts.id
     tgl_tutup: timestamp
     keterangan: string nullable
     timestamps: true
@@ -65,13 +65,13 @@ models:
       belongsTo: BankAccount
 
   TransactionActivity:
-    id: uuid
-    bank_account_id: "uuid foreign:bank_accounts,id"
+    id: uuid primary
+    bank_account_id: uuid foreign:bank_accounts.id
     tgl_transaksi: timestamp
     sandi_transaksi: string
     nominal: unsignedBigInteger
     saldo: unsignedBigInteger
-    operator: "enum:KRE,DEB"
+    operator: enum:KRE,DEB
     buku: string
     halaman: string
     baris: integer
