@@ -2,7 +2,7 @@
     <div class="flex gap-4 w-full">
         <div class="w-full">
             <n-space vertical>
-                <n-card :title="`Transaksi Setor / Tarik`" :segmented="true" size="small">
+                <n-card :title="`Transaksi Simpanan`" :segmented="true" size="small">
                     <template #header-extra>
                         <n-space>
                             <n-button type="primary" @click="modalSetor = true">
@@ -16,6 +16,13 @@
                                     <v-icon name="bi-plus-lg" />
                                 </template>
                                 Tarik
+                            </n-button>
+                            <n-divider vertical></n-divider>
+                            <n-button type="primary" @click="handleAdd">
+                                <template #icon>
+                                    <v-icon name="bi-plus-lg" />
+                                </template>
+                                Pindah Buku
                             </n-button>
                         </n-space>
                     </template>
@@ -122,7 +129,75 @@
     </n-modal>
     <n-modal v-model:show="modalPrint">
         <n-dialog title="Transaksi Berhasil" content="Apakah ingin mencetak buku tabungan?" negative-text="Tidak"
-            positive-text="Ya" @positive-click="handlePositiveClick" @negative-click="modalPrint = false" @close="modalPrint = false" />
+            positive-text="Ya" @positive-click="handlePositiveClick" @negative-click="modalPrint = false"
+            @close="modalPrint = false" />
+    </n-modal>
+    <n-modal v-model:show="modalPinbuk">
+        <n-card class="w-[80%]" title="Pindah Buku Antar Rekening" :segmented="true" size="small">
+            <n-form-item label="Tanggal Valuta">
+                <n-date-picker type="date" v-model:value="tgl_valuta"></n-date-picker>
+            </n-form-item>
+            <div class="flex gap-4 items-center">
+                <n-card :segmented="true" embedded size="small" title="Rekening Debet">
+                    <div class="flex gap-4">
+                        <n-form-item label="Pilih Rekening" class="w-full">
+                            <n-select filterable v-model:value="rekeningDebet" :options="selectOptions"
+                                @update:value="handleUpdateValue" />
+                        </n-form-item>
+                    </div>
+                    <n-card v-if="selectedRekening">
+                        <div class="grid grid-cols-1 md:grid-cols-3  bg-white">
+                            <div v-for="(value, key) in selectedRekening" :key="key">
+                                <div class="flex flex-col">
+                                    <strong class="capitalize">{{ formatKey(key) }}:</strong>
+                                    <n-image v-if="key === 'dok_ktp'" width="20"
+                                        :src="'https://www.qoalaplus.com/_nuxt/img/temp_ktp-placeholder.6551496.png'" />
+                                    <label v-else>{{ value }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </n-card>
+                </n-card>
+                <v-icon name="bi-arrow-right" />
+                <n-card :segmented="true" embedded size="small" title="Rekening Kredit">
+                    <div class="flex gap-4">
+                        <n-form-item label="Pilih Rekening" class="w-full">
+                            <n-select filterable v-model:value="rekeningKredit" :options="selectOptions"
+                                @update:value="handleUpdateValueKredit" />
+                        </n-form-item>
+                    </div>
+                    <n-card v-if="selectedRekeningKredit">
+                        <div class="grid grid-cols-1 md:grid-cols-3  bg-white">
+                            <div v-for="(value, key) in selectedRekeningKredit" :key="key">
+                                <div class="flex flex-col">
+                                    <strong class="capitalize">{{ formatKey(key) }}:</strong>
+                                    <n-image v-if="key === 'dok_ktp'" width="20"
+                                        :src="'https://www.qoalaplus.com/_nuxt/img/temp_ktp-placeholder.6551496.png'" />
+                                    <label v-else>{{ value }}</label>
+                                </div>
+                            </div>
+                        </div>
+                    </n-card>
+                </n-card>
+            </div>
+            <n-card class="mt-4">
+                <n-form>
+                    <div>
+                        <n-form-item label="Nominal" class="w-full">
+                            <n-input-number :parse="parse" :format="format" :show-button="false" v-model:value="nominal"
+                                size="large" />
+                        </n-form-item>
+                        <n-form-item label="Keterangan" class="w-full">
+                            <n-input autosize class="w-full" />
+                        </n-form-item>
+                    </div>
+                </n-form>
+            </n-card>
+            <n-space class="mt-4">
+                <n-button type="primary" @click="handleSave">Simpan</n-button>
+                <n-button type="error" @click="handleBatal">Batal</n-button>
+            </n-space>
+        </n-card>
     </n-modal>
 </template>
 
@@ -130,6 +205,7 @@
 import { onMounted } from 'vue';
 import { useApi } from '../../../../helpers/axios';
 import _ from 'lodash';
+import moment from 'moment';
 
 const modalSetor = ref(false);
 const modalTarik = ref(false);
@@ -256,7 +332,13 @@ function formatKey(key) {
 const columnsAktifitas = [
     {
         title: "Tgl Transaksi",
-        key: "tgl_transaksi"
+        key: "tgl_transaksi",
+        ellipsis: {
+            tooltip: true
+        },
+        render(row) {
+            return h("div", moment(row.tgl_transaksi).fromNow());
+        }
     },
     {
         title: "No Rekening",

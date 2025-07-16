@@ -37,18 +37,30 @@
                                             v-model:value="no_rekening"></n-select>
                                     </n-form-item>
                                     <n-form-item label="Jenis Tabungan" class="w-full">
-                                        <n-select v-model:value="jenis_tabungan" :options="optNoRekening"
-                                            value-field="v" label-field="l"></n-select>
+                                        <n-select v-model:value="jenis_tabungan" :options="dataSavings"
+                                            value-field="id" label-field="nama_jenis" @update-value="handleUpdateSavings"></n-select>
                                     </n-form-item>
                                     <n-form-item label="Setoran awal" class="w-full">
-                                        <n-input v-model:value="setoran_awal" />
+                                        <n-input-number :parse="parse" :format="format" :show-button="false"
+                                        v-model:value="setoran_awal" />
                                     </n-form-item>
                                 </div>
-                                <n-button type="primary" @click="handleSaveNewRekening">Simpan</n-button>
+                                    <n-card embedded v-if="selectedSaving">
+                                        <div class="grid grid-cols-1 md:grid-cols-4 ">
+                                                                    <div v-for="(value, key) in selectedSaving" :key="key">
+                                                                        <div class="flex flex-col">
+                                        <strong class="capitalize">{{ formatKey(key) }}</strong>
+                                        <label>{{ value }}</label>
+                                                                        </div>
+                                   
+                            </div>
+                          
+                        </div>
+                           </n-card>
                             </n-form>
                         </n-card>
                     </n-space>
-
+<n-button type="primary" @click="handleSaveNewRekening" class="mt-4">Simpan</n-button>
                 </n-card>
             </n-space>
         </div>
@@ -65,7 +77,6 @@
     </div>
 </template>
 <script setup>
-import { method } from "lodash";
 import { useApi } from "../../../../helpers/axios";
 import NewCustomer from "./NewCustomer.vue";
 
@@ -97,6 +108,21 @@ const fetchData = async () => {
         dataCustomer.value = response.data;
     }
 }
+
+const dataSavings = ref([]);
+const selectedSaving = ref();
+const fetchJenisTabungan = async () => {
+    isLoading.value = true;
+    const response = await useApi({ url: 'http://localhost:3001/savings' });
+    if (!response.ok) {
+        message.error("error");
+        isLoading.value = false;
+    } else {
+        isLoading.value = false;
+        dataSavings.value = response.data;
+    }
+}
+
 const saveData = async (e) => {
     isLoading.value = true;
     const response = await useApi({
@@ -113,6 +139,10 @@ const saveData = async (e) => {
 }
 const handleUpdateValue = (val, options) => {
     selectedCustomer.value = options;
+}
+const handleUpdateSavings = (val,opt)=> {
+    setoran_awal.value=opt.minimal_saldo;
+    selectedSaving.value=opt;
 }
 const renderLabel = (option) => {
     return `${option.nama} ${option.no_identitas} `;
@@ -141,5 +171,16 @@ const handleSaveNewRekening = async () => {
     await saveData(body);
 }
 
-onMounted(() => fetchData());
+const parse = (input) => {
+    const nums = input.replace(/,/g, "").trim();
+    if (/^\d+(\.(\d+)?)?$/.test(nums)) return Number(nums);
+    return nums === "" ? null : Number.NaN;
+};
+
+const format = (value) => {
+    if (value === null) return "";
+    return value.toLocaleString("en-US");
+};
+
+onMounted(() => {fetchData();fetchJenisTabungan();});
 </script>

@@ -1,0 +1,96 @@
+models:
+  CustomerProfile:
+    id: uuid
+    nama: string
+    nama_panggilan: string nullable
+    jenis_kelamin: "enum:Laki-laki,Perempuan"
+    tempat_lahir: string nullable
+    tanggal_lahir: date nullable
+    status_kawin: string nullable
+    tipe_identitas: string nullable
+    no_identitas: string nullable
+    nama_ibu: string nullable
+    pekerjaan: string nullable
+    pendidikan: string nullable
+    hp: string nullable
+    alamat: text nullable
+    rt: string nullable
+    rw: string nullable
+    provinsi: string nullable
+    kota: string nullable
+    kecamatan: string nullable
+    desa: string nullable
+    kode_pos: string nullable
+    dok_ktp: string nullable
+    timestamps: true
+    relationships:
+      hasMany: BankAccount
+
+  SavingType:
+    id: uuid
+    kode_jenis: string unique
+    nama_jenis: string
+    deskripsi: text nullable
+    bunga: "decimal:5,2"
+    minimal_saldo: unsignedBigInteger
+    status: "enum:aktif,nonaktif"
+    timestamps: true
+    relationships:
+      hasMany: BankAccount
+
+  BankAccount:
+    id: uuid
+    customer_profile_id: "uuid foreign:customer_profiles,id"
+    no_rekening: unsignedBigInteger unique
+    cabang: string
+    jenis_tabungan: string
+    kode_jenis_tabungan: "string foreign:saving_types,kode_jenis"
+    saldo: unsignedBigInteger
+    status: "enum:active,inactive"
+    tgl_registrasi: timestamp nullable
+    tgl_terakhir_transaksi: timestamp nullable
+    timestamps: true
+    relationships:
+      belongsTo: CustomerProfile
+      hasMany: TransactionActivity
+      hasOne: ClosedBankAccount
+
+  ClosedBankAccount:
+    id: uuid
+    bank_account_id: "uuid foreign:bank_accounts,id"
+    tgl_tutup: timestamp
+    keterangan: string nullable
+    timestamps: true
+    relationships:
+      belongsTo: BankAccount
+
+  TransactionActivity:
+    id: uuid
+    bank_account_id: "uuid foreign:bank_accounts,id"
+    tgl_transaksi: timestamp
+    sandi_transaksi: string
+    nominal: unsignedBigInteger
+    saldo: unsignedBigInteger
+    operator: "enum:KRE,DEB"
+    buku: string
+    halaman: string
+    baris: integer
+    timestamps: true
+    relationships:
+      belongsTo: BankAccount
+
+controllers:
+  CustomerProfile:
+    resource: api
+
+  SavingType:
+    resource: api
+
+  BankAccount:
+    resource: api
+
+  ClosedBankAccount:
+    resource: api
+
+  TransactionActivity:
+    resource: api
