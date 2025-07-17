@@ -18,13 +18,16 @@
                             </n-form-item>
                         </n-card>
                         <n-card v-if="selectedCustomer">
-                            <div class="grid grid-cols-1 md:grid-cols-4  bg-white">
+                            <div class="grid grid-cols-1 md:grid-cols-6 gap-4 bg-white">
                                 <div v-for="(value, key) in selectedCustomer" :key="key">
-                                    <div class="flex gap-2">
-                                        <strong class="capitalize">{{ formatKey(key) }}:</strong>
-                                        <n-image v-if="key === 'dok_ktp'" width="20"
-                                            :src="'https://www.qoalaplus.com/_nuxt/img/temp_ktp-placeholder.6551496.png'" />
-                                        <label v-else>{{ value }}</label>
+                                    <div class="flex">
+                                        <div class="flex flex-col">
+                                            <div><strong class="capitalize">{{ formatKey(key) }}</strong></div>
+                                            <div>
+                                                <n-ellipsis style="max-width: 120px">{{ value ? value : 'N/A'
+                                                    }}</n-ellipsis>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
@@ -37,30 +40,31 @@
                                             v-model:value="no_rekening"></n-select>
                                     </n-form-item>
                                     <n-form-item label="Jenis Tabungan" class="w-full">
-                                        <n-select v-model:value="jenis_tabungan" :options="dataSavings"
-                                            value-field="id" label-field="nama_jenis" @update-value="handleUpdateSavings"></n-select>
+                                        <n-select v-model:value="jenis_tabungan" :options="dataSavings" value-field="id"
+                                            label-field="nama_jenis" @update-value="handleUpdateSavings"></n-select>
                                     </n-form-item>
                                     <n-form-item label="Setoran awal" class="w-full">
                                         <n-input-number :parse="parse" :format="format" :show-button="false"
-                                        v-model:value="setoran_awal" />
+                                            v-model:value="setoran_awal" />
                                     </n-form-item>
                                 </div>
-                                    <n-card embedded v-if="selectedSaving">
-                                        <div class="grid grid-cols-1 md:grid-cols-4 ">
-                                                                    <div v-for="(value, key) in selectedSaving" :key="key">
-                                                                        <div class="flex flex-col">
-                                        <strong class="capitalize">{{ formatKey(key) }}</strong>
-                                        <label>{{ value }}</label>
-                                                                        </div>
-                                   
-                            </div>
-                          
-                        </div>
-                           </n-card>
+                                <n-card embedded v-if="selectedSaving">
+                                    <div class="grid grid-cols-1 md:grid-cols-4 ">
+                                        <div v-for="(value, key) in selectedSaving" :key="key">
+                                            <div class="flex flex-col">
+                                                <div><strong class="capitalize">{{ formatKey(key) }}</strong></div>
+                                                <div>
+                                                    <n-ellipsis style="max-width: 120px">{{ value ? value : 'N/A'
+                                                    }}</n-ellipsis>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </n-card>
                             </n-form>
                         </n-card>
                     </n-space>
-<n-button type="primary" @click="handleSaveNewRekening" class="mt-4">Simpan</n-button>
+                    <n-button type="primary" @click="handleSaveNewRekening" class="mt-4">Simpan</n-button>
                 </n-card>
             </n-space>
         </div>
@@ -99,7 +103,13 @@ const isLoading = ref(false);
 
 const fetchData = async () => {
     isLoading.value = true;
-    const response = await useApi({ url: 'http://localhost:3001/customers' });
+    const response = await useApi(
+        {
+            api: 'customers',
+            method: 'GET',
+            token: localStorage.getItem('token'),
+        }
+    );
     if (!response.ok) {
         message.error("error");
         isLoading.value = false;
@@ -113,7 +123,10 @@ const dataSavings = ref([]);
 const selectedSaving = ref();
 const fetchJenisTabungan = async () => {
     isLoading.value = true;
-    const response = await useApi({ url: 'http://localhost:3001/savings' });
+    const response = await useApi({
+        api: 'saving',
+        token: localStorage.getItem('token')
+    });
     if (!response.ok) {
         message.error("error");
         isLoading.value = false;
@@ -126,7 +139,7 @@ const fetchJenisTabungan = async () => {
 const saveData = async (e) => {
     isLoading.value = true;
     const response = await useApi({
-        url: 'http://localhost:3001/rekening',
+        api: 'account',
         method: 'POST',
         data: e
     });
@@ -140,9 +153,9 @@ const saveData = async (e) => {
 const handleUpdateValue = (val, options) => {
     selectedCustomer.value = options;
 }
-const handleUpdateSavings = (val,opt)=> {
-    setoran_awal.value=opt.minimal_saldo;
-    selectedSaving.value=opt;
+const handleUpdateSavings = (val, opt) => {
+    setoran_awal.value = opt.minimal_saldo;
+    selectedSaving.value = opt;
 }
 const renderLabel = (option) => {
     return `${option.nama} ${option.no_identitas} `;
@@ -157,18 +170,13 @@ const handleSavedNewCustomers = async () => {
 }
 const handleSaveNewRekening = async () => {
     const body = {
+        customer: selectedCustomer.value,
         no_rekening: no_rekening.value,
-        alamat: selectedCustomer.value.alamat,
-        nama_pemilik: selectedCustomer.value.nama,
-        nama_ibu_kandung: selectedCustomer.value.nama_ibu,
-        cabang: 'cirebon',
-        no_identitas: selectedCustomer.value.no_identitas,
-        status: 'active',
-        saldo: setoran_awal.value,
-        tgl_registrasi: new Date()
+        tabungan: selectedSaving.value,
+        setoran_awal: setoran_awal.value,
     }
-
-    await saveData(body);
+    console.log(body);
+    //await saveData(body);
 }
 
 const parse = (input) => {
@@ -182,5 +190,5 @@ const format = (value) => {
     return value.toLocaleString("en-US");
 };
 
-onMounted(() => {fetchData();fetchJenisTabungan();});
+onMounted(() => { fetchData(); fetchJenisTabungan(); });
 </script>

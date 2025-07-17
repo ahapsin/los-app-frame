@@ -9,7 +9,7 @@
                             <n-text strong class="text-md"> {{ bodyModal?.tgl_transaksi }}</n-text>
                             <n-text strong class="text-md"> {{ bodyModal?.payment_method == 'cash' ? 'TUNAI' :
                                 'TRANSFER'
-                                }}</n-text>
+                            }}</n-text>
 
                         </div>
                         <div class="flex justify-between border-b border-dashed border-black">
@@ -54,7 +54,7 @@
                             <div class="flex flex-col">
                                 <small class="text-reg">CUST. BAYAR</small>
                                 <n-text strong class="text-md"> {{ bodyModal?.jumlah_uang.toLocaleString("US")
-                                }}</n-text>
+                                    }}</n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">PEMBULATAN</small>
@@ -65,7 +65,7 @@
                                 <small class="text-reg">KEMBALIAN</small>
                                 <td>
                                     <n-text strong class="text-md"> {{ bodyModal?.kembalian.toLocaleString("US")
-                                    }}</n-text>
+                                        }}</n-text>
                                 </td>
                             </div>
 
@@ -88,21 +88,21 @@
                                 <small class="text-reg">Cust. Bayar</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal?.jumlah_uang.toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Diskon</small>
                                 <n-text class="text-md font-bold"> {{
                                     (Math.abs(bodyModal?.total_bayar - bodyModal?.jumlah_uang)).toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Pinalti</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.pinalti.toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -116,42 +116,44 @@
                     <div class="px-3">
 
                         <table width="100%" class="border border-black" v-if="bodyModal?.payment_type != 'pelunasan'">
-                            <tr>
-                                <th class="border border-black p-1">ANGS. KE</th>
-                                <th class="border border-black p-1">TANGGAL JT.</th>
-                                <th class="border border-black p-1">BYR. ANGS</th>
-                                <th class="border border-black p-1">BYR. DENDA</th>
-                                <th class="border border-black p-1">DISKON</th>
-                                <!--              <th class="border border-black">Jumlah</th>-->
-                            </tr>
-                            <tr v-for="angs in bodyModal?.struktur" :key="angs.id">
-                                <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
-                                <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
-                                <td class="border pe-2 border-black text-right">{{
-                                    parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                    }}
-                                </td>
-                                <td class="border pe-2 border-black text-right">{{
-                                    parseInt(angs.bayar_denda).toLocaleString('US')
-                                    }}
-                                </td>
-                                <td align="right" class="border pe-2 border-black text-right">
-                                    {{
-                                        (angs.diskon_denda).toLocaleString(('US'))
-                                    }}
-                                </td>
-                                <!--              <td class="border pe-2 border-black text-right">-->
-                                <!--                {{ (parseInt(angs.bayar_denda) + parseInt(angs.bayar_pokok + angs.bayar_bunga)+parseInt(angs.diskon_pokok) +-->
-                                <!--                  parseInt(angs.diskon_bunga) + parseInt(angs.diskon_denda)).toLocaleString('US') }}-->
-                                <!--              </td>-->
+                            <tbody>
+                                <tr>
+                                    <th class="border border-black p-1">ANGS. KE</th>
+                                    <th class="border border-black p-1">TANGGAL JT.</th>
+                                    <th class="border border-black p-1">BYR. ANGS</th>
+                                    <th class="border border-black p-1">BYR. DENDA</th>
+                                    <th class="border border-black p-1">DISKON</th>
+                                    <!--              <th class="border border-black">Jumlah</th>-->
+                                </tr>
+                                <tr v-for="angs in bodyModal?.struktur" :key="angs.id">
+                                    <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
+                                    <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
+                                    <td class="border pe-2 border-black text-right">{{
+                                        parseInt(angs.bayar_angsuran).toLocaleString('US')
+                                        }}
+                                    </td>
+                                    <td class="border pe-2 border-black text-right">{{
+                                        parseInt(angs.bayar_denda).toLocaleString('US')
+                                        }}
+                                    </td>
+                                    <td align="right" class="border pe-2 border-black text-right">
+                                        {{
+                                            (angs.diskon_denda).toLocaleString(('US'))
+                                        }}
+                                    </td>
+                                    <!--              <td class="border pe-2 border-black text-right">-->
+                                    <!--                {{ (parseInt(angs.bayar_denda) + parseInt(angs.bayar_pokok + angs.bayar_bunga)+parseInt(angs.diskon_pokok) +-->
+                                    <!--                  parseInt(angs.diskon_bunga) + parseInt(angs.diskon_denda)).toLocaleString('US') }}-->
+                                    <!--              </td>-->
 
-                            </tr>
-                            <!--            <tr>-->
-                            <!--              <td><strong>Total</strong></td>-->
-                            <!--              <td colspan="5" align="right" class="pe-2">-->
-                            <!--                <strong>{{ bodyModal?.total_bayar.toLocaleString("US") }}</strong>-->
-                            <!--              </td>-->
-                            <!--            </tr>-->
+                                </tr>
+                                <!--            <tr>-->
+                                <!--              <td><strong>Total</strong></td>-->
+                                <!--              <td colspan="5" align="right" class="pe-2">-->
+                                <!--                <strong>{{ bodyModal?.total_bayar.toLocaleString("US") }}</strong>-->
+                                <!--              </td>-->
+                                <!--            </tr>-->
+                            </tbody>
                         </table>
                     </div>
 

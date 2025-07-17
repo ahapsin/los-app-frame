@@ -35,11 +35,12 @@
                     <n-card v-if="selectedRekening">
                         <div class="grid grid-cols-1 md:grid-cols-3  bg-white">
                             <div v-for="(value, key) in selectedRekening" :key="key">
-                                <div class="flex flex-col">
-                                    <strong class="capitalize">{{ formatKey(key) }}:</strong>
-                                    <n-image v-if="key === 'dok_ktp'" width="20"
-                                        :src="'https://www.qoalaplus.com/_nuxt/img/temp_ktp-placeholder.6551496.png'" />
-                                    <label v-else>{{ value }}</label>
+                               <div class="flex flex-col">
+                                    <div><strong class="capitalize">{{ formatKey(key) }}</strong></div>
+                                    <div>
+                                        <n-ellipsis style="max-width: 120px">{{ value ? value : 'N/A'
+                                        }}</n-ellipsis>
+                                    </div>
                                 </div>
                             </div>
                         </div>

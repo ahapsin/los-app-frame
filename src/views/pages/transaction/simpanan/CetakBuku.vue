@@ -117,7 +117,27 @@
 
                     <n-data-table :data="dataAktifitas" :columns="columnsAktifitas" class="mt-4"
                         v-if="selectedRekening"></n-data-table>
-                    <n-button class="mt-4" v-if="selectedRekening" type="success">Cetak</n-button>
+                    <div class="p-4 border mt-2 w-fit ">
+                        <n-input-number v-model:value="startRow" />
+                        <n-button class="mt-4" v-if="selectedRekening" type="success"
+                            @click="handleCetak">Cetak</n-button>
+                        <table class="font-mono">
+                            <tbody>
+                                <tr v-for="i in startRow" :key="i">
+                                    <td>&nbsp;</td>
+                                </tr>
+                                <tr v-for="(col) in dataAktifitas" :key="col">
+                                    <td>{{ moment(col.tgl_transaksi).format('MM-DD-YYYY') }}</td>
+                                    <td>{{ col.sandi_transaksi }}</td>
+                                    <td>{{ col.type_transaksi === 'debet' ? col.nominal.toLocaleString() : null }}</td>
+                                    <td>{{ col.type_transaksi === 'kredit' ? col.nominal.toLocaleString() : null }}</td>
+                                    <td>{{ col.saldo.toLocaleString() }}</td>
+                                    <td>{{ col.operator }}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
                 </n-card>
 
             </n-space>
@@ -138,6 +158,7 @@
     const isLoading = ref(false);
     const dataRekening = ref([]);
     const dataAktifitas = ref([]);
+    const startRow = ref(0);
 
     const fetchData = async () => {
         selectedRekening.value = null;
@@ -215,6 +236,10 @@
     }
     function formatKey(key) {
         return key.replace(/_/g, ' ')
+    }
+
+    const handleCetak = () => {
+
     }
     const maskNumber = (value) => {
         const visible = 6

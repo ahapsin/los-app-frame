@@ -27,7 +27,7 @@
                 <n-form-item label="Status Kawin" path="status_kawin" class="w-full">
                     <n-input-group>
                         <n-input v-if="viewMode" />
-                        <n-select v-else filterable placeholder="Status Kawin" :options="optStatusKawin" />
+                        <n-select v-else filterable placeholder="Status Kawin" :options="optKawin" />
                     </n-input-group>
                 </n-form-item>
             </div>
@@ -96,8 +96,7 @@
             <n-divider title-placement="left">Dokumen Identitas</n-divider>
             <n-space justify="space-between">
                 <n-space>
-                    <file-upload title="KTP" endpoint="image_upload_prospect" type="ktp"
-                        :idapp="modelCustomer.no_ktp" />
+                    <file-upload title="KTP" endpoint="upload_saving_doc" type="ktp" :idapp="modelCustomer.no_ktp" />
                 </n-space>
             </n-space>
         </n-form>
@@ -188,10 +187,19 @@ const optPekerjaan = [
     label: v,
     value: v,
 }));
+const optKawin = [
+    "LAJANG",
+    "MENIKAH",
+    "JANDA/DUDA",
+].map((v) => ({
+    label: v,
+    value: v,
+}));
 const postData = async (e) => {
     const response = await useApi({
-        url: 'http://localhost:3001/customers',
+        api: 'customers',
         method: 'POST',
+        token:localStorage.getItem('token'),
         data: e
     });
     if (!response.ok) {
