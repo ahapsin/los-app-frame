@@ -63,10 +63,9 @@
 
                             <div class="flex flex-col">
                                 <small class="text-reg">KEMBALIAN</small>
-                                <td>
-                                    <n-text strong class="text-md"> {{ bodyModal?.kembalian.toLocaleString("US")
-                                        }}</n-text>
-                                </td>
+                               
+                                    <n-text strong class="text-md"> {{ bodyModal?.kembalian.toLocaleString("US")}}</n-text>
+                             
                             </div>
 
                         </div>

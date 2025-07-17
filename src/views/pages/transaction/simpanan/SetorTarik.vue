@@ -54,7 +54,7 @@
                                     <div><strong class="capitalize">{{ formatKey(key) }}</strong></div>
                                     <div>
                                         <n-ellipsis style="max-width: 120px">{{ value ? value : 'N/A'
-                                        }}</n-ellipsis>
+                                            }}</n-ellipsis>
                                     </div>
                                 </div>
                             </div>
@@ -149,11 +149,11 @@
                     <n-card v-if="selectedRekening">
                         <div class="grid grid-cols-1 md:grid-cols-3  bg-white">
                             <div v-for="(value, key) in selectedRekening" :key="key">
-                               <div class="flex flex-col">
+                                <div class="flex flex-col">
                                     <div><strong class="capitalize">{{ formatKey(key) }}</strong></div>
                                     <div>
                                         <n-ellipsis style="max-width: 120px">{{ value ? value : 'N/A'
-                                        }}</n-ellipsis>
+                                            }}</n-ellipsis>
                                     </div>
                                 </div>
                             </div>
@@ -226,7 +226,11 @@ const selectOptions = ref([]);
 const fetchData = async () => {
     selectedRekening.value = null;
     isLoading.value = true;
-    const response = await useApi({ url: 'http://localhost:3001/rekening' });
+    const response = await useApi({
+        api: 'account',
+        method: 'GET',
+        token: localStorage.getItem('token')
+    });
     if (!response.ok) {
         message.error("error");
         isLoading.value = false;

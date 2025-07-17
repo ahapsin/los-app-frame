@@ -141,7 +141,8 @@ const saveData = async (e) => {
     const response = await useApi({
         api: 'account',
         method: 'POST',
-        data: e
+        data: e,
+        token:localStorage.getItem('token')
     });
     if (!response.ok) {
         message.error("error");
@@ -175,8 +176,7 @@ const handleSaveNewRekening = async () => {
         tabungan: selectedSaving.value,
         setoran_awal: setoran_awal.value,
     }
-    console.log(body);
-    //await saveData(body);
+    await saveData(body);
 }
 
 const parse = (input) => {

@@ -90,7 +90,11 @@ const fetchData = async () => {
 }
 const fetchRekening = async () => {
     isLoading.value = true;
-    const response = await useApi({ url: 'http://localhost:3001/rekening' });
+    const response = await useApi({
+        api: 'account',
+        method: 'GET',
+        token: localStorage.getItem('token')
+    });
     if (!response.ok) {
         message.error("error");
         isLoading.value = false;
