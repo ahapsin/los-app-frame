@@ -61,7 +61,7 @@
             :on-update:checked-row-keys="handleFasilitas" :loading="loadSearch" class="pb-2"
             v-show="props.embed ? true : displayFasilitas" />
         <n-spin v-if="displayDetail" :show="spinnerShow">
-            <n-alert type="warning" :show-icon="false" v-show="props.embed ? true : displayFasilitas">
+            <n-alert type="warning" :show-icon="false" v-show="props.embed ? true : displayFasilitas" class="mb-2">
                 <div class="flex items-center justify-between">
                     <div>Penghapusan Bunga</div>
                     <div>
@@ -108,6 +108,11 @@
                         </tr>
                     </tbody>
                 </n-table>
+                <div class="p-2 class= bg-slate-50 rounded-lg mb-2">
+                    <n-checkbox v-model:checked="lunasDiskon" @update:checked="handleLunasDiskon">
+                        <span class="text-red-500">Pelunasan dengan diskon</span>
+                    </n-checkbox>
+                </div>
                 <div class="md:flex gap-2 bg-pr/10 rounded-xl items-center pt-4 px-4"
                     v-show="props.embed ? true : displayFasilitas">
                     <n-form-item path="nestedValue.path2" label="Jenis Pembayaran" class="w-full">
@@ -359,6 +364,8 @@ const dialogProses = ref(false);
 const dataBuktiTransfer = ref([]);
 const buktiTransfer = ref(false);
 const paymentData = ref([]);
+const lunasDiskon = ref(false);
+
 const pageData = reactive({
     no_facility: null,
     total_bayar: 0,
@@ -637,12 +644,7 @@ const pelunasan = reactive({
 
             pelunasan.BAYAR_DENDA
     ),
-    JUMLAH_DISKON: computed(
-        () =>
-            pelunasan.DISKON_POKOK +
-            pelunasan.DISKON_BUNGA +
-            pelunasan.DISKON_DENDA
-    ),
+    JUMLAH_DISKON: 0,
     PEMBULATAN: 0,
     KEMBALIAN: computed(() =>
         pelunasan.UANG_PELANGGAN - pelunasan.JUMLAH_TAGIHAN - pelunasan.PEMBULATAN <
@@ -687,16 +689,19 @@ const pushJumlahUang = async () => {
     if (BayarBunga >= 0) {
         pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
         let sisaBayarBunga = BayarBunga - pelunasan.SISA_POKOK;
-        if(sisaBayarBunga > 0){
-            
-        }else{
-             pelunasan.BAYAR_POKOK = BayarBunga;
-             pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.BAYAR_POKOK;
+        if (sisaBayarBunga > 0) {
+            pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK;
+        } else {
+            pelunasan.BAYAR_POKOK = BayarBunga;
+            pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.BAYAR_POKOK;
         }
     } else {
         pelunasan.BAYAR_BUNGA = pelunasan.UANG_PELANGGAN;
         pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA - pelunasan.BAYAR_BUNGA;
         pelunasan.DISKON_DENDA = pelunasan.DENDA;
+    }
+    if (pelunasan.JUMLAH_DISKON > 0) {
+        lunasDiskon.value = true;
     }
     // let sisaBayarPokok = pelunasan.UANG_PELANGGAN - pelunasan.TUNGGAKAN_BUNGA;
     // if (sisaBayarPokok >= 0) {
@@ -736,6 +741,14 @@ const pushJumlahUang = async () => {
     //     pelunasan.DISKON_DENDA = pelunasan.DENDA;
     // }
 };
+
+const handleLunasDiskon = (e) => {
+    if (e) {
+        pelunasan.JUMLAH_DISKON = pelunasan.DISKON_POKOK + pelunasan.DISKON_BUNGA + pelunasan.DISKON_DENDA;
+    } else {
+        pelunasan.JUMLAH_DISKON = 0;
+    }
+}
 const props = defineProps({
     embed: Boolean,
     atr: String,
