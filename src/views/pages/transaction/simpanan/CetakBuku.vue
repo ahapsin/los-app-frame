@@ -9,7 +9,7 @@
                     </n-form-item>
                     <n-card v-if="selectedRekening" embedded title="Detail Buku" size="small">
                         <template #header-extra>
-                            <n-button type="success" @click="handlePrint">cetak kepala buku</n-button>
+                            <n-button type="success" @click="handleCetak">cetak kepala buku</n-button>
                         </template>
                         <div class="font-mono p-4" ref="headArea">
                             <div class="text-lg mb-2">{{ appCompany }}</div>
@@ -65,7 +65,7 @@
                         <n-input-group>
                             <n-input-group-label>Mulai Baris</n-input-group-label>
                             <n-input-number v-model:value="startRow" />
-                            <n-button v-if="selectedRekening" type="success" @click="handleCetak">Cetak</n-button>
+                            <n-button v-if="selectedRekening" type="success" @click="handleCetakMutasi">Cetak</n-button>
                         </n-input-group>
                         <div class="border border-dashed mt-4 bg-slate-50">
                             <div ref="printArea">
@@ -200,7 +200,18 @@
     }
 
     const handleCetak = () => {
+        const { handlePrint } = useVueToPrint({
+            content: headArea,
+            documentTitle: "Cetak Kepala Buku",
+        });
         handlePrint()
+    }
+    const handleCetakMutasi = () => {
+         const { handlePrint } = useVueToPrint({
+            content: printArea,
+            documentTitle: "Cetak Mutasi",
+        });
+        handlePrint(printArea.value)
     }
     const maskNumber = (value) => {
         const visible = 6
@@ -209,10 +220,7 @@
         return maskedPart + visiblePart
     }
 
-    const { handlePrint } = useVueToPrint({
-        content: headArea,
-        documentTitle: "Surat Mutasi Jaminan",
-    });
+
 
     onMounted(() => { fetchData() });
 </script>

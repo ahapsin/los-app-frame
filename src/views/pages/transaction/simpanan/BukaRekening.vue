@@ -36,7 +36,7 @@
                             <n-form>
                                 <div class="flex flex-col-3 gap-4">
                                     <n-form-item label="Nomor Rekening" class="w-full">
-                                        <n-select :options="optNoRekening" value-field="v" label-field="l"
+                                        <n-select :options="optNoRekening" value-field="v" label-field="l" tag filterable
                                             v-model:value="no_rekening"></n-select>
                                     </n-form-item>
                                     <n-form-item label="Jenis Tabungan" class="w-full">

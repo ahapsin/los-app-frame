@@ -9,16 +9,7 @@
             <v-icon name="bi-arrow-repeat" scale="1.2" />
             Transaksi
         </n-button>
-        <n-button @click="currentComponent = 'BukaRekening'" quaternary
-            :type="currentComponent === 'BukaRekening' ? 'success' : 'default'">
-            <v-icon name="bi-folder-plus" scale="1.2" />
-            Buka Rekening
-        </n-button>
-        <n-button quaternary @click="currentComponent = 'TutupRekening'"
-            :type="currentComponent === 'TutupRekening' ? 'success' : 'default'">
-            <v-icon name="bi-x-square" scale="1.2" />
-            Tutup Rekening
-        </n-button>
+     
         <n-button quaternary @click="currentComponent = 'CetakBuku'"
             :type="currentComponent === 'CetakBuku' ? 'success' : 'default'">
             <v-icon name="bi-printer" scale="1.2" />
@@ -36,7 +27,7 @@
 </template>
 <script setup>
 import { ref } from "vue";
-import { useDialog, useMessage, NButton } from "naive-ui";
+import { NButton } from "naive-ui";
 
 
 import ListRekening from "./ListRekening.vue";
@@ -48,10 +39,6 @@ import TutupRekening from "./TutupRekening.vue";
 import UpdateRekening from "./UpdateRekening.vue";
 
 const currentComponent = ref('ListRekening');
-const message = useMessage();
-const dialog = useDialog();
-
-const dataTable = ref([]);
 const komponenMap = {
     ListRekening,
     BukaRekening,

@@ -17,13 +17,13 @@
                                 </template>
                                 Tarik
                             </n-button>
-                            <n-divider vertical></n-divider>
+                            <!-- <n-divider vertical></n-divider>
                             <n-button type="primary" @click="handleAdd">
                                 <template #icon>
                                     <v-icon name="bi-plus-lg" />
                                 </template>
                                 Pindah Buku
-                            </n-button>
+                            </n-button> -->
                         </n-space>
                     </template>
                     <n-space vertical :size="12">
@@ -317,6 +317,8 @@ const handleBatalSetor = () => {
     modalSetor.value = false;
     selectedRekening.value = null;
     rekening.value = null;
+    nominal.value=null;
+    keterangan.value=null;
 }
 
 const handleBatalTarik = () => {
