@@ -35,7 +35,7 @@
         </div>
     </div>
     <n-modal v-model:show="modalSetor" :mask-closable="false">
-        <n-card class="w-2/4" title="Setoran Tunai" :segmented="true" size="small">
+        <n-card class="w-5/6" title="Setoran Tunai" :segmented="true" size="small">
             <n-card embedded>
                 <div class="flex gap-4">
                     <n-form-item label="Tanggal Valuta">
@@ -48,7 +48,7 @@
                 </div>
                 <n-space vertical>
                     <n-card v-if="selectedRekening">
-                        <div class="grid grid-cols-1 md:grid-cols-3  bg-white">
+                        <div class="grid grid-cols-1 md:grid-cols-6  bg-white">
                             <div v-for="(value, key) in selectedRekening" :key="key">
                                 <div class="flex flex-col">
                                     <div><strong class="capitalize">{{ formatKey(key) }}</strong></div>
@@ -83,7 +83,7 @@
         </n-card>
     </n-modal>
     <n-modal v-model:show="modalTarik" :mask-closable="false">
-        <n-card class="w-2/4" title="Tarik Tunai" :segmented="true" size="small">
+        <n-card class="w-5/6" title="Tarik Tunai" :segmented="true" size="small">
             <n-card embedded>
                 <div class="flex gap-4">
                     <n-form-item label="Tanggal Valuta">

@@ -7,42 +7,15 @@
                         <n-select filterable v-model:value="rekening" :options="selectOptions"
                             @update:value="handleUpdateValue" />
                     </n-form-item>
-                    <n-card v-if="selectedRekening" embedded title="Detail Buku" size="small">
+                    <n-card v-if="selectedRekening" embedded title="Detail Buku" size="small" :segmented="true">
                         <template #header-extra>
                             <n-button type="success" @click="handleCetak">cetak kepala buku</n-button>
                         </template>
-                        <div class="font-mono p-4" ref="headArea">
+                        <div class="font-mono p-10" ref="headArea">
                             <div class="text-lg mb-2">{{ appCompany }}</div>
-                            <table class="font-mono">
-                                <tbody>
-                                    <tr>
-                                        <td>No Rekening</td>
-                                        <td>:</td>
-                                        <td class="font-semibold">{{ selectedRekening.no_rekening }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Nama</td>
-                                        <td>:</td>
-                                        <td>{{ selectedRekening.nama_pemilik }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Alamat</td>
-                                        <td>:</td>
-                                        <td>{{ selectedRekening.alamat }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tanda Pengenal</td>
-                                        <td>:</td>
-                                        <td>{{ selectedRekening.tipe_identitas }} / {{
-                                            maskNumber(selectedRekening.no_identitas) }}</td>
-                                    </tr>
-                                    <tr>
-                                        <td>Tanggal</td>
-                                        <td>:</td>
-                                        <td>{{ moment(selectedRekening.tgl_registrasi).format('DD-MM-YYYY') }}</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div class="mt-4">Ac. {{ selectedRekening.no_rekening }}</div>
+                            <div>{{ selectedRekening.nama_pemilik }}</div>
+                            <div>{{ selectedRekening.alamat }}</div>
                         </div>
                     </n-card>
                     <n-input-group class="mt-4" v-if="selectedRekening">
