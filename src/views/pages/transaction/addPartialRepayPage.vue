@@ -684,6 +684,8 @@ const getDataPelunasan = async (e) => {
     }
 };
 const pushJumlahUang = async () => {
+     pelunasan.JUMLAH_DISKON = 0;
+      lunasDiskon.value = false;
     Object.assign(pelunasan, formPelunasan);
     let BayarBunga = pelunasan.UANG_PELANGGAN - pelunasan.TUNGGAKAN_BUNGA;
     if (BayarBunga >= 0) {
@@ -698,6 +700,7 @@ const pushJumlahUang = async () => {
     } else {
         pelunasan.BAYAR_BUNGA = pelunasan.UANG_PELANGGAN;
         pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA - pelunasan.BAYAR_BUNGA;
+        pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.BAYAR_POKOK;
         pelunasan.DISKON_DENDA = pelunasan.DENDA;
     }
     if (pelunasan.JUMLAH_DISKON > 0) {
