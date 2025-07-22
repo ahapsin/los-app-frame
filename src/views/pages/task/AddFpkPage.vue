@@ -730,7 +730,7 @@
                             <n-form-item label="Jenis Angsuran" path="jenis">
                                 <n-input :readonly="viewMode" v-model:value="calcCredit.jenis_angsuran"
                                     v-if="props.viewMode" />
-                                <n-select v-else filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
+                                <n-select v-else filterable placeholder="Jenis Angsuran" :options="me.me.cabang_nama === 'Anjatan' ? jenisAngsuran : jenisAngsuranMod"
                                     v-model:value="calcCredit.jenis_angsuran" @update:value="handleTipe" />
                             </n-form-item>
                             <n-form-item label="Tenor / Angsuran" path="tenor">
@@ -930,6 +930,7 @@ import {
 import { useJaminanStore } from "../../../stores/jaminan";
 import JaminanKendaraan from "./survey/JaminanKendaraan.vue";
 import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
+import { useMeStore } from "../../../stores/me";
 const message = useMessage();
 const loading = ref(false);
 const loadingSend = ref(false);
@@ -1068,6 +1069,8 @@ const countError = ref(0);
 const globalForm = ref("error");
 
 const computForm = computed(() => (globalForm.value));
+
+const me = useMeStore();
 const next = () => {
     current.value += 1
 };
@@ -1194,7 +1197,17 @@ const jenisAngsuran =[
         label:'BUNGA MENURUN',
         value:'bunga_menurun'
     },
-]
+];
+const jenisAngsuranMod = [
+    {
+        label: 'BULANAN',
+        value: 'bulanan'
+    },
+    {
+        label: 'MUSIMAN',
+        value: 'musiman'
+    },
+];
 const optStatusKawin = ["Kawin", "Belum Kawin", "Janda", "Duda"].map((v) => ({
     label: v.toUpperCase(),
     value: v.toUpperCase(),

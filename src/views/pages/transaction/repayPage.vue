@@ -589,7 +589,7 @@ const handleSearch = async () => {
         token: userToken,
     });
     if (!response.ok) {
-        message.error("ERROR API");
+        message.error("ERROR API");a
     } else {
         displayFasilitas.value = true;
         loadSearch.value = false;
