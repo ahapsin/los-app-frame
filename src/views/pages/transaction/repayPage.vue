@@ -584,7 +584,7 @@ const handleSearch = async () => {
     loadSearch.value = true;
     const response = await useApi({
         method: "POST",
-        api: "search_customer",
+        api: "search_customer_pelunasan",
         data: dynamicSearch,
         token: userToken,
     });

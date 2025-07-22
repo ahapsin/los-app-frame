@@ -27,7 +27,8 @@
                             :on-update:value="handlePlafond" />
                     </n-form-item>
                     <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
-                        <n-select filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
+                        <n-select filterable placeholder="Jenis Angsuran"
+                            :options="me.me.cabang_nama === 'Anjatan' ? jenisAngsuran : jenisAngsuranMod"
                             v-model:value="order.jenis_angsuran" :on-update:value="handleTipe"
                             :disabled="order.plafond != 0 ? false : true" />
                     </n-form-item>
@@ -282,7 +283,7 @@
                                 </n-descriptions>
                             </div>
                             <div>
-    
+
                                 <div v-if="coll.type == 'kendaraan'">
                                     <n-divider title-placement="left"> UPLOAD DOKUMEN JAMINAN </n-divider>
                                     <div class="flex flex-col md:flex-row gap-2">
@@ -464,8 +465,10 @@ import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
 // import JaminanEmas from "./survey/JaminanEmas.vue";
 import { useJaminanStore } from "../../../stores/jaminan";
 import JaminanBillyet from "./survey/JaminanBillyet.vue";
+import { useMeStore } from "../../../stores/me";
 const { width } = useWindowSize();
 const message = useMessage();
+const me = useMeStore();
 const uuid = uuidv4();
 const current = ref(1);
 const loading = ref(false);
@@ -620,18 +623,28 @@ const tujuanKredit = ["KONSUMSI", "INVESTASI"].map((v) => ({
     label: v,
     value: v,
 }));
-const jenisAngsuran =[
+const jenisAngsuran = [
     {
-        label:'BULANAN',
-        value:'bulanan'
+        label: 'BULANAN',
+        value: 'bulanan'
     },
     {
-        label:'MUSIMAN',
-        value:'musiman'
+        label: 'MUSIMAN',
+        value: 'musiman'
     },
     {
-        label:'BUNGA MENURUN',
-        value:'bunga_menurun'
+        label: 'BUNGA MENURUN',
+        value: 'bunga_menurun'
+    },
+]
+const jenisAngsuranMod = [
+    {
+        label: 'BULANAN',
+        value: 'bulanan'
+    },
+    {
+        label: 'MUSIMAN',
+        value: 'musiman'
     },
 ]
 const optKategori = ["BARU", "RO"].map((v) => ({

@@ -3,7 +3,7 @@
         content: true,
         footer: 'soft',
     }" size="small">
-        <template #header>PELUNASAN SEBAGIAN BUNGA MENURUN
+        <template #header>PEMBAYARAN SEBAGIAN BUNGA MENURUN
             <!-- <n-icon v-if="width <=620">
 <phone-icon />
 </n-icon>
@@ -245,7 +245,7 @@
                         </div>
                     </div>
                     <div class="px-3">
-
+<pre>{{ bodyModal.struktur }}</pre>
                         <table width="100%" class="border border-black" v-if="bodyModal.payment_type != 'pelunasan'">
                             <tr>
                                 <th class="border border-black">ANGS. KE</th>

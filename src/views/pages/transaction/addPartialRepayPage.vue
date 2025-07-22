@@ -4,7 +4,7 @@
         footer: 'soft',
     }">
 
-        <template #header>Tambah Pelunasan Sebagian</template>
+        <template #header>Tambah Pembayaran Sebagian</template>
         <span class="hidden">{{ pelunasan }}</span>
         <template #header-extra>
             <n-space v-if="!props.embed">
@@ -320,7 +320,7 @@
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.nama
                                     }}
-                                    </n-text>
+                                </n-text>
                                 </div>
                             </div>
                         </div>
