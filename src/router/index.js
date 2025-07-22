@@ -74,6 +74,16 @@ const routes = [
         component: () => import("../views/pages/transaction/repayPage.vue"),
       },
       {
+        path: "partialrepay",
+        name: "pelunasan sebagian",
+        component: () => import("../views/pages/transaction/partialRepayPage.vue"),
+      },
+      {
+        path: "addpartialrepay",
+        name: "tambah pelunasan sebagian",
+        component: () => import("../views/pages/transaction/addPartialRepayPage.vue"),
+      },
+      {
         path: "jaminan",
         name: "jaminan",
         component: () => import("../views/pages/jaminan/jaminanPage.vue"),
@@ -104,6 +114,11 @@ const routes = [
         path: "kunjungan_cust",
         name: "kunjungan",
         component: () => import("../views/pages/task/visit/VisitPage.vue"),
+      },
+      {
+        path: "broadcast",
+        name: "BROADCAST",
+        component: () => import("../views/pages/task/broadcast/BroadcastPage.vue"),
       },
       {
         path: "addvisit",
@@ -211,6 +226,11 @@ const routes = [
         path: "taksasi",
         name: "taksasi",
         component: () => import("../views/pages/master/TaksasiPage.vue"),
+      },
+      {
+        path: "referensi",
+        name: "referensi",
+        component: () => import("../views/pages/master/referensi/ReferensiPage.vue"),
       },
       {
         path: "taksasi-action",
@@ -368,6 +388,12 @@ const routes = [
         name: "Listing Beban",
         component: () =>
           import("../views/pages/laporan/LapListingBebanTest.vue"),
+      },
+      {
+        path: "dokumen",
+        name: "Dokumen",
+        component: () =>
+          import("../views/pages/laporan/LapDokumen.vue"),
       },
       {
         path: "lap_pembayaran",

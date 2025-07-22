@@ -4,7 +4,7 @@
         footer: 'soft',
     }">
 
-        <template #header>Tambah Pelunasan</template>
+        <template #header>Tambah Pembayaran Sebagian</template>
         <span class="hidden">{{ pelunasan }}</span>
         <template #header-extra>
             <n-space v-if="!props.embed">
@@ -61,7 +61,7 @@
             :on-update:checked-row-keys="handleFasilitas" :loading="loadSearch" class="pb-2"
             v-show="props.embed ? true : displayFasilitas" />
         <n-spin v-if="displayDetail" :show="spinnerShow">
-            <n-alert type="warning" :show-icon="false" v-show="props.embed ? true : displayFasilitas">
+            <n-alert type="warning" :show-icon="false" v-show="props.embed ? true : displayFasilitas" class="mb-2">
                 <div class="flex items-center justify-between">
                     <div>Penghapusan Bunga</div>
                     <div>
@@ -82,23 +82,18 @@
                     </thead>
                     <tbody>
                         <tr>
-                            <td>Pokok</td>
-                            <td align="right">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.BAYAR_POKOK) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.DISKON_POKOK) }}</td>
-                        </tr>
-                        <tr>
                             <td>Bunga</td>
                             <td align="right">{{ formatter.format(pelunasan.TUNGGAKAN_BUNGA) }}</td>
                             <td align="right">{{ formatter.format(pelunasan.BAYAR_BUNGA) }}</td>
                             <td align="right">{{ formatter.format(pelunasan.DISKON_BUNGA) }}</td>
                         </tr>
                         <tr>
-                            <td>Pinalti</td>
-                            <td align="right">{{ formatter.format(pelunasan.PINALTI) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.BAYAR_PINALTI) }}</td>
-                            <td align="right">{{ formatter.format(pelunasan.DISKON_PINALTI) }}</td>
+                            <td>Pokok</td>
+                            <td align="right">{{ formatter.format(pelunasan.SISA_POKOK) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.BAYAR_POKOK) }}</td>
+                            <td align="right">{{ formatter.format(pelunasan.DISKON_POKOK) }}</td>
                         </tr>
+
                         <tr>
                             <td>Denda</td>
                             <td align="right">{{ formatter.format(pelunasan.DENDA) }}</td>
@@ -113,6 +108,11 @@
                         </tr>
                     </tbody>
                 </n-table>
+                <div class="p-2 class= bg-slate-50 rounded-lg mb-2">
+                    <n-checkbox v-model:checked="lunasDiskon" @update:checked="handleLunasDiskon">
+                        <span class="text-red-500">Pelunasan dengan diskon</span>
+                    </n-checkbox>
+                </div>
                 <div class="md:flex gap-2 bg-pr/10 rounded-xl items-center pt-4 px-4"
                     v-show="props.embed ? true : displayFasilitas">
                     <n-form-item path="nestedValue.path2" label="Jenis Pembayaran" class="w-full">
@@ -132,9 +132,8 @@
                         </div>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
-                        <n-input-number placeholder="Jumlah Pembayaran"
-                            v-model:value="pelunasan.JUMLAH_TAGIHAN" :show-button="false" :parse="parse"
-                            :format="format" readonly class="w-full">
+                        <n-input-number placeholder="Jumlah Pembayaran" v-model:value="pelunasan.JUMLAH_TAGIHAN"
+                            :show-button="false" :parse="parse" :format="format" readonly class="w-full">
                         </n-input-number>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
@@ -145,21 +144,19 @@
                         </n-input-number>
                     </n-form-item>
                     <n-form-item path="nestedValue.path2" label="Jumlah Diskon" class="w-full">
-                        <n-input-number  placeholder="Jumlah Pembayaran"
-                            v-model:value="pelunasan.JUMLAH_DISKON" :show-button="false" :parse="parseCurrency"
-                            :format="formatCurrency" clearable class="w-full" readonly>
+                        <n-input-number placeholder="Jumlah Pembayaran" v-model:value="pelunasan.JUMLAH_DISKON"
+                            :show-button="false" :parse="parseCurrency" :format="formatCurrency" clearable
+                            class="w-full" readonly>
                         </n-input-number>
                     </n-form-item>
                     <n-form-item label="Pembulatan" class="w-full">
-                        <n-input-number :show-button="false" :parse="parseCurrency"
-                            :format="formatCurrency"
+                        <n-input-number :show-button="false" :parse="parseCurrency" :format="formatCurrency"
                             v-model:value="pelunasan.PEMBULATAN" clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
                     <n-form-item label="Kembalian" class="w-full">
-                        <n-input-number :show-button="false" :parse="parseCurrency"
-                            :format="formatCurrency" v-model:value="pelunasan.KEMBALIAN" readonly class="w-full"
-                            :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
+                        <n-input-number :show-button="false" :parse="parseCurrency" :format="formatCurrency"
+                            v-model:value="pelunasan.KEMBALIAN" readonly class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                                 " />
                     </n-form-item>
                     <n-form-item class="w-full">
@@ -217,19 +214,19 @@
                                     <small class="text-reg">No Transaksi : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.no_transaksi
-                                        }}
+                                    }}
                                     </n-text>
                                     <small class="text-reg">No Pelanggan : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.cust_code
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col py-4">
                                     <small class="text-reg">Terima dari (No Kontrak)</small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.nama
-                                        }}
+                                    }}
                                     </n-text>
                                     <small class="text-lg">{{ responseProsesPayment.res.no_fasilitas }}</small>
                                 </div>
@@ -240,7 +237,7 @@
                                     <small class="text-reg">Tanggal & Waktu</small>
                                     <n-text strong class="text-md">{{
                                         responseProsesPayment.res.tgl_transaksi
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col">
@@ -262,7 +259,7 @@
                                     <td>
                                         <n-text strong class="text-md"> {{
                                             responseProsesPayment.res.kembalian
-                                            }}
+                                        }}
                                         </n-text>
                                     </td>
                                 </div>
@@ -270,7 +267,7 @@
                                     <small class="text-reg">Metode Pembayaran</small>
                                     <n-text strong class="text-md"> {{
                                         responseProsesPayment.res.payment_method
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                             </div>
@@ -288,11 +285,11 @@
                                     <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_denda).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td align="right" class="border pe-2 border-black">
                                         {{
@@ -306,7 +303,7 @@
                                     <td colspan="3" align="right" class="pe-2">
                                         <strong>{{
                                             responseProsesPayment.res.total_bayar.toLocaleString("US")
-                                            }}</strong>
+                                        }}</strong>
                                     </td>
                                 </tr>
                             </table>
@@ -316,14 +313,14 @@
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.created_by
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.nama
-                                        }}
-                                    </n-text>
+                                    }}
+                                </n-text>
                                 </div>
                             </div>
                         </div>
@@ -367,6 +364,8 @@ const dialogProses = ref(false);
 const dataBuktiTransfer = ref([]);
 const buktiTransfer = ref(false);
 const paymentData = ref([]);
+const lunasDiskon = ref(false);
+
 const pageData = reactive({
     no_facility: null,
     total_bayar: 0,
@@ -551,7 +550,7 @@ const postDynamic = async () => {
     loadProses.value = true;
     const response = await useApi({
         method: "POST",
-        api: "payment_pelunasan",
+        api: "payment_bunga_menurun",
         data: pelunasan,
         token: userToken,
     });
@@ -584,12 +583,12 @@ const handleSearch = async () => {
     loadSearch.value = true;
     const response = await useApi({
         method: "POST",
-        api: "search_customer_pelunasan",
+        api: "search_customer_bunga_menurun",
         data: dynamicSearch,
         token: userToken,
     });
     if (!response.ok) {
-        message.error("ERROR API");a
+        message.error("ERROR API");
     } else {
         displayFasilitas.value = true;
         loadSearch.value = false;
@@ -614,7 +613,6 @@ const pelunasan = reactive({
     BUNGA_BERJALAN: 0,
     TUNGGAKAN_BUNGA: 0,
     DENDA: 0,
-    PINALTI: 0,
     UANG_PELANGGAN: 0,
     DISKON: 0,
     BAYAR_POKOK: 0,
@@ -629,30 +627,24 @@ const pelunasan = reactive({
         () =>
             pelunasan.SISA_POKOK +
             pelunasan.TUNGGAKAN_BUNGA +
-            pelunasan.PINALTI +
+
             pelunasan.DENDA
     ),
     TOTAL_BAYAR: computed(
         () =>
             pelunasan.SISA_POKOK +
             pelunasan.TUNGGAKAN_BUNGA +
-            pelunasan.PINALTI +
+
             pelunasan.DENDA
     ),
     JUMLAH_BAYAR: computed(
         () =>
             pelunasan.BAYAR_POKOK +
             pelunasan.BAYAR_BUNGA +
-            pelunasan.BAYAR_PINALTI +
+
             pelunasan.BAYAR_DENDA
     ),
-    JUMLAH_DISKON: computed(
-        () =>
-            pelunasan.DISKON_POKOK +
-            pelunasan.DISKON_BUNGA +
-            pelunasan.DISKON_PINALTI +
-            pelunasan.DISKON_DENDA
-    ),
+    JUMLAH_DISKON: 0,
     PEMBULATAN: 0,
     KEMBALIAN: computed(() =>
         pelunasan.UANG_PELANGGAN - pelunasan.JUMLAH_TAGIHAN - pelunasan.PEMBULATAN <
@@ -692,47 +684,74 @@ const getDataPelunasan = async (e) => {
     }
 };
 const pushJumlahUang = async () => {
+     pelunasan.JUMLAH_DISKON = 0;
+      lunasDiskon.value = false;
     Object.assign(pelunasan, formPelunasan);
-    let sisaBayarPokok = pelunasan.UANG_PELANGGAN - pelunasan.SISA_POKOK;
-    if (sisaBayarPokok >= 0) {
-        pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK;
-        pelunasan.DISKON_POKOK = 0;
-        let sisaBayarBunga = sisaBayarPokok - pelunasan.TUNGGAKAN_BUNGA;
+    let BayarBunga = pelunasan.UANG_PELANGGAN - pelunasan.TUNGGAKAN_BUNGA;
+    if (BayarBunga >= 0) {
+        pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+        let sisaBayarBunga = BayarBunga - pelunasan.SISA_POKOK;
         if (sisaBayarBunga > 0) {
-            pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
-            pelunasan.DISKON_BUNGA = 0;
-            let sisaBayarPinalti = sisaBayarBunga - pelunasan.PINALTI;
-            if (sisaBayarPinalti > 0) {
-                pelunasan.BAYAR_PINALTI = pelunasan.PINALTI;
-                pelunasan.DISKON_PINALTI = 0;
-                let sisaBayarDenda = sisaBayarPinalti - pelunasan.DENDA;
-                if (sisaBayarDenda > 0) {
-                    pelunasan.BAYAR_DENDA = pelunasan.DENDA;
-                    pelunasan.DISKON_DENDA = 0;
-                } else {
-                    pelunasan.BAYAR_DENDA = sisaBayarDenda + pelunasan.DENDA;
-                    pelunasan.DISKON_DENDA = pelunasan.DENDA - pelunasan.BAYAR_DENDA;
-                }
-            } else {
-                pelunasan.BAYAR_PINALTI = sisaBayarPinalti + pelunasan.PINALTI;
-                pelunasan.DISKON_PINALTI = pelunasan.PINALTI - pelunasan.BAYAR_PINALTI;
-                pelunasan.DISKON_DENDA = pelunasan.DENDA;
-            }
+            pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK;
         } else {
-            pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA + sisaBayarBunga;
-            pelunasan.DISKON_POKOK = 0;
-            pelunasan.DISKON_BUNGA = Math.abs(sisaBayarBunga);
-            pelunasan.DISKON_DENDA = pelunasan.DENDA;
-            pelunasan.DISKON_PINALTI = pelunasan.PINALTI;
+            pelunasan.BAYAR_POKOK = BayarBunga;
+            pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.BAYAR_POKOK;
         }
     } else {
-        pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK;
-        pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.UANG_PELANGGAN;
-        pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+        pelunasan.BAYAR_BUNGA = pelunasan.UANG_PELANGGAN;
+        pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA - pelunasan.BAYAR_BUNGA;
+        pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.BAYAR_POKOK;
         pelunasan.DISKON_DENDA = pelunasan.DENDA;
-        pelunasan.DISKON_PINALTI = pelunasan.PINALTI;
     }
+    if (pelunasan.JUMLAH_DISKON > 0) {
+        lunasDiskon.value = true;
+    }
+    // let sisaBayarPokok = pelunasan.UANG_PELANGGAN - pelunasan.TUNGGAKAN_BUNGA;
+    // if (sisaBayarPokok >= 0) {
+    //     pelunasan.BAYAR_POKOK = pelunasan.SISA_POKOK;
+    //     pelunasan.DISKON_POKOK = 0;
+    //     let sisaBayarBunga = sisaBayarPokok - pelunasan.TUNGGAKAN_BUNGA;
+    //     if (sisaBayarBunga > 0) {
+    //         pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+    //         pelunasan.DISKON_BUNGA = 0;
+    //         let sisaBayarPinalti = sisaBayarBunga - pelunasan.PINALTI;
+    //         if (sisaBayarPinalti > 0) {
+    //             pelunasan.BAYAR_PINALTI = pelunasan.PINALTI;
+    //             pelunasan.DISKON_PINALTI = 0;
+    //             let sisaBayarDenda = sisaBayarPinalti - pelunasan.DENDA;
+    //             if (sisaBayarDenda > 0) {
+    //                 pelunasan.BAYAR_DENDA = pelunasan.DENDA;
+    //                 pelunasan.DISKON_DENDA = 0;
+    //             } else {
+    //                 pelunasan.BAYAR_DENDA = sisaBayarDenda + pelunasan.DENDA;
+    //                 pelunasan.DISKON_DENDA = pelunasan.DENDA - pelunasan.BAYAR_DENDA;
+    //             }
+    //         } else {
+    //             pelunasan.BAYAR_PINALTI = sisaBayarPinalti + pelunasan.PINALTI;
+    //             pelunasan.DISKON_PINALTI = pelunasan.PINALTI - pelunasan.BAYAR_PINALTI;
+    //             pelunasan.DISKON_DENDA = pelunasan.DENDA;
+    //         }
+    //     } else {
+    //         pelunasan.BAYAR_BUNGA = pelunasan.TUNGGAKAN_BUNGA + sisaBayarBunga;
+    //         pelunasan.DISKON_POKOK = 0;
+    //         pelunasan.DISKON_BUNGA = Math.abs(sisaBayarBunga);
+    //         pelunasan.DISKON_DENDA = pelunasan.DENDA;
+    //     }
+    // } else {
+    //     pelunasan.BAYAR_POKOK = sisaBayarPokok + pelunasan.SISA_POKOK;
+    //     pelunasan.DISKON_POKOK = pelunasan.SISA_POKOK - pelunasan.UANG_PELANGGAN;
+    //     pelunasan.DISKON_BUNGA = pelunasan.TUNGGAKAN_BUNGA;
+    //     pelunasan.DISKON_DENDA = pelunasan.DENDA;
+    // }
 };
+
+const handleLunasDiskon = (e) => {
+    if (e) {
+        pelunasan.JUMLAH_DISKON = pelunasan.DISKON_POKOK + pelunasan.DISKON_BUNGA + pelunasan.DISKON_DENDA;
+    } else {
+        pelunasan.JUMLAH_DISKON = 0;
+    }
+}
 const props = defineProps({
     embed: Boolean,
     atr: String,

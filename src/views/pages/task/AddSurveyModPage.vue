@@ -27,7 +27,8 @@
                             :on-update:value="handlePlafond" />
                     </n-form-item>
                     <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
-                        <n-select filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
+                        <n-select filterable placeholder="Jenis Angsuran"
+                            :options="me.me.cabang_nama === 'Anjatan' ? jenisAngsuran : jenisAngsuranMod"
                             v-model:value="order.jenis_angsuran" :on-update:value="handleTipe"
                             :disabled="order.plafond != 0 ? false : true" />
                     </n-form-item>
@@ -42,7 +43,7 @@
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
-                                        ${skemaAngsuran.tenor_6.angsuran.toLocaleString("US")}`
+                                        ${skemaAngsuran.tenor_6?.angsuran.toLocaleString("US")}`
                                                 : ""
                                         }}
                                     </n-text>
@@ -53,7 +54,7 @@
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
-                                        ${skemaAngsuran.tenor_12.angsuran.toLocaleString("US")}`
+                                        ${skemaAngsuran.tenor_12?.angsuran.toLocaleString("US")}`
                                                 : ""
                                         }}
                                     </n-text>
@@ -64,7 +65,7 @@
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
-                                        ${skemaAngsuran.tenor_18.angsuran.toLocaleString("US")}`
+                                        ${skemaAngsuran.tenor_18?.angsuran.toLocaleString("US")}`
                                                 : ""
                                         }}
                                     </n-text>
@@ -75,7 +76,21 @@
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
-                                        ${skemaAngsuran.tenor_24.angsuran.toLocaleString("US")}`
+                                        ${skemaAngsuran.tenor_24?.angsuran.toLocaleString("US")}`
+                                                : ""
+                                        }}
+                                    </n-text>
+                                </n-radio>
+                            </n-radio-group>
+                        </div>
+                        <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bunga_menurun'">
+                            <n-radio-group v-model:value="order.tenor" name="radiogroup">
+                                <n-radio name="tenor" value="5">
+                                    5 bulan<n-text code>
+                                        {{
+                                            skemaAngsuran.length == null
+                                                ? ` /
+                                        ${skemaAngsuran.tenor_6?.angsuran.toLocaleString()}`
                                                 : ""
                                         }}
                                     </n-text>
@@ -89,7 +104,7 @@
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
-                                        ${skemaAngsuran.tenor_6.angsuran.toLocaleString("US")}`
+                                        ${skemaAngsuran.tenor_6?.angsuran.toLocaleString("US")}`
                                                 : ""
                                         }}
                                     </n-text>
@@ -100,7 +115,7 @@
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
-                                        ${skemaAngsuran.tenor_12.angsuran.toLocaleString("US")}`
+                                        ${skemaAngsuran.tenor_12?.angsuran.toLocaleString("US")}`
                                                 : ""
                                         }}
                                     </n-text>
@@ -111,7 +126,7 @@
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
-                                        ${skemaAngsuran.tenor_18.angsuran.toLocaleString("US")}`
+                                        ${skemaAngsuran.tenor_18?.angsuran.toLocaleString("US")}`
                                                 : ""
                                         }}
                                     </n-text>
@@ -122,7 +137,7 @@
                                         {{
                                             skemaAngsuran.length == null
                                                 ? ` /
-                                        ${skemaAngsuran.tenor_24.angsuran.toLocaleString("US")}`
+                                        ${skemaAngsuran.tenor_24?.angsuran.toLocaleString("US")}`
                                                 : ""
                                         }}
                                     </n-text>
@@ -268,6 +283,7 @@
                                 </n-descriptions>
                             </div>
                             <div>
+
                                 <div v-if="coll.type == 'kendaraan'">
                                     <n-divider title-placement="left"> UPLOAD DOKUMEN JAMINAN </n-divider>
                                     <div class="flex flex-col md:flex-row gap-2">
@@ -449,8 +465,10 @@ import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
 // import JaminanEmas from "./survey/JaminanEmas.vue";
 import { useJaminanStore } from "../../../stores/jaminan";
 import JaminanBillyet from "./survey/JaminanBillyet.vue";
+import { useMeStore } from "../../../stores/me";
 const { width } = useWindowSize();
 const message = useMessage();
+const me = useMeStore();
 const uuid = uuidv4();
 const current = ref(1);
 const loading = ref(false);
@@ -605,10 +623,30 @@ const tujuanKredit = ["KONSUMSI", "INVESTASI"].map((v) => ({
     label: v,
     value: v,
 }));
-const jenisAngsuran = ["BULANAN", "MUSIMAN"].map((v) => ({
-    label: v,
-    value: v.toLowerCase(),
-}));
+const jenisAngsuran = [
+    {
+        label: 'BULANAN',
+        value: 'bulanan'
+    },
+    {
+        label: 'MUSIMAN',
+        value: 'musiman'
+    },
+    {
+        label: 'BUNGA MENURUN',
+        value: 'bunga_menurun'
+    },
+]
+const jenisAngsuranMod = [
+    {
+        label: 'BULANAN',
+        value: 'bulanan'
+    },
+    {
+        label: 'MUSIMAN',
+        value: 'musiman'
+    },
+]
 const optKategori = ["BARU", "RO"].map((v) => ({
     label: v,
     value: v,
