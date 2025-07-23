@@ -23,7 +23,7 @@
     </div>
     <n-modal v-model:show="modalBukaRekening">
         <div class="w-[80%]">
-            <BukaRekening />
+            <BukaRekening @saved="handleSavedNewAccount" />
         </div>
     </n-modal>
     <n-modal v-model:show="modalTutupRekening">
@@ -35,7 +35,7 @@
 <script setup>
 import { onMounted } from 'vue';
 import { useApi } from '../../../../helpers/axios';
-import { NTag } from 'naive-ui';
+import { NTag, useMessage } from 'naive-ui';
 import BukaRekening from "./BukaRekening.vue";
 import TutupRekening from './TutupRekening.vue';
 
@@ -43,12 +43,19 @@ import TutupRekening from './TutupRekening.vue';
 
 const data = ref([]);
 const isLoading = ref(false);
+const message = useMessage();
 
 const modalBukaRekening = ref(false);
 const modalTutupRekening = ref(false);
 
 const handleBukaRekening = () => {
     modalBukaRekening.value = true;
+}
+
+const handleSavedNewAccount = async () => {
+    await fetchData();
+    modalBukaRekening.value = false;
+    message.success('Rekening berhasil ditambahkan');
 }
 const handleTutupRekening = () => {
     modalTutupRekening.value = true;

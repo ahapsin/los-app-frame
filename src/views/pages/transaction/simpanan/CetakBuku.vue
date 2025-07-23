@@ -20,19 +20,19 @@
                     </n-card>
                     <n-input-group class="mt-4" v-if="selectedRekening">
                         <n-input-group-label>Buku</n-input-group-label>
-                        <n-input-number placeholder="buku" />
+                        <n-input-number v-model:value="bukuFilter" />
                         <n-input-group-label>Halaman</n-input-group-label>
-                        <n-input-number placeholder="hal" />
+                        <n-input-number placeholder="hal" v-model:value="halBarisAwal.hal" />
                         <n-input-group-label>Baris</n-input-group-label>
-                        <n-input-number placeholder="baris" />
+                        <n-input-number placeholder="baris" v-model:value="halBarisAwal.baris" />
                         <n-input-group-label>S/D</n-input-group-label>
                         <n-input-group-label>Halaman</n-input-group-label>
-                        <n-input-number placeholder="hal" />
+                        <n-input-number placeholder="hal" v-model:value="halBarisAkhir.hal" />
                         <n-input-group-label>Baris</n-input-group-label>
-                        <n-input-number placeholder="baris" />
+                        <n-input-number placeholder="baris" v-model:value="halBarisAkhir.baris" />
                     </n-input-group>
 
-                    <n-data-table :data="dataAktifitas" :columns="columnsAktifitas" class="mt-4"
+                    <n-data-table :data="transaksiTerfilter" :columns="columnsAktifitas" class="mt-4"
                         v-if="selectedRekening"></n-data-table>
                     <div class="pt-4 w-fit " v-if="selectedRekening">
                         <n-input-group>
@@ -40,14 +40,14 @@
                             <n-input-number v-model:value="startRow" />
                             <n-button v-if="selectedRekening" type="success" @click="handleCetakMutasi">Cetak</n-button>
                         </n-input-group>
-                        <div class="border border-dashed mt-4 bg-slate-50">
+                        <div class="border border-dashed mt-4 bg-slate-50 hidden">
                             <div ref="printArea">
                                 <table class="font-mono text-[11px]">
                                     <tbody>
                                         <tr v-for="i in startRow" :key="i">
                                             <td>&nbsp;</td>
                                         </tr>
-                                        <tr v-for="(col) in dataAktifitas" :key="col">
+                                        <tr v-for="(col) in transaksiTerfilter" :key="col">
                                             <td style="width:0.9cm">&nbsp;</td>
                                             <td style="width:1.8cm">{{ moment(col.tgl_transaksi).format('MM-DD-YYYY') }}
                                             </td>
@@ -89,6 +89,10 @@
     const startRow = ref(0);
     const printArea = ref();
     const headArea = ref();
+
+    const bukuFilter = ref(1)
+    const halBarisAwal = ref({ hal: 1, baris: 1 })
+    const halBarisAkhir = ref({ hal: 2, baris: 1 })
 
     const fetchData = async () => {
         selectedRekening.value = null;
@@ -139,7 +143,7 @@
         },
         {
             title: "Hal",
-            key: "halaman"
+            key: "hal"
         },
         {
             title: "Baris",
@@ -180,7 +184,7 @@
         handlePrint()
     }
     const handleCetakMutasi = () => {
-         const { handlePrint } = useVueToPrint({
+        const { handlePrint } = useVueToPrint({
             content: printArea,
             documentTitle: "Cetak Mutasi",
         });
@@ -192,6 +196,20 @@
         const visiblePart = value.slice(-visible)
         return maskedPart + visiblePart
     }
+
+    function posisiAsNumber(hal, baris) {
+        return hal + baris / 100
+    }
+    const transaksiTerfilter = computed(() => {
+        const awal = posisiAsNumber(halBarisAwal.value.hal, halBarisAwal.value.baris)
+        const akhir = posisiAsNumber(halBarisAkhir.value.hal, halBarisAkhir.value.baris)
+
+        return _.filter(dataAktifitas.value, t => {
+            if (t.buku !== bukuFilter.value) return false
+            const posisi = posisiAsNumber(t.hal, t.baris)
+            return posisi >= awal && posisi <= akhir
+        })
+    })
 
 
 

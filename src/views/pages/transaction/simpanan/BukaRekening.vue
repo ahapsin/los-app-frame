@@ -25,7 +25,7 @@
                                             <div><strong class="capitalize">{{ formatKey(key) }}</strong></div>
                                             <div>
                                                 <n-ellipsis style="max-width: 120px">{{ value ? value : 'N/A'
-                                                    }}</n-ellipsis>
+                                                }}</n-ellipsis>
                                             </div>
                                         </div>
                                     </div>
@@ -36,8 +36,8 @@
                             <n-form>
                                 <div class="flex flex-col-3 gap-4">
                                     <n-form-item label="Nomor Rekening" class="w-full">
-                                        <n-select :options="optNoRekening" value-field="v" label-field="l" tag filterable
-                                            v-model:value="no_rekening"></n-select>
+                                        <n-select :options="optNoRekening" value-field="v" label-field="l" tag
+                                            filterable v-model:value="no_rekening"></n-select>
                                     </n-form-item>
                                     <n-form-item label="Jenis Tabungan" class="w-full">
                                         <n-select v-model:value="jenis_tabungan" :options="dataSavings" value-field="id"
@@ -55,7 +55,7 @@
                                                 <div><strong class="capitalize">{{ formatKey(key) }}</strong></div>
                                                 <div>
                                                     <n-ellipsis style="max-width: 120px">{{ value ? value : 'N/A'
-                                                    }}</n-ellipsis>
+                                                        }}</n-ellipsis>
                                                 </div>
                                             </div>
                                         </div>
@@ -91,10 +91,14 @@ const selectedCustomer = ref(null);
 const no_rekening = ref(null);
 const jenis_tabungan = ref(null);
 const setoran_awal = ref(null);
+const emit = defineEmits(['saved']);
 
-const optNoRekening = Array.from({ length: 100 }, () => {
-    const value = Math.floor(100000 + Math.random() * 900000);
-    return { v: value, l: value };
+const year = new Date().getFullYear(); // Misalnya: 2025
+const prefix = `2${year}`; // Akan jadi '22025'
+const optNoRekening = Array.from({ length: 10000 }, (_, i) => {
+  const urut = String(i + 1).padStart(5, '0'); // Tambah leading zero sampai 5 digit
+  const value = Number(`${prefix}${urut}`);
+  return { v: value, l: value };
 });
 
 
@@ -142,7 +146,7 @@ const saveData = async (e) => {
         api: 'account',
         method: 'POST',
         data: e,
-        token:localStorage.getItem('token')
+        token: localStorage.getItem('token')
     });
     if (!response.ok) {
         message.error("error");
@@ -177,6 +181,7 @@ const handleSaveNewRekening = async () => {
         setoran_awal: setoran_awal.value,
     }
     await saveData(body);
+    emit('saved', true);
 }
 
 const parse = (input) => {

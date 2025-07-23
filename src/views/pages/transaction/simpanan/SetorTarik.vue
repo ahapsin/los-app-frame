@@ -282,18 +282,22 @@ const format = (value) => {
 };
 
 const handleSaveSetor = async () => {
-    // const body = {
-    //     tgl_transaksi: tgl_valuta.value,
-    //     nomor_rekening: selectedRekening.value.no_rekening,
-    //     atas_nama: selectedRekening.value.nama_pemilik,
-    //     sandi_transaksi: '1001',
-    //     nominal: nominal.value,
-    //     saldo: selectedRekening.value.saldo,
-    //     keterangan: keterangan.value,
-    //     operator: "DEB"
-    // }
-    // await postData(body);
-    // await fetchDataAktifitas();
+    const body = {
+        tgl_transaksi: tgl_valuta.value,
+        nomor_rekening: selectedRekening.value.no_rekening,
+        atas_nama: selectedRekening.value.nama_pemilik,
+        sandi_transaksi: '1001',
+        type_transaksi: "kredit",
+        nominal: nominal.value,
+        saldo: selectedRekening.value.saldo,
+        keterangan: keterangan.value,
+        operator: "DEB",
+        buku: 1,
+        hal: 1,
+        baris: 1
+    }
+    await postData(body);
+    await fetchDataAktifitas();
     modalSetor.value = false;
     modalPrint.value = true;
 }
@@ -303,10 +307,14 @@ const handleSaveTarik = async () => {
         nomor_rekening: selectedRekening.value.no_rekening,
         atas_nama: selectedRekening.value.nama_pemilik,
         sandi_transaksi: '1002',
+        type_transaksi: "debet",
         nominal: nominal.value,
         saldo: selectedRekening.value.saldo,
         keterangan: keterangan.value,
-        operator: "DEB"
+        operator: "DEB",
+        buku: 1,
+        hal: 1,
+        baris: 1
     }
     await postData(body);
     await fetchDataAktifitas();
@@ -317,8 +325,8 @@ const handleBatalSetor = () => {
     modalSetor.value = false;
     selectedRekening.value = null;
     rekening.value = null;
-    nominal.value=null;
-    keterangan.value=null;
+    nominal.value = null;
+    keterangan.value = null;
 }
 
 const handleBatalTarik = () => {
