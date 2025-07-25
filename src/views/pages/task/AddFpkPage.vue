@@ -834,6 +834,22 @@
                                         </n-radio>
                                     </n-radio-group>
                                 </div>
+                                 <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran == 'bunga_menurun'">
+                
+                            <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
+                                
+                                <n-radio name="tenor" :value="5">
+                                    5 bulan<n-text code>
+                                        {{
+                                            skemaAngsuran.length == null
+                                                ? ` /
+                                        ${skemaAngsuran.tenor_6?.angsuran.toLocaleString()}`
+                                                : ""
+                                        }}
+                                    </n-text>
+                                </n-radio>
+                            </n-radio-group>
+                        </div>
                             </n-form-item>
                             <n-form-item label="Biaya Admin" path="biaya_admin" class="w-full">
                                 <div class="flex gap-2 w-full">
