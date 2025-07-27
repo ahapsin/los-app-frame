@@ -22,10 +22,10 @@
             <n-form ref="formOrder" :model="order" :rules="rulesOrder" require-mark-placement="right-hanging">
                 <div class="md:flex gap-2">
                     <n-form-item label="Plafond" path="plafond" class="w-full">
-                        <!-- <n-input-number :parse="parse" :format="format" v-model:value="order.plafond"
+                        <n-input-number :parse="parse" :format="format" v-model:value="order.plafond"
                             placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full" clearable
-                            :on-update:value="handlePlafond" /> -->
-                            <n-select v-model:value="order.plafond" label-field="l" filterable value-field="v" :filter="filterByValueOrLabel" :options="optPlafond"/>
+                            :on-update:value="handlePlafond" />
+                            <!-- <n-select v-model:value="order.plafond" label-field="l" filterable value-field="v" :filter="filterByValueOrLabel" :options="optPlafond"/> -->
                     </n-form-item>
                     <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
                         <n-select filterable placeholder="Jenis Angsuran"
@@ -37,7 +37,9 @@
                 <div class="md:flex gap-2">
 
                     <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
+                        
                         <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000" v-if="order.jenis_angsuran === 'bunga_menurun' && order.plafond <= 1500000"/>
+                        <n-alert v-else-if="skemaAngsuran.length == 0" type="warning">Tenor dan Angsuran tidak tersedia</n-alert>
                         <div v-else>
                             <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bulanan'">
                                 <n-radio-group v-model:value="order.tenor" name="radiogroup">

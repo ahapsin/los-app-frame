@@ -854,7 +854,8 @@
 <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
                             <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000"
                                 v-if="calcCredit.jenis_angsuran === 'bunga_menurun' && calcCredit.nilai_yang_diterima <= 1500000" />
-                            <div v-else>
+                            <n-alert v-else-if="skemaAngsuran.length == 0" type="warning">Tenor dan Angsuran tidak tersedia</n-alert>
+                                <div v-else>
                                 <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bulanan'">
                                     <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                         <n-radio name="tenor" value="6">
@@ -987,12 +988,12 @@
                                 </n-input-number>
                             </n-form-item>
                             <n-form-item label="Nilai yang diterima" path="nilai_yang_diterima">
-                                <!-- <n-input-number :parse="parse" :format="format" :placeholder="calcCredit.plafond"
+                                <n-input-number :parse="parse" :format="format" :placeholder="calcCredit.plafond"
                                     :show-button="false" class="flex !w-full" @update:value="handlePlafond"
                                     :loading="loading" v-model:value="calcCredit.nilai_yang_diterima"
-                                    :readonly="props.viewMode" /> -->
-                                    <n-select v-model:value="calcCredit.nilai_yang_diterima" label-field="l" filterable value-field="v"
-                                :filter="filterByValueOrLabel" :options="optPlafond" />
+                                    :readonly="props.viewMode" />
+                                    <!-- <n-select v-model:value="calcCredit.nilai_yang_diterima" label-field="l" filterable value-field="v"
+                                :filter="filterByValueOrLabel" :options="optPlafond" /> -->
                                 <!-- <div class="absolute top-9 flex bg-yellow-50 gap-2 text-xs px-2" v-show="dataTaksasi.nilai != '' &&
                   calcCredit.nilai_yang_diterima > dataTaksasi.nilai
                   ">
