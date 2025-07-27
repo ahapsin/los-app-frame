@@ -642,19 +642,19 @@ const filterByValueOrLabel = (pattern, option) => {
 const jenisAngsuran = [
     {
         label: 'BULANAN',
-        value: 'bulanan'
+        value: 'bulanan',
         label: 'BULANAN',
         value: 'bulanan'
     },
     {
         label: 'MUSIMAN',
-        value: 'musiman'
+        value: 'musiman',
         label: 'MUSIMAN',
         value: 'musiman'
     },
     {
         label: 'BUNGA MENURUN',
-        value: 'bunga_menurun'
+        value: 'bunga_menurun',
         label: 'BUNGA MENURUN',
         value: 'bunga_menurun'
     },

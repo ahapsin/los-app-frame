@@ -834,13 +834,29 @@
                                         </n-radio>
                                     </n-radio-group>
                                 </div>
+                                 <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran == 'bunga_menurun'">
+                
+                            <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
+                                
+                                <n-radio name="tenor" :value="5">
+                                    5 bulan<n-text code>
+                                        {{
+                                            skemaAngsuran.length == null
+                                                ? ` /
+                                        ${skemaAngsuran.tenor_6?.angsuran.toLocaleString()}`
+                                                : ""
+                                        }}
+                                    </n-text>
+                                </n-radio>
+                            </n-radio-group>
+                        </div>
                             </n-form-item> -->
-                            <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
+<n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
                             <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000"
-                                v-if="calCredit.jenis_angsuran === 'bunga_menurun' && calCredit.plafond <= 1500000" />
+                                v-if="calcCredit.jenis_angsuran === 'bunga_menurun' && calcCredit.nilai_yang_diterima <= 1500000" />
                             <div v-else>
                                 <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bulanan'">
-                                    <n-radio-group v-model:value="calCredit.tenor" name="radiogroup">
+                                    <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                         <n-radio name="tenor" value="6">
                                             6 bulan<n-text code>
                                                 {{
@@ -887,7 +903,7 @@
                                     </n-radio-group>
                                 </div>
                                 <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bunga_menurun'">
-                                    <n-radio-group v-model:value="calCredit.tenor" name="radiogroup">
+                                    <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                         <n-radio name="tenor" value="5">
                                             5 bulan<n-text code>
                                                 {{
@@ -901,7 +917,7 @@
                                     </n-radio-group>
                                 </div>
                                 <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'musiman'">
-                                    <n-radio-group v-model:value="calCredit.tenor" name="radiogroup">
+                                    <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                         <n-radio name="tenor" value="3">
                                             1x 3 bulan<n-text code>
                                                 {{
@@ -949,29 +965,6 @@
                                 </div>
                             </div>
                         </n-form-item>
-                                                        : ""
-                                                }}
-                                            </n-text>
-                                        </n-radio>
-                                    </n-radio-group>
-                                </div>
-                                 <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran == 'bunga_menurun'">
-                
-                            <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
-                                
-                                <n-radio name="tenor" :value="5">
-                                    5 bulan<n-text code>
-                                        {{
-                                            skemaAngsuran.length == null
-                                                ? ` /
-                                        ${skemaAngsuran.tenor_6?.angsuran.toLocaleString()}`
-                                                : ""
-                                        }}
-                                    </n-text>
-                                </n-radio>
-                            </n-radio-group>
-                        </div>
-                            </n-form-item>
                             <n-form-item label="Biaya Admin" path="biaya_admin" class="w-full">
                                 <div class="flex gap-2 w-full">
                                     <n-input-number v-model:value="ekstra.biaya_admin" type="text" class="w-full"
@@ -999,7 +992,7 @@
                                     :loading="loading" v-model:value="calcCredit.nilai_yang_diterima"
                                     :readonly="props.viewMode" /> -->
                                     <n-select v-model:value="calcCredit.nilai_yang_diterima" label-field="l" filterable value-field="v"
-                                :filter="filterByValueOrLabel" :options="optPlafond" :readonly="props.viewMode"/>
+                                :filter="filterByValueOrLabel" :options="optPlafond" />
                                 <!-- <div class="absolute top-9 flex bg-yellow-50 gap-2 text-xs px-2" v-show="dataTaksasi.nilai != '' &&
                   calcCredit.nilai_yang_diterima > dataTaksasi.nilai
                   ">
@@ -1174,22 +1167,6 @@ const dataPasangan = ref({
     tgllahir_pasangan: null,
     alamat_pasangan: null,
 });
-
-
-const optPlafond = Array.from({ length: ((7000000 - 1000000) / 100000) + 1 }, (_, i) => {
-  const value = 1000000 + i * 100000;
-  return {
-    v: value,
-    l: value.toLocaleString('id-ID') // format rekening Indonesia
-  };
-});
-const filterByValueOrLabel = (pattern, option) => {
-  const search = pattern.toLowerCase()
-  return (
-    option.v.toString().includes(search) ||
-    option.l.toLowerCase().includes(search)
-  )
-}
 
 const dataBank = ref([]);
 const onCreate = () => {
@@ -1885,7 +1862,7 @@ const hadleValid = async () => {
         } else {
 
             statusEkstra.value = "finish"
-        }
+        }x
     });
     console.log('kirim');
     handleSend();
@@ -1895,6 +1872,21 @@ const sumJaminan = computed(() => {
     return jaminanStore.listJaminan.reduce((sum, item) => sum + parseInt(item.atr.nilai, 10), 0);
 });
 const isRtl = true;
+
+const optPlafond = Array.from({ length: ((7000000 - 1000000) / 100000) + 1 }, (_, i) => {
+  const value = 1000000 + i * 100000;
+  return {
+    v: value,
+    l: value.toLocaleString('id-ID') // format rekening Indonesia
+  };
+});
+const filterByValueOrLabel = (pattern, option) => {
+  const search = pattern.toLowerCase()
+  return (
+    option.v.toString().includes(search) ||
+    option.l.toLowerCase().includes(search)
+  )
+}
 onMounted(() => {
     getData();
 });
