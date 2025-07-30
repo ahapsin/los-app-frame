@@ -36,7 +36,7 @@
 <script setup>
 import moment from "moment";
 import { useLoadingBar, useMessage } from "naive-ui";
-import { computed, onBeforeUnmount, onMounted, ref } from "vue";
+import { computed, onMounted, ref } from "vue";
 import JsonExcel from "vue-json-excel3";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
