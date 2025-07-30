@@ -27,7 +27,7 @@
         <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
           @blur="searchData" />
         <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x :scroll-x="10000"
-          :min-row-height="48" virtual-scroll-header :columns="convertObjectToArray(dataListBan)" :data="dataListBan"
+          :min-row-height="48" virtual-scroll-header :columns="convertObjectToArray(dataListBan)" :data="showData"
           :pagination="{ pageSize: 10 }" :loading="loadingData" />
       </n-space>
     </div>
@@ -287,49 +287,61 @@ const convertObjectToArray = (obj) => {
 // }
 
 const exportToExcel = (data) => {
-  // Deteksi kolom yang isinya konsisten berupa tanggal
-  const potentialDateColumns = new Set();
+  // Validasi format tanggal mm/dd/yyyy
+  const isValidDate = (str) => {
+    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
+    const match = str.match(regex);
+    if (!match) return false;
 
+    const month = parseInt(match[1], 10);
+    const day = parseInt(match[2], 10);
+    const year = parseInt(match[3], 10);
+    const date = new Date(year, month - 1, day);
+
+    return (
+      date.getFullYear() === year &&
+      date.getMonth() === month - 1 &&
+      date.getDate() === day
+    );
+  };
+
+  // Deteksi kolom yang isinya mayoritas tanggal valid
+  const dateCandidateCounts = {};
   data.forEach(row => {
     Object.entries(row).forEach(([key, value]) => {
-      if (
-        value &&
-        typeof value === 'string' &&
-        !isNaN(Date.parse(value))
-      ) {
-        potentialDateColumns.add(key);
+      if (typeof value === 'string' && isValidDate(value)) {
+        dateCandidateCounts[key] = (dateCandidateCounts[key] || 0) + 1;
       }
     });
   });
 
-  // Konversi ke Date object untuk kolom tanggal
+  const threshold = data.length * 0.6;
+  const potentialDateColumns = Object.entries(dateCandidateCounts)
+    .filter(([_, count]) => count >= threshold)
+    .map(([key]) => key);
+
+  // Konversi string ke Date object
   const formattedData = data.map(row => {
     const newRow = { ...row };
     potentialDateColumns.forEach(col => {
       const val = newRow[col];
-      if (
-        val &&
-        typeof val === 'string' &&
-        !isNaN(Date.parse(val))
-      ) {
-        newRow[col] = new Date(val);
+      if (typeof val === 'string' && isValidDate(val)) {
+        const [month, day, year] = val.split('/');
+        newRow[col] = new Date(`${year}-${month}-${day}`);
       }
     });
     return newRow;
   });
 
-  const ws = XLSX.utils.json_to_sheet(formattedData);
+  const ws = XLSX.utils.json_to_sheet(formattedData, { cellDates: true });
 
-  // Format cell sebagai tanggal jika isi adalah Date
+  // Format cell tanggal
   Object.keys(ws).forEach(cell => {
-    const col = cell.replace(/[0-9]/g, '');
-    const rowNum = parseInt(cell.replace(/[A-Z]/g, ''));
-    if (rowNum !== 1 && potentialDateColumns.has(col)) {
-      const cellVal = ws[cell].v;
-      if (cellVal instanceof Date && !isNaN(cellVal.getTime())) {
-        ws[cell].t = 'd';
-        ws[cell].z = 'dd/mm/yyyy';
-      }
+    if (cell[0] === '!') return;
+    const val = ws[cell].v;
+    if (val instanceof Date && !isNaN(val.getTime())) {
+      ws[cell].t = 'd';
+      ws[cell].z = 'mm/dd/yyyy';
     }
   });
 
@@ -337,8 +349,11 @@ const exportToExcel = (data) => {
   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
   const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
 
-  saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `listing_beban_${selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
+  const filename = `listing_beban_${selectedBranch.value?.nama || me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`;
+  saveAs(new Blob([wbout], { type: 'application/octet-stream' }), filename);
 };
+
+
 const boxSearch = ref();
 const stack = ref()
 const showData = computed(() => {
