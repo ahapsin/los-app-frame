@@ -852,6 +852,7 @@
                             </n-radio-group>
                         </div>
                             </n-form-item> -->
+
                             <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
                                 <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000"
                                     v-if="calcCredit.jenis_angsuran === 'bunga_menurun' && calcCredit.nilai_yang_diterima <= 1500000" />
@@ -906,7 +907,7 @@
                                     </div>
                                     <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran === 'bunga_menurun'">
                                         <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
-                                            <n-radio name="tenor" value="5">
+                                            <n-radio name="tenor" :value="5">
                                                 5 bulan<n-text code>
                                                     {{
                                                         skemaAngsuran.length == null
@@ -968,13 +969,13 @@
                                 </div>
 
                             </n-form-item>
-                            <n-form-item label="Biaya Admin" path="biaya_admin" class="w-full">
+                            <!-- <n-form-item label="Biaya Admin" path="biaya_admin" class="w-full">
                                 <div class="flex gap-2 w-full">
                                     <n-input-number v-model:value="ekstra.biaya_admin" type="text" class="w-full"
                                         :parse="parse" :format="format" :show-button="false">
                                     </n-input-number>
                                 </div>
-                            </n-form-item>
+                            </n-form-item> -->
                         </div>
                         <div class="flex flex-col w-full">
                             <n-form-item label="Bunga / Margin Eff" path="Nama Bank" class="w-full">
@@ -1031,7 +1032,7 @@
                 </n-icon>
                 simpan
             </n-button>
-            <n-button v-show="actionPage != 'view'" @click="hadleValid" type="primary" v-if="!viewMode">
+            <n-button v-show="actionPage != 'view'" @click="hadleValid" type="primary" v-if="!viewMode" :disabled="tenorControl">
                 <template #icon>
                     <n-icon>
                         <send-icon />
@@ -1071,6 +1072,7 @@ const loading = ref(false);
 const loadingSend = ref(false);
 const baseRoute = useRoute();
 const tipeAngsuran = ref({});
+const tenorControl=ref(false);
 const jaminanStore = useJaminanStore();
 
 const props = defineProps({

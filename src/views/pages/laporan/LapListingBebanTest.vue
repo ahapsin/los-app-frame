@@ -16,11 +16,11 @@
             </n-button>
           </n-form-item>
           <n-form-item>
-            <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
-              :name="`Listing_Beban_${selectedBranch?.nama ? selectedBranch.nama : me.me.cabang_nama}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false">
-              <!--<n-button type="primary" secondary @click="exportToExcel" :disabled="ctrDownload">Download</n-button>-->
-              <n-button type="primary" secondary :disabled="ctrDownload">Download</n-button>
-            </json-excel>
+            <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
+              :name="`Listing_Beban_${selectedBranch?.nama ? selectedBranch.nama : me.me.cabang_nama}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false"> -->
+              <n-button type="primary" secondary @click="exportToExcel(dataListBan)" v-if="dataListBan.length !=0">Download</n-button>
+              <!-- <n-button type="primary" secondary :disabled="ctrDownload">Download</n-button> -->
+            <!-- </json-excel> -->
           </n-form-item>
         </n-space>
         <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
@@ -36,10 +36,9 @@
 import moment from "moment";
 import { useLoadingBar, useMessage } from "naive-ui";
 import { computed, onMounted, ref } from "vue";
-import JsonExcel from "vue-json-excel3";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
-
+import { saveAs } from 'file-saver'
 import * as XLSX from "xlsx";
 import { useSearch } from "../../../helpers/searchObject";
 
@@ -150,19 +149,51 @@ const convertObjectToArray = (obj) => {
   return keys.map(key => ({ title: key, key: key }));
 }
 
-const exportToExcel = () => {
-  const headTable = [
-    { pos: selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama, bulan: periodeTarikan.value },
-  ];
-  const bodyTable = dataListBan.value;
-  const ws = XLSX.utils.json_to_sheet(headTable);
-  const startRow = headTable.length + 4;
-  XLSX.utils.sheet_add_json(ws, bodyTable, { origin: `A${startRow}` });
+// const exportToExcel = () => {
+//   const headTable = [
+//     { pos: selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama, bulan: periodeTarikan.value },
+//   ];
+//   const bodyTable = dataListBan.value;
+//   const ws = XLSX.utils.json_to_sheet(headTable);
+//   const startRow = headTable.length + 4;
+//   XLSX.utils.sheet_add_json(ws, bodyTable, { origin: `A${startRow}` });
+//   const wb = XLSX.utils.book_new();
+//   XLSX.utils.book_append_sheet(wb, ws, "listing beban");
+//   // Write the workbook to an Excel file
+//   XLSX.writeFile(wb, `listing_beban_${selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
+// }
+const exportToExcel = (data) => {
+  // Ubah nilai kolom E, AL, AM menjadi Date (jika ada dan valid)
+  const dateColumns = ['E', 'AL', 'AM'];
+  const formattedData = data.map(row => {
+    const newRow = { ...row };
+    dateColumns.forEach(col => {
+      if (newRow[col] && !isNaN(Date.parse(newRow[col]))) {
+        newRow[col] = new Date(newRow[col]);
+      }
+    });
+    return newRow;
+  });
+
+  // Buat worksheet
+  const ws = XLSX.utils.json_to_sheet(formattedData);
+
+  // Format sel di kolom E, AL, AM sebagai tanggal
+  Object.keys(ws).forEach(cell => {
+    const col = cell.replace(/[0-9]/g, '');
+    if (dateColumns.includes(col) && cell !== `${col}1`) {
+      ws[cell].t = 'd'; // type date
+      ws[cell].z = 'yyyy-mm-dd'; // format tampilan
+    }
+  });
+
+  // Buat workbook dan ekspor
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, "listing beban");
-  // Write the workbook to an Excel file
-  XLSX.writeFile(wb, `listing_beban_${selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
-}
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
+  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
+
+  saveAs(new Blob([wbout], { type: 'application/octet-stream' }), `listing_beban_${selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
+};
 const boxSearch = ref();
 const stack = ref()
 const showData = computed(() => {
