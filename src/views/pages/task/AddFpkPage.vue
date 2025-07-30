@@ -1867,7 +1867,7 @@ const hadleValid = async () => {
         } else {
 
             statusEkstra.value = "finish"
-        } x
+        } 
     });
     console.log('kirim');
     handleSend();
