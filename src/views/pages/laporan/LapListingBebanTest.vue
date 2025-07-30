@@ -341,7 +341,7 @@ const exportToExcel = (data) => {
     const val = ws[cell].v;
     if (val instanceof Date && !isNaN(val.getTime())) {
       ws[cell].t = 'd';
-      ws[cell].z = 'mm/dd/yyyy';
+      ws[cell].z = 'dd/mm/yyyy';
     }
   });
 
