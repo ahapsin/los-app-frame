@@ -17,7 +17,7 @@
     </template>
     <div>
       <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="dataPayment"
-        :max-height="300" class="pb-2" :pagination="pagination" :loading="loadDataPayment"/>
+        :max-height="300" class="pb-2" :pagination="pagination" :loading="loadDataPayment" />
     </div>
   </n-card>
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal">
@@ -26,12 +26,11 @@
       footer: 'soft',
     }" size="small">
       <template #header-extra>
-        <n-popconfirm :show-icon="false" @positive-click="handlePositiveClick(bodyModal.no_transaksi)"
-          positive-text="konfirmasi" negative-text="reject"
+        <n-popconfirm :show-icon="false" positive-text="konfirmasi" negative-text="reject"
+          @positive-click="handlePositiveClick(bodyModal.no_transaksi)"
           @negative-click="handleNegativeClick(bodyModal.no_transaksi)">
-          <template #activator>
-            <n-button :loading="loadingConf"  type="primary"
-              v-show="bodyModal.STATUS == 'PENDING'">Konfirmasi</n-button>
+          <template #trigger>
+            <n-button type="primary">Approve</n-button>
           </template>
           <n-input type="textarea" placeholder="keterangan" v-model:value="keterangan"></n-input>
         </n-popconfirm>
