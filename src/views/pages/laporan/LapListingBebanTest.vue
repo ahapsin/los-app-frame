@@ -287,7 +287,7 @@ const convertObjectToArray = (obj) => {
 // }
 
 const exportToExcel = (data) => {
-  // Validasi format tanggal mm/dd/yyyy
+  // Validasi format tanggal MM/DD/YYYY
   const isValidDate = (str) => {
     const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
     const match = str.match(regex);
@@ -296,29 +296,34 @@ const exportToExcel = (data) => {
     const month = parseInt(match[1], 10);
     const day = parseInt(match[2], 10);
     const year = parseInt(match[3], 10);
-    const date = new Date(year, month - 1, day);
+    const date = new Date(Date.UTC(year, month - 1, day));
 
     return (
-      date.getFullYear() === year &&
-      date.getMonth() === month - 1 &&
-      date.getDate() === day
+      date.getUTCFullYear() === year &&
+      date.getUTCMonth() === month - 1 &&
+      date.getUTCDate() === day
     );
   };
 
-  // Deteksi kolom yang isinya mayoritas tanggal valid
+  // Deteksi kolom yang isinya semua nilai non-kosong adalah tanggal valid
   const dateCandidateCounts = {};
+  const nonNullCounts = {};
+
   data.forEach(row => {
     Object.entries(row).forEach(([key, value]) => {
-      if (typeof value === 'string' && isValidDate(value)) {
-        dateCandidateCounts[key] = (dateCandidateCounts[key] || 0) + 1;
+      const isEmpty = value === null || value === undefined || value === '';
+      if (!isEmpty) {
+        nonNullCounts[key] = (nonNullCounts[key] || 0) + 1;
+        if (typeof value === 'string' && isValidDate(value)) {
+          dateCandidateCounts[key] = (dateCandidateCounts[key] || 0) + 1;
+        }
       }
     });
   });
 
-  const threshold = data.length * 0.6;
-  const potentialDateColumns = Object.entries(dateCandidateCounts)
-    .filter(([_, count]) => count >= threshold)
-    .map(([key]) => key);
+  const potentialDateColumns = Object.keys(dateCandidateCounts).filter(key => {
+    return dateCandidateCounts[key] === nonNullCounts[key];
+  });
 
   // Konversi string ke Date object
   const formattedData = data.map(row => {
@@ -327,7 +332,7 @@ const exportToExcel = (data) => {
       const val = newRow[col];
       if (typeof val === 'string' && isValidDate(val)) {
         const [month, day, year] = val.split('/');
-        newRow[col] = new Date(`${year}-${month}-${day}`);
+        newRow[col] = new Date(Date.UTC(parseInt(year), parseInt(month) - 1, parseInt(day)));
       }
     });
     return newRow;
@@ -335,7 +340,7 @@ const exportToExcel = (data) => {
 
   const ws = XLSX.utils.json_to_sheet(formattedData, { cellDates: true });
 
-  // Format cell tanggal
+  // Format cell tanggal ke 'dd/mm/yyyy'
   Object.keys(ws).forEach(cell => {
     if (cell[0] === '!') return;
     const val = ws[cell].v;
@@ -349,7 +354,16 @@ const exportToExcel = (data) => {
   XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
   const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
 
-  const filename = `listing_beban_${selectedBranch.value?.nama || me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`;
+  // Fallback nama file jika variabel tidak tersedia
+  const cabang = (typeof selectedBranch !== 'undefined' && selectedBranch?.value?.nama)
+    || (typeof me !== 'undefined' && me?.me?.cabang_nama)
+    || 'cabang';
+
+  const tanggal = typeof rangeDate !== 'undefined' ? rangeDate?.value : 'tanggal';
+  const periode = typeof periodeTarikan !== 'undefined' ? periodeTarikan?.value : 'periode';
+
+  const filename = `listing_beban_${cabang}_${tanggal}_${periode}.xlsx`;
+
   saveAs(new Blob([wbout], { type: 'application/octet-stream' }), filename);
 };
 
