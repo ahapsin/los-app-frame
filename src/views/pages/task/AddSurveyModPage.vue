@@ -29,7 +29,7 @@
                     </n-form-item>
                     <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
                         <n-select filterable placeholder="Jenis Angsuran"
-                            :options="me.me.cabang_nama === 'Anjatan' ? jenisAngsuran : jenisAngsuranMod"
+                            :options="jenisAngsuran"
                             v-model:value="order.jenis_angsuran" :on-update:value="handleTipe"
                             :disabled="order.plafond != 0 ? false : true" />
                     </n-form-item>
@@ -38,7 +38,7 @@
 
                     <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
                         
-                        <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000" v-if="order.jenis_angsuran === 'bunga_menurun' && order.plafond <= 1500000"/>
+                        <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000" v-if="order.jenis_angsuran === 'bunga_menurun' && order.plafond < 1500000"/>
                         <n-alert v-else-if="skemaAngsuran.length == 0" type="warning">Tenor dan Angsuran tidak tersedia</n-alert>
                         <div v-else>
                             <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bulanan'">
