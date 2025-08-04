@@ -733,6 +733,7 @@
                                 <n-select v-else filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
                                     v-model:value="calcCredit.jenis_angsuran" @update:value="handleTipe" />
                             </n-form-item>
+                            {{ calcCredit.jenis_angsuran }}
                             <!-- <n-form-item label="Tenor / Angsuran" path="tenor">
                                 <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran == 'bulanan'">
                                     <n-input-group v-if="props.viewMode">
@@ -852,13 +853,12 @@
                         </div>
                             </n-form-item> -->
                             <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
-
                                 <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000"
                                     v-if="calcCredit.jenis_angsuran === 'bunga_menurun' && calcCredit.nilai_yang_diterima < 1500000"/>
                                 <n-alert v-else-if="skemaAngsuran.length === 0" type="warning">Tenor dan Angsuran tidak
                                     tersedia</n-alert>
                                 <div v-else>
-                                    <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bulanan'">
+                                    <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran === 'bulanan'">
                                         <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                             <n-radio name="tenor" value="6">
                                                 6 bulan<n-text code>
@@ -919,7 +919,7 @@
                                             </n-radio>
                                         </n-radio-group>
                                     </div>
-                                    <div class="flex flex-col md:flex-row" v-show="tipeAngsuran === 'musiman'">
+                                    <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran === 'musiman'">
                                         <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                             <n-radio name="tenor" value="3">
                                                 1x 3 bulan<n-text code>
@@ -974,7 +974,7 @@
                                         :parse="parse" :format="format" :show-button="false">
                                     </n-input-number>
                                 </div>
-                            </n-form-item> -->
+                            </n-form-item>
                         </div>
                         <div class="flex flex-col w-full">
                             <n-form-item label="Bunga / Margin Eff" path="Nama Bank" class="w-full">
@@ -1332,16 +1332,6 @@ const jenisAngsuran = [
     {
         label: 'BUNGA MENURUN',
         value: 'bunga_menurun'
-    },
-];
-const jenisAngsuranMod = [
-    {
-        label: 'BULANAN',
-        value: 'bulanan'
-    },
-    {
-        label: 'MUSIMAN',
-        value: 'musiman'
     },
 ];
 const optStatusKawin = ["Kawin", "Belum Kawin", "Janda", "Duda"].map((v) => ({
