@@ -39,7 +39,6 @@ import { useLoadingBar, useMessage } from "naive-ui";
 import { computed, onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
-import { saveAs } from 'file-saver'
 import * as XLSX from "xlsx";
 import { useSearch } from "../../../helpers/searchObject";
 

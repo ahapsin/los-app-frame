@@ -442,7 +442,7 @@ const handleDetail = async (e) => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: `customerReport/${e.ID}`,
+        api: `customer/${e.ID}`,
         token: userToken,
     });
     if (!response.ok) {
