@@ -18,11 +18,13 @@
             </n-button>
           </n-form-item>
           <n-form-item>
-            <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
+            <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
                         :name="`Listing Beban_${selectBranch}_${rangeDate} `"
                         :stringifyLongNum="false">
               <n-button type="primary" secondary>Download</n-button>
-            </json-excel>
+            </json-excel> -->
+
+              <n-button type="primary" secondary @click="exportToExcel(dataListBan)">Download</n-button>
           </n-form-item>
         </n-space>
         <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x
@@ -35,7 +37,8 @@
 </template>
 <script setup>
 import {ref, onMounted} from "vue";
-
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver'import { saveAs } from 'file-saver'
 import JsonExcel from "vue-json-excel3";
 import {useLoadingBar, useMessage} from "naive-ui";
 import {useMeStore} from "../../../stores/me";
@@ -108,6 +111,14 @@ const grabListBan = async (e) => {
     loadingData.value = false;
   }
 
+}
+
+const exportToExcel = (data) => {
+  const ws = XLSX.utils.json_to_sheet(data)
+  const wb = XLSX.utils.book_new()
+  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+  saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx')
 }
 const convertObjectToArray = (obj) => {
   if (!Array.isArray(obj) || obj.length === 0) {

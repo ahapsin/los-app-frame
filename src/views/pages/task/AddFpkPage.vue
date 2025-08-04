@@ -424,7 +424,7 @@
                                 <div class="pb-2"
                                     v-if="coll.type == 'KENDARAAN' && coll.atr.tahun && tahunJaminanValidate(coll.atr.tahun) > 10">
                                     <n-alert type="warning">usia KENDARAAN <b>{{ tahunJaminanValidate(coll.atr.tahun)
-                                    }}</b>
+                                            }}</b>
                                         tahun</n-alert>
                                 </div>
                                 <div class="pt-2">
@@ -974,7 +974,7 @@
                                         :parse="parse" :format="format" :show-button="false">
                                     </n-input-number>
                                 </div>
-                            </n-form-item>
+                            </n-form-item> -->
                         </div>
                         <div class="flex flex-col w-full">
                             <n-form-item label="Bunga / Margin Eff" path="Nama Bank" class="w-full">
@@ -1031,7 +1031,7 @@
                 </n-icon>
                 simpan
             </n-button>
-            <n-button v-show="actionPage != 'view'" @click="hadleValid" type="primary" v-if="!viewMode">
+            <n-button v-show="actionPage != 'view'" @click="hadleValid" type="primary" v-if="!viewMode" :disabled="tenorControl">
                 <template #icon>
                     <n-icon>
                         <send-icon />
@@ -1071,6 +1071,7 @@ const loading = ref(false);
 const loadingSend = ref(false);
 const baseRoute = useRoute();
 const tipeAngsuran = ref({});
+const tenorControl=ref(false);
 const jaminanStore = useJaminanStore();
 
 const props = defineProps({
