@@ -73,7 +73,7 @@
                                     </n-form-item>
                                     <n-form-item label="Nama Panggilan" path="nama_panggilan" class="w-full">
                                         <n-input placeholder="nama panggilan"
-                                            v-model:value="dataPelanggan.nama_panggilan"/>
+                                            v-model:value="dataPelanggan.nama_panggilan" />
                                     </n-form-item>
                                 </div>
                                 <div class="flex w-full gap-2">
@@ -213,8 +213,8 @@
                                 <n-input v-model:value="refAlias" />
                             </n-form-item>
                             <n-form-item>
-                                <n-button type="primary"
-                                    @click="handleAddPhoneBook(dataDetailPelanggan.id)" :disabled="refNoHp ==''">tambah</n-button>
+                                <n-button type="primary" @click="handleAddPhoneBook(dataDetailPelanggan.id)"
+                                    :disabled="refNoHp == ''">tambah</n-button>
                             </n-form-item>
                         </div>
                         <n-data-table :columns="columnPhonebook" :data="dataPhonebook" :pagination="{ pageSize: 5 }" />
@@ -299,19 +299,21 @@ const handleAddPhoneBook = async (e) => {
         console.log('error')
     } else {
         loadPhonebook.value = false;
-        refAlias.value="",
-        refNoHp.value="",
-        message.success('berhasil tambah buku telepon');
+        refAlias.value = "",
+            refNoHp.value = "",
+            message.success('berhasil tambah buku telepon');
         getPhonebook();
     }
 }
 
 const handleUpdateData = async (e) => {
     console.log(e)
-    const body={
-        id:e,
-        nama:dataPelanggan.value.nama,
-        nama_panggilan:dataPelanggan.value.nama_panggilan,
+    const body = {
+        id: e,
+        nama: dataPelanggan.value.nama,
+        nama_panggilan: dataPelanggan.value.nama_panggilan,
+        no_identitas: dataPelanggan.value.no_identitas,
+        no_kk: dataPelanggan.value.no_kk
     }
     loadPhonebook.value = true;
     const response = await useApi({

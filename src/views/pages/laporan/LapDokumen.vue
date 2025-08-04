@@ -5,11 +5,11 @@
 
                 <n-space vertical :size="12" class="pt-4">
                     <div class="flex flex-col md:flex-row gap-2 pt-4 pr-4 ps-4 bg-sc-50">
-                        <n-form-item label="Nomor Order" class="w-full">
-                            <n-input v-model:value="dynamicSearch.loan_number" />
+                        <n-form-item label="Nomor Kontrak" class="w-full">
+                            <n-input v-model:value="dynamicSearch.loan_number" placeholder="Nomor Kontrak                " />
                         </n-form-item>
                         <n-form-item label="Atas Nama" class="w-full">
-                            <n-input v-model:value="dynamicSearch.atas_nama" placeholder="Hari Jatuh Tempo" clearable />
+                            <n-input v-model:value="dynamicSearch.atas_nama" placeholder="Atas Nama" clearable />
                         </n-form-item>
                         <n-form-item class="flex gap-2" as="div">
                             <n-button type="primary" @click="handleSearch" class="px-4"> Cari</n-button>
