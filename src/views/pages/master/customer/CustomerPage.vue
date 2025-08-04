@@ -110,12 +110,12 @@
                                     <n-form-item label="No Identitas" path="no_identitas" class="w-full">
                                         <n-input :allow-input="onlyAllowNumber" class="w-full"
                                             placeholder="No Identitas" show-count :maxlength="16"
-                                            v-model:value="dataPelanggan.no_identitas" readonly>
+                                            v-model:value="dataPelanggan.no_identitas">
                                         </n-input>
                                     </n-form-item>
                                     <n-form-item label="No KK" path="no_kk" class="w-full">
                                         <n-input :allow-input="onlyAllowNumber" placeholder="No Kartu Keluarga"
-                                            v-model:value="dataPelanggan.no_kk" show-count :maxlength="16" readonly />
+                                            v-model:value="dataPelanggan.no_kk" show-count :maxlength="16" />
                                     </n-form-item>
                                 </div>
                             </n-form>

@@ -99,7 +99,7 @@
               <n-scrollbar style="max-height: 500px" trigger="none">
                 <div class="grid grid-cols-5 gap-4">
                   <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.pelanggan" :key="val.id">
-                    <small class="text-reg">{{ name.toUpperCase() }}</small>
+                    <small class="text-reg">{{ stringReplace(name.toUpperCase()) }}</small>
                     <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
                   </div>
                   <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.pekerjaan" :key="val.id">
@@ -248,6 +248,9 @@ const { handlePrint } = useVueToPrint({
 const handlePrintKartu = () => {
   handlePrint();
 }
+function stringReplace(str) {
+  return str.replace(/_/g, ' ');
+}
 const columns = [
   {
     title: "Tanggal",
@@ -377,7 +380,7 @@ const loadData = ref(false);
 const handleBeforeLeaveModal = (t) => {
   switch (t) {
     case "Pelanggan":
-      getDetailPelanggan(modalBody.value.cust_id);
+      getDetailPelanggan(modalBody.value.credit_id);
       return true;
     case "Jaminan":
       getDetailJaminan(modalBody.value.credit_id);
