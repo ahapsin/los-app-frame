@@ -38,7 +38,7 @@
 <script setup>
 import {ref, onMounted} from "vue";
 import * as XLSX from 'xlsx'
-import { saveAs } from 'file-saver'import { saveAs } from 'file-saver'
+import { saveAs } from 'file-saver';
 import JsonExcel from "vue-json-excel3";
 import {useLoadingBar, useMessage} from "naive-ui";
 import {useMeStore} from "../../../stores/me";
