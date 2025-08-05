@@ -2,20 +2,24 @@
     <div>
         <n-space vertical>
             <n-card :title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small">
-
                 <n-space vertical :size="12" class="pt-4">
-                    <div class="flex flex-col md:flex-row gap-2 pt-4 pr-4 ps-4 bg-sc-50">
+                    <div class="flex gap-2">
                         <n-form-item label="Nomor Kontrak" class="w-full">
-                            <n-input v-model:value="dynamicSearch.loan_number" placeholder="Nomor Kontrak                " />
+                            <n-input v-model:value="dynamicSearch.loan_number" placeholder="Nomor Kontrak" clearable/>
                         </n-form-item>
                         <n-form-item label="Atas Nama" class="w-full">
                             <n-input v-model:value="dynamicSearch.atas_nama" placeholder="Atas Nama" clearable />
+                        </n-form-item>
+                        <n-form-item label="POS" class="w-full">
+                            <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
+                                value-field="kode" :default-value="defBranch" :options="dataBranch"
+                                v-model:value="dynamicSearch.cabang" />
                         </n-form-item>
                         <n-form-item class="flex gap-2" as="div">
                             <n-button type="primary" @click="handleSearch" class="px-4"> Cari</n-button>
                         </n-form-item>
                     </div>
-                    <n-data-table :loading="loadTable" size="small" :columns="columns" :data="lapDok"
+                    <n-data-table :loading="loadTable" size="small" :columns="columns" :data="dataTable"
                         :pagination="pagination" />
                 </n-space>
             </n-card>
@@ -31,27 +35,63 @@ import {
     NButton,
     NImage,
 } from "naive-ui";
+import { useMeStore } from "../../../stores/me";
 const dataTable = ref([]);
 const searchBox = ref();
-const dynamicSearch = reactive({
-    cabang: '',
-    hari: '',
-});
 
-const handleSearch = () => {
-    console.log(dynamicSearch);
-    getData();
+
+const handleSearch = async () => {
+     loadTable.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `check_order_document?loan_number=${dynamicSearch.loan_number}&atas_nama=${dynamicSearch.atas_nama}&cabang=${dynamicSearch.cabang}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(reponse.error);
+    } else {
+        dataTable.value = response.data;
+        loadTable.value = false;
+    }
 }
-
-
+const me = useMeStore();
+const dataBranch = ref([]);
 const loadTable = ref(false);
+const selectBranch = ref();
+const loadingBranch = ref(false);
+const dynamicSearch = reactive({
+});
+const getBranch = async () => {
+    loadingBranch.value = true;
+    const response = await useApi({
+        method: "GET",
+        api: "cabang",
+        token: localStorage.getItem('token'),
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        loadingBranch.value = false;
+
+        if (me.me?.cabang_nama != "Head Office") {
+            selectBranch.value = me.me.cabang_id;
+        } else {
+            selectBranch.value = "SEMUA CABANG";
+            dataBranch.value = response.data.response;
+            dataBranch.value.unshift({
+                id: "",
+                nama: "SEMUA CABANG"
+            });
+        }
+    }
+}
 const getData = async () => {
     loadTable.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
-        method: "POST",
-        data: dynamicSearch,
-        api: `credit_jtempo`,
+        method: "GET",
+        api: `check_order_document`,
         token: userToken,
     });
     if (!response.ok) {
@@ -62,44 +102,17 @@ const getData = async () => {
     }
 };
 
-const lapDok = [
-    {
-        no_kontrak: '123456789',
-        atas_nama: 'nama debitur',
-        ktp: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        kk: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        ktp_pasangan: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        no_rangka: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        no_mesin: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        stnk: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        depan: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        belakang: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        kanan: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        kiri: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        dok_pendukung: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-    }, {
-        no_kontrak: '123456789',
-        atas_nama: 'nama debitur',
-        ktp: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        kk: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        ktp_pasangan: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        no_rangka: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        no_mesin: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        stnk: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        depan: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        belakang: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        kanan: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        kiri: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-        dok_pendukung: 'https://i.pinimg.com/474x/e7/ac/62/e7ac62da918dc5d72062953570bac97f.jpg',
-    },
-];
-
+const noImage = 'https://res.cloudinary.com/dfjruncxv/image/upload/v1754368196/10275344_meozgk.png';
 const columns = [
+    {
+        title: "Pos",
+        key: "nama_cabang",
+        sorter: "default",
+    },
     {
         title: "No Kontrak",
         key: "no_kontrak",
         sorter: "default",
-        width: 100
     },
     {
         title: "Atas Nama",
@@ -112,7 +125,7 @@ const columns = [
         key: "ktp",
         render(row) {
             return h(NImage, {
-                src: row.ktp,
+                src: row.ktp ? row.ktp : noImage,
                 width: 30,
             })
         }
@@ -122,7 +135,7 @@ const columns = [
         key: "kk",
         render(row) {
             return h(NImage, {
-                src: row.kk,
+                src: row.kk ? row.kk : noImage,
                 width: 30,
             })
         }
@@ -133,7 +146,7 @@ const columns = [
 
         render(row) {
             return h(NImage, {
-                src: row.ktp_pasangan,
+                src: row.ktp_pasangan ? row.ktp_pasangan : noImage,
                 width: 30,
             })
         }
@@ -143,7 +156,7 @@ const columns = [
         key: "no_rangka",
         render(row) {
             return h(NImage, {
-                src: row.no_rangka,
+                src: row.no_rangka ? row.no_rangka : noImage,
                 width: 30,
             })
         }
@@ -153,7 +166,7 @@ const columns = [
         key: "no_mesin",
         render(row) {
             return h(NImage, {
-                src: row.no_mesin,
+                src: row.no_mesin ? row.no_mesin : noImage,
                 width: 30,
             })
         }
@@ -163,7 +176,7 @@ const columns = [
         key: "stnk",
         render(row) {
             return h(NImage, {
-                src: row.stnk,
+                src: row.stnk ? row.stnk : noImage,
                 width: 30,
             })
         }
@@ -173,7 +186,7 @@ const columns = [
         key: "depan",
         render(row) {
             return h(NImage, {
-                src: row.depan,
+                src: row.depan ? row.depan : noImage,
                 width: 30,
             })
         }
@@ -183,7 +196,7 @@ const columns = [
         key: "belakang",
         render(row) {
             return h(NImage, {
-                src: row.belakang,
+                src: row.belakang ? row.belakang : noImage,
                 width: 30,
             })
         }
@@ -193,7 +206,7 @@ const columns = [
         key: "kanan",
         render(row) {
             return h(NImage, {
-                src: row.kanan,
+                src: row.kanan ? row.kanan : noImage,
                 width: 30,
             })
         }
@@ -203,17 +216,7 @@ const columns = [
         key: "kiri",
         render(row) {
             return h(NImage, {
-                src: row.kiri,
-                width: 30,
-            })
-        }
-    },
-    {
-        title: "PENDUKUNG",
-        key: "dok_pendukung",
-        render(row) {
-            return h(NImage, {
-                src: row.dok_pendukung,
+                src: row.kiri ? row.kiri : noImage,
                 width: 30,
             })
         }
@@ -231,6 +234,8 @@ const pagination = {
     pageSize: 10,
 };
 onMounted(() => {
+    getData();
+    getBranch();
 });
 const showData = computed(() => {
     return useSearch(dataTable.value, searchBox.value);
