@@ -18,7 +18,7 @@
           <n-form-item>
             <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
               :name="`Listing_Beban_${selectedBranch?.nama ? selectedBranch.nama : me.me.cabang_nama}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false"> -->
-            <n-button type="primary" secondary @click="exportToExcel(dataListBan)"
+            <n-button type="primary" secondary @click="exportToExcel(convertEmptyToNull(dataListBan))"
               v-if="dataListBan.length != 0">Download</n-button>
             <!-- <n-button type="primary" secondary :disabled="ctrDownload">Download</n-button> -->
             <!-- </json-excel> -->
@@ -175,7 +175,16 @@ const dummyData = [{
   "ADMIN": 650000,
   "CUST_ID": 1110119000560
 }]
-
+function convertEmptyToNull(data) {
+  return data.map(item => {
+    const newItem = {};
+    for (const key in item) {
+      // if value is an empty string, set to null
+      newItem[key] = item[key] === "" ? null : item[key];
+    }
+    return newItem;
+  });
+}
 const periodeTarikan = computed(() => {
   const range = moment(rangeDate.value, 'MMYYYY').format('YYYYMM');
   const rangeMonth = moment(rangeDate.value, 'MMYYYY').format('MM');
