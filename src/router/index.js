@@ -412,6 +412,11 @@ const routes = [
         component: () => import("../views/pages/laporan/LapJatuhTempo.vue"),
       },
       {
+        path: "beban_tagih",
+        name: "Beban Tagih",
+        component: () => import("../views/pages/laporan/BebanTagihPage.vue"),
+      },
+      {
         path: "lap_inq_pinjaman",
         name: "Inquery Pinjaman",
         component: () =>
