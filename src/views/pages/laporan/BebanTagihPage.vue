@@ -12,9 +12,21 @@
             </n-space>
         </div>
     </n-card>
-    <n-float-button :right="40" :bottom="40" type="primary" v-if="checkedRowKeys.length > 0">
+    <n-float-button :right="40" :bottom="40" type="primary" v-if="checkedRowKeys.length > 0"
+        @click="modalAssign = true">
         {{ checkedRowKeys.length }}
     </n-float-button>
+    <n-modal v-model:show="modalAssign">
+
+        <n-card class="w-1/4">
+            <n-tag class="mb-2" round type="info">{{ checkedRowKeys.length }} data terpilih</n-tag>
+            <n-space vertical>
+                <n-select v-model:value="assignTo" :options="dataUser" value-field="username" label-field="nama"
+                    filterable />
+                <n-button type="primary">OK</n-button>
+            </n-space>
+        </n-card>
+    </n-modal>
 </template>
 <script setup>
 import moment from "moment";
@@ -30,6 +42,8 @@ const me = useMeStore();
 const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
+const modalAssign = ref(false);
+
 
 const selectedBranch = ref();
 const handleUpdateBranch = (value, option) => {
@@ -947,7 +961,22 @@ const columnBebanTagih = [
         key: "SURVEYOR"
     },
 ];
-
+const dataUser = ref([]);
+const getData = async () => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: "users",
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(reponse.error);
+    } else {
+        loadingBar.finish();
+        // console.log(response.data.response)
+        dataUser.value = response.data.response;
+    }
+};
 
 const rowKey = (row) => row['NO KONTRAK'];
 const checkedRowKeys = ref([]);
@@ -959,7 +988,7 @@ const boxSearch = ref();
 
 onMounted(() => {
     loadingBar.finish();
-    getBranch();
+    getData();
 }
 )
     ;
