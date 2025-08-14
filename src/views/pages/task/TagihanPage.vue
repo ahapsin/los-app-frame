@@ -10,8 +10,23 @@
         </div>
     </n-card>
     <n-modal v-model:show="modalDetail">
-        <n-card class="w-2/4">
-            <pre>{{ bodyDetail }}</pre>
+        <n-card class="w-2/4" title="DETAIL TAGIHAN">
+            <n-form-item label="Hasil Kunjungan">
+                <n-input type="textarea"></n-input>
+            </n-form-item>
+            <n-form-item label="Tanggal JB/FU">
+                <n-input type="textarea"></n-input>
+            </n-form-item>
+            <n-form-item label="Dokumen Kunjungan">
+                <file-upload :def_preview="true" :multi="true" title="dokumen pendukung"
+                    endpoint="image_upload_prospect" type="other" />
+            </n-form-item>
+
+            <div class="flex gap-2">
+                <n-button type="primary">Simpan</n-button>
+                <n-button type="secondary">Batal</n-button>
+            </div>
+
         </n-card>
     </n-modal>
 </template>
@@ -880,29 +895,38 @@ const columnBebanTagih = [
         sorter: 'default',
     },
     {
-        title: "NAMA PIC",
-        key: "name",
+        title: "ALAMAT",
+        key: "ALAMAT TAGIH",
         width: '200',
         sorter: 'default',
     },
     {
-        title: "CYCLE AWAL",
+        title: "TGL JATUH TEMPO",
+        key: "JTH TEMPO AWAL",
+        width: '200',
+        sorter: 'default',
+    },
+    {
+        title: "CYCLE",
         key: "CYCLE AWAL",
         sorter: 'default',
     },
     {
-        title: "NBOT",
-        key: "name",
+        title: "ANGS KE",
+        key: "ANGS KE",
         sorter: 'default',
     },
     {
-        title: "DESA",
-        key: "KELURAHAN",
+        title: "ANGSURAN",
+        key: "AMBC TOTAL AWAL",
         sorter: 'default',
+        render(row) {
+            return h("div", row['ADMIN']);
+        }
     },
     {
-        title: "KEC",
-        key: "KECAMATAN",
+        title: "BAYAR",
+        key: "AC",
         sorter: 'default',
     },
     {
