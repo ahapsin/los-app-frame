@@ -145,6 +145,11 @@ const routes = [
         name: "Detail Kredit",
         component: () => import("../views/pages/task/DetailFpkPage.vue"),
       },
+       {
+        path: "tagihan",
+        name: "Tagihan",
+        component: () => import("../views/pages/task/TagihanPage.vue"),
+      },
       {
         path: "kapos-fpk/:idapplication",
         name: "Konfirmasi Pengajuan Kredit",
