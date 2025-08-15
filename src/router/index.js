@@ -59,6 +59,12 @@ const routes = [
         component: () => import("../views/pages/transaction/paymentPage.vue"),
       },
       {
+        path: "beban_tagih",
+        name: "Beban Tagihan",
+        component: () =>
+          import("../views/pages/transaction/BebanTagihPage.vue"),
+      },
+      {
         path: "addpayment",
         name: "tambah penerimaan",
         component: () => import("../views/pages/transaction/cashInPage.vue"),
@@ -76,12 +82,14 @@ const routes = [
       {
         path: "partialrepay",
         name: "pelunasan sebagian",
-        component: () => import("../views/pages/transaction/partialRepayPage.vue"),
+        component: () =>
+          import("../views/pages/transaction/partialRepayPage.vue"),
       },
       {
         path: "addpartialrepay",
         name: "tambah pelunasan sebagian",
-        component: () => import("../views/pages/transaction/addPartialRepayPage.vue"),
+        component: () =>
+          import("../views/pages/transaction/addPartialRepayPage.vue"),
       },
       {
         path: "jaminan",
@@ -118,7 +126,8 @@ const routes = [
       {
         path: "broadcast",
         name: "BROADCAST",
-        component: () => import("../views/pages/task/broadcast/BroadcastPage.vue"),
+        component: () =>
+          import("../views/pages/task/broadcast/BroadcastPage.vue"),
       },
       {
         path: "addvisit",
@@ -145,7 +154,7 @@ const routes = [
         name: "Detail Kredit",
         component: () => import("../views/pages/task/DetailFpkPage.vue"),
       },
-       {
+      {
         path: "tagihan",
         name: "Tagihan",
         component: () => import("../views/pages/task/TagihanPage.vue"),
@@ -235,7 +244,8 @@ const routes = [
       {
         path: "referensi",
         name: "referensi",
-        component: () => import("../views/pages/master/referensi/ReferensiPage.vue"),
+        component: () =>
+          import("../views/pages/master/referensi/ReferensiPage.vue"),
       },
       {
         path: "taksasi-action",
@@ -397,8 +407,7 @@ const routes = [
       {
         path: "dokumen",
         name: "Dokumen",
-        component: () =>
-          import("../views/pages/laporan/LapDokumen.vue"),
+        component: () => import("../views/pages/laporan/LapDokumen.vue"),
       },
       {
         path: "lap_pembayaran",
@@ -419,7 +428,8 @@ const routes = [
       {
         path: "beban_tagih",
         name: "Beban Tagih",
-        component: () => import("../views/pages/laporan/BebanTagihPage.vue"),
+        component: () =>
+          import("../views/pages/transaction/BebanTagihPage.vue"),
       },
       {
         path: "lap_inq_pinjaman",

@@ -1,86 +1,61 @@
 <template>
-    <n-card title="Daftar Tagihan" :segmented="true" size="small">
+    <n-card title="Beban Tagih" :segmented="true" size="small">
         <div>
-            <n-space vertical :size="12">
+            <n-space vertical :size="12" class="pt-4">
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
-                <n-data-table :columns="columnBebanTagih" :data="dummyData" :pagination="pagination"
-                    :max-height="350" />
+                <n-data-table :columns="columnBebanTagih" :data="dataList" :pagination="pagination"
+                    :row-key="(row) => row" @update:checked-row-keys="handleCheck" :max-height="350" />
             </n-space>
         </div>
     </n-card>
-    <n-modal v-model:show="modalDetail" :mask-closable="false">
-        <n-card class="w-2/4" title="DETAIL TAGIHAN" :segmented="true" size="small">
-            <n-card class="mb-2" size="small" embedded>
-                <div class="grid grid-cols-1 md:grid-cols-4">
-                    <div class="flex flex-col">
-                        <small class="text-reg">NO KONTRAK</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['NO KONTRAK'] }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">NAMA KONSUMEN</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['NAMA PELANGGAN'] }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">ALAMAT TAGIH</small>
-                        <n-ellipsis class="text-md border-b font-semibold">{{ bodyDetail['ALAMAT TAGIH'] }}</n-ellipsis>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">TANGGGAL JATUH TEMPO</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['JTH TEMPO AWAL'] }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">ANGSURAN KE</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['ANGS KE'] }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">ANGSURAN</small>
-                        <n-text strong class="text-md border-b"> {{ parseInt(bodyDetail['AMBC TOTAL AWAL']).toLocaleString() }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">BAYAR</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['AC'] }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">MCF/COLL</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['SURVEYOR'] }}</n-text>
-                    </div>
-                </div>
-            </n-card>
-            <n-form-item label="Hasil Kunjungan">
-                <n-input type="textarea"></n-input>
-            </n-form-item>
-            <n-form-item label="Tanggal JB/FU">
-                <n-date-picker placeholder="Tanggal JB/FU" class="w-full" value-format="yyyy-MM-dd" format="dd-MM-yyyy"
-                    type="date" />
-            </n-form-item>
-            <n-form-item label="Dokumen Kunjungan">
-                <file-upload :def_preview="true" :multi="true" title="dokumen kunjungan"
-                    endpoint="image_upload_prospect" type="other" />
-            </n-form-item>
+    <n-float-button :right="40" :bottom="40" type="primary" v-if="checkedRowKeys.length > 0"
+        @click="modalAssign = true">
+        <n-badge :value="checkedRowKeys.length" :offset="[6, -8]">
+            <v-icon name="bi-plus-lg" />
+        </n-badge>
 
-            <div class="flex gap-2">
-                <n-button type="primary">Simpan</n-button>
-                <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
-            </div>
+    </n-float-button>
+    <n-modal v-model:show="modalAssign" :mask-closable="false">
+        <n-card class="w-1/4">
+            <n-tag class="mb-2" round type="info">{{ checkedRowKeys.length }} data terpilih</n-tag>
 
+            <n-space vertical>
+                <n-form-item label="petugas">
+                    <n-select v-model:value="assignTo" placeholder="pilih petugas"
+                        :options="_.filter(dataUser, { 'cabang_nama': me.me.cabang_nama })" value-field="username"
+                        label-field="nama" filterable />
+                </n-form-item>
+                <n-space>
+                    <n-button type="primary">OK</n-button>
+                    <n-button type="secondary" @click="modalAssign = false">Batal</n-button>
+                </n-space>
+            </n-space>
         </n-card>
     </n-modal>
 </template>
 <script setup>
-import { NButton, useLoadingBar, useMessage } from "naive-ui";
-import { onMounted, ref } from "vue";
+import moment from "moment";
+import { useLoadingBar, useMessage } from "naive-ui";
+import { computed, onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
+import * as XLSX from "xlsx";
 import _ from "lodash";
+import { useSearch } from "../../../helpers/searchObject";
 
+const tableRef = ref();
 const me = useMeStore();
 const message = useMessage();
-
+const dataBranch = ref([]);
+const selectBranch = ref();
 const modalAssign = ref(false);
 
 
 const selectedBranch = ref();
+const handleUpdateBranch = (value, option) => {
+    selectedBranch.value = option;
+}
 
 
 const dummyData = [{
@@ -865,13 +840,42 @@ const dummyData = [{
     "CUST_ID": 1110119000560
 },
 ]
-
-const convertObjectToArray = (obj) => {
-    if (!Array.isArray(obj) || obj.length === 0) {
-        return [];
+const periodeTarikan = computed(() => {
+    const range = moment(rangeDate.value, 'MMYYYY').format('YYYYMM');
+    const rangeMonth = moment(rangeDate.value, 'MMYYYY').format('MM');
+    const current = moment().format('MM');
+    if (rangeMonth === current) {
+        return moment().format('DD-MM-YYYY');
+    } else {
+        return moment(range).endOf('month').format('DD-MM-YYYY')
     }
-    const keys = Object.keys(obj[0]);
-    return keys.map(key => ({ title: key, key: key }));
+}
+);
+const userToken = localStorage.getItem("token");
+const loadingBranch = ref(false);
+const getBranch = async () => {
+    loadingBranch.value = true;
+    const response = await useApi({
+        method: "GET",
+        api: "cabang",
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        loadingBranch.value = false;
+
+        if (me.me?.cabang_nama != "Head Office") {
+            selectBranch.value = me.me.cabang_id;
+        } else {
+            selectBranch.value = "SEMUA CABANG";
+            dataBranch.value = response.data.response;
+            dataBranch.value.unshift({
+                id: "",
+                nama: "SEMUA CABANG"
+            });
+        }
+    }
 }
 const rangeDate = ref();
 let messageReactive = null;
@@ -926,59 +930,42 @@ const grabListBan = async (e) => {
 
 const columnBebanTagih = [
     {
+        type: "selection",
+    },
+    {
         title: "NO KONTRAK",
         key: "NO KONTRAK",
-        width: '150',
-        sorter: 'default',
+        width: '150'
     },
     {
         title: "NAMA KOMSUMEN",
         key: "NAMA PELANGGAN",
+        width: '200'
+    },
+    {
+        title: "NAMA PIC",
+        key: "name",
         width: '200',
-        sorter: 'default',
     },
     {
-        title: "TGL JT",
-        key: "JTH TEMPO AWAL",
-        sorter: 'default',
-    },
-    {
-        title: "CYCLE",
+        title: "CYCLE AWAL",
         key: "CYCLE AWAL",
-        sorter: 'default',
     },
     {
-        title: "ANGS KE",
-        key: "ANGS KE",
-        sorter: 'default',
+        title: "NBOT",
+        key: "name"
     },
     {
-        title: "ANGSURAN",
-        key: "AMBC TOTAL AWAL",
-        sorter: 'default',
-        render(row) {
-            return h("div", parseInt(row['AMBC TOTAL AWAL']).toLocaleString());
-        }
+        title: "DESA",
+        key: "KELURAHAN"
     },
     {
-        title: "BAYAR",
-        key: "AC",
-        sorter: 'default',
+        title: "KEC",
+        key: "KECAMATAN"
     },
     {
-        title: "MCF/COLL",
-        key: "SURVEYOR",
-        sorter: 'default',
-    },
-    {
-        title: "",
-        key: "SURVEYOR",
-        render(row) {
-            return h(NButton, {
-                type: 'primary',
-                onClick: () => handleDetail(row),
-            }, { default: () => 'Kunjungan' })
-        }
+        title: "MCF",
+        key: "SURVEYOR"
     },
 ];
 const dataUser = ref([]);
@@ -997,21 +984,35 @@ const getData = async () => {
         dataUser.value = response.data.response;
     }
 };
+const dataList = ref([]);
+const getList = async () => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: "tagihan",
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(reponse.error);
+    } else {
+        loadingBar.finish();
+        // console.log(response.data.response)
+        dataList.value = response.data;
+    }
+};
 
-const modalDetail = ref(false);
-const bodyDetail = ref();
-const handleDetail = (e) => {
-    bodyDetail.value = e;
-    modalDetail.value = true;
-}
-
+const rowKey = (row) => row['NO KONTRAK'];
 const checkedRowKeys = ref([]);
+function handleCheck(rowKeys) {
+    checkedRowKeys.value = rowKeys;
+}
 
 const boxSearch = ref();
 
 onMounted(() => {
     loadingBar.finish();
     getData();
+    getList();
 }
 )
     ;

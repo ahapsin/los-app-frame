@@ -98,6 +98,7 @@
             <n-tab-pane name="Pelanggan">
               <n-scrollbar style="max-height: 500px" trigger="none">
                 <div class="grid grid-cols-5 gap-4">
+
                   <div class="flex flex-col" v-for="(val, name) in dataDetailPelanggan.pelanggan" :key="val.id">
                     <small class="text-reg">{{ stringReplace(name.toUpperCase()) }}</small>
                     <n-text strong class="text-md border-b"> {{ val ? val : 'N/A' }}</n-text>
