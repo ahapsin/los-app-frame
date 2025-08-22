@@ -43,6 +43,12 @@
                 </table>
                 <table>
                   <tr>
+                    <td>JENIS KREDIT</td>
+                    <td>:</td>
+                    <td>{{ dataHeaderAngsuran.jns_credit }}
+                    </td>
+                  </tr>
+                  <tr>
                     <td>STATUS</td>
                     <td>:</td>
                     <td>{{ dataHeaderAngsuran.status }}
