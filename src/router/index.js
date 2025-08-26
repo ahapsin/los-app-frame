@@ -59,6 +59,11 @@ const routes = [
         component: () => import("../views/pages/transaction/simpanan/simpananLayout.vue"),
       },
       {
+        path: "deposito",
+        name: "deposito",
+        component: () => import("../views/pages/transaction/deposito/depositoLayout.vue"),
+      },
+      {
         path: "payment",
         name: "pembayaran",
         component: () => import("../views/pages/transaction/paymentPage.vue"),

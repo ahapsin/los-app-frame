@@ -1,20 +1,21 @@
 <template>
     <n-space class="mb-4 bg-white p-2 rounded-lg items-center">
+       
         <n-button @click="currentComponent = 'ListRekening'" quaternary :type="currentComponent === 'ListRekening' ? 'success' : 'default'">
             <v-icon name="bi-table" scale="1.2" />
         </n-button>
-        <n-text strong>SIMPANAN</n-text>
+         <n-text strong>DEPOSITO</n-text>
         <n-divider vertical></n-divider>
-        <n-button quaternary :type="currentComponent === 'SetorTarik' ? 'success' : 'default'"
+        <!-- <n-button quaternary :type="currentComponent === 'SetorTarik' ? 'success' : 'default'"
             @click="currentComponent = 'SetorTarik'">
             <v-icon name="bi-arrow-repeat" scale="1.2" />
             Transaksi
-        </n-button>
+        </n-button> -->
      
         <n-button quaternary @click="currentComponent = 'CetakBuku'"
             :type="currentComponent === 'CetakBuku' ? 'success' : 'default'">
             <v-icon name="bi-printer" scale="1.2" />
-            Cetak Buku
+            Cetak Bilyet
         </n-button>
         <!-- <n-button quaternary @click="currentComponent = 'PindahBuku'">
             <v-icon name="bi-journals" scale="1.2" />
