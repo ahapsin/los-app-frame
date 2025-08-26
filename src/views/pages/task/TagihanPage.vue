@@ -4,49 +4,55 @@
             <n-space vertical :size="12">
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
-                <n-data-table :columns="columnBebanTagih" :data="dummyData" :pagination="pagination"
-                    :max-height="350" />
+                <n-data-table :columns="columnBebanTagih" :data="dataList" :pagination="pagination" :max-height="350"
+                    virtual-scroll :scroll-x="1200" size="small"/>
             </n-space>
         </div>
     </n-card>
     <n-modal v-model:show="modalDetail" :mask-closable="false">
-        <n-card class="w-2/4" title="DETAIL TAGIHAN" :segmented="true" size="small">
+        <n-card class="w-5/6 md:w-2/4" title="DETAIL TAGIHAN" :segmented="true" size="small">
             <n-card class="mb-2" size="small" embedded>
                 <div class="grid grid-cols-1 md:grid-cols-4">
                     <div class="flex flex-col">
-                        <small class="text-reg">NO KONTRAK</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['NO KONTRAK'] }}</n-text>
+                        <small class="text-reg">No Surat</small>
+                        <n-text strong class="text-md border-b">{{ bodyDetail.no_surat }}</n-text>
                     </div>
                     <div class="flex flex-col">
-                        <small class="text-reg">NAMA KONSUMEN</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['NAMA PELANGGAN'] }}</n-text>
+                        <small class="text-reg">No Kontrak</small>
+                        <n-text strong class="text-md border-b">{{ bodyDetail.loan_number }}</n-text>
                     </div>
                     <div class="flex flex-col">
-                        <small class="text-reg">ALAMAT TAGIH</small>
-                        <n-ellipsis class="text-md border-b font-semibold">{{ bodyDetail['ALAMAT TAGIH'] }}</n-ellipsis>
+                        <small class="text-reg">Tgl Jatuh Tempo</small>
+                        <n-ellipsis class="text-md border-b font-semibold">{{ bodyDetail.tgl_jth_tempo }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col">
-                        <small class="text-reg">TANGGGAL JATUH TEMPO</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['JTH TEMPO AWAL'] }}</n-text>
+                        <small class="text-reg">Customer</small>
+                        <n-text strong class="text-md border-b"> {{  bodyDetail.nama_customer }}</n-text>
                     </div>
                     <div class="flex flex-col">
-                        <small class="text-reg">ANGSURAN KE</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['ANGS KE'] }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">ANGSURAN</small>
-                        <n-text strong class="text-md border-b"> {{ parseInt(bodyDetail['AMBC TOTAL AWAL']).toLocaleString() }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">BAYAR</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['AC'] }}</n-text>
-                    </div>
-                    <div class="flex flex-col">
-                        <small class="text-reg">MCF/COLL</small>
-                        <n-text strong class="text-md border-b"> {{ bodyDetail['SURVEYOR'] }}</n-text>
+                        <small class="text-reg">Alamat</small>
+                        <n-text strong class="text-md border-b">{{  bodyDetail.alamat }} </n-text>
                     </div>
                 </div>
             </n-card>
+            <n-divider title-placement="left">Rincian Tagihan</n-divider>
+            <n-table size="small">
+                <thead>
+                    <tr>
+                        <th>Angsuran Ke</th>
+                        <th>Tgl Jatuh Tempo</th>
+                        <th>Tunggakan</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>asdasd</td>
+                        <td>asdasd</td>
+                        <td>asdasd</td>
+                    </tr>
+                </tbody>
+            </n-table>
+             <n-divider title-placement="left">Hasil Kunjungan</n-divider>
             <n-form-item label="Hasil Kunjungan">
                 <n-input type="textarea"></n-input>
             </n-form-item>
@@ -926,49 +932,34 @@ const grabListBan = async (e) => {
 
 const columnBebanTagih = [
     {
-        title: "NO KONTRAK",
-        key: "NO KONTRAK",
+        title: "No Surat",
+        key: "no_surat",
         width: '150',
         sorter: 'default',
     },
     {
-        title: "NAMA KOMSUMEN",
-        key: "NAMA PELANGGAN",
+        title: "No Kontrak",
+        key: "loan_number",
         width: '200',
         sorter: 'default',
     },
     {
-        title: "TGL JT",
-        key: "JTH TEMPO AWAL",
+        title: "Tgl Jth Tempo",
+        key: "tgl_jth_tempo",
         sorter: 'default',
     },
     {
-        title: "CYCLE",
-        key: "CYCLE AWAL",
+        title: "Customer",
+        key: "nama_customer",
         sorter: 'default',
     },
     {
-        title: "ANGS KE",
-        key: "ANGS KE",
+        title: "Alamat",
+        key: "alamat",
         sorter: 'default',
-    },
-    {
-        title: "ANGSURAN",
-        key: "AMBC TOTAL AWAL",
-        sorter: 'default',
-        render(row) {
-            return h("div", parseInt(row['AMBC TOTAL AWAL']).toLocaleString());
+        ellipsis: {
+            tooltip: true,
         }
-    },
-    {
-        title: "BAYAR",
-        key: "AC",
-        sorter: 'default',
-    },
-    {
-        title: "MCF/COLL",
-        key: "SURVEYOR",
-        sorter: 'default',
     },
     {
         title: "",
@@ -981,12 +972,12 @@ const columnBebanTagih = [
         }
     },
 ];
-const dataUser = ref([]);
+const dataList = ref([]);
 const getData = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: "users",
+        api: "list_tagihan_collector",
         token: userToken,
     });
     if (!response.ok) {
@@ -994,7 +985,7 @@ const getData = async () => {
     } else {
         loadingBar.finish();
         // console.log(response.data.response)
-        dataUser.value = response.data.response;
+        dataList.value = response.data;
     }
 };
 

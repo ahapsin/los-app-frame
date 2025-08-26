@@ -1,22 +1,26 @@
 <template>
-  <n-card :segmented="{
+  <n-card size="small" :segmented="{
     content: true,
     footer: 'soft',
   }" :title="`Form ${$route.name}`">
     <n-form ref="formRef" :model="dynamicForm" :rules="rules" :label-placement="width <= 920 ? 'top' : 'left'"
-      require-mark-placement="right-hanging"  label-width="auto">
+      require-mark-placement="right-hanging" label-width="auto">
       <n-alert v-show="errorAPI" title="Peringatan" type="warning" closable class="my-4">
         {{ errorAPI }}
       </n-alert>
+      <n-form-item label="Icon Menu">
+        <v-icon :name="dynamicForm.leading" scale="2" class="m-2"></v-icon>
+        <n-button @click="colIcon = true" secondary size="small">Pilih Icon</n-button>
+      </n-form-item>
       <n-form-item label="Nama Menu">
         <n-input placeholder="nama menu" v-model:value="dynamicForm.menu_name" />
       </n-form-item>
       <n-form-item label="Nama Route">
-        <n-input placeholder="nama Route" v-model:value="dynamicForm.route" :disabled="param" />
+        <n-input placeholder="nama Route" v-model:value="dynamicForm.route" />
       </n-form-item>
-      <n-form-item label="Parent" v-if="!param">
+      <n-form-item label="Parent">
         <n-select v-model:value="dynamicForm.parent" filterable label-field="menu_name" value-field="id"
-          placeholder="parent menu" :options="dataMenu" :loading="loadingMenu"/>
+          placeholder="parent menu" :options="dataMenu" :loading="loadingMenu" />
       </n-form-item>
     </n-form>
     <template #action>
@@ -29,6 +33,13 @@
       </n-space>
     </template>
   </n-card>
+  <n-modal v-model:show="colIcon">
+    <n-card class="w-1/2">
+      <n-scrollbar style="max-height: 420px">
+        <BiIcon @select="handleSelect" />
+      </n-scrollbar>
+    </n-card>
+  </n-modal>
 </template>
 <script setup>
 import { useMessage } from "naive-ui";
@@ -38,7 +49,15 @@ const { width } = useWindowSize();
 import { useApi } from "../../../../helpers/axios";
 import router from "../../../../router";
 import { useRoute } from "vue-router";
+import BiIcon from "../../../../components/atoms/BiIcon.vue";
 
+const colIcon = ref(false);
+const selectIcon = ref();
+
+const handleSelect = (e) => {
+  dynamicForm.leading = e.dashed;
+  colIcon.value = false;
+}
 
 const dynamicForm = reactive({
   menu_name: "",
@@ -80,7 +99,7 @@ const response = () =>
   }).then((res) => {
     if (res.ok) {
       dataMenu.value = res.data.response;
-      Object.assign(dynamicForm, dataMenu.value[0]);
+      Object.assign(dynamicForm, dataMenu.value);
     }
   });
 
@@ -104,7 +123,7 @@ const handleSave = async () => {
     router.replace({ name: "menu" });
   }
 };
-const loadingData=ref(false);
+const loadingData = ref(false);
 const getMenu = async () => {
   loadingData.value = true;
 
