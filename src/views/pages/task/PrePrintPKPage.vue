@@ -117,7 +117,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                             <tr>
                                                 <td>Jabatan</td>
                                                 <td width="25">:</td>
-                                                <td>BRANCH MANAGER</td>
+                                                <td>{{ pihak1.jabatan }}</td>
                                             </tr>
                                             <tr>
                                                 <td valign="top">Alamat Kantor</td>
