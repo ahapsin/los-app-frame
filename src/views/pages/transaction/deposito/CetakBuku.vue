@@ -55,12 +55,9 @@
                     <div>
                         footer
                     </div>
+                </n-card>
+            </n-space>
         </div>
-        </n-card>
-
-        </n-space>
-    </div>
-    </div>
 </template>
 
 <script setup>
