@@ -58,6 +58,7 @@
                 </n-card>
             </n-space>
         </div>
+    </div>
 </template>
 
 <script setup>
