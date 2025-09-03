@@ -1043,7 +1043,6 @@ const dayFull = reactive({
 
 const areaPrintRef = ref();
 const { handlePrint } = useVueToPrint({
-
     content: areaPrintRef,
     documentTitle: "Perjanjian Kredit",
 });
@@ -1077,6 +1076,7 @@ const handlePrintAction = async (e) => {
     if (!response.ok) {
         console.log(response.error);
     } else {
+        pkData.value = response.data;
         router.push({ name: "Order" });
         handlePrint();
     }
