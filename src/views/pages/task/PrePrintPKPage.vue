@@ -225,7 +225,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                                     <td width="25">:</td>
                                                     <td>{{
                                                         `${jaminan.atr.merk}/${jaminan.atr.tipe}/${jaminan.atr.tahun}`
-                                                    }}
+                                                        }}
                                                     </td>
                                                 </tr>
                                                 <tr>
@@ -304,11 +304,11 @@ class="flex gap-2 border-t p-4 justify-end"
                                         <table width="100%">
                                             <tr>
                                                 <td>
-                                                    Pihak Pertama<br /><br /><br /><br /><br /><br/>
+                                                    Pihak Pertama<br /><br /><br /><br /><br /><br />
                                                     ( {{ pihak1.nama }} )
                                                 </td>
                                                 <td>
-                                                    Pihak Kedua<br /><br /><br /><br /><br /><br/>
+                                                    Pihak Kedua<br /><br /><br /><br /><br /><br />
                                                     ( {{ pihak2.nama }} )
                                                 </td>
                                             </tr>
@@ -353,7 +353,8 @@ class="flex gap-2 border-t p-4 justify-end"
                                 <div class="mb-4 text-justify text-sm">
                                     Pada hari ini <b>{{ dayFull.day }}</b> tanggal
                                     <b>{{ dayFull.date }}</b> bulan <b>{{ dayFull.month }}</b> tahun
-                                    <b>{{ dayFull.year }}</b>,Dengan ini telah menerima bukti kepemilikan kendaraan / sertifikat
+                                    <b>{{ dayFull.year }}</b>,Dengan ini telah menerima bukti kepemilikan kendaraan /
+                                    sertifikat
                                     dalam keadaan baik dengan rincian sebagai berikut :
                                 </div>
                                 <div class="text-justify pt-2" v-for="jaminan in dataJaminan" :key="jaminan">
@@ -434,12 +435,12 @@ class="flex gap-2 border-t p-4 justify-end"
                                         <tr>
                                             <td class="py-4 pr-4">
                                                 Pemberi,
-                                                <br /><br /><br /><br/>
+                                                <br /><br /><br /><br />
                                                 <u class="uppercase">{{ pihak2.nama }}</u>
                                             </td>
                                             <td class="py-4 pr-4">
                                                 Penerima,
-                                                <br /><br /><br /><br/>
+                                                <br /><br /><br /><br />
                                                 <u class="uppercase">{{ pihak1.nama }}</u>
                                             </td>
                                         </tr>
@@ -466,7 +467,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                     <b> {{ dataPelanggan.pekerjaan }}</b> Bertempat tinggal di
                                     <b>{{ pihak2.alamat }} </b> Pemegang kartu identitas (<b>{{
                                         dataPelanggan.tipe_identitas
-                                    }}</b>) nomor <b>{{ dataPelanggan.no_identitas }}</b> Dalam hal ini
+                                        }}</b>) nomor <b>{{ dataPelanggan.no_identitas }}</b> Dalam hal ini
                                     bertindak untuk dan atas nama <b>{{ pihak2.nama }}</b> Selanjutnya
                                     disebut <b>Penerima Pinjaman.</b>
                                 </div>
@@ -569,7 +570,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                             <td>
                                                 <b class="uppercase">{{
                                                     upCase(dataPasangan.nama_pasangan)
-                                                }}</b>
+                                                    }}</b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -578,7 +579,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                             <td>
                                                 <b class="uppercase">{{
                                                     upCase(dataPasangan.pekerjaan_pasangan)
-                                                }}</b>
+                                                    }}</b>
                                             </td>
                                         </tr>
                                         <tr>
@@ -587,7 +588,7 @@ class="flex gap-2 border-t p-4 justify-end"
                                             <td>
                                                 <b class="uppercase">{{
                                                     upCase(dataPasangan.alamat_pasangan)
-                                                }}</b>
+                                                    }}</b>
                                             </td>
                                         </tr>
                                     </table>
@@ -1067,20 +1068,15 @@ const handlePrintAction = async (e) => {
         flag: e == 0 ? 'yes' : 'no',
     };
     const userToken = localStorage.getItem("token");
-    const response = await useApi({
+    await useApi({
         method: "post",
         api: "pk",
         data: bodySend,
         token: userToken,
-    });
-    if (!response.ok) {
-        console.log(response.error);
-    } else {
-        pkData.value = response.data;
-        router.push({ name: "Order" });
+    }).then(e => pkData.value = e.data).finally(() => {
         handlePrint();
-    }
-
+        router.push({ name: "Order" });
+    });
 };
 
 const upCase = (e) => {
