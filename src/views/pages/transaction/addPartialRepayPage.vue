@@ -180,7 +180,7 @@
     </n-card>
     <n-modal class="w-1/4" v-model:show="buktiTransfer" preset="card" :segmented="true">
         <file-upload title="Bukti Transfer" :def_value="dataBuktiTransfer" endpoint="payment_attachment"
-            type="bukti_transfer" :idapp="pageData.uid" @fallback="handleResBack" />
+            type="bukti_transfer" :idapp="pelunasan.uid" @fallback="handleResBack" />
     </n-modal>
     <n-modal v-model:show="modalProsesPayment" :mask-closable="false">
         <n-card :class="width > 850 ? 'w-1/2' : 'w-fit'">
@@ -354,7 +354,9 @@ import {
 import { computed, h, onMounted, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
 import { useApi } from "../../../helpers/axios";
+import { v4 as uuidv4 } from "uuid";
 import router from "../../../router";
+const uuid = uuidv4();
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const searchField = ref(false);
@@ -607,6 +609,7 @@ const optTipePay = [
 ];
 const dataPelunasan = ref([]);
 const pelunasan = reactive({
+    uid: uuid,
     LOAN_NUMBER: null,
     METODE_PEMBAYARAN: "cash",
     SISA_POKOK: 0,
