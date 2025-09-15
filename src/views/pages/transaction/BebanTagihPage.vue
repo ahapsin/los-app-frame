@@ -4,7 +4,7 @@
             <n-space vertical :size="12">
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
-                <n-data-table :columns="columnBebanTagih" :data="dataList" 
+                <n-data-table :columns="columnBebanTagih" :data="dataList" :checked-row-keys="checkedRowKeys"
                     :row-key="(row) => row" @update:checked-row-keys="handleCheck" :max-height="350"
                     :loading="isLoading" size="small"  :pagination="{pageSize:10}"/>
             </n-space>
@@ -117,6 +117,12 @@ const grabListBan = async (e) => {
 const columnBebanTagih = [
     {
         type: "selection",
+    },
+    {
+        title: "NO SURAT",
+        key: "NO SURAT",
+        width: '150',
+        sorter: 'default'
     },
     {
         title: "NO KONTRAK",

@@ -5,7 +5,7 @@
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
                 <n-data-table :columns="columnBebanTagih" :data="dataList" :pagination="pagination" :max-height="350"
-                    virtual-scroll :scroll-x="1200" size="small"/>
+                    virtual-scroll :scroll-x="1200" size="small" />
             </n-space>
         </div>
     </n-card>
@@ -15,23 +15,23 @@
                 <div class="grid grid-cols-1 md:grid-cols-4">
                     <div class="flex flex-col">
                         <small class="text-reg">No Surat</small>
-                        <n-text strong class="text-md border-b">{{ bodyDetail.no_surat }}</n-text>
+                        <n-text strong class="text-md">{{ bodyDetail.no_surat }}</n-text>
                     </div>
                     <div class="flex flex-col">
                         <small class="text-reg">No Kontrak</small>
-                        <n-text strong class="text-md border-b">{{ bodyDetail.loan_number }}</n-text>
+                        <n-text strong class="text-md">{{ bodyDetail.loan_number }}</n-text>
                     </div>
                     <div class="flex flex-col">
                         <small class="text-reg">Tgl Jatuh Tempo</small>
-                        <n-ellipsis class="text-md border-b font-semibold">{{ bodyDetail.tgl_jth_tempo }}</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_jth_tempo }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col">
                         <small class="text-reg">Customer</small>
-                        <n-text strong class="text-md border-b"> {{  bodyDetail.nama_customer }}</n-text>
+                        <n-text strong class="text-md"> {{ bodyDetail.nama_customer }}</n-text>
                     </div>
                     <div class="flex flex-col">
                         <small class="text-reg">Alamat</small>
-                        <n-text strong class="text-md border-b">{{  bodyDetail.alamat }} </n-text>
+                        <n-text strong class="text-md">{{ bodyDetail.alamat }} </n-text>
                     </div>
                 </div>
             </n-card>
@@ -45,14 +45,28 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
-                        <td>asdasd</td>
-                        <td>asdasd</td>
-                        <td>asdasd</td>
+                    <tr v-for="i in bodyDetail.detail" :key="i.angs_ke">
+                        <td>{{ i.angs_ke }}</td>
+                        <td>{{ i.tgl_jth_tempo }}</td>
+                        <td align="right">{{ Number(i.jumlah).toLocaleString('id-ID') }}</td>
                     </tr>
                 </tbody>
+                <tfoot>
+                    <tr>
+                        <td colspan="2">TOTAL</td>
+                        <td align="right">
+                            <strong>
+                                {{
+                                    bodyDetail.detail
+                                        .reduce((acc, item) => acc + Number(item.jumlah), 0)
+                                .toLocaleString('id-ID')
+                                }}
+                            </strong>
+                        </td>
+                    </tr>
+                </tfoot>
             </n-table>
-             <n-divider title-placement="left">Hasil Kunjungan</n-divider>
+            <n-divider title-placement="left">Hasil Kunjungan</n-divider>
             <n-form-item label="Hasil Kunjungan">
                 <n-input type="textarea"></n-input>
             </n-form-item>
