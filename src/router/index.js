@@ -49,6 +49,23 @@ const routes = [
     component: () => import("../views/pages/transaction/cashInPage.vue"),
   },
   {
+    path: "/tagihan",
+    name: "tagihan",
+    component: () => import("../views/pages/layout/DashboardLayout.vue"),
+    children: [
+      {
+        path: "deploy",
+        name: "deploy",
+        component: () => import("../views/pages/tagihan/deployPage.vue"),
+      },
+      {
+        path: "lkp_tagihan",
+        name: "lkp",
+        component: () => import("../views/pages/tagihan/lkpPage.vue"),
+      },
+    ],
+  },
+  {
     path: "/transaction",
     name: "transaction",
     component: () => import("../views/pages/layout/DashboardLayout.vue"),

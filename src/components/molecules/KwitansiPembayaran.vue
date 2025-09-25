@@ -115,7 +115,28 @@
                     </div>
                     <div class="px-3">
 
-                        <table width="100%" class="border border-black" v-if="bodyModal?.payment_type != 'pelunasan'">
+                        <table width="100%" class="border border-black" v-if="bodyModal?.payment_type === 'pokok_sebagian'">
+                            <tbody>
+                                <tr>
+                                    <th class="border border-black p-1">ANGS-KE</th>
+                                    <th class="border border-black p-1">TGL JT.</th>
+                                    <th class="border border-black p-1"> POKOK</th>
+                                    <th class="border border-black p-1"> BUNGA</th>
+                                    <th class="border border-black p-1"> DENDA</th>
+                                    
+                                    <!--              <th class="border border-black">Jumlah</th>-->
+                                </tr>
+                                <tr v-for="angs in bodyModal?.struktur" :key="angs.id">
+                                    <td class="border text-center border-black">{{ angs?.angsuran_ke.toLocaleString() }}</td>
+                                    <td class="border text-center border-black">{{ angs.tgl_angsuran }}</td>
+                                    <td class="border text-center border-black">{{ angs?.bayar_pokok.toLocaleString() }}</td>
+                                    <td class="border text-center border-black">{{ angs?.bayar_bunga.toLocaleString() }}</td>
+                                    <td class="border text-center border-black">{{ angs?.bayar_denda.toLocaleString() }}</td>
+                                </tr>
+                         
+                            </tbody>
+                        </table>
+                        <table width="100%" class="border border-black" v-if="bodyModal?.payment_type === 'angsuran'">
                             <tbody>
                                 <tr>
                                     <th class="border border-black p-1">ANGS. KE</th>
