@@ -14,7 +14,7 @@
           <n-button @click="handleSubmit" type="primary">
             Cari
           </n-button>
-          <json-excel :data="dataArusKas.datas" :name="`LAP_LKBH`" :stringifyLongNum="true">
+          <json-excel :data="dataArusKas.datas" :name="`LAP_LKBH`">
             <n-button type="primary" secondary>Download</n-button>
           </json-excel>
 
