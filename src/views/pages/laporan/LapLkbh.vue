@@ -73,7 +73,7 @@
               </tr>
               <tr class="border-b border-black">
                 <th colspan="8" align="left">JUMLAH</th>
-                <th align="right">{{ jumlahKan(cashIn).toLocaleString() }}</th>
+                <th align="right">{{ jumlahKan(cashIn).toLocaleString("id-ID", { minimumFractionDigits: 2 }) }}</th>
               </tr>
             </tbody>
             <tbody>
@@ -101,7 +101,7 @@
               </tr>
               <tr class="border-b border-black">
                 <th colspan="8" align="left">JUMLAH</th>
-                <th align="right">{{ jumlahKan(pelunasan).toLocaleString() }}</th>
+                <th align="right">{{ jumlahKan(pelunasan).toLocaleString("id-ID", { minimumFractionDigits: 2 }) }}</th>
               </tr>
             </tbody>
             <tbody>
@@ -129,7 +129,7 @@
               </tr>
               <tr class="border-b border-black">
                 <th colspan="8" align="left">JUMLAH</th>
-                <th align="right">{{ jumlahKan(cashInTrf).toLocaleString() }}</th>
+                <th align="right">{{ jumlahKan(cashInTrf).toLocaleString("id-ID", { minimumFractionDigits: 2 }) }}</th>
               </tr>
             </tbody>
             <tbody>
@@ -153,7 +153,7 @@
               </tr>
               <tr class="border-b border-black">
                 <th colspan="8" align="left">JUMLAH</th>
-                <th align="right">{{ jumlahKan(cashOut).toLocaleString() }}</th>
+                <th align="right">{{ jumlahKan(cashOut).toLocaleString("id-ID", { minimumFractionDigits: 2 }) }}</th>
               </tr>
             </tbody>
           </table>
@@ -223,6 +223,25 @@ const getArusKas = async (e) => {
   }
 }
 
+function sumRupiahStrings(arr) {
+  // fungsi konversi string ke number
+  const toNumber = (str) => {
+    if (!str) return 0;
+    return parseFloat(
+      str.replace(/\./g, "").replace(",", ".")
+    );
+  };
+
+  // jumlahkan semua
+  const total = arr.reduce((acc, val) => acc + toNumber(val), 0);
+
+  // balikin ke format Indonesia
+  return total.toLocaleString("id-ID", { 
+    minimumFractionDigits: 2, 
+    maximumFractionDigits: 2 
+  });
+}
+
 const rangeDate = ref();
 const dataBranch = ref([]);
 const selectBranch = ref();
@@ -253,8 +272,14 @@ onMounted(() => {
   getBranch();
 });
 const jumlahKan = (e) => {
-  return e.reduce((sum, item) => sum + item.amount, 0);
-}
+  const toNumber = (val) => {
+    if (!val) return 0;
+    if (typeof val === "number") return val;
+    return parseFloat(val.replace(/\./g, "").replace(",", "."));
+  };
+
+  return e.reduce((sum, item) => sum + toNumber(item.amount), 0);
+};
 const handleSubmit = async () => {
   let a = {
     dari: rangeDate.value[0],
