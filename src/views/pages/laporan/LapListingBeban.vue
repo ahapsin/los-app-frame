@@ -45,7 +45,7 @@ const tableRef = ref();
 const me = useMeStore();
 const message = useMessage();
 const dataBranch = ref([]);
-const selectBranch = ref();
+const selectBranch = ref(null);
 const defBranch = ref('SEMUA CABANG');
 const userToken = localStorage.getItem("token");
 const loadingBranch = ref(false);
@@ -81,7 +81,7 @@ const handleSubmit = async () => {
 
   let a = {
     dari: rangeDate.value,
-    cabang_id: selectBranch.value ? selectBranch.value : null
+    cabang_id: null
   }
   messageReactive = message.loading('memuat data listing beban', { duration: 0 });
   await grabListBan(a, 'sp1');
