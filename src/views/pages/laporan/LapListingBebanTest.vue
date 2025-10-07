@@ -1,6 +1,8 @@
 <template>
   <n-card title="Laporan Listing Beban" :segmented="true" size="small">
     <div>
+      <n-progress type="line" status="success" v-if="progressBar" :percentage="percentage" indicator-placement="inside"
+        :show-indicator="true" />
       <n-space vertical :size="12" class="pt-4">
         <n-space>
           <n-form-item label="TANGGAL AKHIR">
@@ -11,7 +13,7 @@
               :default-value="defBranch" :options="dataBranch" @update:value="handleUpdateBranch" />
           </n-form-item>
           <n-form-item>
-            <n-button @click="handleSubmit" type="primary" :disabled="disbaledButton">
+            <n-button @click="handleSubmit" type="primary" :disabled="disabledButton">
               Cari
             </n-button>
           </n-form-item>
@@ -47,6 +49,9 @@ const me = useMeStore();
 const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
+const disabledButton = ref(false);
+const progressBar = ref(false);
+const percentage = ref(0);
 
 const selectedBranch = ref();
 const handleUpdateBranch = (value, option) => {
@@ -225,32 +230,72 @@ const getBranch = async () => {
 const rangeDate = ref();
 let messageReactive = null;
 const loadingBar = useLoadingBar();
-const handleSubmit = () => {
+const handleSubmit = async () => {
+  disabledButton.value = true;
+  progressBar.value = true;
+  percentage.value = 0;
   let a = {
     dari: rangeDate.value,
     cabang_id: selectedBranch.value?.id ? selectedBranch.value.id : me.me.cabang_id,
   }
   messageReactive = message.loading('memuat data listing beban', { duration: 0 });
-  grabListBan(a);
+
+  try {
+    await callSp(a, 'sp1');
+    await callSp(a, 'sp2');
+    await callSp(a, 'sp3');
+    await callSp(a, 'sp4');
+    await grabListBan(a, 'listBanTest');
+  } catch (error) {
+    messageReactive.destroy()
+  }
+
+  disabledButton.value = false;
 }
 const dataListBan = ref([]);
 const loadingData = ref(false);
 const timer = ref(60);
-const disbaledButton = ref(false);
 const ctrDownload = ref(true);
-const grabListBan = async (e) => {
+const callSp = async (e, uri) => {
 
   loadingData.value = true;
   let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "POST",
-    api: "listBanTest",
+    api: uri,
     data: e,
     token: userToken,
   });
   if (!response.ok) {
     messageReactive.destroy();
-    disbaledButton.value = true;
+    var interval;
+    interval = setInterval(() => {
+      if (timer.value > 0) {
+        timer.value--
+      } else {
+        clearInterval(interval);
+        timer.value = 60;
+        handleSubmit();
+      }
+    }, 1000);
+    messageReactive = message.loading(() => (`data listban sedang sibuk mencoba ulang dalam ${timer.value} s`), { duration: 60000 });
+  } else {
+    percentage.value += 20;
+  }
+
+}
+const grabListBan = async (e, uri) => {
+
+  loadingData.value = true;
+  let userToken = localStorage.getItem("token");
+  const response = await useApi({
+    method: "POST",
+    api: uri,
+    data: e,
+    token: userToken,
+  });
+  if (!response.ok) {
+    messageReactive.destroy();
     var interval;
     interval = setInterval(() => {
       if (timer.value > 0) {
@@ -265,10 +310,10 @@ const grabListBan = async (e) => {
   } else {
     messageReactive.destroy();
     messageReactive = null;
-    disbaledButton.value = false;
     dataListBan.value = response.data;
     loadingData.value = false;
     ctrDownload.value = false;
+    percentage.value += 20;
   }
 
 }

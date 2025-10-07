@@ -3,14 +3,13 @@
     <div>
       <n-space vertical :size="12" class="pt-4">
         <n-space>
-<!--          <n-form-item label="TANGGAL AKHIR">-->
-<!--            <n-date-picker v-model:formatted-value="rangeDate" :default-value="Date.now()" clearable-->
-<!--                           format="yyyy-MM-dd"/>-->
-<!--          </n-form-item>-->
+          <!--          <n-form-item label="TANGGAL AKHIR">-->
+          <!--            <n-date-picker v-model:formatted-value="rangeDate" :default-value="Date.now()" clearable-->
+          <!--                           format="yyyy-MM-dd"/>-->
+          <!--          </n-form-item>-->
           <n-form-item label="POS">
-            <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
-                      value-field="id" :default-value="defBranch" :options="dataBranch"
-                      v-model:value="selectBranch"/>
+            <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama" value-field="id"
+              :default-value="defBranch" :options="dataBranch" v-model:value="selectBranch" />
           </n-form-item>
           <n-form-item>
             <n-button @click="handleSubmit" type="primary">
@@ -24,25 +23,23 @@
               <n-button type="primary" secondary>Download</n-button>
             </json-excel> -->
 
-              <n-button type="primary" secondary @click="exportToExcel(dataListBan)">Download</n-button>
+            <n-button type="primary" secondary @click="exportToExcel(dataListBan)">Download</n-button>
           </n-form-item>
         </n-space>
-        <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x
-                      :scroll-x="10000" :min-row-height="48" virtual-scroll-header
-                      :columns="convertObjectToArray(dataListBan)" :data="dataListBan" :pagination="{ pageSize: 10 }"
-                      :loading="loadingData"/>
+        <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x :scroll-x="10000"
+          :min-row-height="48" virtual-scroll-header :columns="convertObjectToArray(dataListBan)" :data="dataListBan"
+          :pagination="{ pageSize: 10 }" :loading="loadingData" />
       </n-space>
     </div>
   </n-card>
 </template>
 <script setup>
-import {ref, onMounted} from "vue";
+import { ref, onMounted } from "vue";
 import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
-import JsonExcel from "vue-json-excel3";
-import {useLoadingBar, useMessage} from "naive-ui";
-import {useMeStore} from "../../../stores/me";
-import {useApi} from "../../../helpers/axios.js";
+import { useLoadingBar, useMessage } from "naive-ui";
+import { useMeStore } from "../../../stores/me";
+import { useApi } from "../../../helpers/axios.js";
 
 const tableRef = ref();
 const me = useMeStore();
@@ -80,23 +77,27 @@ const getBranch = async () => {
 const rangeDate = ref();
 let messageReactive = null;
 const loadingBar = useLoadingBar();
-const handleSubmit = () => {
+const handleSubmit = async () => {
 
   let a = {
     dari: rangeDate.value,
     cabang_id: selectBranch.value ? selectBranch.value : null
   }
-  messageReactive = message.loading('memuat data listing beban', {duration: 0});
-  grabListBan(a);
+  messageReactive = message.loading('memuat data listing beban', { duration: 0 });
+  await grabListBan(a, 'sp1');
+  await grabListBan(a, 'sp2');
+  await grabListBan(a, 'sp3');
+  await grabListBan(a, 'sp4');
+  await grabListBan(a, 'listBan');
 }
 const dataListBan = ref([]);
 const loadingData = ref(false)
-const grabListBan = async (e) => {
+const grabListBan = async (e, url) => {
   loadingData.value = true;
   let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "POST",
-    api: "listBan",
+    api: url,
     data: e,
     token: userToken,
   });
@@ -125,14 +126,14 @@ const convertObjectToArray = (obj) => {
     return [];
   }
   const keys = Object.keys(obj[0]);
-  return keys.map(key => ({title: key, key: key}));
+  return keys.map(key => ({ title: key, key: key }));
 }
 onMounted(() => {
   loadingBar.finish();
-      getBranch();
-      me;
-    }
+  getBranch();
+  me;
+}
 )
-;
+  ;
 
 </script>
