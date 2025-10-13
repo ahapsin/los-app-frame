@@ -4,34 +4,53 @@
             <n-space vertical :size="12">
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
-                <n-data-table :columns="columnBebanTagih" :data="dataList" :pagination="pagination" :max-height="350"
-                    virtual-scroll :scroll-x="1200" size="small" />
+                <n-data-table :columns="columnBebanTagih" :data="dummyData" :filter-value="filterValue"
+                    :loading="isLoading" size="small" :pagination="{ pageSize: 10 }" />
             </n-space>
         </div>
     </n-card>
     <n-modal v-model:show="modalDetail" :mask-closable="false">
         <n-card class="w-5/6 md:w-2/4" title="DETAIL TAGIHAN" :segmented="true" size="small">
+            <template #header-extra>
+                <n-space>
+                    <n-button size="small" quaternary type="info" @click="modalHistory = !modalHistory">
+                        <template #icon>
+                            <v-icon name="bi-clock-history" />
+                        </template>
+                        History
+                    </n-button>
+                    <n-button size="small" type="error" circle quaternary @click="modalDetail = false">
+                        <template #icon>
+                            <v-icon name="bi-x-lg" />
+                        </template>
+                    </n-button>
+                </n-space>
+            </template>
             <n-card class="mb-2" size="small" embedded>
-                <div class="grid grid-cols-1 md:grid-cols-4">
-                    <div class="flex flex-col">
+                <div class="flex flex-wrap gap-4">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">No Surat</small>
                         <n-text strong class="text-md">{{ bodyDetail.no_surat }}</n-text>
                     </div>
-                    <div class="flex flex-col">
+
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">No Kontrak</small>
                         <n-text strong class="text-md">{{ bodyDetail.loan_number }}</n-text>
                     </div>
-                    <div class="flex flex-col">
+
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Tgl Jatuh Tempo</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_jth_tempo }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col">
+
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Customer</small>
-                        <n-text strong class="text-md"> {{ bodyDetail.nama_customer }}</n-text>
+                        <n-text strong class="text-md">{{ bodyDetail.nama_customer }}</n-text>
                     </div>
-                    <div class="flex flex-col">
+
+                    <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
-                        <n-text strong class="text-md">{{ bodyDetail.alamat }} </n-text>
+                        <n-text strong class="text-md">{{ bodyDetail.alamat }}</n-text>
                     </div>
                 </div>
             </n-card>
@@ -59,33 +78,56 @@
                                 {{
                                     bodyDetail.detail
                                         .reduce((acc, item) => acc + Number(item.jumlah), 0)
-                                .toLocaleString('id-ID')
+                                        .toLocaleString('id-ID')
                                 }}
                             </strong>
                         </td>
                     </tr>
                 </tfoot>
             </n-table>
-            <n-divider title-placement="left">Hasil Kunjungan</n-divider>
-            <n-form-item label="Hasil Kunjungan">
-                <n-input type="textarea"></n-input>
-            </n-form-item>
-            <n-form-item label="Tanggal JB/FU">
-                <n-date-picker placeholder="Tanggal JB/FU" class="w-full" value-format="yyyy-MM-dd" format="dd-MM-yyyy"
-                    type="date" />
-            </n-form-item>
-            <n-form-item label="Dokumen Kunjungan">
-                <file-upload :def_preview="true" :multi="true" title="dokumen kunjungan"
-                    endpoint="image_upload_prospect" type="other" />
-            </n-form-item>
 
-            <div class="flex gap-2">
-                <n-button type="primary">Simpan</n-button>
-                <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
+            <div v-if="bodyDetail?.no_lkp">
+                <n-divider title-placement="left">Hasil Kunjungan</n-divider>
+                <n-form-item label="Hasil Kunjungan">
+                    <n-input type="textarea"></n-input>
+                </n-form-item>
+                <n-form-item label="Tanggal JB/FU">
+                    <n-date-picker placeholder="Tanggal JB/FU" class="w-full" value-format="yyyy-MM-dd"
+                        format="dd-MM-yyyy" type="date" />
+                </n-form-item>
+                <n-form-item label="Dokumen Kunjungan">
+                    <file-upload :def_preview="true" :multi="true" title="dokumen kunjungan"
+                        endpoint="image_upload_prospect" type="other" />
+                </n-form-item>
             </div>
 
+            <template #footer>
+                <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
+                    <n-button type="primary">Simpan</n-button>
+                    <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
+                </div>
+            </template>
+            <n-modal v-model:show="modalHistory">
+                <div class="w-1/3">
+                    <n-card title="History Surat" :segmented="true" size="small">
+                        <!-- <n-timeline>
+                            <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
+                            <n-timeline-item type="info" title="Laporan Kunjungan" content="nasabah tidak ada dirumah"
+                                time="2018-04-03 20:46" line-type="dashed" />
+                            <n-timeline-item type="warning" content="Mencoba ulang kunjungan oleh *nama marketing*"
+                                time="2018-04-03 20:46" />
+                            <n-timeline-item type="success" content="Tagihan masuk dan dibayarkan nasabah"
+                                time="2018-04-03 20:46" />
+                        </n-timeline> -->
+                        <n-result status="warning" title="Kunjungan Kosong" description="Tidak Histori Kunjungan">
+
+                        </n-result>
+                    </n-card>
+                </div>
+            </n-modal>
         </n-card>
     </n-modal>
+
 </template>
 <script setup>
 import { NButton, useLoadingBar, useMessage } from "naive-ui";
@@ -97,794 +139,13 @@ import _ from "lodash";
 const me = useMeStore();
 const message = useMessage();
 
-const modalAssign = ref(false);
+const modalHistory = ref(false);
 
 
 const selectedBranch = ref();
 
 
-const dummyData = [{
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000187,
-    "NAMA PELANGGAN": "DADI BIN SAYAM",
-    "TGL BOOKING": "02/13/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "BLOK BULU RT 01 RW 01 DS LIMPAS KEC PATROL RT/01 RW/01 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. PATROL",
-    "KELURAHAN": "LIMPAS",
-    "NO TELP": "081220534179",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "WIRASWASTA",
-    "SUPPLIER": "",
-    "SURVEYOR": "NURFAUZI",
-    "CATT SURVEY": "PK ADALAH SEORANG TUKANG OJEK ISTRI PK IRT",
-    "PKK HUTANG": 1500000,
-    "JML ANGS": 12,
-    "JRK ANGS": 1,
-    "PERIOD": 12,
-    "OUT PKK AWAL": 153821,
-    "OUT BNG AWAL": 6179,
-    "OVERDUE AWAL": 1966,
-    "AMBC PKK AWAL": 153821,
-    "AMBC BNG AWAL": 6179,
-    "AMBC TOTAL AWAL": 160000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 153821,
-    "OUTS BNG AKHIR": 6179,
-    "OVERDUE AKHIR": 1997,
-    "ANGSURAN": 160000,
-    "ANGS KE": 12,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "12/2/2020",
-    "JTH TEMPO AKHIR": "12/2/2020",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 153821,
-    "AMBC BNG_AKHIR": 6179,
-    "AMBC TOTAL_AKHIR": 160000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "HONDA NF 100 L SUPRA FIT TROMOL",
-    "NO POL": "E4319RH",
-    "NO MESIN": "HB31E1107525",
-    "NO RANGKA": "MH1HB31125KK109961",
-    "TAHUN": "2005",
-    "NILAI PINJAMAN": 1000000,
-    "ADMIN": 500000,
-    "CUST_ID": 1110119000553
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-}, {
-    "KODE CABANG": "003-ANJ",
-    "NAMA CABANG": "Anjatan",
-    "NO KONTRAK": 11101190000195,
-    "NAMA PELANGGAN": "WAHYUDIN",
-    "TGL BOOKING": "2/17/2019",
-    "UB": "",
-    "PLATFORM": "",
-    "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-    "KECAMATAN": "KEC. ANJATAN",
-    "KELURAHAN": "BUGIS",
-    "NO TELP": "082316695353",
-    "NO HP1": "",
-    "NO HP2": "",
-    "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-    "SUPPLIER": "",
-    "SURVEYOR": "CASDIKIN",
-    "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-    "PKK HUTANG": 4650000,
-    "JML ANGS": 24,
-    "JRK ANGS": 1,
-    "PERIOD": 24,
-    "OUT PKK AWAL": 4650000,
-    "OUT BNG AWAL": 2310000,
-    "OVERDUE AWAL": 2301,
-    "AMBC PKK AWAL": 4650000,
-    "AMBC BNG AWAL": 2310000,
-    "AMBC TOTAL AWAL": 6960000,
-    "CYCLE AWAL": "CX",
-    "STS KONTRAK": "AC",
-    "STS BEBAN": "AC",
-    "POLA BYR AWAL": "",
-    "OUTS PKK AKHIR": 4650000,
-    "OUTS BNG AKHIR": 2310000,
-    "OVERDUE AKHIR": 2332,
-    "ANGSURAN": 290000,
-    "ANGS KE": 1,
-    "TIPE ANGSURAN": "bulanan",
-    "JTH TEMPO AWAL": "14/3/2019",
-    "JTH TEMPO AKHIR": "14/3/2019",
-    "TGL BAYAR": "",
-    "KOLEKTOR": "unknown",
-    "CARA BYR": null,
-    "AMBC PKK_AKHIR": 4650000,
-    "AMBC BNG_AKHIR": 2310000,
-    "AMBC TOTAL_AKHIR": 6960000,
-    "AC PKK": 0,
-    "AC BNG MRG": 0,
-    "AC TOTAL": 0,
-    "CYCLE AKHIR": "CX",
-    "POLA BYR AKHIR": "",
-    "NAMA BRG": null,
-    "TIPE BRG": "SUZUKI CARRY CARRY",
-    "NO POL": "D1012EG",
-    "NO MESIN": "F10AA1D184275",
-    "NO RANGKA": "SL410285379",
-    "TAHUN": "1988",
-    "NILAI PINJAMAN": 4000000,
-    "ADMIN": 650000,
-    "CUST_ID": 1110119000560
-},
-]
+
 
 const convertObjectToArray = (obj) => {
     if (!Array.isArray(obj) || obj.length === 0) {
@@ -943,11 +204,102 @@ const grabListBan = async (e) => {
     }
 
 }
+const dummyData = [
+    {
+        no_surat: "SR-2025-001",
+        loan_number: "CT-001-2025",
+        no_lkp: "LKP-001",
+        tgl_jth_tempo: "2025-10-15",
+        nama_customer: "Andi Saputra",
+        alamat: "Jl. Melati No. 123, Jakarta Selatan",
+        SURVEYOR: "MCF-01",
+        status: "Belum Dikunjungi",
+        detail: [
+            {
+                angs_ke: 1,
+                tgl_jth_tempo: "2025-10-15",
+                jumlah: 1500000
+            },
+            {
+                angs_ke: 2,
+                tgl_jth_tempo: "2025-11-15",
+                jumlah: 1500000
+            },
+            {
+                angs_ke: 3,
+                tgl_jth_tempo: "2025-12-15",
+                jumlah: 1500000
+            }
+        ]
+    },
+    {
+        no_surat: "SR-2025-002",
+        no_lkp: "LKP-002",
+        loan_number: "CT-002-2025",
+        tgl_jth_tempo: "2025-10-20",
+        nama_customer: "Sari Dewi",
+        alamat: "Jl. Mawar No. 45, Bekasi",
+        SURVEYOR: "MCF-02",
+        status: "Sudah Dikunjungi",
+        detail: [
+            {
+                angs_ke: 1,
+                tgl_jth_tempo: "2025-10-20",
+                jumlah: 2000000
+            },
+            {
+                angs_ke: 2,
+                tgl_jth_tempo: "2025-11-20",
+                jumlah: 2000000
+            },
+            {
+                angs_ke: 3,
+                tgl_jth_tempo: "2025-12-20",
+                jumlah: 2000000
+            }
+        ]
+    },
+    {
+        no_surat: "SR-2025-003",
+        no_lkp: "",
+        loan_number: "CT-003-2025",
+        tgl_jth_tempo: "2025-10-25",
+        nama_customer: "Budi Hartono",
+        alamat: "Jl. Kenanga No. 77, Depok",
+        SURVEYOR: "MCF-03",
+        status: "Tertunda",
+        detail: [
+            {
+                angs_ke: 1,
+                tgl_jth_tempo: "2025-10-25",
+                jumlah: 1750000
+            },
+            {
+                angs_ke: 2,
+                tgl_jth_tempo: "2025-11-25",
+                jumlah: 1750000
+            },
+            {
+                angs_ke: 3,
+                tgl_jth_tempo: "2025-12-25",
+                jumlah: 1750000
+            }
+        ]
+    }
+];
+
+
 
 const columnBebanTagih = [
     {
         title: "No Surat",
         key: "no_surat",
+        width: '150',
+        sorter: 'default',
+    },
+    {
+        title: "No LKP",
+        key: "no_lkp",
         width: '150',
         sorter: 'default',
     },
@@ -977,10 +329,11 @@ const columnBebanTagih = [
     },
     {
         title: "",
-        key: "SURVEYOR",
+        align: "right",
         render(row) {
             return h(NButton, {
                 type: 'primary',
+                size: "small",
                 onClick: () => handleDetail(row),
             }, { default: () => 'Kunjungan' })
         }

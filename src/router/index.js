@@ -63,6 +63,11 @@ const routes = [
         name: "lkp",
         component: () => import("../views/pages/tagihan/lkpPage.vue"),
       },
+      {
+        path: "surat_tagih",
+        name: "Surat Tagih",
+        component: () => import("../views/pages/task/TagihanPage.vue"),
+      },
     ],
   },
   {
@@ -170,11 +175,6 @@ const routes = [
         path: "detail-credit/:idapplication",
         name: "Detail Kredit",
         component: () => import("../views/pages/task/DetailFpkPage.vue"),
-      },
-      {
-        path: "tagihan",
-        name: "Tagihan",
-        component: () => import("../views/pages/task/TagihanPage.vue"),
       },
       {
         path: "kapos-fpk/:idapplication",

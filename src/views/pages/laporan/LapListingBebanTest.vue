@@ -1,8 +1,7 @@
 <template>
   <n-card title="Laporan Listing Beban" :segmented="true" size="small">
     <div>
-      <n-progress type="line" status="success" v-if="progressBar" :percentage="percentage" indicator-placement="inside"
-        :show-indicator="true" />
+      
       <n-space vertical :size="12" class="pt-4">
         <n-space>
           <n-form-item label="TANGGAL AKHIR">
