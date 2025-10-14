@@ -2,7 +2,7 @@
   <n-scrollbar style="max-height: 400px">
     <div>
       <n-alert type="error" v-if="statusDataJaminan === 'error'">minimal memiliki 1 jaminan</n-alert>
-      <n-card embedded :segmented="true">
+      <n-card :class="`shadow`"embedded :segmented="true">
         <div class="flex gap-2 items-center justify-around">
           <n-statistic label="Jumlah Jaminan">
             {{ jaminanStore.listJaminan.length }}
@@ -19,7 +19,7 @@
             </n-button>
           </div>
         </div>
-        <n-card :segmented="true" class="my-2 bg-white rounded-xl border hover:shadow"
+        <n-card :class="`shadow`":segmented="true" class="my-2 bg-white rounded-xl border hover:shadow"
                 v-for="(coll) in orderJaminan" :key="coll" :title="coll.type">
           <template #header-extra>
             <div class="flex gap-2">
@@ -121,7 +121,7 @@
       </n-card>
     </div>
     <n-modal v-model:show="showModal">
-      <n-card class="md:w-1/2" closable @close="showModal = false" :segmented="true"
+      <n-card :class="`shadow`"class="md:w-1/2" closable @close="showModal = false" :segmented="true"
               :title="`form ${jenisJaminan}`">
         <component :is="JaminanKendaraan" v-if="jenisJaminan.toLowerCase() == 'kendaraan'"
                    @childData="handleChildData" :def_data="dataProp"/>

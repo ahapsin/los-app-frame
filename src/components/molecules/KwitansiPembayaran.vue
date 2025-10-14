@@ -1,5 +1,5 @@
 <template>
-    <n-card :title="prop?.label" :segmented="true" size="small" class="w-1/2">
+    <n-card :class="`shadow`":title="prop?.label" :segmented="true" size="small" class="w-1/2">
         <n-spin :show="loading">
             <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
                 <n-watermark :content="apptitle" cross selectable :font-size="16" :line-height="16" :width="192"

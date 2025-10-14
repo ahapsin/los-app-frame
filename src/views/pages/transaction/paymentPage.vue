@@ -1,5 +1,5 @@
 <template>
-    <n-card content-style="padding: 0;" :segmented="{
+    <n-card :class="`shadow`"content-style="padding: 0;" :segmented="{
         content: true,
         footer: 'soft',
     }" size="small">
@@ -82,7 +82,7 @@
     </n-card>
 
     <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal" :on-after-leave="onAfterLeave">
-        <n-card title="Detail Pembayaran" :segmented="{
+        <n-card :class="`shadow`"title="Detail Pembayaran" :segmented="{
             content: true,
             footer: 'soft',
         }" size="small">

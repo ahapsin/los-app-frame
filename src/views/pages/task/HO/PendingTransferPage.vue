@@ -1,5 +1,5 @@
 <template>
-  <n-card :segmented="true" size="small">
+  <n-card :class="`shadow`":segmented="true" size="small">
     <template #header>Pending Transfer</template>
     <template #header-extra>
       <n-space>
@@ -21,7 +21,7 @@
     </div>
   </n-card>
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal">
-    <n-card :bordered="false" aria-modal="true" title="Detail" :segmented="{
+    <n-card :class="`shadow`":bordered="false" aria-modal="true" title="Detail" :segmented="{
       content: true,
       footer: 'soft',
     }" size="small">

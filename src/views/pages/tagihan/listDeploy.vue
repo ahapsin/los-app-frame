@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Deploy Tagihan" :segmented="true" size="small">
+    <n-card :class="`shadow`"title="Deploy Tagihan" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -22,7 +22,8 @@
                     <n-form-item label="petugas">
                         <n-select v-model:value="assignTo" placeholder="pilih petugas"
                             :options="_.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
-                            label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel"/>
+                            label-field="nama" filterable :render-tag="renderSingleSelectTag"
+                            :render-label="renderLabel" />
                     </n-form-item>
                     <n-alert type="info" v-if="checkedRowKeys.length === 0">Pilih data tagihan</n-alert>
                     <n-alert type="info" v-else-if="assignTo === null">Pilih petugas</n-alert>
@@ -94,6 +95,9 @@ const columnBebanTagih = reactive([
         key: "CYCLE AWAL",
         sorter: "default",
         width: 150,
+        filter: true,
+        filterMultiple: true,
+        filterOptions: [],
     },
     {
         title: "NBOT",
@@ -109,6 +113,9 @@ const columnBebanTagih = reactive([
         key: "KELURAHAN",
         sorter: "default",
         width: 150,
+        filter: true,
+        filterMultiple: true,
+        filterOptions: [],
     },
     {
         title: "KEC",
@@ -127,6 +134,20 @@ const columnBebanTagih = reactive([
         filterMultiple: true,
         filterOptions: [],
         width: 150,
+    }, {
+        title: "ANGSURAN KE",
+        key: "ANGS KE",
+        sorter: "default",
+        width: 150,
+    },
+    {
+        title: "ANGSURAN ",
+        key: "ANGSURAN",
+        sorter: "default",
+        width: 150,
+        render(row) {
+            return h("div", row.ANGSURAN?.toLocaleString())
+        }
     }
 ]);
 
@@ -237,7 +258,9 @@ const getList = async () => {
             }
         };
         setFilterOptions("NBOT");
+        setFilterOptions("CYCLE AWAL");
         setFilterOptions("KECAMATAN");
+        setFilterOptions("KELURAHAN");
         setFilterOptions("SURVEYOR");
         setFilterOptions("SURVEYOR STATUS");
     }

@@ -69,7 +69,7 @@
         </n-grid>
       </n-form-item>
       <div v-show="searchField" class="flex gap-4">
-        <n-card title="Data Nasabah" :bordered="false" embedded size="small">
+        <n-card :class="`shadow`"title="Data Nasabah" :bordered="false" embedded size="small">
           <n-grid :cols="2">
             <n-gi>
               <div class="flex">
@@ -119,7 +119,7 @@
             </n-gi>
           </n-grid>
         </n-card>
-        <n-card title="Data Jaminan" :bordered="false" embedded size="small">
+        <n-card :class="`shadow`"title="Data Jaminan" :bordered="false" embedded size="small">
           <n-grid :cols="1">
             <n-gi>
               <div class="flex">

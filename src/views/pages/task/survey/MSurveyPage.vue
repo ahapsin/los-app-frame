@@ -18,7 +18,7 @@
 
     <div class="p-2 flex flex-col gap-2">
 
-      <n-card v-if="loadData">
+      <n-card :class="`shadow`"v-if="loadData">
         <n-skeleton text :repeat="2"/>
         <n-skeleton text style="width: 60%"/>
       </n-card>

@@ -43,7 +43,7 @@
         </n-form-item>
       </div>
       <div v-for="(listBucket,i) in bucketParam" :key="listBucket.key">
-        <n-card :title="listBucket.param" size="small" :segmented="true">
+        <n-card :class="`shadow`":title="listBucket.param" size="small" :segmented="true">
           <template #header-extra>
             <n-button quaternary circle @click="removeParam(i)">
               <n-icon>
@@ -56,7 +56,7 @@
               <n-input type="textarea" placeholder="Isi disini"
                        v-model:value="itemParam.val"/>
             </n-form-item>
-            <n-card embedded v-else-if="itemParam.mode.type == 'table'" :title="itemParam.title" class="mb-4">
+            <n-card :class="`shadow`"embedded v-else-if="itemParam.mode.type == 'table'" :title="itemParam.title" class="mb-4">
               <template #header-extra>
                 <div class="flex item-center gap-2">
                   <n-upload
@@ -85,7 +85,7 @@
     </div>
   </div>
   <n-modal v-model:show="prevModal">
-    <n-card class="w-4/6">
+    <n-card :class="`shadow`"class="w-4/6">
       <n-watermark
           ref="printAreaRef"
           cross

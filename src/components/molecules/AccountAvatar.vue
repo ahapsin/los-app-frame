@@ -2,9 +2,8 @@
   <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
     <div class="flex gap-2">
 
-
       <n-badge :value="tasks.length">
-        <n-button type="primary" tertiary circle @click="showAllNotif">
+        <n-button type="primary" quaternary circle @click="showAllNotif">
           <template #icon>
             <v-icon name="bi-bell" />
           </template>
@@ -99,6 +98,7 @@ import { useApi } from "../../helpers/axios";
 import { useCollateralStore } from "../../stores/collateral.js";
 import { useMeStore } from "../../stores/me";
 import { useTaskStore } from "../../stores/task";
+import DarkMode from "../atoms/DarkMode.vue";
 
 const message = useMessage();
 const me = useMeStore();

@@ -15,7 +15,7 @@
             order.plafond.toLocaleString() }}</b> > Nilai Jaminan {{ (sumJaminan / 2).toLocaleString() }}
             (50%)</n-alert>
         <!-- card -->
-        <n-card :bordered="true" :title="`${current}. ${steps[current - 1]}`" :segmented="{
+        <n-card :class="`shadow`":bordered="true" :title="`${current}. ${steps[current - 1]}`" :segmented="{
             content: true,
         }">
             <!-- container 1 -->
@@ -209,7 +209,7 @@
             </div>
             <div v-show="current === 3">
                 <n-alert type="error" v-if="statusDataJaminan === 'error'">minimal memiliki 1 jaminan</n-alert>
-                <n-card embedded :segmented="true"
+                <n-card :class="`shadow`"embedded :segmented="true"
                     :title="`Jumlah Jaminan : ${jaminanStore.listJaminan.length}, Total Nilai Jaminan : ${sumJaminan.toLocaleString('US')}`">
                     <template #header-extra>
                         <div class=" flex w-60 gap-2">
@@ -223,7 +223,7 @@
                         </div>
                     </template>
 
-                    <n-card :segmented="true" class="my-2 bg-white rounded-xl hover:ring-4 hover:ring-pr"
+                    <n-card :class="`shadow`":segmented="true" class="my-2 bg-white rounded-xl hover:ring-4 hover:ring-pr"
                         v-for="(coll) in orderJaminan" :key="coll" :title="`${coll.type}`">
                         <template #header-extra>
                             <div class="flex gap-2" v-if="false">
@@ -316,7 +316,7 @@
                 </n-card>
             </div>
             <n-modal v-model:show="showModal">
-                <n-card class="md:w-1/2" closable @close="showModal = false" :segmented="true"
+                <n-card :class="`shadow`"class="md:w-1/2" closable @close="showModal = false" :segmented="true"
                     :title="`form ${jenisJaminan}`">
                     <component :is="JaminanKendaraan" v-if="jenisJaminan == 'kendaraan'" @childData="handleChildData"
                         :def_data="dataProp" />

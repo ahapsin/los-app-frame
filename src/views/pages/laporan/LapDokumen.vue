@@ -1,7 +1,7 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small">
+            <n-card :class="`shadow`":title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small">
                 <n-space vertical :size="12" class="pt-4">
                     <div class="flex gap-2">
                         <n-form-item label="Nomor Kontrak" class="w-full">

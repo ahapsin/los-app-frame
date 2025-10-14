@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Beban Tagih" :segmented="true" size="small">
+    <n-card :class="`shadow`"title="Beban Tagih" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -30,7 +30,7 @@
     </n-float-button>
 
     <n-modal v-model:show="modalAssign" :mask-closable="false">
-        <n-card class="w-1/4">
+        <n-card :class="`shadow`"class="w-1/4">
             <n-space>
                 <n-button class="mb-2" round type="info" secondary @click="detailSelectedModal = true">{{
                     checkedRowKeys.length

@@ -1,5 +1,5 @@
 <template>
-    <n-card size="small" title="Data Analisa" :segmented="{
+    <n-card :class="`shadow`"size="small" title="Data Analisa" :segmented="{
         content: true,
         footer: 'soft',
     }">

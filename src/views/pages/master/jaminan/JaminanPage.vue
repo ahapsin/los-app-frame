@@ -1,7 +1,7 @@
 <template>
   <div class="pt-4">
     <n-space vertical>
-      <n-card :title="`Tabel ${$route.name}`" :segmented="true" size="small">
+      <n-card :class="`shadow`":title="`Tabel ${$route.name}`" :segmented="true" size="small">
         <n-space vertical :size="12" class="pt-4">
           <div class="flex flex-col md:flex-row gap-2 pt-4 pr-4 ps-4">
             <n-form-item label="NO KONTRAK" class="w-full">
@@ -31,7 +31,7 @@
     </n-space>
   </div>
   <n-modal v-model:show="modalDetail">
-    <n-card class="w-11/12  overflow-x-auto " title="Jaminan" :segmented="true" size="small">
+    <n-card :class="`shadow`"class="w-11/12  overflow-x-auto " title="Jaminan" :segmented="true" size="small">
       <div class="grid grid-cols-4 w-full gap-2">
         <n-form-item label="TIPE" path="nama" class="w-full">
           <n-input placeholder="TIPE" v-model:value="bodyModal.tipe" disabled/>

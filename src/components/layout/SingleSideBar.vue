@@ -1,7 +1,7 @@
 <template>
   <n-layout class="h-screen">
     <n-layout-header>
-      <n-page-header class="sticky outline outline-1 outline-slate-300 top-0 z-50 backdrop-blur p-2">
+      <n-page-header class="sticky outline outline-1 outline-slate-300 top-0 z-50 backdrop-blur p-2 bg-gradient-to-r from-pr-50 to-zinc-50">
         <template #title>
           <n-space align="center">
             <n-button circle quaternary @click="router.back()"
@@ -37,12 +37,12 @@
     <n-layout position="absolute" style="top: 60px" has-sider>
       <n-layout-sider :width='200' :collapsed-width="0" :show-collapsed-content="false"
         :collapsed="sideMenu.sideEffect ? true : false" content-style="padding: 10px;"
-        class="absolute md:relative h-full z-20 shadow-xl md:shadow-none" bordered>
+        class="absolute md:relative h-full z-20 shadow-xl md:shadow-none bg-gradient-to-t from-pr-50 to-zinc-50 ">
         <n-scrollbar>
           <SideMenu />
         </n-scrollbar>
       </n-layout-sider>
-      <n-layout :class="`bg-slate-100`">
+      <n-layout :class="`bg-gradient-to-t from-pr-50 to-zinc-50`">
         <div class="p-0 md:p-4">
           <n-page-header @back="handleBack">
             <template #header>

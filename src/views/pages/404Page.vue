@@ -1,6 +1,6 @@
 <template>
     <div class="p-8 h-screen flex items-center justify-center" :style="`background-color: ${appAccentColor}`">
-        <n-card class="md:w-fit">
+        <n-card :class="`shadow`"class="md:w-fit">
             <div class=" w-fit items-center">
                 <div class="flex w-full items-center justify-around px-10">
                     <img src="https://res.cloudinary.com/dfjruncxv/image/upload/v1741671752/404_mwbzab.png" class="w-[100px] h-[100px]" />

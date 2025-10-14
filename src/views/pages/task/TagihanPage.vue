@@ -1,19 +1,19 @@
 <template>
-    <n-card title="Daftar Tagihan" :segmented="true" size="small">
+    <n-card :class="`shadow`" title="Daftar Tagihan" :segmented="true" size="small">
         <div>
             <n-space vertical :size="12">
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
-                <n-data-table :columns="columnBebanTagih" :data="dummyData" :filter-value="filterValue"
-                    :loading="isLoading" size="small" :pagination="{ pageSize: 10 }" />
+                <n-data-table :columns="columnBebanTagih" :data="dataList" :filter-value="filterValue"
+                    :loading="isLoading" size="small" :pagination="{ pageSize: 10 }" :scroll-x="1300" />
             </n-space>
         </div>
     </n-card>
     <n-modal v-model:show="modalDetail" :mask-closable="false">
-        <n-card class="w-5/6 md:w-2/4" title="DETAIL TAGIHAN" :segmented="true" size="small">
+        <n-card :class="`shadow`" class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
             <template #header-extra>
-                <n-space>
-                    <n-button size="small" quaternary type="info" @click="modalHistory = !modalHistory">
+                <n-space align="center">
+                    <n-button size="small" quaternary type="info" @click="handleHistory(bodyDetail.no_surat)">
                         <template #icon>
                             <v-icon name="bi-clock-history" />
                         </template>
@@ -26,36 +26,53 @@
                     </n-button>
                 </n-space>
             </template>
-            <n-card class="mb-2" size="small" embedded>
+            <n-card :class="`shadow`" class="mb-2" size="small" embedded>
                 <div class="flex flex-wrap gap-4">
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">No Surat</small>
                         <n-text strong class="text-md">{{ bodyDetail.no_surat }}</n-text>
                     </div>
 
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]" v-if="bodyDetail?.no_lkp">
+                        <small class="text-reg">No LKP</small>
+                        <n-text type="warning">
+
+                            {{ bodyDetail.no_lkp }}
+                        </n-text>
+                    </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">No Kontrak</small>
-                        <n-text strong class="text-md">{{ bodyDetail.loan_number }}</n-text>
+                        <n-text strong class="text-md">{{ bodyDetail.no_kontrak }}</n-text>
                     </div>
-
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
-                        <small class="text-reg">Tgl Jatuh Tempo</small>
-                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_jth_tempo }}</n-ellipsis>
-                    </div>
-
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Customer</small>
                         <n-text strong class="text-md">{{ bodyDetail.nama_customer }}</n-text>
                     </div>
-
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Tgl Jatuh Tempo</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_jatuh_tempo }}</n-ellipsis>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Cycle</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.cycle_awal }}</n-ellipsis>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Angsuran ke</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angusran_ke }}</n-ellipsis>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Angsuran ke</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
+                            }}</n-ellipsis>
+                    </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
                         <n-text strong class="text-md">{{ bodyDetail.alamat }}</n-text>
                     </div>
                 </div>
             </n-card>
-            <n-divider title-placement="left">Rincian Tagihan</n-divider>
-            <n-table size="small">
+            <!-- <n-divider title-placement="left">Rincian Tagihan</n-divider> -->
+            <!-- <n-table size="small">
                 <thead>
                     <tr>
                         <th>Angsuran Ke</th>
@@ -84,32 +101,36 @@
                         </td>
                     </tr>
                 </tfoot>
-            </n-table>
+            </n-table> -->
 
             <div v-if="bodyDetail?.no_lkp">
                 <n-divider title-placement="left">Hasil Kunjungan</n-divider>
+
+                <n-form-item label="No surat">
+                    <n-input v-model:value="bodyDetail.no_surat" disabled> </n-input>
+                </n-form-item>
                 <n-form-item label="Hasil Kunjungan">
-                    <n-input type="textarea"></n-input>
+                    <n-input type="textarea" v-model:value="formDataKunjungan.keterangan"></n-input>
                 </n-form-item>
                 <n-form-item label="Tanggal JB/FU">
                     <n-date-picker placeholder="Tanggal JB/FU" class="w-full" value-format="yyyy-MM-dd"
-                        format="dd-MM-yyyy" type="date" />
+                        format="dd-MM-yyyy" type="date" v-model:value="formDataKunjungan.tgl_jb" />
                 </n-form-item>
                 <n-form-item label="Dokumen Kunjungan">
-                    <file-upload :def_preview="true" :multi="true" title="dokumen kunjungan"
-                        endpoint="image_upload_prospect" type="other" />
+                    <file-upload :def_preview="true" :multi="true" title="dokumen kunjungan" endpoint="cl_survey_upload"
+                        type="other" @fallback="handleFallback" />
                 </n-form-item>
             </div>
 
             <template #footer>
                 <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
-                    <n-button type="primary">Simpan</n-button>
+                    <n-button type="primary" @click="handleSubmitKunjungan">Simpan</n-button>
                     <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
                 </div>
             </template>
             <n-modal v-model:show="modalHistory">
                 <div class="w-1/3">
-                    <n-card title="History Surat" :segmented="true" size="small">
+                    <n-card :class="`shadow`" title="History Surat" :segmented="true" size="small">
                         <!-- <n-timeline>
                             <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
                             <n-timeline-item type="info" title="Laporan Kunjungan" content="nasabah tidak ada dirumah"
@@ -119,9 +140,13 @@
                             <n-timeline-item type="success" content="Tagihan masuk dan dibayarkan nasabah"
                                 time="2018-04-03 20:46" />
                         </n-timeline> -->
-                        <n-result status="warning" title="Kunjungan Kosong" description="Tidak Histori Kunjungan">
+                        <!-- <n-result status="warning" title="Kunjungan Kosong" description="Tidak Histori Kunjungan">
 
-                        </n-result>
+                        </n-result> -->
+                        <n-timeline>
+                            <n-timeline-item type="warning" v-for="i in bodyHistory" :key="i" :content="i.description"
+                                :time="timeAgo(i.create_date)" />
+                        </n-timeline>
                     </n-card>
                 </div>
             </n-modal>
@@ -138,13 +163,57 @@ import _ from "lodash";
 
 const me = useMeStore();
 const message = useMessage();
-
+const isLoading = ref(false);
 const modalHistory = ref(false);
 
 
+
 const selectedBranch = ref();
+const bodyHistory = ref([]);
+const handleHistory = (e) => {
+    modalHistory.value = true;
+    getHistory(e);
+}
+function timeAgo(dateString) {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diff = Math.floor((now - date) / 1000); // selisih dalam detik
 
+    const intervals = [
+        { label: 'tahun', seconds: 31536000 },
+        { label: 'bulan', seconds: 2592000 },
+        { label: 'hari', seconds: 86400 },
+        { label: 'jam', seconds: 3600 },
+        { label: 'menit', seconds: 60 },
+        { label: 'detik', seconds: 1 }
+    ];
 
+    for (const interval of intervals) {
+        const count = Math.floor(diff / interval.seconds);
+        if (count >= 1) {
+            return `${count} ${interval.label}${count > 1 ? '' : ''} yang lalu`;
+        }
+    }
+
+    return 'baru saja';
+}
+const getHistory = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `cl_logs/${e}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(reponse.error);
+    } else {
+        loadingBar.finish();
+        // console.log(response.data.response)
+        isLoading.value = false;
+        bodyHistory.value = response.data;
+    }
+};
 
 
 const convertObjectToArray = (obj) => {
@@ -165,13 +234,46 @@ const handleSubmit = () => {
     messageReactive = message.loading('memuat data listing beban', { duration: 0 });
     grabListBan(a);
 }
+const formDataKunjungan = ref({
+    no_surat: null,
+    keterangan: null,
+    tgl_jb: null,
+    path: []
+})
+const handleFallback = (e) => {
+    formDataKunjungan.value.path.push(e);
+}
+const handleSubmitKunjungan = async () => {
+    await postKunjungan(formDataKunjungan.value);
+    modalDetail.value = false;
+}
+
+
+const postKunjungan = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "POST",
+        api: `cl_survey_add`,
+        data: e,
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(reponse.error);
+    } else {
+        loadingBar.finish();
+        // console.log(response.data.response)
+        isLoading.value = false;
+        bodyHistory.value = response.data;
+    }
+};
+
 const dataListBan = ref([]);
 const loadingData = ref(false);
 const timer = ref(60);
 const disbaledButton = ref(false);
 const ctrDownload = ref(true);
 const grabListBan = async (e) => {
-
     loadingData.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
@@ -204,89 +306,10 @@ const grabListBan = async (e) => {
     }
 
 }
-const dummyData = [
-    {
-        no_surat: "SR-2025-001",
-        loan_number: "CT-001-2025",
-        no_lkp: "LKP-001",
-        tgl_jth_tempo: "2025-10-15",
-        nama_customer: "Andi Saputra",
-        alamat: "Jl. Melati No. 123, Jakarta Selatan",
-        SURVEYOR: "MCF-01",
-        status: "Belum Dikunjungi",
-        detail: [
-            {
-                angs_ke: 1,
-                tgl_jth_tempo: "2025-10-15",
-                jumlah: 1500000
-            },
-            {
-                angs_ke: 2,
-                tgl_jth_tempo: "2025-11-15",
-                jumlah: 1500000
-            },
-            {
-                angs_ke: 3,
-                tgl_jth_tempo: "2025-12-15",
-                jumlah: 1500000
-            }
-        ]
-    },
-    {
-        no_surat: "SR-2025-002",
-        no_lkp: "LKP-002",
-        loan_number: "CT-002-2025",
-        tgl_jth_tempo: "2025-10-20",
-        nama_customer: "Sari Dewi",
-        alamat: "Jl. Mawar No. 45, Bekasi",
-        SURVEYOR: "MCF-02",
-        status: "Sudah Dikunjungi",
-        detail: [
-            {
-                angs_ke: 1,
-                tgl_jth_tempo: "2025-10-20",
-                jumlah: 2000000
-            },
-            {
-                angs_ke: 2,
-                tgl_jth_tempo: "2025-11-20",
-                jumlah: 2000000
-            },
-            {
-                angs_ke: 3,
-                tgl_jth_tempo: "2025-12-20",
-                jumlah: 2000000
-            }
-        ]
-    },
-    {
-        no_surat: "SR-2025-003",
-        no_lkp: "",
-        loan_number: "CT-003-2025",
-        tgl_jth_tempo: "2025-10-25",
-        nama_customer: "Budi Hartono",
-        alamat: "Jl. Kenanga No. 77, Depok",
-        SURVEYOR: "MCF-03",
-        status: "Tertunda",
-        detail: [
-            {
-                angs_ke: 1,
-                tgl_jth_tempo: "2025-10-25",
-                jumlah: 1750000
-            },
-            {
-                angs_ke: 2,
-                tgl_jth_tempo: "2025-11-25",
-                jumlah: 1750000
-            },
-            {
-                angs_ke: 3,
-                tgl_jth_tempo: "2025-12-25",
-                jumlah: 1750000
-            }
-        ]
-    }
-];
+
+const postForm = () => {
+
+}
 
 
 
@@ -294,35 +317,53 @@ const columnBebanTagih = [
     {
         title: "No Surat",
         key: "no_surat",
-        width: '150',
         sorter: 'default',
-    },
-    {
-        title: "No LKP",
-        key: "no_lkp",
-        width: '150',
-        sorter: 'default',
-    },
-    {
-        title: "No Kontrak",
-        key: "loan_number",
-        width: '200',
-        sorter: 'default',
-    },
-    {
-        title: "Tgl Jth Tempo",
-        key: "tgl_jth_tempo",
-        sorter: 'default',
+        width: 120,
+        fixed: "left",
     },
     {
         title: "Customer",
         key: "nama_customer",
         sorter: 'default',
+        width: 120,
+        fixed: "left",
     },
+    {
+        title: "No LKP",
+        key: "no_lkp",
+        sorter: 'default',
+        width: 120,
+    },
+    {
+        title: "No Kontrak",
+        key: "no_kontrak",
+        width: 150,
+        sorter: 'default',
+    },
+    {
+        title: "Tgl Jth Tempo",
+        key: "tgl_jatuh_tempo",
+        sorter: 'default',
+        width: 150,
+    },
+    {
+        title: "Angsuran ke",
+        key: "angusran_ke",
+        sorter: 'default',
+        width: 120,
+    },
+    {
+        title: "Angsuran",
+        key: "angsuran",
+        sorter: 'default',
+        width: 120,
+    },
+
     {
         title: "Alamat",
         key: "alamat",
         sorter: 'default',
+        width: 120,
         ellipsis: {
             tooltip: true,
         }
@@ -330,6 +371,7 @@ const columnBebanTagih = [
     {
         title: "",
         align: "right",
+        width: 120,
         render(row) {
             return h(NButton, {
                 type: 'primary',
@@ -341,6 +383,7 @@ const columnBebanTagih = [
 ];
 const dataList = ref([]);
 const getData = async () => {
+    isLoading.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
@@ -352,6 +395,7 @@ const getData = async () => {
     } else {
         loadingBar.finish();
         // console.log(response.data.response)
+        isLoading.value = false;
         dataList.value = response.data;
     }
 };
@@ -361,6 +405,7 @@ const bodyDetail = ref();
 const handleDetail = (e) => {
     bodyDetail.value = e;
     modalDetail.value = true;
+    formDataKunjungan.value.no_surat = e.no_surat;
 }
 
 const checkedRowKeys = ref([]);

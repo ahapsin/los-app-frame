@@ -1,7 +1,7 @@
 <template>
     <div class="pt-4">
         <n-space vertical>
-            <n-card :title="`Tabel ${$route.name}`">
+            <n-card :class="`shadow`":title="`Tabel ${$route.name}`">
                 <template #header-extra>
                     <n-space>
                         <n-popover trigger="click" placement="bottom-end">

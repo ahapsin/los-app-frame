@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Laporan Listing Beban" :segmented="true" size="small">
+  <n-card :class="`shadow`"title="Laporan Listing Beban" :segmented="true" size="small">
     <div>
       <n-space vertical :size="12" class="pt-4">
         <n-space>

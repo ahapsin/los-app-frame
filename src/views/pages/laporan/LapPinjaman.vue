@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-space vertical>
-      <n-card :title="`Laporan`">
+      <n-card :class="`shadow`":title="`Laporan`">
         <n-tabs type="card" animated @before-leave="handleBeforeLeave" @update:value="handleUpdateValue">
           <n-tab-pane name="inq_pinjaman" tab="INQUERY PIUTANG">
             <TabInqPinjaman :columns="columnsPinjaman" :data="dataInqPinjaman" :loading="loadInqPinjaman"
@@ -25,7 +25,7 @@
       </n-card>
     </n-space>
     <n-modal v-model:show="modalDetail">
-      <n-card content-style="padding: 0;" class="w-11/12 ">
+      <n-card :class="`shadow`"content-style="padding: 0;" class="w-11/12 ">
         <n-tabs
             type="line"
             :tabs-padding="20"
@@ -34,7 +34,7 @@
         >
           <n-tab-pane name="Kartu Piutang">
             <n-spin v-if="spinAngsuran"/>
-            <n-card v-else>
+            <n-card :class="`shadow`"v-else>
               <div ref="printKartuRef" class="p-4">
                 <div class="flex items-center gap-2 pb-2 justify-between border-b border-dashed border-black">
                   <div class="flex gap-2 items-center">

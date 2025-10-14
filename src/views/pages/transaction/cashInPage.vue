@@ -1,5 +1,5 @@
 <template>
-    <n-card :segmented="{
+    <n-card :class="`shadow`":segmented="{
         content: true,
         footer: 'soft',
     }" size="small">
@@ -145,7 +145,7 @@
             type="bukti_transfer" :idapp="pageData.uid" @fallback="handleResBack" />
     </n-modal>
     <n-modal v-model:show="modalProsesPayment" :mask-closable="false">
-        <n-card :class="width > 850 ? 'w-1/2' : 'w-fit'">
+        <n-card :class="`shadow`":class="width > 850 ? 'w-1/2' : 'w-fit'">
             <div class="flex items-center gap-4" v-if="loadProses">
                 <n-spin size="small" />
                 <n-text>memproses pembayaran</n-text>

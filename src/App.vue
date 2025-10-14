@@ -29,7 +29,7 @@ const themeOverrides = {
   common: {
     primaryColor: appcolor,
     primaryColorHover: appAccentColor,
-    borderRadius: "10px",
+    borderRadius: "15px",
     textColorBase: appcolor,
     infoColor: appInfoColor,
     infoColorHover: appInfoColor,

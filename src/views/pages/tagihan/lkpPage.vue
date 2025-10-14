@@ -66,6 +66,7 @@ const columnDeploy = reactive([
         }
     }
 ]);
+
 const handleCancel = () => {
     modalAdd.value = false;
 }
@@ -100,6 +101,12 @@ const handleSaved = () => {
     getList();
 }
 const columnBebanTagih = reactive([
+    {
+        title: "NO SURAT",
+        key: "no_surat",
+        width: 150,
+        sorter: "default",
+    },
     {
         title: "NO KONTRAK",
         key: "no_kontrak",
@@ -166,23 +173,77 @@ const columnBebanTagih = reactive([
         sorter: "default",
         width: 150,
     },
+    {
+        title: "DETAIL ",
+        sorter: "default",
+        width: 150,
+        render(row) {
+            return h(NButton, {
+                size: "small",
+                onClick: () => handleHistory(row.no_surat),
+            }, {
+                default: () => "Detail",
+            })
+        }
+    },
 
 ]);
+
+const modalHistory = ref(false);
+const bodyHistory = ref([]);
+const handleHistory = async (e) => {
+    modalHistory.value = true;
+    await getHistory(e);
+}
+
+const getHistory = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `cl_logs/${e}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(reponse.error);
+    } else {
+        // console.log(response.data.response)
+        isLoading.value = false;
+        bodyHistory.value = response.data;
+    }
+};
 onMounted(() => {
     getList();
 });
+function timeAgo(dateString) {
+  const now = new Date();
+  const date = new Date(dateString);
+  const diff = Math.floor((now - date) / 1000); // selisih dalam detik
+
+  const intervals = [
+    { label: 'tahun', seconds: 31536000 },
+    { label: 'bulan', seconds: 2592000 },
+    { label: 'hari', seconds: 86400 },
+    { label: 'jam', seconds: 3600 },
+    { label: 'menit', seconds: 60 },
+    { label: 'detik', seconds: 1 }
+  ];
+
+  for (const interval of intervals) {
+    const count = Math.floor(diff / interval.seconds);
+    if (count >= 1) {
+      return `${count} ${interval.label}${count > 1 ? '' : ''} yang lalu`;
+    }
+  }
+
+  return 'baru saja';
+}
 </script>
 
 <template>
-    <n-card title="List LKP" size="small" :segmented="true">
+    <n-card :class="`shadow-lg`" title="Daftar LKP" size="small" :segmented="true">
         <template #header-extra>
             <n-space>
-                <!-- <n-button type="success" secondary @click="exportToExcel(dataList)">
-                    <template #icon>
-                        <v-icon name="bi-download"></v-icon>
-                    </template>
-Export Excel
-</n-button> -->
                 <n-button type="primary" secondary link @click="modalAdd = true">
                     <template #icon>
                         <v-icon name="bi-plus-lg"></v-icon>
@@ -207,9 +268,9 @@ Export Excel
         </div>
     </n-modal>
     <n-modal v-model:show="modalDetail">
-        <n-card class="w-4/5" title="Detail LKP" size="small" :segmented="true">
+        <n-card :class="`shadow`" class="w-4/5" title="Detail LKP" size="small" :segmented="true">
             <div>
-                <n-card class="mb-2" size="small" embedded>
+                <n-card :class="`shadow`" class="mb-2" size="small" embedded>
                     <div class="flex  gap-4">
                         <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                             <small class="text-reg">No LKP</small>
@@ -239,5 +300,30 @@ Export Excel
                     :scroll-x="1800" />
             </div>
         </n-card>
+    </n-modal>
+    <n-modal v-model:show="modalHistory">
+        <div class="w-1/3">
+            <n-card :class="`shadow`" title="History Surat" :segmented="true" size="small">
+                <!-- <n-timeline>
+                
+                            <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
+                            <n-timeline-item type="info" title="Laporan Kunjungan" content="nasabah tidak ada dirumah"
+                                time="2018-04-03 20:46" line-type="dashed" />
+                            <n-timeline-item type="warning" content="Mencoba ulang kunjungan oleh *nama marketing*"
+                                time="2018-04-03 20:46" />
+                            <n-timeline-item type="success" content="Tagihan masuk dan dibayarkan nasabah"
+                                time="2018-04-03 20:46" />
+                        </n-timeline> -->
+                <!-- <n-result status="warning" title="Kunjungan Kosong" description="Tidak Histori Kunjungan">
+
+                        </n-result> -->
+                <n-scrollbar style="max-height: 400px">
+                    <n-timeline>
+                        <n-timeline-item type="warning" v-for="i in bodyHistory" :key="i" :content="i.description"
+                            :time="timeAgo(i.create_date)" />
+                    </n-timeline>
+                </n-scrollbar>
+            </n-card>
+        </div>
     </n-modal>
 </template>

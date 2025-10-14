@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-space vertical>
-      <n-card :title="`Laporan Kredit Jatuh Tempo`" :segmented="true" size="small">
+      <n-card :class="`shadow`":title="`Laporan Kredit Jatuh Tempo`" :segmented="true" size="small">
         <template #header-extra>
           <!--          <n-space class="!gap-1">-->
           <!--            <div class="me-1 flex gap-2">-->
