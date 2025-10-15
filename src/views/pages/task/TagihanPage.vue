@@ -1,5 +1,5 @@
 <template>
-    <n-card :class="`shadow`" title="Daftar Tagihan" :segmented="true" size="small">
+    <n-card :class="`shadow`" title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412">
         <div>
             <n-space vertical :size="12">
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
@@ -9,6 +9,24 @@
             </n-space>
         </div>
     </n-card>
+    <div v-else class="m-2">
+        <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" @blur="searchData" />
+        <n-infinite-scroll style="height: 80dvh" :distance="10" class="mt-2">
+            <div class="flex flex-col gap-2">
+                <div class="flex justify-between p-6 border rounded-2xl focus:bg-red-500 bg-white" v-for="i in dataList"
+                    @click="handleDetail(i)">
+                    <div class="flex flex-col">
+                        <p>Surat #:<n-text class="font-bold text-pr">{{ i.no_surat }}</n-text></p>
+                        <n-text class="font-bold text-neutral">{{ i.nama_customer }}</n-text>
+                    </div>
+                    <div class="flex flex-col gap-4 items-end">
+                        <n-text class="font-bold">{{ i.angsuran?.toLocaleString() }}</n-text>
+                        <n-button size="small">{{ i.tgl_jatuh_tempo }}</n-button>
+                    </div>
+                </div>
+            </div>
+        </n-infinite-scroll>
+    </div>
     <n-modal v-model:show="modalDetail" :mask-closable="false">
         <n-card :class="`shadow`" class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
             <template #header-extra>
@@ -36,7 +54,6 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]" v-if="bodyDetail?.no_lkp">
                         <small class="text-reg">No LKP</small>
                         <n-text type="warning">
-
                             {{ bodyDetail.no_lkp }}
                         </n-text>
                     </div>
@@ -129,7 +146,7 @@
                 </div>
             </template>
             <n-modal v-model:show="modalHistory">
-                <div class="w-1/3">
+                <div class="md:w-1/3">
                     <n-card :class="`shadow`" title="History Surat" :segmented="true" size="small">
                         <!-- <n-timeline>
                             <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
@@ -155,12 +172,14 @@
 
 </template>
 <script setup>
+import { useWindowSize } from "@vueuse/core";
 import { NButton, useLoadingBar, useMessage } from "naive-ui";
 import { onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
 import _ from "lodash";
 
+const { width } = useWindowSize();
 const me = useMeStore();
 const message = useMessage();
 const isLoading = ref(false);
