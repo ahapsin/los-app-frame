@@ -1,10 +1,31 @@
 <template>
+
     <n-card :class="`shadow`" title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412">
+        <template #header-extra>
+            <n-space>
+                <n-input clearable v-model:value="boxSearch" placeholder="cari">
+                    <template #suffix>
+                        <v-icon name="bi-search"></v-icon>
+                    </template>
+                </n-input>
+                <n-button type="success" secondary @click="exportToExcel(filteredDataList)">
+                    <template #icon>
+                        <v-icon name="bi-download"></v-icon>
+                    </template>
+                    Export Excel
+                </n-button>
+                <n-button quaternary circle @click="getData">
+                    <template #icon>
+                        <v-icon name="bi-arrow-clockwise"></v-icon>
+                    </template>
+                </n-button>
+            </n-space>
+        </template>
         <div>
             <n-space vertical :size="12">
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
-                <n-data-table :columns="columnBebanTagih" :data="dataList" :filter-value="filterValue"
+                <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                     :loading="isLoading" size="small" :pagination="{ pageSize: 10 }" :scroll-x="1300" />
             </n-space>
         </div>
@@ -178,6 +199,8 @@ import { onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
 import _ from "lodash";
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver';
 
 const { width } = useWindowSize();
 const me = useMeStore();
@@ -186,13 +209,21 @@ const isLoading = ref(false);
 const modalHistory = ref(false);
 
 
-
 const selectedBranch = ref();
 const bodyHistory = ref([]);
 const handleHistory = (e) => {
     modalHistory.value = true;
     getHistory(e);
 }
+
+const exportToExcel = (data) => {
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DAFTAR TAGIHAN.xlsx')
+}
+
 function timeAgo(dateString) {
     const now = new Date();
     const date = new Date(dateString);
@@ -376,6 +407,9 @@ const columnBebanTagih = [
         key: "angsuran",
         sorter: 'default',
         width: 120,
+        render(row) {
+            return h("div", row.angsuran.toLocaleString())
+        }
     },
 
     {
@@ -428,9 +462,61 @@ const handleDetail = (e) => {
 }
 
 const checkedRowKeys = ref([]);
-
+const filterValue = reactive({
+    NBOT: [],
+    KECAMATAN: [],
+    SURVEYOR: [],
+    "SURVEYOR STATUS": [],
+});
 const boxSearch = ref();
+const filteredDataList = computed(() => {
+    let filteredData = dataList.value;
 
+    for (const key in filterValue) {
+        if (filterValue[key].length > 0) {
+            filteredData = filteredData.filter((row) =>
+                filterValue[key].includes(row[key])
+            );
+        }
+    }
+
+    // Terapkan filter pencarian global jika ada
+    if (boxSearch.value) {
+        const searchTerm = boxSearch.value.toLowerCase();
+        filteredData = filteredData.filter((row) => {
+            return Object.values(row).some((val) =>
+                String(val).toLowerCase().includes(searchTerm)
+            );
+        });
+    }
+
+    return filteredData;
+});
+// A computed property to get only the filters that have values
+const activeFilters = computed(() => {
+    const active = {};
+    for (const key in filterValue) {
+        if (filterValue[key] && filterValue[key].length > 0) {
+            active[key] = filterValue[key];
+        }
+    }
+    return active;
+});
+
+const hasActiveFilters = computed(() => {
+    return Object.keys(activeFilters.value).length > 0;
+});
+
+// Function to remove a single filter tag
+const removeFilter = (key, valueToRemove) => {
+    const values = filterValue[key];
+    if (values) {
+        const index = values.indexOf(valueToRemove);
+        if (index > -1) {
+            values.splice(index, 1);
+        }
+    }
+};
 onMounted(() => {
     loadingBar.finish();
     getData();

@@ -16,6 +16,7 @@ const handleDetail = (e) => {
     // console.log(e.no_lkp);
 
 }
+
 const getDetail = async (e) => {
     isLoading.value = true;
     let userToken = localStorage.getItem("token");
@@ -75,7 +76,7 @@ const exportToExcel = (data) => {
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
-    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx')
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DAFTAR LKP.xlsx')
 }
 const isLoading = ref(false);
 const dataList = ref([]);
@@ -160,12 +161,18 @@ const columnBebanTagih = reactive([
         key: "angsuran",
         sorter: "default",
         width: 150,
+        render(row) {
+            return h("div", row.angsuran?.toLocaleString())
+        }
     },
     {
         title: "BAYAR ",
         key: "bayar",
         sorter: "default",
         width: 150,
+        render(row) {
+            return h("div", row.bayar?.toLocaleString())
+        }
     },
     {
         title: "HASIL KUNJUNGAN ",
@@ -216,39 +223,51 @@ onMounted(() => {
     getList();
 });
 function timeAgo(dateString) {
-  const now = new Date();
-  const date = new Date(dateString);
-  const diff = Math.floor((now - date) / 1000); // selisih dalam detik
+    const now = new Date();
+    const date = new Date(dateString);
+    const diff = Math.floor((now - date) / 1000); // selisih dalam detik
 
-  const intervals = [
-    { label: 'tahun', seconds: 31536000 },
-    { label: 'bulan', seconds: 2592000 },
-    { label: 'hari', seconds: 86400 },
-    { label: 'jam', seconds: 3600 },
-    { label: 'menit', seconds: 60 },
-    { label: 'detik', seconds: 1 }
-  ];
+    const intervals = [
+        { label: 'tahun', seconds: 31536000 },
+        { label: 'bulan', seconds: 2592000 },
+        { label: 'hari', seconds: 86400 },
+        { label: 'jam', seconds: 3600 },
+        { label: 'menit', seconds: 60 },
+        { label: 'detik', seconds: 1 }
+    ];
 
-  for (const interval of intervals) {
-    const count = Math.floor(diff / interval.seconds);
-    if (count >= 1) {
-      return `${count} ${interval.label}${count > 1 ? '' : ''} yang lalu`;
+    for (const interval of intervals) {
+        const count = Math.floor(diff / interval.seconds);
+        if (count >= 1) {
+            return `${count} ${interval.label}${count > 1 ? '' : ''} yang lalu`;
+        }
     }
-  }
 
-  return 'baru saja';
+    return 'baru saja';
 }
-</script>
 
+
+</script>
 <template>
     <n-card :class="`shadow-lg`" title="Daftar LKP" size="small" :segmented="true">
         <template #header-extra>
             <n-space>
+                <n-input clearable v-model:value="boxSearch" placeholder="cari">
+                    <template #suffix>
+                        <v-icon name="bi-search"></v-icon>
+                    </template>
+                </n-input>
                 <n-button type="primary" secondary link @click="modalAdd = true">
                     <template #icon>
                         <v-icon name="bi-plus-lg"></v-icon>
                     </template>
                     Buat LKP
+                </n-button>
+                <n-button type="success" secondary @click="exportToExcel(dataList)">
+                    <template #icon>
+                        <v-icon name="bi-download"></v-icon>
+                    </template>
+                    Export Excel
                 </n-button>
                 <n-button quaternary circle @click="getList">
                     <template #icon>
@@ -296,8 +315,8 @@ function timeAgo(dateString) {
                 </n-card>
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
                     @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-                    @update:checked-row-keys="handleCheck" size="small" :loading="isLoading" :pagination="{ pageSize: 10 }"
-                    :scroll-x="1800" />
+                    @update:checked-row-keys="handleCheck" size="small" :loading="isLoading"
+                    :pagination="{ pageSize: 10 }" :scroll-x="1800" />
             </div>
         </n-card>
     </n-modal>

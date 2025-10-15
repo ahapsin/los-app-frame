@@ -2,7 +2,7 @@
     <n-card :class="`shadow`" title="Daftar Deploy" :segmented="true" size="small">
         <template #header-extra>
             <n-space>
-                <n-input clearable v-model:value="boxSearch">
+                <n-input clearable v-model:value="boxSearch" placeholder="cari">
                     <template #suffix>
                         <v-icon name="bi-search"></v-icon>
                     </template>
@@ -89,7 +89,7 @@ const exportToExcel = (data) => {
     const wb = XLSX.utils.book_new()
     XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
     const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
-    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx')
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DAFTAR DEPLOY.xlsx')
 }
 
 const filterValue = reactive({
@@ -155,6 +155,9 @@ const columnBebanTagih = reactive([
         key: "tgl_jatuh_tempo",
         width: 200,
         sorter: "default",
+        render(row){
+            return h("div",row.tgl_jatuh_tempo)
+        }
     },
     {
         title: "CYCLE",
