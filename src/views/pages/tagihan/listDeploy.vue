@@ -1,5 +1,5 @@
 <template>
-    <n-card :class="`shadow`"title="Deploy Tagihan" :segmented="true" size="small">
+    <n-card :class="`shadow`" title="Deploy Tagihan" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -14,17 +14,17 @@
                 </div>
             </n-alert>
             <n-space vertical :size="12">
+                <n-form-item label="petugas">
+                    <n-select v-model:value="assignTo" placeholder="pilih petugas"
+                        :options="_.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
+                        label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
+                </n-form-item>
                 <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                     @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                     @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
                     :pagination="{ pageSize: 10 }" />
                 <n-space vertical>
-                    <n-form-item label="petugas">
-                        <n-select v-model:value="assignTo" placeholder="pilih petugas"
-                            :options="_.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
-                            label-field="nama" filterable :render-tag="renderSingleSelectTag"
-                            :render-label="renderLabel" />
-                    </n-form-item>
+
                     <n-alert type="info" v-if="checkedRowKeys.length === 0">Pilih data tagihan</n-alert>
                     <n-alert type="info" v-else-if="assignTo === null">Pilih petugas</n-alert>
                     <n-space v-else>
@@ -347,7 +347,6 @@ const removeFilter = (key, valueToRemove) => {
     }
 };
 onMounted(() => {
-    loadingBar.finish();
     getData();
     getList();
 });

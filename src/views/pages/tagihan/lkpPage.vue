@@ -296,7 +296,7 @@ function timeAgo(dateString) {
                 </n-card>
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
                     @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-                    @update:checked-row-keys="handleCheck" size="small" :pagination="{ pageSize: 10 }"
+                    @update:checked-row-keys="handleCheck" size="small" :loading="isLoading" :pagination="{ pageSize: 10 }"
                     :scroll-x="1800" />
             </div>
         </n-card>

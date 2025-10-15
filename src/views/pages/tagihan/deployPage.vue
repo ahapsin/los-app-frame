@@ -1,7 +1,12 @@
 <template>
-    <n-card :class="`shadow`"title="Daftar Deploy" :segmented="true" size="small">
+    <n-card :class="`shadow`" title="Daftar Deploy" :segmented="true" size="small">
         <template #header-extra>
             <n-space>
+                <n-input clearable v-model:value="boxSearch">
+                    <template #suffix>
+                        <v-icon name="bi-search"></v-icon>
+                    </template>
+                </n-input>
                 <n-button type="success" secondary @click="exportToExcel(filteredDataList)">
                     <template #icon>
                         <v-icon name="bi-download"></v-icon>
@@ -14,11 +19,12 @@
                     </template>
                     Buat Depoly
                 </n-button>
+
+
                 <n-button quaternary circle @click="getList">
                     <template #icon>
                         <v-icon name="bi-arrow-clockwise"></v-icon>
                     </template>
-
                 </n-button>
             </n-space>
         </template>
@@ -170,8 +176,8 @@ const columnBebanTagih = reactive([
         key: "angsuran",
         sorter: "default",
         width: 150,
-        render(row){
-            return h("div",row.angsuran?.toLocaleString())
+        render(row) {
+            return h("div", row.angsuran?.toLocaleString())
         }
     },
     {
@@ -179,8 +185,8 @@ const columnBebanTagih = reactive([
         key: "bayar",
         sorter: "default",
         width: 150,
-         render(row){
-            return h("div",row.bayar?.toLocaleString())
+        render(row) {
+            return h("div", row.bayar?.toLocaleString())
         }
     },
     {

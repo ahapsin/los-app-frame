@@ -1,5 +1,5 @@
 <template>
-    <n-card :class="`shadow`"title="Buat LKP Baru" :segmented="true" size="small">
+    <n-card :class="`shadow`" title="Buat LKP Baru" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -26,7 +26,7 @@
                     <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                         @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
-                        :pagination="{ pageSize: 10 }"  :scroll-x="1800"/>
+                        :pagination="{ pageSize: 10 }" :scroll-x="1800" :row-class-name="getRowClassName" />
                 </div>
             </n-space>
         </div>
@@ -60,7 +60,12 @@ const loadingBar = useLoadingBar();
 
 const modalAssign = ref(false);
 const assignTo = ref(null);
-
+function getRowClassName(row) {
+    if (row.bayar >= row.angsuran) {
+        return 'too-old';
+    }
+    return '';
+}
 const dataUser = ref([]);
 const dataList = ref([]);
 const isLoading = ref(false);
@@ -83,13 +88,18 @@ function onFilterChange(newFilter) {
 }
 
 const columnBebanTagih = reactive([
-    { type: "selection" },
+    {
+        type: "selection",
+        disabled(row) {
+            return row.bayar >= row.angsuran
+        }
+    },
     {
         title: "NO SURAT",
         key: "no_surat",
         width: 150,
         sorter: "default",
-    },{
+    }, {
         title: "NO KONTRAK",
         key: "no_kontrak",
         width: 150,
@@ -142,12 +152,18 @@ const columnBebanTagih = reactive([
         key: "angsuran",
         sorter: "default",
         width: 150,
+        render(row) {
+            return h("div", row.angsuran.toLocaleString())
+        }
     },
     {
         title: "BAYAR ",
         key: "bayar",
         sorter: "default",
         width: 150,
+        render(row) {
+            return h("div", row.bayar.toLocaleString())
+        }
     },
     {
         title: "HASIL KUNJUNGAN ",
@@ -233,7 +249,7 @@ const getData = async () => {
         dataUser.value = response.data.response;
     }
 };
-
+const today = new Date();
 const handleChangePetugas = async () => {
     isLoading.value = true;
     let userToken = localStorage.getItem("token");
@@ -251,6 +267,21 @@ const handleChangePetugas = async () => {
         loadingBar.finish();
         dataList.value = response.data;
 
+        // Filter untuk auto-check berdasarkan tgl_jatuh_tempo
+        const today = new Date();
+        checkedRowKeys.value = response.data
+            .filter(item => {
+                if (!item.tgl_jatuh_tempo) return false;
+
+                const itemDate = new Date(item.tgl_jatuh_tempo);
+                const isOverdue = itemDate <= today;
+                const isUnpaid = item.bayar <= item.angsuran;
+
+                return isOverdue && isUnpaid;
+            })
+            .map(item); // pastikan ini sesuai row-key yang digunakan
+
+        // Set filter options
         const uniqueValues = (key) => {
             return [...new Set(response.data.map((item) => item[key]).filter(Boolean))];
         };
@@ -264,11 +295,13 @@ const handleChangePetugas = async () => {
                 }));
             }
         };
+
         setFilterOptions("nbot");
         setFilterOptions("kec");
         setFilterOptions("desa");
     }
 };
+
 const emit = defineEmits();
 const assignTagihan = async () => {
     const bodyPost = {
@@ -352,3 +385,8 @@ onMounted(() => {
     getData();
 });
 </script>
+<style scoped>
+:deep(.too-old td) {
+   @apply bg-green-100
+}
+</style>
