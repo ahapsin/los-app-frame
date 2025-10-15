@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full bg-white h-full md:h-fit p-10 md:rounded-xl shadow-xl">
+    <div class="w-full md:bg-white h-full md:h-fit p-10 md:rounded-xl shadow-xl">
 
         <n-form ref="formRef" :model="dynamicForm">
             <div class="flex md:flex-row gap-4 items-center pb-8">
