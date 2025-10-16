@@ -1,7 +1,7 @@
 <template>
   <div class="pt-4" id="drawer-target">
     <n-space vertical>
-      <n-card :class="`shadow`":title="`Transaksi serah terima jaminan`">
+      <n-card :title="`Transaksi serah terima jaminan`">
         <template #header-extra>
           <n-space>
             <n-popover trigger="click" placement="bottom-end">
@@ -66,7 +66,7 @@
   </div>
 
   <n-modal class="w-1/2" title="Upload Berkas Pencairan" v-model:show="showModal">
-    <n-card :class="`shadow`":bordered="false" aria-modal="true">
+    <n-card :bordered="false" aria-modal="true">
       <div class="flex justify-between">
         <div>
           <div class="flex">

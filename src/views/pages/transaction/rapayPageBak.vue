@@ -1,5 +1,5 @@
 <template>
-  <n-card :class="`shadow`":segmented="{
+  <n-card :segmented="{
     content: true,
     footer: 'soft',
   }">
@@ -188,7 +188,7 @@
                  type="bukti_transfer" :idapp="pageData.uid" @fallback="handleResBack"/>
   </n-modal>
   <n-modal class="w-3/4" title="Upload Berkas Pencairan" v-model:show="dialogProses" :mask-closable="false">
-    <n-card :class="`shadow`"title="Transaksi Berhasil">
+    <n-card title="Transaksi Berhasil">
       <div class="flex gap-8 font-mono">
         <table class="table-auto w-1/2">
           <tr>

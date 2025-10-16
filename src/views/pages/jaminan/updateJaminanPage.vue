@@ -1,5 +1,5 @@
 <template>
-  <n-card :class="`shadow`":segmented="{
+  <n-card :segmented="{
     content: true,
     footer: 'soft',
   }" :title="`Update Status Jaminan`">

@@ -1,7 +1,7 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :class="`shadow`":title="`Laporan data Jaminan`" :segmented="true" size="small">
+            <n-card :title="`Laporan data Jaminan`" :segmented="true" size="small">
                 <template #header-extra>
                     <json-excel v-if="showData.length > 0" :data="showData"
                         :name="`laporan_jaminan_${dynamicSearch.pos}`" :fields="json_fields" :stringifyLongNum="true">
@@ -43,7 +43,7 @@
             </n-card>
         </n-space>
         <n-modal v-model:show="showDetailModal" title="Modal">
-            <n-card :class="`shadow`"class="w-2/3" title="Detail Jaminan" size="small">
+            <n-card class="w-2/3" title="Detail Jaminan" size="small">
                 <template #header-extra>
                     <n-button type="info" @click="showSuratPengantar = true" v-if="bodyModal.status != 'RILIS'">Surat
                         Pengantar</n-button>
@@ -111,7 +111,7 @@
             </n-card>
         </n-modal>
         <n-modal v-model:show="showSuratPengantar">
-            <n-card :class="`shadow`"class="w-fit" title="Surat Pengantar" size="small" :segmented="true">
+            <n-card class="w-fit" title="Surat Pengantar" size="small" :segmented="true">
                 <template #header-extra>
                     <n-button size="small" type="primary" secondary @click="handlePrint">Cetak</n-button>
                 </template>

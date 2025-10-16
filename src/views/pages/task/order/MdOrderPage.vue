@@ -1,7 +1,7 @@
 <template>
   <div id="drawer-target">
     <n-space vertical>
-      <n-card :class="`shadow`":title="`Tabel ${$route.name}`" :segmented="{
+      <n-card :title="`Tabel ${$route.name}`" :segmented="{
                 content: true,
                 footer: 'soft',
             }" size="small">
@@ -76,7 +76,7 @@ type="daterange" @update:value="onConfirmDate" />
     </n-space>
   </div>
   <n-modal class="w-1/2" title="Upload Berkas Pencairan" v-model:show="showModal" :mask-closable="false">
-    <n-card :class="`shadow`":bordered="false" aria-modal="true">
+    <n-card :bordered="false" aria-modal="true">
       <n-grid :cols="2">
         <n-gi>
           <div class="flex">

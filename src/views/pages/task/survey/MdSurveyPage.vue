@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-space vertical>
-      <n-card :class="`shadow`"title="Data Survey" :segmented="{
+      <n-card title="Data Survey" :segmented="{
         content: true,
         footer: 'soft',
       }" size="small">

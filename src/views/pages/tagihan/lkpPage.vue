@@ -4,6 +4,10 @@ import { saveAs } from 'file-saver';
 import { useApi } from '../../../helpers/axios';
 import AddLkp from './addLkp.vue';
 import { NButton } from 'naive-ui';
+import moment from 'moment'
+
+
+
 const modalAdd = ref(false);
 const addDeploy = () => {
     modalAdd.value = true;
@@ -50,16 +54,17 @@ const columnDeploy = reactive([
         sorter: "default",
     },
     {
-        title: "Jumlah Surat Tagih",
+        title: "JUMLAH SRAT TAGIH",
         key: "jml_surat_tgh",
         sorter: "default",
     },
     {
-        key: "jml_surat_tgh",
+        key: "detail",
         align: "right",
         render(row) {
             return h(NButton, {
                 size: "small",
+                secondary: true,
                 onClick: () => handleDetail(row),
             }, {
                 default: () => "Detail",
@@ -178,16 +183,23 @@ const columnBebanTagih = reactive([
         title: "HASIL KUNJUNGAN ",
         key: "hasil_kunjungan",
         sorter: "default",
+        width: 230,
+    },
+    {
+        title: "TGL JB",
+        key: "tgl_jb",
+        sorter: "default",
         width: 150,
     },
     {
         title: "DETAIL ",
         sorter: "default",
-        width: 150,
+        width: 80,
         render(row) {
             return h(NButton, {
                 size: "small",
-                onClick: () => handleHistory(row.no_surat),
+                secondary: true,
+                onClick: () => handleHistorySurat(row.no_surat),
             }, {
                 default: () => "Detail",
             })
@@ -196,27 +208,27 @@ const columnBebanTagih = reactive([
 
 ]);
 
-const modalHistory = ref(false);
-const bodyHistory = ref([]);
-const handleHistory = async (e) => {
-    modalHistory.value = true;
-    await getHistory(e);
+const modalHistorySurat = ref(false);
+const bodyHistorySurat = ref([]);
+const handleHistorySurat = async (e) => {
+    modalHistorySurat.value = true;
+    await getHistorySurat(e);
 }
 
-const getHistory = async (e) => {
+const getHistorySurat = async (e) => {
     isLoading.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: `cl_logs/${e}`,
+        api: `cl_survey_detail/${e}`,
         token: userToken,
     });
     if (!response.ok) {
-        console.log(reponse.error);
+        console.log(response.error);
     } else {
         // console.log(response.data.response)
         isLoading.value = false;
-        bodyHistory.value = response.data;
+        bodyHistorySurat.value = response.data;
     }
 };
 onMounted(() => {
@@ -287,9 +299,9 @@ function timeAgo(dateString) {
         </div>
     </n-modal>
     <n-modal v-model:show="modalDetail">
-        <n-card :class="`shadow`" class="w-4/5" title="Detail LKP" size="small" :segmented="true">
+        <n-card  class="w-4/5" title="Detail LKP" size="small" :segmented="true">
             <div>
-                <n-card :class="`shadow`" class="mb-2" size="small" embedded>
+                <n-card  class="mb-2" size="small" embedded>
                     <div class="flex  gap-4">
                         <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                             <small class="text-reg">No LKP</small>
@@ -316,13 +328,13 @@ function timeAgo(dateString) {
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
                     @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                     @update:checked-row-keys="handleCheck" size="small" :loading="isLoading"
-                    :pagination="{ pageSize: 10 }" :scroll-x="1800" />
+                    :pagination="{ pageSize: 10 }" :scroll-x="2050" />
             </div>
         </n-card>
     </n-modal>
-    <n-modal v-model:show="modalHistory">
-        <div class="w-1/3">
-            <n-card :class="`shadow`" title="History Surat" :segmented="true" size="small">
+    <n-modal v-model:show="modalHistorySurat">
+        <div class="w-2/3">
+            <n-card  title="Hasil Kunjungan" :segmented="true" size="small">
                 <!-- <n-timeline>
                 
                             <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
@@ -337,10 +349,37 @@ function timeAgo(dateString) {
 
                         </n-result> -->
                 <n-scrollbar style="max-height: 400px">
-                    <n-timeline>
-                        <n-timeline-item type="warning" v-for="i in bodyHistory" :key="i" :content="i.description"
+                    <!-- <n-timeline>
+                        <n-timeline-item type="warning" v-for="i in bodyHistorySurat" :key="i" :content="i.description"
                             :time="timeAgo(i.create_date)" />
-                    </n-timeline>
+                    </n-timeline> -->
+                    <n-collapse :default-expanded-names="[1]">
+                        <n-collapse-item :title="moment(i.tgl_buat).format('DD-MM-YYYY HH:mm')"
+                            v-for="i in bodyHistorySurat">
+                            <div class="grid grid-flow-col">
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">NO SURAT</small>
+                                    <n-text strong class="text-md">{{ i.no_surat }}</n-text>
+                                </div>
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">PETUGAS</small>
+                                    <n-text strong class="text-md">{{ i.oleh }}</n-text>
+                                </div>
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">JB</small>
+                                    <n-text strong class="text-md">{{ i.tgl_jb }}</n-text>
+                                </div>
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">KETERANGAN</small>
+                                    <n-text strong class="text-md">{{ i.ket }}</n-text>
+                                </div>
+                            </div>
+                            <div class="flex flex-col p-2 border rounded-lg">
+                                <small class="text-reg">DOK KUNJUNGAN</small>
+                                <n-image :src="f" v-for="f in i.file" width="60" />
+                            </div>
+                        </n-collapse-item>
+                    </n-collapse>
                 </n-scrollbar>
             </n-card>
         </div>

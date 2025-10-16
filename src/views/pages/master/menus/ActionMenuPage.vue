@@ -1,5 +1,5 @@
 <template>
-  <n-card :class="`shadow`"size="small" :segmented="{
+  <n-card size="small" :segmented="{
     content: true,
     footer: 'soft',
   }" :title="`Form ${$route.name}`">
@@ -34,7 +34,7 @@
     </template>
   </n-card>
   <n-modal v-model:show="colIcon">
-    <n-card :class="`shadow`"class="w-1/2">
+    <n-card class="w-1/2">
       <n-scrollbar style="max-height: 420px">
         <BiIcon @select="handleSelect" />
       </n-scrollbar>

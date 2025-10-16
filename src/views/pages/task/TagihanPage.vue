@@ -1,6 +1,6 @@
 <template>
 
-    <n-card :class="`shadow`" title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412">
+    <n-card  title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="boxSearch" placeholder="cari">
@@ -49,7 +49,7 @@
         </n-infinite-scroll>
     </div>
     <n-modal v-model:show="modalDetail" :mask-closable="false">
-        <n-card :class="`shadow`" class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
+        <n-card  class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
             <template #header-extra>
                 <n-space align="center">
                     <n-button size="small" quaternary type="info" @click="handleHistory(bodyDetail.no_surat)">
@@ -65,7 +65,7 @@
                     </n-button>
                 </n-space>
             </template>
-            <n-card :class="`shadow`" class="mb-2" size="small" embedded>
+            <n-card  class="mb-2" size="small" embedded>
                 <div class="flex flex-wrap gap-4">
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">No Surat</small>
@@ -101,7 +101,7 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran ke</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -167,24 +167,54 @@
                 </div>
             </template>
             <n-modal v-model:show="modalHistory">
-                <div class="md:w-1/3">
-                    <n-card :class="`shadow`" title="History Surat" :segmented="true" size="small">
-                        <!-- <n-timeline>
-                            <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
-                            <n-timeline-item type="info" title="Laporan Kunjungan" content="nasabah tidak ada dirumah"
-                                time="2018-04-03 20:46" line-type="dashed" />
-                            <n-timeline-item type="warning" content="Mencoba ulang kunjungan oleh *nama marketing*"
-                                time="2018-04-03 20:46" />
-                            <n-timeline-item type="success" content="Tagihan masuk dan dibayarkan nasabah"
-                                time="2018-04-03 20:46" />
-                        </n-timeline> -->
-                        <!-- <n-result status="warning" title="Kunjungan Kosong" description="Tidak Histori Kunjungan">
+                <div class="w-1/2">
+                    <n-card  title="History Surat" :segmented="true" size="small">
+                        <n-tabs type="segment" animated>
+                            <n-tab-pane name="timeline" tab="TIMELINE">
+                                <n-scrollbar style="max-height: 300px">
+                                    <n-timeline>
+                                        <n-timeline-item type="success" v-for="i in bodyHistory" :key="i"
+                                            :content="i.description" :time="timeAgo(i.create_date)" />
+                                    </n-timeline>
+                                </n-scrollbar>
+                            </n-tab-pane>
+                            <n-tab-pane name="hasil_kunjungan" tab="HASIL KUNJUNGAN">
+                                <n-scrollbar style="max-height: 400px">
+                                    <!-- <n-timeline>
+                        <n-timeline-item type="warning" v-for="i in bodyHistorySurat" :key="i" :content="i.description"
+                            :time="timeAgo(i.create_date)" />
+                    </n-timeline> -->
+                                    <n-collapse>
+                                        <n-collapse-item :title="moment(i.tgl_buat).format('DD-MM-YYYY HH:mm')"
+                                            v-for="i in bodyHistorySurat">
+                                            <div class="grid grid-flow-col">
+                                                <div class="flex flex-col flex-1 ">
+                                                    <small class="text-reg">NO SURAT</small>
+                                                    <n-text strong class="text-md">{{ i.no_surat }}</n-text>
+                                                </div>
+                                                <div class="flex flex-col flex-1 ">
+                                                    <small class="text-reg">PETUGAS</small>
+                                                    <n-text strong class="text-md">{{ i.oleh }}</n-text>
+                                                </div>
+                                                <div class="flex flex-col flex-1 ">
+                                                    <small class="text-reg">JB</small>
+                                                    <n-text strong class="text-md">{{ i.tgl_jb }}</n-text>
+                                                </div>
+                                                <div class="flex flex-col flex-1 ">
+                                                    <small class="text-reg">KETERANGAN</small>
+                                                    <n-text strong class="text-md">{{ i.ket }}</n-text>
+                                                </div>
+                                            </div>
+                                            <div class="flex flex-col p-2 border rounded-lg">
+                                                <small class="text-reg">DOK KUNJUNGAN</small>
+                                                <n-image :src="f" v-for="f in i.file" width="60" />
+                                            </div>
+                                        </n-collapse-item>
+                                    </n-collapse>
+                                </n-scrollbar>
+                            </n-tab-pane>
+                        </n-tabs>
 
-                        </n-result> -->
-                        <n-timeline>
-                            <n-timeline-item type="warning" v-for="i in bodyHistory" :key="i" :content="i.description"
-                                :time="timeAgo(i.create_date)" />
-                        </n-timeline>
                     </n-card>
                 </div>
             </n-modal>
@@ -201,6 +231,7 @@ import { useMeStore } from "../../../stores/me";
 import _ from "lodash";
 import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
+import moment from 'moment';
 
 const { width } = useWindowSize();
 const me = useMeStore();
@@ -211,10 +242,28 @@ const modalHistory = ref(false);
 
 const selectedBranch = ref();
 const bodyHistory = ref([]);
-const handleHistory = (e) => {
+const handleHistory = async (e) => {
     modalHistory.value = true;
-    getHistory(e);
+    await getHistory(e);
+    await getHistorySurat(e);
 }
+const bodyHistorySurat = ref()
+const getHistorySurat = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `cl_survey_detail/${e}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(response.error);
+    } else {
+        // console.log(response.data.response)
+        isLoading.value = false;
+        bodyHistorySurat.value = response.data;
+    }
+};
 
 const exportToExcel = (data) => {
     const ws = XLSX.utils.json_to_sheet(data)
@@ -256,7 +305,7 @@ const getHistory = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-        console.log(reponse.error);
+        console.log(response.error);
     } else {
         loadingBar.finish();
         // console.log(response.data.response)
@@ -309,7 +358,7 @@ const postKunjungan = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-        console.log(reponse.error);
+        console.log(response.error);
     } else {
         loadingBar.finish();
         // console.log(response.data.response)
@@ -456,6 +505,12 @@ const getData = async () => {
 const modalDetail = ref(false);
 const bodyDetail = ref();
 const handleDetail = (e) => {
+    formDataKunjungan.value = {
+        no_surat: null,
+        keterangan: null,
+        tgl_jb: null,
+        path: []
+    }
     bodyDetail.value = e;
     modalDetail.value = true;
     formDataKunjungan.value.no_surat = e.no_surat;

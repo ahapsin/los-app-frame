@@ -1,6 +1,6 @@
 <template>
     <n-space vertical>
-        <n-card :class="`shadow`":segmented="{
+        <n-card :segmented="{
             content: true,
             footer: 'soft'
         }" :title="`Tabel ${$route.name}`" size="small">

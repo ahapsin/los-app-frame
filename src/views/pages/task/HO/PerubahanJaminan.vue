@@ -1,5 +1,5 @@
 <template>
-  <n-card :class="`shadow`"size="small" :segmented="true">
+  <n-card size="small" :segmented="true">
     <template #header>Perubahan Jaminan</template>
     <!-- <template #header-extra>
       <n-space>
@@ -21,7 +21,7 @@
     </div>
   </n-card>
   <n-modal v-model:show="showModal">
-    <n-card :class="`shadow`"title="Konfirmasi perubahan data jaminan" class="w-1/2" :segmented="true" size="small">
+    <n-card title="Konfirmasi perubahan data jaminan" class="w-1/2" :segmented="true" size="small">
       <template #header-extra>
         <n-space>
           <n-button type="error" secondary size="small" @click="handleTolak(bodyModal.id)">Tolak</n-button>

@@ -1,5 +1,5 @@
 <template>
-    <n-card :class="`shadow`" title="Daftar Deploy" :segmented="true" size="small">
+    <n-card  title="Daftar Deploy" :segmented="true" size="small">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="boxSearch" placeholder="cari">
@@ -182,22 +182,7 @@ const columnBebanTagih = reactive([
         render(row) {
             return h("div", row.angsuran?.toLocaleString())
         }
-    },
-    {
-        title: "BAYAR ",
-        key: "bayar",
-        sorter: "default",
-        width: 150,
-        render(row) {
-            return h("div", row.bayar?.toLocaleString())
-        }
-    },
-    {
-        title: "HASIL KUNJUNGAN ",
-        key: "hasil_kunjungan",
-        sorter: "default",
-        width: 200,
-    },
+    }
 
 ]);
 

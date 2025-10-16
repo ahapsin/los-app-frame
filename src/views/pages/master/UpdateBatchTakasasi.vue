@@ -1,6 +1,6 @@
 <template>
   <div id="app">
-    <n-card :class="`shadow`"title="Update taksasi" size="small" :segmented="true">
+    <n-card title="Update taksasi" size="small" :segmented="true">
       <template #header-extra>
         <n-space v-if="!loadDataRef">
           <input id="files" type="file" @change="handleFileUpload" class="hidden" accept=".csv" />
@@ -12,7 +12,7 @@
             @click="downloadCsv" v-if="dataTakasasi.length > 0"><v-icon name="bi-trash"></v-icon>Download Taksasi</div>
         </n-space>
       </template>
-      <n-card :class="`shadow`"v-if="importChange">
+      <n-card v-if="importChange">
         <n-alert type="warning" :show-icon="false">
           <div class="flex justify-between items-center">
             <div class="text-xl">{{ csvData.length?.toLocaleString() }} baris data</div>

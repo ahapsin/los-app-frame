@@ -1,5 +1,5 @@
 <template>
-    <n-card :class="`shadow`" title="Buat LKP Baru" :segmented="true" size="small">
+    <n-card  title="Buat LKP Baru" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">

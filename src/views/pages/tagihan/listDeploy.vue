@@ -1,5 +1,5 @@
 <template>
-    <n-card :class="`shadow`" title="Deploy Tagihan" :segmented="true" size="small">
+    <n-card  title="Deploy Tagihan" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
