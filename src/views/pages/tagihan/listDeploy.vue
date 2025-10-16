@@ -1,5 +1,5 @@
 <template>
-    <n-card  title="Deploy Tagihan" :segmented="true" size="small">
+    <n-card title="Deploy Tagihan" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -19,24 +19,43 @@
                         :options="_.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
                         label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
                 </n-form-item>
-                <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                    @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-                    @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
-                    :pagination="{ pageSize: 10 }" />
-                <n-space vertical>
-
-                    <n-alert type="info" v-if="checkedRowKeys.length === 0">Pilih data tagihan</n-alert>
-                    <n-alert type="info" v-else-if="assignTo === null">Pilih petugas</n-alert>
-                    <n-space v-else>
-                        <n-button type="primary" @click="assignTagihan" :disabled="checkedRowKeys.length === 0">
-                            <v-icon name="bi-plus-lg" />
-                            {{ checkedRowKeys.length }}
-                        </n-button>
-                        <n-button type="secondary" @click="$emit('cancel', true)">Batal</n-button>
-                    </n-space>
-                </n-space>
+                <n-card embedded title="Daftar Tagihan" size="small" :segmented="true">
+                    <template #header-extra>
+                        <div class="flex gap-2 pb-4">
+                            <n-input clearable v-model:value="boxSearch" placeholder="cari" class="max-w-sm">
+                                <template #suffix>
+                                    <v-icon name="bi-search"></v-icon>
+                                </template>
+                            </n-input>
+                            <n-button type="success" secondary @click="exportToExcel(filteredDataList)"
+                                :disabled="isLoading">
+                                <template #icon>
+                                    <v-icon name="bi-download"></v-icon>
+                                </template>
+                                Export Excel
+                            </n-button>
+                        </div>
+                    </template>
+                    <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
+                        @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
+                        @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
+                        :pagination="{ pageSize: 10 }" />
+                </n-card>
             </n-space>
         </div>
+        <template #footer>
+            <n-space vertical>
+                <n-alert type="info" v-if="assignTo === null">Pilih petugas</n-alert>
+                <n-alert type="info" v-else-if="checkedRowKeys.length === 0">Pilih data tagihan</n-alert>
+                <n-space v-else>
+                    <n-button type="primary" @click="assignTagihan" :disabled="checkedRowKeys.length === 0">
+                        <v-icon name="bi-plus-lg" />
+                        Simpan
+                    </n-button>
+                    <n-button type="secondary" @click="$emit('cancel', true)">Batal</n-button>
+                </n-space>
+            </n-space>
+        </template>
     </n-card>
 </template>
 
@@ -47,6 +66,8 @@ import { useLoadingBar, useMessage } from "naive-ui";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
 import _ from "lodash";
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver';
 
 const me = useMeStore();
 const message = useMessage();
@@ -60,6 +81,13 @@ const dataList = ref([]);
 const isLoading = ref(false);
 const checkedRowKeys = ref([]);
 const boxSearch = ref("");
+const exportToExcel = (data) => {
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DAFTAR TAGIHAN.xlsx')
+}
 
 const rowKey = (row) => row["NO KONTRAK"];
 
@@ -78,6 +106,12 @@ function onFilterChange(newFilter) {
 
 const columnBebanTagih = reactive([
     { type: "selection" },
+    {
+        title: "CABANG",
+        key: "NAMA CABANG",
+        width: 150,
+        sorter: "default",
+    },
     {
         title: "NO KONTRAK",
         key: "NO KONTRAK",
