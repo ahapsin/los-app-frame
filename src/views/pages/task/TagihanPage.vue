@@ -1,6 +1,6 @@
 <template>
 
-    <n-card  title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412" class="shadow-lg">
+    <n-card title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412" class="shadow-lg">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="boxSearch" placeholder="cari">
@@ -26,7 +26,7 @@
                 <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
                 <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                    :loading="isLoading" size="small" :pagination="{ pageSize: 10 }" :scroll-x="1300" />
+                    :loading="isLoading" size="small" :pagination="pagination" :scroll-x="1300" />
             </n-space>
         </div>
     </n-card>
@@ -49,7 +49,7 @@
         </n-infinite-scroll>
     </div>
     <n-modal v-model:show="modalDetail" :mask-closable="false">
-        <n-card  class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
+        <n-card class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
             <template #header-extra>
                 <n-space align="center">
                     <n-button size="small" quaternary type="info" @click="handleHistory(bodyDetail.no_surat)">
@@ -65,7 +65,7 @@
                     </n-button>
                 </n-space>
             </template>
-            <n-card  class="mb-2" size="small" embedded>
+            <n-card class="mb-2" size="small" embedded>
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO SURAT</small>
@@ -101,41 +101,41 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran ke</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
                         <n-text strong class="text-md">{{ bodyDetail.alamat }}</n-text>
                     </div>
-                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">DENDA</small>
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
-                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">TENOR</small>
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
-                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">MCF</small>
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
-                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">CATATAN SURVEYOR</small>
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
-                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">UNIT</small>
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
-                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO POLISI</small>
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
-                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">TAHUN MOTOR</small>
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
-                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO HP</small>
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
@@ -200,13 +200,13 @@
             </template>
             <n-modal v-model:show="modalHistory">
                 <div class="w-full">
-                    <n-card  title="History Surat" :segmented="true" size="small">
+                    <n-card title="History Surat" :segmented="true" size="small">
                         <n-tabs type="segment" animated>
                             <n-tab-pane name="timeline" tab="TIMELINE">
                                 <n-scrollbar style="max-height: 300px">
                                     <n-timeline>
-                                        <n-timeline-item type="success" v-for="(i,index) in bodyHistory" :key="i"
-                                            :content="i.description" :time="timeAgo(i.create_date)"/>
+                                        <n-timeline-item type="success" v-for="(i, index) in bodyHistory" :key="i"
+                                            :content="i.description" :time="timeAgo(i.create_date)" />
                                     </n-timeline>
                                 </n-scrollbar>
                             </n-tab-pane>
@@ -604,6 +604,18 @@ const removeFilter = (key, valueToRemove) => {
         }
     }
 };
+const pagination = reactive({
+    pageSize: 5,
+    showSizePicker: true,
+    pageSizes: [10, 20, 30, 50, 100],
+    onChange: (page) => {
+        pagination.page = page;
+    },
+    onUpdatePageSize: (pageSize) => {
+        pagination.pageSize = pageSize;
+        pagination.page = 1;
+    }
+})
 onMounted(() => {
     loadingBar.finish();
     getData();

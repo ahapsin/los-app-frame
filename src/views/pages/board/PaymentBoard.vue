@@ -2,11 +2,11 @@
     <n-card size="small" :segmented="{
         content: true,
         footer: 'soft',
-    }">
-        <template #header>Transaksi <n-tag size="small" type="info">bulan berjalan</n-tag></template>
+    }" class="shadow-lg">
+        <template #header>Transaksi</template>
         <template #header-extra>
             <n-dropdown trigger="click" :options="options" @select="handleSelect">
-                <n-button  size="small" secondary circle>
+                <n-button size="small" secondary circle>
                     <n-icon>
                         <option-icon />
                     </n-icon>
@@ -29,6 +29,12 @@
                 </n-statistic>
             </div>
         </n-spin>
+        <template #footer>
+            <div class="text-slate-400">
+                <v-icon name="bi-dot" class="text-xl" />
+                summary transasksi bulan berjalan
+            </div>
+        </template>
     </n-card>
 </template>
 
@@ -59,7 +65,7 @@ const getData = async () => {
         data.value = response.data;
     }
 }
-const options =[
+const options = [
     {
         label: "Tambah Pembayaran",
         key: "tambah penerimaan",
@@ -75,7 +81,7 @@ const options =[
 ];
 
 const handleSelect = (key) => {
-  router.push({ name: key});
+    router.push({ name: key });
 }
 const createdSuccess = computed(() => _.filter(data.value, { 'STATUS': 'PAID' }));
 const pendingPayment = computed(() => _.filter(data.value, { 'STATUS': 'PENDING' }));

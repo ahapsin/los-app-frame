@@ -258,6 +258,19 @@ function timeAgo(dateString) {
     return 'baru saja';
 }
 
+const pagination = reactive({
+    pageSize: 5,
+    showSizePicker: true,
+    pageSizes: [10, 20, 30, 50, 100],
+    onChange: (page) => {
+        pagination.page = page;
+    },
+    onUpdatePageSize: (pageSize) => {
+        pagination.pageSize = pageSize;
+        pagination.page = 1;
+    }
+})
+
 
 </script>
 <template>
@@ -291,7 +304,7 @@ function timeAgo(dateString) {
         </template>
         <n-data-table :columns="columnDeploy" :data="dataList" :filter-value="filterValue"
             @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-            @update:checked-row-keys="handleCheck" :loading="isLoading" size="small" :pagination="{ pageSize: 10 }" />
+            @update:checked-row-keys="handleCheck" :loading="isLoading" size="small" :pagination="pagination" />
     </n-card>
     <n-modal v-model:show="modalAdd">
         <div class="w-4/5">
@@ -299,9 +312,9 @@ function timeAgo(dateString) {
         </div>
     </n-modal>
     <n-modal v-model:show="modalDetail">
-        <n-card  class="w-4/5" title="Detail LKP" size="small" :segmented="true">
+        <n-card class="w-4/5" title="Detail LKP" size="small" :segmented="true">
             <div>
-                <n-card  class="mb-2" size="small" embedded>
+                <n-card class="mb-2" size="small" embedded>
                     <div class="flex  gap-4">
                         <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                             <small class="text-reg">No LKP</small>
@@ -334,7 +347,7 @@ function timeAgo(dateString) {
     </n-modal>
     <n-modal v-model:show="modalHistorySurat">
         <div class="w-2/3">
-            <n-card  title="Hasil Kunjungan" :segmented="true" size="small">
+            <n-card title="Hasil Kunjungan" :segmented="true" size="small">
                 <!-- <n-timeline>
                 
                             <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />

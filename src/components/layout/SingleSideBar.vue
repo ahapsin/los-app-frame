@@ -46,7 +46,7 @@
         <div class="p-0 md:p-4">
           <n-page-header @back="handleBack">
             <template #header>
-              <div class="border p-3 rounded-2xl bg-white shadow-md hidden md:flex">
+              <div class="border p-3 rounded-2xl bg-white shadow-md w-fit hidden md:flex">
                 <n-breadcrumb v-if="width > 480">
                   <n-breadcrumb-item @click="router.push('/')">DASHBOARD</n-breadcrumb-item>
                   <n-breadcrumb-item v-if="$route.name != 'landing'">{{ $route.name?.toUpperCase() }}</n-breadcrumb-item>

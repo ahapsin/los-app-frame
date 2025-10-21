@@ -46,7 +46,7 @@
                     <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                         @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
-                        :pagination="{ pageSize: 10 }" :scroll-x="1900" />
+                        :pagination="pagination" :scroll-x="1900" />
                 </div>
             </n-space>
         </div>
@@ -84,7 +84,18 @@ const addDeploy = () => {
 }
 const modalAssign = ref(false);
 const assignTo = ref(null);
-
+const pagination = reactive({
+    pageSize: 5,
+    showSizePicker: true,
+    pageSizes: [10, 20, 30, 50, 100],
+    onChange: (page) => {
+        pagination.page = page;
+    },
+    onUpdatePageSize: (pageSize) => {
+        pagination.pageSize = pageSize;
+        pagination.page = 1;
+    }
+});
 const dataUser = ref([]);
 const dataList = ref([]);
 const isLoading = ref(false);

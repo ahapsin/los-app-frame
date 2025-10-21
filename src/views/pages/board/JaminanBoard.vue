@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Jaminan" size="small" :segmented="{
+    <n-card title="Jaminan" class="shadow-lg" size="small" :segmented="{
         content: true,
         footer: 'soft',
     }">

@@ -1,6 +1,6 @@
 <template>
   <div
-       :class="`h-screen flex items-center  justify-center max-h-screen  md:p-20`"
+       :class="`h-screen flex items-center  justify-center max-h-screen  bg-gradient-to-t from-pr to-white md:p-20`"
   >
     <div
         class="flex w-full h-full md:w-3/4 md:h-full  md:rounded-lg gap-20"
