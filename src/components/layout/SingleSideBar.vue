@@ -37,7 +37,7 @@
     <n-layout position="absolute" style="top: 60px" has-sider>
       <n-layout-sider :width='200' :collapsed-width="0" :show-collapsed-content="false"
         :collapsed="sideMenu.sideEffect ? true : false" content-style="padding: 10px;"
-        class="absolute md:relative h-full z-20 shadow-xl md:shadow-none ">
+        class="absolute md:relative h-full z-20 shadow-xl md:shadow-none bg-slate-100">
         <n-scrollbar>
           <SideMenu />
         </n-scrollbar>
@@ -46,10 +46,12 @@
         <div class="p-0 md:p-4">
           <n-page-header @back="handleBack">
             <template #header>
-              <n-breadcrumb v-if="width > 480">
-                <n-breadcrumb-item @click="router.push('/')">DASHBOARD</n-breadcrumb-item>
-                <n-breadcrumb-item v-if="$route.name != 'landing'">{{ $route.name?.toUpperCase() }}</n-breadcrumb-item>
-              </n-breadcrumb>
+              <div class="border p-3 rounded-2xl bg-white shadow-md hidden md:flex">
+                <n-breadcrumb v-if="width > 480">
+                  <n-breadcrumb-item @click="router.push('/')">DASHBOARD</n-breadcrumb-item>
+                  <n-breadcrumb-item v-if="$route.name != 'landing'">{{ $route.name?.toUpperCase() }}</n-breadcrumb-item>
+                </n-breadcrumb>
+              </div>
             </template>
           </n-page-header>
           <RouterView />

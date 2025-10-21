@@ -1,6 +1,6 @@
 <template>
 
-    <n-card  title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412">
+    <n-card  title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412" class="shadow-lg">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="boxSearch" placeholder="cari">
@@ -66,16 +66,16 @@
                 </n-space>
             </template>
             <n-card  class="mb-2" size="small" embedded>
-                <div class="flex flex-wrap gap-4">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
-                        <small class="text-reg">No Surat</small>
+                        <small class="text-reg">NO SURAT</small>
                         <n-text strong class="text-md">{{ bodyDetail.no_surat }}</n-text>
                     </div>
 
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]" v-if="bodyDetail?.no_lkp">
-                        <small class="text-reg">No LKP</small>
-                        <n-text type="warning">
-                            {{ bodyDetail.no_lkp }}
+                        <small class="text-reg">NO LKP</small>
+                        <n-text type="error">
+                            <strong>{{ bodyDetail.no_lkp }}</strong>
                         </n-text>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
@@ -106,6 +106,38 @@
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
                         <n-text strong class="text-md">{{ bodyDetail.alamat }}</n-text>
+                    </div>
+                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">DENDA</small>
+                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                    </div>
+                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">TENOR</small>
+                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                    </div>
+                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">MCF</small>
+                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                    </div>
+                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">CATATAN SURVEYOR</small>
+                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                    </div>
+                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">UNIT</small>
+                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                    </div>
+                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">NO POLISI</small>
+                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                    </div>
+                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">TAHUN MOTOR</small>
+                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                    </div>
+                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">NO HP</small>
+                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
                 </div>
             </n-card>
@@ -167,14 +199,14 @@
                 </div>
             </template>
             <n-modal v-model:show="modalHistory">
-                <div class="w-1/2">
+                <div class="w-full">
                     <n-card  title="History Surat" :segmented="true" size="small">
                         <n-tabs type="segment" animated>
                             <n-tab-pane name="timeline" tab="TIMELINE">
                                 <n-scrollbar style="max-height: 300px">
                                     <n-timeline>
-                                        <n-timeline-item type="success" v-for="i in bodyHistory" :key="i"
-                                            :content="i.description" :time="timeAgo(i.create_date)" />
+                                        <n-timeline-item type="success" v-for="(i,index) in bodyHistory" :key="i"
+                                            :content="i.description" :time="timeAgo(i.create_date)"/>
                                     </n-timeline>
                                 </n-scrollbar>
                             </n-tab-pane>

@@ -1,5 +1,5 @@
 <template>
-    <n-card  title="Daftar Deploy" :segmented="true" size="small">
+    <n-card title="Daftar Deploy" :segmented="true" size="small" class="shadow-lg">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="boxSearch" placeholder="cari">
@@ -56,10 +56,15 @@
             <ListDeploy @cancel="handleCancel" />
         </div>
     </n-modal>
+    <n-modal v-model:show="modalEdit">
+        <div class="w-4/6">
+            <ChangeDeploy @cancel="handleCancel" :data="bodyEdit" @success="handleSuccessEdit" />
+        </div>
+    </n-modal>
 </template>
 
 <script setup>
-import { NAvatar, NTag, NText } from 'naive-ui';
+import { NAvatar, NButton, NTag, NText } from 'naive-ui';
 import { ref, reactive, computed, onMounted } from "vue";
 import { useLoadingBar, useMessage } from "naive-ui";
 import { useApi } from "../../../helpers/axios.js";
@@ -68,6 +73,7 @@ import _ from "lodash";
 import ListDeploy from './listDeploy.vue';
 import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
+import ChangeDeploy from './changeDeploy.vue';
 
 const me = useMeStore();
 const message = useMessage();
@@ -92,6 +98,10 @@ const exportToExcel = (data) => {
     saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DAFTAR DEPLOY.xlsx')
 }
 
+const handleSuccessEdit = () => {
+    modalEdit.value = false;
+    getList();
+}
 const filterValue = reactive({
     NBOT: [],
     KECAMATAN: [],
@@ -120,6 +130,14 @@ const columnBebanTagih = reactive([
         filterOptions: [],
         width: 150,
         sorter: "default",
+        render(row) {
+            return h(NButton, {
+                type: 'warning',
+                onClick: () => handleEdit(row),
+            }, {
+                default: () => row.nama_pic
+            })
+        }
     }, {
         title: "NO KONTRAK",
         key: "no_kontrak",
@@ -155,8 +173,8 @@ const columnBebanTagih = reactive([
         key: "tgl_jatuh_tempo",
         width: 200,
         sorter: "default",
-        render(row){
-            return h("div",row.tgl_jatuh_tempo)
+        render(row) {
+            return h("div", row.tgl_jatuh_tempo)
         }
     },
     {
@@ -299,6 +317,12 @@ const getList = async () => {
         setFilterOptions("cycle_awal");
     }
 };
+const modalEdit = ref(false);
+const bodyEdit = ref();
+const handleEdit = (e) => {
+    modalEdit.value = true;
+    bodyEdit.value = e;
+}
 const emit = defineEmits();
 const assignTagihan = async () => {
     const bodyPost = {
@@ -378,7 +402,6 @@ const removeFilter = (key, valueToRemove) => {
     }
 };
 onMounted(() => {
-    loadingBar.finish();
     getList();
 });
 </script>

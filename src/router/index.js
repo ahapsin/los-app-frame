@@ -259,8 +259,8 @@ const routes = [
         component: () => import("../views/pages/master/TaksasiPage.vue"),
       },
       {
-        path: "referensi",
-        name: "referensi",
+        path: "sumber_order",
+        name: "sumber_order",
         component: () =>
           import("../views/pages/master/referensi/ReferensiPage.vue"),
       },

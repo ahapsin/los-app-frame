@@ -1,5 +1,5 @@
 <template>
-    <n-card  title="Buat LKP Baru" :segmented="true" size="small">
+    <n-card title="Buat LKP Baru" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -23,10 +23,29 @@
                     </n-form-item>
                 </n-space>
                 <div>
-                    <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                        @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-                        @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
-                        :pagination="{ pageSize: 10 }" :scroll-x="1800" :row-class-name="getRowClassName" />
+                    <n-card embedded title="Daftar Tagihan" size="small" :segmented="true">
+                        <template #header-extra>
+                            <div class="flex gap-2 pb-4">
+                                <n-input clearable v-model:value="boxSearch" placeholder="cari" class="max-w-sm">
+                                    <template #suffix>
+                                        <v-icon name="bi-search"></v-icon>
+                                    </template>
+                                </n-input>
+                                <n-button type="success" secondary @click="exportToExcel(filteredDataList)"
+                                    :disabled="isLoading">
+                                    <template #icon>
+                                        <v-icon name="bi-download"></v-icon>
+                                    </template>
+                                    Export Excel
+                                </n-button>
+                            </div>
+                        </template>
+                        <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
+                            @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
+                            @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
+                            :pagination="{ pageSize: 10 }" :scroll-x="1950" :row-class-name="getRowClassName" />
+                    </n-card>
+
                 </div>
             </n-space>
         </div>
@@ -168,6 +187,12 @@ const columnBebanTagih = reactive([
     {
         title: "HASIL KUNJUNGAN ",
         key: "hasil_kunjungan",
+        sorter: "default",
+        width: 150,
+    },
+    {
+        title: "JANJI BAYAR ",
+        key: "janji_bayar",
         sorter: "default",
         width: 150,
     },
@@ -380,6 +405,15 @@ const removeFilter = (key, valueToRemove) => {
         }
     }
 };
+
+const exportToExcel = (data) => {
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DAFTAR TAGIHAN.xlsx')
+}
+
 onMounted(() => {
     loadingBar.finish();
     getData();
@@ -387,6 +421,6 @@ onMounted(() => {
 </script>
 <style scoped>
 :deep(.too-old td) {
-   @apply bg-green-100
+    @apply bg-green-100
 }
 </style>

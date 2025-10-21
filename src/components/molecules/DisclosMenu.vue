@@ -18,7 +18,7 @@
               ? (sideMenu.sideEffect = !sideMenu.sideEffect)
               : handleStart
             " :class="isActive ? 'bg-pr text-white font-semibold' : 'hover:bg-pr-500 hover:text-white'">
-            <v-icon :name="isActive ? 'bi-folder-fill' : 'bi-folder'" />
+            <v-icon :name="submenu.leading[0]" />
             {{ submenu.sublabel?.toUpperCase() }}
           </div>
         </router-link>

@@ -1,78 +1,68 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :title="`Tabel ${$route.name}`"  :segmented="true" size="small">
+            <n-card :title="`Tabel Sumber Order`" :segmented="true" size="small" class="shadow-lg">
                 <template #header-extra>
-                    <n-space class="!gap-1">
-                        <div class="me-1">
-                            <n-popover trigger="click" placement="bottom-end">
-                                <template #trigger>
-                                    <n-button circle>
-                                        <n-icon>
-                                            <search-icon />
-                                        </n-icon>
-                                    </n-button>
-                                </template>
-                                <n-input autofocus="true" clearable placeholder="cari disini.."
-                                    v-model:value="searchBox" />
-                            </n-popover>
-                        </div>
-                        <!-- <div class="hidden md:flex">
-                            <n-button>
-                                <template #icon>
-                                    <n-icon>
-                                        <download-icon />
-                                    </n-icon>
-                                </template>
-                                <strong class="hidden md:!block">download</strong>
-                            </n-button>
-                        </div> -->
-                        <div class="md:hidden">
-                            <n-button>
-                                <template #icon>
-                                    <n-icon>
-                                        <download-icon />
-                                    </n-icon>
-                                </template>
-                            </n-button>
-                        </div>
-                        <div class="hidden md:flex">
-                            <n-button type="primary" @click="handleAdd">
-                                <template #icon>
-                                    <n-icon>
-                                        <add-icon />
-                                    </n-icon>
-                                </template>
-                                <strong>tambah</strong>
-                            </n-button>
-                        </div>
-                        <div class=" md:hidden">
-                            <n-button type="primary" @click="handleAdd">
-                                <template #icon>
-                                    <n-icon>
-                                        <add-icon />
-                                    </n-icon>
-                                </template>
-                            </n-button>
-                        </div>
+                    <n-space>
+                        <n-input clearable v-model:value="searchBox" placeholder="cari">
+                            <template #suffix>
+                                <v-icon name="bi-search"></v-icon>
+                            </template>
+                        </n-input>
+                        <n-button type="success" secondary @click="handleExport(showData)">
+                            <template #icon>
+                                <v-icon name="bi-download"></v-icon>
+                            </template>
+                            Export Excel
+                        </n-button>
+                        <n-button type="primary" secondary link @click="handleAdd()">
+                            <template #icon>
+                                <v-icon name="bi-plus-lg"></v-icon>
+                            </template>
+                            Sumber Order
+                        </n-button>
+
+
+                        <n-button quaternary circle @click="refreshData">
+                            <template #icon>
+                                <v-icon name="bi-arrow-clockwise"></v-icon>
+                            </template>
+                        </n-button>
                     </n-space>
                 </template>
                 <n-space vertical :size="12" class="pt-4">
-                    <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination" />
+                    <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
+                        :loading="isLoading" />
                 </n-space>
             </n-card>
         </n-space>
+        <n-modal v-model:show="modalRef">
+            <n-card class="w-1/2" size="small" title="Tambah Sumber Order Baru" :segmented="true">
+                <n-form-item label="Nama Sumber">
+                    <n-input v-model:value="formData.nama" />
+                </n-form-item>
+                <n-form-item label="No Handphone">
+                    <n-input v-model:value="formData.no_hp" />
+                </n-form-item>
+                <n-form-item label="Keterangan">
+                    <n-input type="textarea" v-model:value="formData.keterangan" />
+                </n-form-item>
+                <template #footer>
+                    <n-space>
+                        <n-button type="primary" @click="handleSave" :loading="isLoading"
+                            :disabled="isLoading">Simpan</n-button>
+                        <n-button type="secondary" @click="handleCancel">Batal</n-button>
+                    </n-space>
+                </template>
+            </n-card>
+        </n-modal>
     </div>
 </template>
 <script setup>
 import { ref, onMounted, h } from "vue";
-import { useDialog, useMessage, NDropdown, NIcon, NButton, useLoadingBar } from "naive-ui";
-import {
-    AddCircleOutlineRound as AddIcon,
-    SearchOutlined as SearchIcon,
-    FileDownloadOutlined as DownloadIcon,
-
-} from "@vicons/material"
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver';
+import { useDialog, useMessage, NDropdown, NIcon, NButton, useLoadingBar, NSwitch } from "naive-ui";
 import {
     EditOutlined as EditIcon,
     DeleteOutlined as DeleteIcon,
@@ -90,27 +80,29 @@ const searchBox = ref();
 
 const columns = [
     {
-        title: "Kode",
-        key: "kode",
+        title: "KODE",
+        key: "KODE",
         sorter: 'default',
     },
     {
-        title: "Nama",
-        key: "nama",
+        title: "NAMA",
+        key: "NAMA",
         sorter: 'default',
     },
     {
-        title: "Alamat",
-        key: "alamat",
+        title: "NO HP",
+        key: "NO_HP",
         sorter: 'default',
-        ellipsis: {
-            tooltip: true,
-        }
     },
     {
-        title: "Kota",
+        title: "KETERANGAN",
+        key: "KETERANGAN",
         sorter: 'default',
-        key: "kota",
+    },
+    {
+        title: "STATUS",
+        sorter: 'default',
+        key: "status",
         ellipsis: {
             tooltip: true,
         }
@@ -121,24 +113,13 @@ const columns = [
         key: "more",
         render(row, index) {
             return h(
-                NDropdown,
+                NSwitch,
                 {
                     options: options,
                     size: "small",
-                    onSelect: (e) => {
-                        if (e === "hapus") {
-                            handleConfirm(row, index);
-                        }
-                        if (e === "detail") {
-                            handleDetail(row);
-                        }
-                        if (e === "edit") {
-                            handleUpdate(row);
-                        }
-                    }
                 },
                 {
-                    default:()=> h(NButton, {
+                    default: () => h(NButton, {
                         size: "small",
                     }, { default: () => 'Action' })
                 }
@@ -155,6 +136,17 @@ const statusTag = (e) => {
     }
 
 }
+
+const modalRef = ref(false);
+const refreshData = () => {
+    getData()
+};
+
+const formData = ref({
+    nama: null,
+    nomor_hp: null,
+    keterangan: null
+})
 const handleConfirm = (row, index) => {
     dialog.warning({
         title: "Confirm",
@@ -181,28 +173,39 @@ const handleConfirm = (row, index) => {
         }
     });
 }
-const handleDetail = (evt) => {
-    router.push(`/master/branch-action/${evt.id}/detail`);
-}
-const handleUpdate = (evt) => {
-    router.push(`/master/branch-action/${evt.id}`);
-}
 const handleAdd = () => {
-    router.push('/master/branch-action');
+    modalRef.value = true;
 }
-const loadingBar=useLoadingBar();
+const loadingBar = useLoadingBar();
 const getData = async () => {
+    isLoading.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: 'GET',
-        api: 'cabang',
+        api: 'order_resources',
         token: userToken
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
-        loadingBar.finish();
-        dataTable.value = response.data.response;
+        isLoading.value = false;
+        dataTable.value = response.data;
+    }
+}
+const postData = async (e) => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: 'POST',
+        api: 'order_resources',
+        data: e,
+        token: userToken
+    });
+    if (!response.ok) {
+        console.log(reponse.error);
+    } else {
+        message.success('Berhasil Ditambahkan');
+        modalRef.value = false;
+        isLoading.value = false;
     }
 }
 const renderIcon = (icon) => {
@@ -227,7 +230,21 @@ const options = [
 const pagination = {
     pageSize: 10
 }
-
+const isLoading = ref(false);
+const handleSave = async () => {
+    isLoading.value = true;
+    await postData(formData.value);
+}
+const handleCancel = () => {
+    modalRef.value = false;
+}
+const handleExport = (data) => {
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DAFTAR SUMBER ORDER.xlsx')
+}
 onMounted(() => getData());
 const showData = computed(() => {
     return useSearch(dataTable.value, searchBox.value);
