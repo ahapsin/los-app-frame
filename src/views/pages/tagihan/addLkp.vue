@@ -206,7 +206,7 @@ const columnBebanTagih = reactive([
     },
     {
         title: "JANJI BAYAR ",
-        key: "janji_bayar",
+        key: "tgl_jb",
         sorter: "default",
         width: 150,
     },
