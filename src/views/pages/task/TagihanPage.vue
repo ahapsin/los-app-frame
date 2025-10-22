@@ -99,7 +99,7 @@
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angusran_ke }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
-                        <small class="text-reg">Angsuran ke</small>
+                        <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
                             }}</n-ellipsis>
                     </div>
@@ -109,35 +109,35 @@
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">DENDA</small>
-                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.denda }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">TENOR</small>
-                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tenor }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">MCF</small>
-                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.mcf }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">CATATAN SURVEYOR</small>
-                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.catatan_survey }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">UNIT</small>
-                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.unit }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO POLISI</small>
-                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.no_polisi }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">TAHUN MOTOR</small>
-                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tahun_motor }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO HP</small>
-                        <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.no_hp }}</n-ellipsis>
                     </div>
                 </div>
             </n-card>

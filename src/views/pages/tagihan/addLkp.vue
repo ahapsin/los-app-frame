@@ -312,7 +312,8 @@ const handleChangePetugas = async () => {
             .filter(item => {
                 if (!item.tgl_jatuh_tempo) return false;
 
-                const itemDate = new Date(item.tgl_jatuh_tempo);
+                const today = new Date();
+                const itemDate = item.tgl_jb ? new Date(item.tgl_jb) : new Date(item.tgl_jatuh_tempo);
                 const isOverdue = itemDate <= today;
                 const isUnpaid = item.bayar <= item.angsuran;
 
