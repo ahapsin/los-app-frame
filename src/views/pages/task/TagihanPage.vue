@@ -194,12 +194,12 @@
 
             <template #footer>
                 <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
-                    <n-button type="primary" @click="handleSubmitKunjungan">Simpan</n-button>
+                    <n-button type="primary" @click="handleSubmitKunjungan" :disabled="!formDataKunjungan.keterangan">Simpan</n-button>
                     <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
                 </div>
             </template>
             <n-modal v-model:show="modalHistory">
-                <div class="w-full">
+                <div class="w-1/2">
                     <n-card title="History Surat" :segmented="true" size="small">
                         <n-tabs type="segment" animated>
                             <n-tab-pane name="timeline" tab="TIMELINE">

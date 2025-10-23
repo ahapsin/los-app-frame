@@ -114,6 +114,12 @@ const routes = [
           import("../views/pages/transaction/addPartialRepayPage.vue"),
       },
       {
+        path: "penarikan_sebagian",
+        name: "penarikan sebagian",
+        component: () =>
+          import("../views/pages/transaction/penarikanSebagian.vue"),
+      },
+      {
         path: "jaminan",
         name: "jaminan",
         component: () => import("../views/pages/jaminan/jaminanPage.vue"),
