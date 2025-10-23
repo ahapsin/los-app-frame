@@ -101,7 +101,7 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -194,7 +194,8 @@
 
             <template #footer>
                 <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
-                    <n-button type="primary" @click="handleSubmitKunjungan" :disabled="!formDataKunjungan.keterangan">Simpan</n-button>
+                    <n-button type="primary" @click="handleSubmitKunjungan"
+                        :disabled="!formDataKunjungan.keterangan">Simpan</n-button>
                     <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
                 </div>
             </template>
@@ -239,7 +240,9 @@
                                             </div>
                                             <div class="flex flex-col p-2 border rounded-lg">
                                                 <small class="text-reg">DOK KUNJUNGAN</small>
-                                                <n-image :src="f" v-for="f in i.file" width="60" />
+                                                <div class="flex gap-2">
+                                                    <n-image :src="f" v-for="f in i.file" width="60" />
+                                                </div>
                                             </div>
                                         </n-collapse-item>
                                     </n-collapse>
@@ -392,8 +395,7 @@ const postKunjungan = async (e) => {
     if (!response.ok) {
         console.log(response.error);
     } else {
-        loadingBar.finish();
-        // console.log(response.data.response)
+        message.success("kunjungan berhasil ditambahkan");
         isLoading.value = false;
         bodyHistory.value = response.data;
     }
