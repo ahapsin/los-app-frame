@@ -23,7 +23,7 @@
         </template>
         <div>
             <n-space vertical :size="12">
-                <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
+                <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
                 <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                     :loading="isLoading" size="small" :pagination="pagination" :scroll-x="1300" />
@@ -31,7 +31,7 @@
         </div>
     </n-card>
     <div v-else class="m-2">
-        <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" @blur="searchData" />
+        <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" @blur="searchData" />
         <n-infinite-scroll style="height: 80dvh" :distance="10" class="mt-2">
             <div class="flex flex-col gap-2">
                 <div class="flex justify-between p-6 border rounded-2xl focus:bg-red-500 bg-white" v-for="i in dataList"
@@ -39,6 +39,7 @@
                     <div class="flex flex-col">
                         <p>Surat #:<n-text class="font-bold text-pr">{{ i.no_surat }}</n-text></p>
                         <n-text class="font-bold text-neutral">{{ i.nama_customer }}</n-text>
+                        <n-button size="small" type="warning" secondary v-if="i.no_lkp">LKP : {{ i.no_lkp }}</n-button>
                     </div>
                     <div class="flex flex-col gap-4 items-end">
                         <n-text class="font-bold">{{ i.angsuran?.toLocaleString() }}</n-text>
@@ -66,7 +67,7 @@
                 </n-space>
             </template>
             <n-card class="mb-2" size="small" embedded>
-                <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
+                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 h-[200px] overflow-auto">
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO SURAT</small>
                         <n-text strong class="text-md">{{ bodyDetail.no_surat }}</n-text>
@@ -121,11 +122,11 @@
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">CATATAN SURVEYOR</small>
-                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.catatan_survey }}</n-ellipsis>
+                        <n-text class="text-md font-semibold">{{ bodyDetail.catatan_survey }}</n-text>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">UNIT</small>
-                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.unit }}</n-ellipsis>
+                        <n-text class="text-md font-semibold text-wrap">{{ bodyDetail.unit }}</n-text>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO POLISI</small>
@@ -201,7 +202,7 @@
                 </div>
             </template>
             <n-modal v-model:show="modalHistory">
-                <div class="w-1/2">
+                <div class="w-full md:w-1/2">
                     <n-card title="History Surat" :segmented="true" size="small">
                         <n-tabs type="segment" animated>
                             <n-tab-pane name="timeline" tab="TIMELINE">
