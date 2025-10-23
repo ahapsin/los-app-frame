@@ -123,6 +123,7 @@ const pagination = reactive({
 const columnBebanTagih = reactive([
     {
         type: "selection",
+        sorter: "default",
         disabled(row) {
             return row.bayar >= row.angsuran
         }
@@ -172,12 +173,18 @@ const columnBebanTagih = reactive([
         title: "CYCLE",
         key: "cycle_awal",
         sorter: "default",
+        filter: true,
+        filterMultiple: true,
+        filterOptions: [],
         width: 150,
     },
     {
         title: "ANGSURAN KE",
         key: "angsuran_ke",
         sorter: "default",
+        filter: true,
+        filterMultiple: true,
+        filterOptions: [],
         width: 150,
     },
     {
@@ -326,10 +333,14 @@ const handleChangePetugas = async () => {
             return [...new Set(response.data.map((item) => item[key]).filter(Boolean))];
         };
 
-        const setFilterOptions = (key) => {
+        const setFilterOptions = (key, sortNumeric = false) => {
             const col = columnBebanTagih.find((c) => c.key === key);
             if (col) {
-                col.filterOptions = uniqueValues(key).map((val) => ({
+                let values = uniqueValues(key);
+                if (sortNumeric) {
+                    values = values.sort((a, b) => Number(a) - Number(b));
+                }
+                col.filterOptions = values.map((val) => ({
                     label: val,
                     value: val,
                 }));
@@ -339,6 +350,8 @@ const handleChangePetugas = async () => {
         setFilterOptions("nbot");
         setFilterOptions("kec");
         setFilterOptions("desa");
+        setFilterOptions("cycle_awal");
+        setFilterOptions("angsuran_ke",true);
     }
 };
 

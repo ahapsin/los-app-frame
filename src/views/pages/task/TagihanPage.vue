@@ -101,7 +101,7 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -188,14 +188,15 @@
                 </n-form-item>
                 <n-form-item label="Dokumen Kunjungan">
                     <file-upload :def_preview="true" :multi="true" title="dokumen kunjungan" endpoint="cl_survey_upload"
-                        type="other" @fallback="handleFallback" />
+                        type="other" @fallback="handleFallback" @onUpload="handleOnUpload" />
                 </n-form-item>
             </div>
 
             <template #footer>
                 <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
+
                     <n-button type="primary" @click="handleSubmitKunjungan"
-                        :disabled="!formDataKunjungan.keterangan">Simpan</n-button>
+                        :disabled="!formDataKunjungan.keterangan || statsUpload">Simpan</n-button>
                     <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
                 </div>
             </template>
@@ -374,8 +375,13 @@ const formDataKunjungan = ref({
     tgl_jb: null,
     path: []
 })
+
+const statsUpload=ref(false);
 const handleFallback = (e) => {
     formDataKunjungan.value.path.push(e);
+}
+const handleOnUpload = (e) => {
+   statsUpload.value=e;
 }
 const handleSubmitKunjungan = async () => {
     await postKunjungan(formDataKunjungan.value);

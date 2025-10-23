@@ -1,11 +1,16 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small">
+            <n-card :title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small" class="shadow-lg">
                 <n-space vertical :size="12" class="pt-4">
                     <div class="flex gap-2">
+                        <n-form-item label="Periode" class="w-full">
+                            <n-date-picker v-model:formatted-value="dynamicSearch.periode" :default-calendar-start-time="Date.now()"
+                                clearable start-placeholder="dari" type="daterange" end-placeholder="sampai"
+                                format="yyyy-MM-dd" />
+                        </n-form-item>
                         <n-form-item label="Nomor Kontrak" class="w-full">
-                            <n-input v-model:value="dynamicSearch.loan_number" placeholder="Nomor Kontrak" clearable/>
+                            <n-input v-model:value="dynamicSearch.loan_number" placeholder="Nomor Kontrak" clearable />
                         </n-form-item>
                         <n-form-item label="Atas Nama" class="w-full">
                             <n-input v-model:value="dynamicSearch.atas_nama" placeholder="Atas Nama" clearable />
@@ -41,11 +46,11 @@ const searchBox = ref();
 
 
 const handleSearch = async () => {
-     loadTable.value = true;
+    loadTable.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: `check_order_document?loan_number=${dynamicSearch.loan_number}&atas_nama=${dynamicSearch.atas_nama}&cabang=${dynamicSearch.cabang}`,
+        api: `check_order_document?loan_number=${dynamicSearch.loan_number}&atas_nama=${dynamicSearch.atas_nama}&cabang=${dynamicSearch.cabang}&dari=${dynamicSearch.periode[0]}&sampai=${dynamicSearch.periode[1]}`,
         token: userToken,
     });
     if (!response.ok) {

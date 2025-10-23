@@ -129,18 +129,12 @@ const columnBebanTagih = reactive([
         title: "DESA",
         key: "desa",
         sorter: "default",
-        filter: true,
-        filterMultiple: true,
-        filterOptions: [],
         width: 150,
     },
     {
         title: "KEC",
         key: "kec",
         sorter: "default",
-        filter: true,
-        filterMultiple: true,
-        filterOptions: [],
         width: 150,
     },
     {
@@ -339,9 +333,9 @@ const pagination = reactive({
                     </div>
                 </n-card>
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
-                    @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-                    @update:checked-row-keys="handleCheck" size="small" :loading="isLoading"
-                    :pagination="{ pageSize: 10 }" :scroll-x="2050" />
+                    @update:filters="onFilterChange" 
+                    size="small" :loading="isLoading"
+                    :pagination="pagination" :scroll-x="2050" />
             </div>
         </n-card>
     </n-modal>

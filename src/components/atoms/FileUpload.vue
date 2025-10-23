@@ -119,6 +119,7 @@ const beforeUpload = (data) => {
   resizeImage(data.file.file);
   console.log(data.fileList.length);
   emit('length', data.fileList.length);
+  emit('onUpload',true);
 };
 const emit = defineEmits();
 const errorCapture = ref(false);
@@ -140,6 +141,7 @@ const handleImagePost = () => {
     })
     .then((json) => {
       emit('fallback', json.json.response);
+      emit('onUpload',false); 
       message.success(`upload ${props.title} berhasil`);
     })
     .catch(() => {
@@ -157,6 +159,7 @@ const props = defineProps({
   fid: String,
   def_value: String,
   def_preview: Boolean,
+  on_upload:Boolean,
   multi: Boolean,
   data_multi: Object,
   viewMode: {
