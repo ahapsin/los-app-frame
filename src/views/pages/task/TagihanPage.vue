@@ -142,7 +142,11 @@
                     </div>
                 </div>
             </n-card>
-            <!-- <n-divider title-placement="left">Rincian Tagihan</n-divider> -->
+            <n-divider title-placement="left">Dokumen Pelanggan</n-divider>
+            <pre>{{ bodyDetail }}</pre>
+            <n-image-group>
+                <n-image/>
+            </n-image-group>
             <!-- <n-table size="small">
                 <thead>
                     <tr>
