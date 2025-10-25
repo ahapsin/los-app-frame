@@ -143,9 +143,10 @@
                 </div>
             </n-card>
             <n-divider title-placement="left">Dokumen Pelanggan</n-divider>
-            <pre>{{ bodyDetail }}</pre>
             <n-image-group>
-                <n-image/>
+                <div>
+                    <n-image v-for="i in bodyDetail.col_path" :src="i" width="40" :height="40" object-fit="fill"  class="w-[40px] h-[40px]"/>
+                </div>
             </n-image-group>
             <!-- <n-table size="small">
                 <thead>
