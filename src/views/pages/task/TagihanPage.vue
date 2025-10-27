@@ -53,6 +53,13 @@
         <n-card class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
             <template #header-extra>
                 <n-space align="center">
+                    
+                    <!-- <n-button size="small" quaternary type="info" @click="handleInquiry()">
+                        <template #icon>
+                            <v-icon name="bi-list" />
+                        </template>
+                        Inquiry
+                    </n-button> -->
                     <n-button size="small" quaternary type="info" @click="handleHistory(bodyDetail.no_surat)">
                         <template #icon>
                             <v-icon name="bi-clock-history" />

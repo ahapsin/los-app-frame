@@ -43,7 +43,7 @@
                         <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                             @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                             @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
-                            :pagination="pagination" :scroll-x="1950" :row-class-name="getRowClassName" />
+                            :pagination="pagination" :scroll-x="2030" :row-class-name="getRowClassName" />
                     </n-card>
 
                 </div>
@@ -63,15 +63,68 @@
             </n-space>
         </template>
     </n-card>
+    <n-modal v-model:show="modalHistorySurat">
+        <div class="w-2/3">
+            <n-card title="Hasil Kunjungan" :segmented="true" size="small">
+                <!-- <n-timeline>
+                
+                            <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
+                            <n-timeline-item type="info" title="Laporan Kunjungan" content="nasabah tidak ada dirumah"
+                                time="2018-04-03 20:46" line-type="dashed" />
+                            <n-timeline-item type="warning" content="Mencoba ulang kunjungan oleh *nama marketing*"
+                                time="2018-04-03 20:46" />
+                            <n-timeline-item type="success" content="Tagihan masuk dan dibayarkan nasabah"
+                                time="2018-04-03 20:46" />
+                        </n-timeline> -->
+                <!-- <n-result status="warning" title="Kunjungan Kosong" description="Tidak Histori Kunjungan">
+
+                        </n-result> -->
+                <n-scrollbar style="max-height: 400px">
+                    <!-- <n-timeline>
+                        <n-timeline-item type="warning" v-for="i in bodyHistorySurat" :key="i" :content="i.description"
+                            :time="timeAgo(i.create_date)" />
+                    </n-timeline> -->
+                    <n-collapse :default-expanded-names="[1]">
+                        <n-collapse-item :title="moment(i.tgl_buat).format('DD-MM-YYYY HH:mm')"
+                            v-for="i in bodyHistorySurat">
+                            <div class="grid grid-flow-col">
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">NO SURAT</small>
+                                    <n-text strong class="text-md">{{ i.no_surat }}</n-text>
+                                </div>
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">PETUGAS</small>
+                                    <n-text strong class="text-md">{{ i.oleh }}</n-text>
+                                </div>
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">JB</small>
+                                    <n-text strong class="text-md">{{ i.tgl_jb }}</n-text>
+                                </div>
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">KETERANGAN</small>
+                                    <n-text strong class="text-md">{{ i.ket }}</n-text>
+                                </div>
+                            </div>
+                            <div class="flex flex-col p-2 border rounded-lg">
+                                <small class="text-reg">DOK KUNJUNGAN</small>
+                                <n-image :src="f" v-for="f in i.file" width="60" />
+                            </div>
+                        </n-collapse-item>
+                    </n-collapse>
+                </n-scrollbar>
+            </n-card>
+        </div>
+    </n-modal>
 </template>
 
 <script setup>
-import { NAvatar, NTag, NText } from 'naive-ui';
+import { NAvatar, NButton, NTag, NText } from 'naive-ui';
 import { ref, reactive, computed, onMounted } from "vue";
 import { useLoadingBar, useMessage } from "naive-ui";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
 import _ from "lodash";
+import moment from 'moment';
 
 const me = useMeStore();
 const message = useMessage();
@@ -216,6 +269,19 @@ const columnBebanTagih = reactive([
         key: "tgl_jb",
         sorter: "default",
         width: 150,
+    }, {
+        title: "DETAIL ",
+        sorter: "default",
+        width: 80,
+        render(row) {
+            return h(NButton, {
+                size: "small",
+                secondary: true,
+                onClick: () => handleHistorySurat(row.no_surat),
+            }, {
+                default: () => "Detail",
+            })
+        }
     },
 
 ]);
@@ -351,7 +417,7 @@ const handleChangePetugas = async () => {
         setFilterOptions("kec");
         setFilterOptions("desa");
         setFilterOptions("cycle_awal");
-        setFilterOptions("angsuran_ke",true);
+        setFilterOptions("angsuran_ke", true);
     }
 };
 
@@ -442,6 +508,28 @@ const exportToExcel = (data) => {
     saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'DAFTAR TAGIHAN.xlsx')
 }
 
+const modalHistorySurat = ref(false);
+const bodyHistorySurat = ref([]);
+const handleHistorySurat = async (e) => {
+    modalHistorySurat.value = true;
+    await getHistorySurat(e);
+}
+const getHistorySurat = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `cl_survey_detail/${e}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(response.error);
+    } else {
+        // console.log(response.data.response)
+        isLoading.value = false;
+        bodyHistorySurat.value = response.data;
+    }
+};
 onMounted(() => {
     loadingBar.finish();
     getData();

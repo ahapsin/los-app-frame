@@ -122,6 +122,9 @@ const columnBebanTagih = reactive([
         key: "NAMA CABANG",
         width: 150,
         sorter: "default",
+         filter: true,
+        filterMultiple: true,
+        filterOptions: [],
     },
     {
         title: "NO KONTRAK",
@@ -302,6 +305,7 @@ const getList = async () => {
                 }));
             }
         };
+        setFilterOptions("NAMA CABANG");
         setFilterOptions("NBOT");
         setFilterOptions("CYCLE AWAL");
         setFilterOptions("KECAMATAN");
