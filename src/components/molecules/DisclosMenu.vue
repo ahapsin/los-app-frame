@@ -11,7 +11,7 @@
       <div v-else>
         <small class="text-pr">{{ menu.menuitem.labelmenu.toUpperCase() }}</small>
       </div>
-      <div v-for="submenu in menu.menuitem.submenu" class="py-1" :key="submenu">
+      <div v-for="submenu in [...menu.menuitem.submenu].sort((a, b) => a.sublabel.localeCompare(b.sublabel))" class="py-1" :key="submenu">
         <router-link :to="`${menu.menuitem.routename}${submenu.subroute}`" v-slot="{ isActive }" @click="handleStart">
           <div class="flex gap-2  rounded-xl p-2 w-full" @click="
             width < 620

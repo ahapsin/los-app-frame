@@ -102,7 +102,7 @@ const columns = [
     {
         title: "STATUS",
         sorter: 'default',
-        key: "status",
+        key: "STATUS",
         ellipsis: {
             tooltip: true,
         }
@@ -115,13 +115,10 @@ const columns = [
             return h(
                 NSwitch,
                 {
+                    value: row.STATUS === 'Aktif' ? true : false,
                     options: options,
                     size: "small",
-                },
-                {
-                    default: () => h(NButton, {
-                        size: "small",
-                    }, { default: () => 'Action' })
+                    onUpdateValue: (value) => handleSwitch(row, value)
                 }
             );
         }
@@ -136,7 +133,11 @@ const statusTag = (e) => {
     }
 
 }
-
+const handleSwitch = async (row, value) => {
+    console.log('Switched:', row, 'to', value);
+    await setSwitch({ id: row.ID, status: value ? 'Aktif' : 'Tidak Aktif' })
+    getData()
+}
 const modalRef = ref(false);
 const refreshData = () => {
     getData()
@@ -192,6 +193,22 @@ const getData = async () => {
         dataTable.value = response.data;
     }
 }
+const setSwitch = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: 'POST',
+        api: `order_resources_status`,
+        data: e,
+        token: userToken
+    });
+    if (!response.ok) {
+        console.log(reponse.error);
+    } else {
+        isLoading.value = false;
+        message.info('berhasil ubah status');
+    }
+}
 const postData = async (e) => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
@@ -206,6 +223,7 @@ const postData = async (e) => {
         message.success('Berhasil Ditambahkan');
         modalRef.value = false;
         isLoading.value = false;
+        getData();
     }
 }
 const renderIcon = (icon) => {

@@ -26,8 +26,8 @@
         <n-image :src="props.def_value" class="h-20 w-20 min-w-20 rounded-xl" object-fit="fit" />
       </div>
       <div v-else>
-        <n-image src="https://www.shorekids.co.nz/wp-content/uploads/2014/08/image-placeholder.jpg"
-          class="h-20 w-20 min-w-20 rounded-xl border-red-500" />
+        <n-image src="https://res.cloudinary.com/dfjruncxv/image/upload/v1761554446/logo_yeqsio-modified_kbhg6g.png"
+          class="h-20 w-20 min-w-20 rounded-xl border-red-500 opacity-20" />
       </div>
     </div>
     <n-upload accept="image/png, image/jpeg,image/jpg" @change="beforeUpload" :show-file-list="props.def_preview"

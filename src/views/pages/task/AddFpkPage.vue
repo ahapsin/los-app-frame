@@ -308,13 +308,15 @@
                         <n-form-item label="Reff Pelanggan" path="ref_pelanggan" class="w-full">
                             <div class="flex gap-2 w-full">
 
-                                <n-input :readonly="viewMode" />
-                                <n-select filterable placeholder="reff pelanggan" :options="optReff"
-                                    v-model:value="dataOrder.ref_pelanggan" class="w-full" />
-                                <n-input :readonly="viewMode" placeholder="Reff Pelanggan" v-show="dataOrder.ref_pelanggan == 'LAINNYA' ||
+                                <!-- <n-input :readonly="viewMode" /> -->
+                                <n-select filterable placeholder="reff pelanggan" :options="refOrder"
+                                    :render-tag="renderSingleSelectTag" :render-label="renderLabel"
+                                    v-model:value="dataOrder.ref_pelanggan" class="w-full" value-field="NAMA"
+                                    label-field="NAMA" />
+                                <!-- <n-input :readonly="viewMode" placeholder="Reff Pelanggan" v-show="dataOrder.ref_pelanggan == 'LAINNYA' ||
                                     dataOrder.ref_pelanggan == 'MEDIATOR'
                                     " v-model:value="dataOrder.ref_pelanggan_oth"
-                                    @input="$event => (dataOrder.ref_pelanggan_oth = $event.toUpperCase())" />
+                                    @input="$event => (dataOrder.ref_pelanggan_oth = $event.toUpperCase())" /> -->
                             </div>
                         </n-form-item>
                         <n-form-item label="Surveyor" path="surveyor_name" class="w-full">
@@ -854,11 +856,12 @@
                             </n-form-item> -->
                             <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
                                 <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000"
-                                    v-if="calcCredit.jenis_angsuran === 'bunga_menurun' && calcCredit.nilai_yang_diterima < 1500000"/>
+                                    v-if="calcCredit.jenis_angsuran === 'bunga_menurun' && calcCredit.nilai_yang_diterima < 1500000" />
                                 <n-alert v-else-if="skemaAngsuran.length === 0" type="warning">Tenor dan Angsuran tidak
                                     tersedia</n-alert>
                                 <div v-else>
-                                    <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran === 'bulanan'">
+                                    <div class="flex flex-col md:flex-row"
+                                        v-show="calcCredit.jenis_angsuran === 'bulanan'">
                                         <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                             <n-radio name="tenor" value="6">
                                                 6 bulan<n-text code>
@@ -905,7 +908,8 @@
                                             </n-radio>
                                         </n-radio-group>
                                     </div>
-                                    <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran === 'bunga_menurun'">
+                                    <div class="flex flex-col md:flex-row"
+                                        v-show="calcCredit.jenis_angsuran === 'bunga_menurun'">
                                         <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                             <n-radio name="tenor" value="5">
                                                 5 bulan<n-text code>
@@ -919,7 +923,8 @@
                                             </n-radio>
                                         </n-radio-group>
                                     </div>
-                                    <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran === 'musiman'">
+                                    <div class="flex flex-col md:flex-row"
+                                        v-show="calcCredit.jenis_angsuran === 'musiman'">
                                         <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
                                             <n-radio name="tenor" value="3">
                                                 1x 3 bulan<n-text code>
@@ -1031,7 +1036,8 @@
                 </n-icon>
                 simpan
             </n-button>
-            <n-button v-show="actionPage != 'view'" @click="hadleValid" type="primary" v-if="!viewMode" :disabled="tenorControl">
+            <n-button v-show="actionPage != 'view'" @click="hadleValid" type="primary" v-if="!viewMode"
+                :disabled="tenorControl">
                 <template #icon>
                     <n-icon>
                         <send-icon />
@@ -1048,7 +1054,7 @@ import { useRoute } from "vue-router";
 import { useApi } from "../../../helpers/axios";
 import { useBlacklist } from "../../../helpers/blacklist";
 import router from "../../../router";
-import { useMessage } from "naive-ui";
+import { NAvatar, NText, useMessage } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
 import _ from "lodash";
 import {
@@ -1071,7 +1077,7 @@ const loading = ref(false);
 const loadingSend = ref(false);
 const baseRoute = useRoute();
 const tipeAngsuran = ref({});
-const tenorControl=ref(false);
+const tenorControl = ref(false);
 const jaminanStore = useJaminanStore();
 
 const props = defineProps({
@@ -1684,6 +1690,68 @@ const handlePlafond = (e) => {
     refAdmin(body);
     handleChange();
 };
+
+const renderLabel = (option) => {
+    return h(
+        "div",
+        {
+            style: {
+                display: "flex",
+                alignItems: "center"
+            }
+        },
+        [
+            h(NAvatar, {
+                round: true,
+                size: "small"
+            }, {
+                default: () => option.NAMA.charAt(0)
+            }),
+            h(
+                "div",
+                {
+                    style: {
+                        marginLeft: "12px",
+                        padding: "4px 0"
+                    }
+                },
+                [
+                    h("div", null, [option.NAMA]),
+                    h(
+                        NText,
+                        { depth: 3, tag: "div" },
+                        {
+                            default: () => option.KETERANGAN
+                        }
+                    )
+                ]
+            )
+        ]
+    );
+};
+const renderSingleSelectTag = ({ option }) => {
+    return h(
+        "div",
+        {
+            style: {
+                display: "flex",
+                alignItems: "center"
+            }
+        },
+        [
+            h(NAvatar, {
+                round: true,
+                size: 24,
+                style: {
+                    marginRight: "12px"
+                }
+            }, {
+                default: () => option.NAMA.charAt(0)
+            }),
+            `${option.NAMA}`
+        ]
+    );
+};
 const handleEkstra = () => {
     //calcCredit.tenor = calcCredit.tenor ? calcCredit.tenor.toString() : null;
     const body = {
@@ -1804,6 +1872,21 @@ const handleSend = async () => {
         router.push("/task/apply-credit");
     }
 };
+const refOrder = ref([]);
+const refOrderIsloading = ref(false);
+const getReff = async () => {
+    const response = await useApi({
+        method: "GET",
+        api: `order_resources`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        refOrderIsloading.value = false;
+    } else {
+        refOrderIsloading.value = false;
+        refOrder.value = _.filter(response.data, { 'STATUS': 'Aktif' });
+    }
+};
 const hadleValid = async () => {
     await formPelanggan.value?.validate((errors) => {
         if (errors) {
@@ -1856,7 +1939,7 @@ const hadleValid = async () => {
         } else {
 
             statusEkstra.value = "finish"
-        } 
+        }
     });
     console.log('kirim');
     handleSend();
@@ -1883,5 +1966,6 @@ const filterByValueOrLabel = (pattern, option) => {
 }
 onMounted(() => {
     getData();
+    getReff();
 });
 </script>
