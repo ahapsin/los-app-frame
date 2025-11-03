@@ -15,8 +15,9 @@
             </n-alert>
             <n-space vertical :size="12">
                 <n-form-item label="petugas">
-                    <n-select v-model:value="assignTo" placeholder="pilih petugas"
-                        :options="_.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
+                    <n-select v-model:value="assignTo" placeholder="pilih petugas" :options="me.me.cabang_nama === 'Head Office'
+                        ? dataUser
+                        : _.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
                         label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
                 </n-form-item>
                 <n-card embedded title="Daftar Tagihan" size="small" :segmented="true">
@@ -122,7 +123,7 @@ const columnBebanTagih = reactive([
         key: "NAMA CABANG",
         width: 150,
         sorter: "default",
-         filter: true,
+        filter: true,
         filterMultiple: true,
         filterOptions: [],
     },
