@@ -5,6 +5,7 @@ import { useApi } from '../../../helpers/axios';
 import AddLkp from './addLkp.vue';
 import { NButton } from 'naive-ui';
 import moment from 'moment'
+import { useSearch } from '../../../helpers/searchObject';
 
 
 
@@ -101,6 +102,7 @@ const getList = async () => {
         dataList.value = response.data;
     }
 };
+const boxSearch = ref();
 
 const handleSaved = () => {
     modalAdd.value = false;
@@ -225,6 +227,12 @@ const getHistorySurat = async (e) => {
         bodyHistorySurat.value = response.data;
     }
 };
+
+const searchBox = ref();
+const showData = computed(() => {
+    return useSearch(dataList.value, searchBox.value);
+});
+
 onMounted(() => {
     getList();
 });
@@ -271,7 +279,7 @@ const pagination = reactive({
     <n-card :class="`shadow-lg`" title="Daftar LKP" size="small" :segmented="true">
         <template #header-extra>
             <n-space>
-                <n-input clearable v-model:value="boxSearch" placeholder="cari">
+                <n-input clearable v-model:value="searchBox" placeholder="cari">
                     <template #suffix>
                         <v-icon name="bi-search"></v-icon>
                     </template>
@@ -296,9 +304,8 @@ const pagination = reactive({
                 </n-button>
             </n-space>
         </template>
-        <n-data-table :columns="columnDeploy" :data="dataList" :filter-value="filterValue"
-            @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-            @update:checked-row-keys="handleCheck" :loading="isLoading" size="small" :pagination="pagination" />
+        <n-data-table :columns="columnDeploy" :data="showData" :loading="isLoading" size="small"
+            :pagination="pagination" />
     </n-card>
     <n-modal v-model:show="modalAdd">
         <div class="w-4/5">
@@ -333,9 +340,8 @@ const pagination = reactive({
                     </div>
                 </n-card>
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
-                    @update:filters="onFilterChange" 
-                    size="small" :loading="isLoading"
-                    :pagination="pagination" :scroll-x="2050" />
+                    @update:filters="onFilterChange" size="small" :loading="isLoading" :pagination="pagination"
+                    :scroll-x="2050" />
             </div>
         </n-card>
     </n-modal>
