@@ -126,6 +126,8 @@ import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
 import _ from "lodash";
 import moment from 'moment';
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver';
 
 const me = useMeStore();
 const message = useMessage();
@@ -179,7 +181,7 @@ const columnBebanTagih = reactive([
         type: "selection",
         sorter: "default",
         disabled(row) {
-            return row.bayar >= row.angsuran
+            return row.bayar >= row.total_angsuran
         }
     },
     {
@@ -243,11 +245,11 @@ const columnBebanTagih = reactive([
     },
     {
         title: "TTL ANGSURAN ",
-        key: "total_angsurann",
+        key: "total_ambc",
         sorter: "default",
         width: 150,
         render(row) {
-            return h("div", row.total_angsurann.toLocaleString())
+            return h("div", row.total_angsuran?.toLocaleString())
         }
     },
     {
@@ -256,7 +258,7 @@ const columnBebanTagih = reactive([
         sorter: "default",
         width: 150,
         render(row) {
-            return h("div", row.angsuran.toLocaleString())
+            return h("div", row.angsuran?.toLocaleString())
         }
     },
     {
@@ -265,7 +267,7 @@ const columnBebanTagih = reactive([
         sorter: "default",
         width: 150,
         render(row) {
-            return h("div", row.bayar.toLocaleString())
+            return h("div", row.bayar?.toLocaleString())
         }
     },
     {
@@ -545,8 +547,3 @@ onMounted(() => {
     getData();
 });
 </script>
-<style scoped>
-:deep(.too-old td) {
-    @apply bg-green-100
-}
-</style>
