@@ -157,6 +157,15 @@ const columnBebanTagih = reactive([
         sorter: "default",
         width: 150,
     },
+     {
+        title: "TTL ANGSURAN ",
+        key: "total_ambc",
+        sorter: "default",
+        width: 150,
+        render(row) {
+            return h("div", row.total_angsuran?.toLocaleString())
+        }
+    },
     {
         title: "ANGSURAN ",
         key: "angsuran",
