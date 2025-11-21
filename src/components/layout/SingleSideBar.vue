@@ -1,7 +1,7 @@
 <template>
   <n-layout class="h-screen">
     <n-layout-header>
-      <n-page-header class="sticky shadow  top-0 z-50 backdrop-blur p-2 bg-gradient-to-l from-pr-50">
+      <n-page-header class="sticky shadow  top-0 z-50 backdrop-blur p-2">
         <template #title>
           <n-space align="center">
             <n-button circle quaternary @click="router.back()"
