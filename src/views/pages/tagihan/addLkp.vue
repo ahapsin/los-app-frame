@@ -44,7 +44,7 @@
                         <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                             @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                             @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
-                            :pagination="pagination" :scroll-x="2030" :row-class-name="getRowClassName" />
+                            :pagination="pagination" :row-class-name="getRowClassName" />
                     </n-card>
 
                 </div>
