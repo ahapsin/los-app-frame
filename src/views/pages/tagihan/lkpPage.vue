@@ -350,7 +350,7 @@ const pagination = reactive({
                 </n-card>
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
                     @update:filters="onFilterChange" size="small" :loading="isLoading" :pagination="pagination"
-                    :scroll-x="2050" />
+                     />
             </div>
         </n-card>
     </n-modal>
