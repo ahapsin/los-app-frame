@@ -54,7 +54,7 @@
             <n-alert type="info" v-if="checkedRowKeys.length === 0">Pilih data tagihan</n-alert>
             <n-alert type="info" v-else-if="assignTo === null">Pilih petugas</n-alert>
             <n-space v-else>
-                <n-button type="primary" @click="assignTagihan" :disabled="checkedRowKeys.length === 0">
+                <n-button type="primary" @click="assignTagihan" :disabled="checkedRowKeys.length === 0" :loading="isLoading">
                     <template #icon>
                         <v-icon name="bi-plus-lg" />
                     </template>
