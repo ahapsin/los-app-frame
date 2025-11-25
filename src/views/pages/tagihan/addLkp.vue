@@ -435,6 +435,7 @@ const handleChangePetugas = async () => {
 
 const emit = defineEmits();
 const assignTagihan = async () => {
+    if (isLoading.value) return;
     const bodyPost = {
         user_id: assignTo.value,
         list_lkp: checkedRowKeys.value,
