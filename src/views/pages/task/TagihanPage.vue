@@ -8,13 +8,13 @@
                         <v-icon name="bi-search"></v-icon>
                     </template>
                 </n-input>
-                <n-button type="success" secondary @click="exportToExcel(filteredDataList)">
+                <n-button type="success" secondary @click="exportToExcel(filteredDataList)" :disabled="isLoading">
                     <template #icon>
                         <v-icon name="bi-download"></v-icon>
                     </template>
                     Export Excel
                 </n-button>
-                <n-button quaternary circle @click="getData">
+                <n-button quaternary circle @click="getData" :disabled="isLoading">
                     <template #icon>
                         <v-icon name="bi-arrow-clockwise"></v-icon>
                     </template>
@@ -384,10 +384,23 @@ const handleSubmit = () => {
 }
 const formDataKunjungan = ref({
     no_surat: null,
-    keterangan: null,
+  keterangan: null,
     tgl_jb: null,
     path: []
-})
+});
+
+const screenData = (list)=>{
+    list.map(item=>({
+        NO_SURAT:item.no_surat,
+        CUSTOMER:item.nama_customer,
+        NO_LKP:item.no_lkp,
+        NO_KONTRAK:item.no_kontrak,
+        TGL_JATUH_TEMPO:item.tgl_jatuh_tempo,
+        ANGSURAN_KE:item.angsuran_ke,
+        ANGSURAN:item.angsuran,
+        ALAMAT:item.alamat
+    }));
+}
 
 const statsUpload=ref(false);
 const handleFallback = (e) => {
@@ -546,7 +559,7 @@ const getData = async () => {
         token: userToken,
     });
     if (!response.ok) {
-        console.log(reponse.error);
+        console.log(response.error);
     } else {
         loadingBar.finish();
         // console.log(response.data.response)

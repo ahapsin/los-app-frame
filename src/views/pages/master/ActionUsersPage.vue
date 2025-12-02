@@ -218,7 +218,7 @@ const optJenisKelamin = ["Laki-laki", "Perempuan"].map((v) => ({
   label: v,
   value: v,
 }));
-const optStatus = ["Active", "InActive"].map((v) => ({
+const optStatus = ["Active", "InActive","Resign","Mutasi POS","Mutasi Jabatan"].map((v) => ({
   label: v,
   value: v,
 }));
