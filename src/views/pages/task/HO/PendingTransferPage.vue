@@ -1,5 +1,5 @@
 <template>
-  <n-card :segmented="true" size="small">
+  <n-card :class="`shadow-lg`" :segmented="true" size="small">
     <template #header>Pending Transfer</template>
     <template #header-extra>
       <n-space>
@@ -19,9 +19,9 @@
       <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="dataPayment"
         :max-height="300" class="pb-2" :pagination="pagination" :loading="loadDataPayment" />
     </div>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal">
-    <n-card :bordered="false" aria-modal="true" title="Detail" :segmented="{
+    <n-card :class="`shadow-lg`" :bordered="false" aria-modal="true" title="Detail" :segmented="{
       content: true,
       footer: 'soft',
     }" size="small">
@@ -105,7 +105,7 @@
         <n-divider>bukti transfer</n-divider>
         <n-image :src="bodyModal.attachment" class="max-w-36 w-20 h-20" />
       </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 </template>
 <script setup>

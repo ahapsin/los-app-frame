@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-space vertical>
-      <n-card :title="`Laporan Kredit Jatuh Tempo`" :segmented="true" size="small">
+      <n-card :class="`shadow-lg`" :title="`Laporan Kredit Jatuh Tempo`" :segmented="true" size="small">
         <template #header-extra>
           <!--          <n-space class="!gap-1">-->
           <!--            <div class="me-1 flex gap-2">-->
@@ -86,7 +86,7 @@
               :pagination="pagination"
           />
         </n-space>
-      </n-card>
+      </n-card :class="`shadow-lg`">
     </n-space>
   </div>
 </template>

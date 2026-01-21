@@ -1,5 +1,5 @@
 <template>
-  <n-card size="small" :segmented="{
+  <n-card :class="`shadow-lg`" size="small" :segmented="{
     content: true,
     footer: 'soft',
   }">
@@ -62,7 +62,7 @@
         <span v-else>Selanjutnya</span>
       </n-button>
     </template>
-  </n-card>
+  </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

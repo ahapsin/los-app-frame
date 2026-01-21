@@ -1,7 +1,7 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small" class="shadow-lg">
+            <n-card :class="`shadow-lg`" :title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small" class="shadow-lg">
                 <n-space vertical :size="12" class="pt-4">
                     <div class="flex gap-2">
                         <n-form-item label="Periode" class="w-full">
@@ -27,7 +27,7 @@
                     <n-data-table :loading="loadTable" size="small" :columns="columns" :data="dataTable"
                         :pagination="pagination" />
                 </n-space>
-            </n-card>
+            </n-card :class="`shadow-lg`">
         </n-space>
     </div>
 </template>

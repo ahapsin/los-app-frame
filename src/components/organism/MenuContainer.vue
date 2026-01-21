@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <n-card :class="`shadow-lg`">
     <div v-if="menu.loading">
       <div class="flex flex-col gap-2">
         <n-skeleton height="10px" width="100px" round/>
@@ -35,7 +35,7 @@
         </div>
       </div>
     </div>
-  </n-card>
+  </n-card :class="`shadow-lg`">
 </template>
 <script setup>
 import _ from "lodash";

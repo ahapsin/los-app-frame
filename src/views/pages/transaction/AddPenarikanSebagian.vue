@@ -1,5 +1,5 @@
 <template>
-    <n-card :segmented="{
+    <n-card :class="`shadow-lg`" :segmented="{
         content: true,
         footer: 'soft',
     }">
@@ -136,19 +136,19 @@
                 </n-form-item>
             </div>
         </n-spin>
-    </n-card>
+    </n-card :class="`shadow-lg`">
     <n-modal class="w-1/4" v-model:show="buktiTransfer" preset="card" :segmented="true">
         <file-upload title="Bukti Transfer" :def_value="dataBuktiTransfer" endpoint="payment_attachment"
             type="bukti_transfer" :idapp="pelunasan.uid" @fallback="handleResBack" />
     </n-modal>
     <n-modal v-model:show="modalProsesPayment" :mask-closable="false">
-        <n-card class="`shadow` :class=" width> 850 ? 'w-1/2' : 'w-fit'">
+        <n-card :class="`shadow-lg`" class="`shadow` :class=" width> 850 ? 'w-1/2' : 'w-fit'">
             <div class="flex items-center gap-4" v-if="loadProses">
                 <n-spin size="small" />
                 <n-text>memproses pelunasan</n-text>
             </div>
             
-        </n-card>
+        </n-card :class="`shadow-lg`">
     </n-modal>
 </template>
 <script setup>

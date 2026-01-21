@@ -1,5 +1,5 @@
 <template>
-    <n-card :segmented="{
+    <n-card :class="`shadow-lg`" :segmented="{
         content: true,
         footer: 'soft',
     }" size="small">
@@ -101,25 +101,24 @@
                     </div>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
-                    <n-input-number  placeholder="Jumlah Pembayaran"
-                        v-model:value="totalPay" :show-button="false" :parse="parseCurrency" :format="formatCurrency" clearable
-                        class="w-full" readonly>
+                    <n-input-number placeholder="Jumlah Pembayaran" v-model:value="totalPay" :show-button="false"
+                        :parse="parseCurrency" :format="formatCurrency" clearable class="w-full" readonly>
                     </n-input-number>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
-                    <n-input-number placeholder="Jumlah Pembayaran"
-                        @focus="handleFocus" ref="inputFocus" v-model:value="pageData.jumlah_uang" :show-button="false"
-                        :parse="parseCurrency" :format="formatCurrency" clearable class="w-full">
+                    <n-input-number placeholder="Jumlah Pembayaran" @focus="handleFocus" ref="inputFocus"
+                        v-model:value="pageData.jumlah_uang" :show-button="false" :parse="parseCurrency"
+                        :format="formatCurrency" clearable class="w-full">
                     </n-input-number>
                 </n-form-item>
                 <n-form-item label="Pembulatan" class="w-full">
-                    <n-input-number :show-button="false" :parse="parseCurrency" min="0"
-                        :format="formatCurrency" :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan"
-                        clearable class="w-full" />
+                    <n-input-number :show-button="false" :parse="parseCurrency" min="0" :format="formatCurrency"
+                        :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan" clearable
+                        class="w-full" />
                 </n-form-item>
                 <n-form-item label="Kembalian" class="w-full">
-                    <n-input-number  :show-button="false" min="0;" :parse="parseCurrency"
-                        :format="formatCurrency" v-model:value="pageData.kembalian" readonly class="w-full" />
+                    <n-input-number :show-button="false" min="0;" :parse="parseCurrency" :format="formatCurrency"
+                        v-model:value="pageData.kembalian" readonly class="w-full" />
                 </n-form-item>
                 <n-form-item class="w-full">
                     <n-button type="primary" @click="handleProses" :loading="loadProses" class="w-full" :disabled="pageData.bayar_dengan_diskon === 'ya' && totalPay === 0 && pageData.jumlah_uang === 0
@@ -138,14 +137,14 @@
                 </n-form-item>
             </div>
         </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 
     <n-modal class="w-1/4" v-model:show="buktiTransfer" preset="card">
         <file-upload title="Bukti Transfer" :def_value="dataBuktiTransfer" endpoint="payment_attachment"
             type="bukti_transfer" :idapp="pageData.uid" @fallback="handleResBack" />
     </n-modal>
     <n-modal v-model:show="modalProsesPayment" :mask-closable="false">
-        <n-card class="shadow" :class="width > 850 ? 'w-1/2' : 'w-fit'">
+        <n-card  class="shadow-lg" :class="width > 850 ? 'w-1/2' : 'w-fit'">
             <div class="flex items-center gap-4" v-if="loadProses">
                 <n-spin size="small" />
                 <n-text>memproses pembayaran</n-text>
@@ -302,7 +301,7 @@
                     </div>
                 </template>
             </n-result>
-        </n-card>
+        </n-card :class="`shadow-lg`">
     </n-modal>
 </template>
 <script setup>
@@ -351,42 +350,44 @@ const handleCetakKwitansi = () => {
     router.go(-1)
 }
 
-const totalInstallment = () =>
-    checkedRowCredit.value.reduce(
-        (total, installment) => total + installment.bayar_angsuran,
-        0
-    );
+const totalInstallment = computed(() => {
+    return dataStrukturKredit.value
+        .filter(row =>
+            checkedRowCredit.value.some(c => c.key === row.key)
+        )
+        .reduce((total, row) => {
+            return total + (Number(row.bayar_angsuran) || 0);
+        }, 0);
+});
+
 
 const totalInstallmentTertagih = () => dataStrukturKredit.value.reduce(
     (total, installment) => total + installment.installment,
     0
 );
-
 const totalPay = computed(() => {
-
-    const totalPenalty = () =>
-        checkedRowCredit.value.reduce(
-            (total, installment) => total + installment.bayar_denda,
-            0
-        );
-    const combinedTotal = () => totalInstallment() + totalPenalty();
-    return combinedTotal();
+    return dataStrukturKredit.value
+        .filter(row =>
+            checkedRowCredit.value.some(c => c.key === row.key)
+        )
+        .reduce((total, row) => {
+            return total
+                + (Number(row.bayar_angsuran) || 0)
+                + (Number(row.bayar_denda) || 0);
+        }, 0);
 });
 
 
 const totalDenda = computed(() => {
-    const totalPenalty = () =>
-        checkedRowCredit.value.reduce(
-            (total, installment) => total + installment.denda,
-            0
-        );
-    const totalPayPenalty = () =>
-        checkedRowCredit.value.reduce(
-            (total, installment) => total + installment.bayar_denda,
-            0
-        );
-    return totalPenalty() - totalPayPenalty();
+    return dataStrukturKredit.value
+        .filter(row =>
+            checkedRowCredit.value.some(c => c.key === row.key)
+        )
+        .reduce((total, row) => {
+            return total + ((Number(row.denda) || 0) - (Number(row.bayar_denda) || 0));
+        }, 0);
 });
+
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const uuid = uuidv4();
@@ -502,18 +503,37 @@ const format = (value) => {
     if (value === null) return "";
     return value.toLocaleString("en-US");
 };
+const lastCheckedKey = computed(() => {
+    if (checkedRowCredit.value.length === 0) return null;
+    return checkedRowCredit.value[checkedRowCredit.value.length - 1].key;
+});
 
 const createColStruktur = () => {
     return [
         {
-            title: "ke",
+            title: "check",
             fixed: "left",
             type: "selection",
             disabled(row) {
-                return (
-                    row.key > checkedRowCredit.value.length || row.flag === "PENDING"
-                );
-            },
+                // 1. Pending selalu disable
+                if (row.flag === "PENDING") return true;
+
+                const isChecked = checkedRowCredit.value.some(c => c.key === row.key);
+                const isLastChecked = row.key === lastCheckedKey.value;
+                const isNextAngsuran = row.key === lastCheckedKey.value + 1;
+
+                // 2. Yang sudah dicentang tetap aktif
+                if (isChecked) return false;
+
+                // 3. Angsuran berikutnya:
+                // hanya boleh kalau angsuran terakhir sudah lunas
+                if (isNextAngsuran) {
+                    return !lastAngsuranLunas.value;
+                }
+
+                // 4. Selain itu → disable
+                return true;
+            }
         },
         {
             title: "ke",
@@ -552,31 +572,38 @@ const createColStruktur = () => {
         {
             title: "Bayar Angsuran",
             width: 150,
-            key: "installment",
+            key: "bayar_angsuran",
             render(row, index) {
-                if (row.flag == "PENDING") {
-                    return h(NTag, { type: "warning" }, { default: "dalam proses" });
-                } else {
-                    return h(NInputNumber, {
-                        disabled: _.find(checkedRowCredit.value, ["key", row.key])
-                            ? false
-                            : true,
-                        format: format,
-                        parse: parse,
-                        dir: isRtl,
-                        max: row.installment,
-                        showButton: false,
-                        secondary: true,
-                        placeholder: "pembayaran",
-                        value: _.find(checkedRowCredit.value, ["key", row.key])
-                            ? row.bayar_angsuran
-                            : 0,
-                        onUpdateValue(v) {
-                            dataStrukturKredit.value[index].bayar_angsuran = v;
-                        },
-                    });
+                if (row.flag === "PENDING") {
+                    return h(
+                        NTag,
+                        { type: "warning" },
+                        { default: () => "dalam proses" }
+                    );
                 }
-            },
+
+                const isChecked = _.find(checkedRowCredit.value, ["key", row.key]);
+                const isLastChecked = row.key === lastCheckedKey.value;
+
+                return h(NInputNumber, {
+                    disabled: !isChecked,
+                    readonly: !isLastChecked,
+                    format,
+                    parse,
+                    dir: isRtl,
+                    max: row.installment,
+                    showButton: false,
+                    secondary: true,
+                    placeholder: "pembayaran",
+
+                    value: (isChecked && !isLastChecked)
+                        ? row.installment
+                        : dataStrukturKredit.value[index].bayar_angsuran,
+                    onUpdateValue(v) {
+                        dataStrukturKredit.value[index].bayar_angsuran = v;
+                    }
+                });
+            }
         },
         {
             title: "Bayar Denda",
@@ -603,13 +630,31 @@ const createColStruktur = () => {
                         onUpdateValue(v) {
                             dataStrukturKredit.value[index].bayar_denda = v;
                         },
-
                     });
                 }
             },
         },
     ];
 };
+const lastAngsuranLunas = computed(() => {
+    const last = checkedRowCredit.value.at(-1);
+    if (!last) return false;
+
+    const row = dataStrukturKredit.value.find(r => r.key === last.key);
+    if (!row) return false;
+
+    return Number(row.bayar_angsuran || 0) >= Number(row.installment);
+});
+
+const hasSelisihAngsuran = computed(() => {
+    return dataStrukturKredit.value
+        .filter(row =>
+            checkedRowCredit.value.some(c => c.key === row.key)
+        )
+        .some(row => {
+            return Number(row.bayar_angsuran || 0) !== Number(row.installment || 0);
+        });
+});
 
 const formatter = new Intl.NumberFormat('en-US', {
     minimumFractionDigits: 2,
@@ -659,8 +704,20 @@ const isLasted = computed(() => {
 
 const handleAngsuran = (action, e, row) => {
     checkedRowCredit.value = e;
-    if (row.action == "uncheck") {
-        checkedRowCredit.value = _.filter(checkedRowCredit.value, (o) => o.key <= row.row.key);
+
+    if (row.action === "check") {
+        const idx = dataStrukturKredit.value.findIndex(
+            r => r.key === row.row.key
+        );
+
+        dataStrukturKredit.value[idx].bayar_angsuran =
+            dataStrukturKredit.value[idx].installment;
+    }
+
+    if (row.action === "uncheck") {
+        checkedRowCredit.value = checkedRowCredit.value.filter(
+            o => o.key <= row.row.key
+        );
     }
 };
 
@@ -773,7 +830,15 @@ const getSkalaCredit = async (e) => {
 };
 const message = useMessage();
 
-
+dataStrukturKredit.value.forEach(row => {
+    if (checkedRowCredit.value.some(c => c.key === row.key)) {
+        row.bayar_angsuran = row.installment;
+        row.bayar_denda ??= 0;
+    } else {
+        row.bayar_angsuran ??= 0;
+        row.bayar_denda ??= 0;
+    }
+});
 const parseCurrency = (value) => {
     const nums = value.replace(/(,|\$|\s)/g, "").trim();
     if (/^\d+(\.(\d+)?)?$/.test(nums))
@@ -791,6 +856,14 @@ const rowClassName = (row) => {
     }
     return "";
 };
+watch(isLasted, (val) => {
+    if (val) {
+        pageData.diskon_tunggakan = totalDenda.value;
+    } else {
+        pageData.diskon_tunggakan = 0;
+        pageData.bayar_dengan_diskon = "tidak";
+    }
+});
 </script>
 <style scoped>
 :deep(.row-active td) {

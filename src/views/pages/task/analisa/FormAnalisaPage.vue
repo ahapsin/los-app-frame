@@ -1,5 +1,5 @@
 <template>
-  <n-card title="form isian analisa">
+  <n-card :class="`shadow-lg`" title="form isian analisa">
     <template #header-extra>
       <n-tag>Modal Kerja</n-tag>
       <n-tag>Investasi</n-tag>
@@ -73,9 +73,9 @@
         </n-collapse>
       </n-space>
     </div>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-modal v-model:show="modalSt">
-    <n-card class="w-11/12"
+    <n-card :class="`shadow-lg`" class="w-11/12"
             title="Data Detail Debitur"
             :bordered="false"
             size="huge"
@@ -106,7 +106,7 @@
 
         </div>
       </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 
 </template>

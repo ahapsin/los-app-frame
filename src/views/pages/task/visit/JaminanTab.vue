@@ -2,7 +2,7 @@
   <n-scrollbar style="max-height: 400px">
     <div>
       <n-alert type="error" v-if="statusDataJaminan === 'error'">minimal memiliki 1 jaminan</n-alert>
-      <n-card embedded :segmented="true">
+      <n-card :class="`shadow-lg`" embedded :segmented="true">
         <div class="flex gap-2 items-center justify-around">
           <n-statistic label="Jumlah Jaminan">
             {{ jaminanStore.listJaminan.length }}
@@ -19,7 +19,7 @@
             </n-button>
           </div>
         </div>
-        <n-card :segmented="true" class="my-2 bg-white rounded-xl border hover:shadow"
+        <n-card :class="`shadow-lg`" :segmented="true" class="my-2 bg-white rounded-xl border hover:shadow"
                 v-for="(coll) in orderJaminan" :key="coll" :title="coll.type">
           <template #header-extra>
             <div class="flex gap-2">
@@ -117,11 +117,11 @@
             </div>
 
           </div>
-        </n-card>
-      </n-card>
+        </n-card :class="`shadow-lg`">
+      </n-card :class="`shadow-lg`">
     </div>
     <n-modal v-model:show="showModal">
-      <n-card class="md:w-1/2" closable @close="showModal = false" :segmented="true"
+      <n-card :class="`shadow-lg`" class="md:w-1/2" closable @close="showModal = false" :segmented="true"
               :title="`form ${jenisJaminan}`">
         <component :is="JaminanKendaraan" v-if="jenisJaminan.toLowerCase() == 'kendaraan'"
                    @childData="handleChildData" :def_data="dataProp"/>
@@ -141,7 +141,7 @@
             <n-button type="warning" @click="showModal = false">batal</n-button>
           </n-space>
         </template>
-      </n-card>
+      </n-card :class="`shadow-lg`">
     </n-modal>
   </n-scrollbar>
 </template>

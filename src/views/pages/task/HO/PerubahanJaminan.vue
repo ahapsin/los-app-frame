@@ -1,5 +1,5 @@
 <template>
-  <n-card size="small" :segmented="true">
+  <n-card :class="`shadow-lg`" size="small" :segmented="true">
     <template #header>Perubahan Jaminan</template>
     <!-- <template #header-extra>
       <n-space>
@@ -19,9 +19,9 @@
       <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="dataPayment"
         class="pb-2" :pagination="pagination" :loading="loadDataPayment" />
     </div>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-modal v-model:show="showModal">
-    <n-card title="Konfirmasi perubahan data jaminan" class="w-1/2" :segmented="true" size="small">
+    <n-card :class="`shadow-lg`" title="Konfirmasi perubahan data jaminan" class="w-1/2" :segmented="true" size="small">
       <template #header-extra>
         <n-space>
           <n-button type="error" secondary size="small" @click="handleTolak(bodyModal.id)">Tolak</n-button>
@@ -115,7 +115,7 @@
           </div>
         </div>
       </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 </template>
 <script setup>

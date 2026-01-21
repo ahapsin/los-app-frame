@@ -1,7 +1,7 @@
 <template>
-  <n-card class="shadow-lg">
+  <n-card :class="`shadow-lg`" class="shadow-lg">
     Hi,<b>{{ me.me.nama }} 👋</b>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <MenuContainer class="mt-2" v-if="width <= 480" />
 
   <div class="grid grid-flow-col md:grid-cols-3 gap-4 mt-4">

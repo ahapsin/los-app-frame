@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Laporan Listing Beban" :segmented="true" size="small">
+  <n-card :class="`shadow-lg`" title="Laporan Listing Beban" :segmented="true" size="small">
     <div>
       
       <n-space vertical :size="12" class="pt-4">
@@ -32,7 +32,7 @@
           :pagination="{ pageSize: 10 }" :loading="loadingData" />
       </n-space>
     </div>
-  </n-card>
+  </n-card :class="`shadow-lg`">
 </template>
 <script setup>
 import moment from "moment";

@@ -1,5 +1,5 @@
 <template>
-    <n-card content-style="padding: 0;" :segmented="{
+    <n-card :class="`shadow-lg`" content-style="padding: 0;" :segmented="{
         content: true,
         footer: 'soft',
     }" size="small">
@@ -79,10 +79,10 @@
                 :on-update:checked-row-keys="handleFasilitas" :loading="loadDataPayment" class="p-4"
                 :pagination="paginationReactive" />
         </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 
     <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal" :on-after-leave="onAfterLeave">
-        <n-card title="Detail Pembayaran" :segmented="{
+        <n-card :class="`shadow-lg`" title="Detail Pembayaran" :segmented="{
             content: true,
             footer: 'soft',
         }" size="small">
@@ -298,7 +298,7 @@
                 <n-divider>bukti transfer</n-divider>
                 <n-image :src="bodyModal.attachment" class="max-w-36" />
             </div>
-        </n-card>
+        </n-card :class="`shadow-lg`">
     </n-modal>
     <n-modal v-model:show="confCancelModal" preset="dialog" draggable title="Konfirmasi"
         positive-text="Ya, Ajukan Sekarang !" negative-text="hmm, nanti dulu deh" @positive-click="postCancelPayment">

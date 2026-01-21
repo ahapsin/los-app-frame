@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <n-card :class="`shadow-lg`">
     <template #header>Serah Terima Jaminan</template>
     <template #header-extra>
       <n-button
@@ -69,7 +69,7 @@
         </n-grid>
       </n-form-item>
       <div v-show="searchField" class="flex gap-4">
-        <n-card title="Data Nasabah" :bordered="false" embedded size="small">
+        <n-card :class="`shadow-lg`" title="Data Nasabah" :bordered="false" embedded size="small">
           <n-grid :cols="2">
             <n-gi>
               <div class="flex">
@@ -118,8 +118,8 @@
               </div>
             </n-gi>
           </n-grid>
-        </n-card>
-        <n-card title="Data Jaminan" :bordered="false" embedded size="small">
+        </n-card :class="`shadow-lg`">
+        <n-card :class="`shadow-lg`" title="Data Jaminan" :bordered="false" embedded size="small">
           <n-grid :cols="1">
             <n-gi>
               <div class="flex">
@@ -154,7 +154,7 @@
               </div>
             </n-gi>
           </n-grid>
-        </n-card>
+        </n-card :class="`shadow-lg`">
       </div>
       <div class="pt-4">
         <n-form-item label="Tujuan">
@@ -165,7 +165,7 @@
         </n-form-item>
       </div>
     </n-form>
-  </n-card>
+  </n-card :class="`shadow-lg`">
 </template>
 <script setup>
 import { useApi } from "../../../helpers/axios";

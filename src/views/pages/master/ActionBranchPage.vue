@@ -1,5 +1,5 @@
 <template>
-    <n-card :segmented="{
+    <n-card :class="`shadow-lg`" :segmented="{
         content: true,
         footer: 'soft'
     }" :title="`Form ${$route.name}`">
@@ -61,7 +61,7 @@
                 </n-button>
             </n-space>
         </template>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 </template>
 <script setup>
 import { useMessage } from 'naive-ui';

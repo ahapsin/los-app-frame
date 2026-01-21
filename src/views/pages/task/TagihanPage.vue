@@ -1,6 +1,6 @@
 <template>
 
-    <n-card title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412" class="shadow-lg">
+    <n-card :class="`shadow-lg`" title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412" class="shadow-lg">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="boxSearch" placeholder="cari">
@@ -29,7 +29,7 @@
                     :loading="isLoading" size="small" :pagination="pagination" :scroll-x="1300" />
             </n-space>
         </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
     <div v-else class="m-2">
         <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" @blur="searchData" />
         <n-infinite-scroll style="height: 80dvh" :distance="10" class="mt-2">
@@ -50,7 +50,7 @@
         </n-infinite-scroll>
     </div>
     <n-modal v-model:show="modalDetail" :mask-closable="false">
-        <n-card class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
+        <n-card :class="`shadow-lg`" class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
             <template #header-extra>
                 <n-space align="center">
                     
@@ -73,7 +73,7 @@
                     </n-button>
                 </n-space>
             </template>
-            <n-card class="mb-2" size="small" embedded>
+            <n-card :class="`shadow-lg`" class="mb-2" size="small" embedded>
                 <div class="grid grid-cols-1 md:grid-cols-5 gap-4 h-[200px] overflow-auto">
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO SURAT</small>
@@ -148,7 +148,7 @@
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.no_hp }}</n-ellipsis>
                     </div>
                 </div>
-            </n-card>
+            </n-card :class="`shadow-lg`">
             <n-divider title-placement="left">Dokumen Pelanggan</n-divider>
             <n-image-group>
                 <div>
@@ -215,7 +215,7 @@
             </template>
             <n-modal v-model:show="modalHistory">
                 <div class="w-full md:w-1/2">
-                    <n-card title="History Surat" :segmented="true" size="small">
+                    <n-card :class="`shadow-lg`" title="History Surat" :segmented="true" size="small">
                         <n-tabs type="segment" animated>
                             <n-tab-pane name="timeline" tab="TIMELINE">
                                 <n-scrollbar style="max-height: 300px">
@@ -264,10 +264,10 @@
                             </n-tab-pane>
                         </n-tabs>
 
-                    </n-card>
+                    </n-card :class="`shadow-lg`">
                 </div>
             </n-modal>
-        </n-card>
+        </n-card :class="`shadow-lg`">
     </n-modal>
 
 </template>

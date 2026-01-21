@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Jaminan" class="shadow-lg" size="small" :segmented="{
+    <n-card :class="`shadow-lg`" title="Jaminan" class="shadow-lg" size="small" :segmented="{
         content: true,
         footer: 'soft',
     }">
@@ -23,7 +23,7 @@
                 </n-statistic>
             </div>
         </n-spin>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

@@ -1,5 +1,5 @@
 <template>
-  <n-card
+  <n-card :class="`shadow-lg`"
       :segmented="{
       content: true,
       footer: 'soft',
@@ -96,7 +96,7 @@
         <n-button type="error" @click="handleCancel"> Batal</n-button>
       </n-space>
     </template>
-  </n-card>
+  </n-card :class="`shadow-lg`">
 </template>
 <script setup>
 import {useMessage} from "naive-ui";

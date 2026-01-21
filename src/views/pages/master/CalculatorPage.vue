@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Master Biaya Admin" :segmented="true" size="small">
+    <n-card :class="`shadow-lg`" title="Master Biaya Admin" :segmented="true" size="small">
         <template #header-extra>
             <n-button type="primary" v-show="displayList" @click="() => { displayForm = true; displayList = false; }">
                 Tambah Skema
@@ -64,7 +64,7 @@
                 </n-button>
             </n-space>
         </n-space>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

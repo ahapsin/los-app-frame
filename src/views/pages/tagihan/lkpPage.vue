@@ -285,7 +285,7 @@ const pagination = reactive({
 
 </script>
 <template>
-    <n-card :class="`shadow-lg`" title="Daftar LKP" size="small" :segmented="true">
+    <n-card :class="`shadow-lg`"+ title="Daftar LKP" size="small" :segmented="true">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="searchBox" placeholder="cari">
@@ -315,16 +315,16 @@ const pagination = reactive({
         </template>
         <n-data-table :columns="columnDeploy" :data="showData" :loading="isLoading" size="small"
             :pagination="pagination" />
-    </n-card>
+    </n-card :class="`shadow-lg`">
     <n-modal v-model:show="modalAdd">
         <div class="w-4/5">
             <AddLkp @cancel="handleCancel" @saved="handleSaved" />
         </div>
     </n-modal>
     <n-modal v-model:show="modalDetail">
-        <n-card class="w-4/5" title="Detail LKP" size="small" :segmented="true">
+        <n-card :class="`shadow-lg`" class="w-4/5" title="Detail LKP" size="small" :segmented="true">
             <div>
-                <n-card class="mb-2" size="small" embedded>
+                <n-card :class="`shadow-lg`" class="mb-2" size="small" embedded>
                     <div class="flex  gap-4">
                         <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                             <small class="text-reg">No LKP</small>
@@ -347,16 +347,16 @@ const pagination = reactive({
                         </div>
 
                     </div>
-                </n-card>
+                </n-card :class="`shadow-lg`">
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
                     @update:filters="onFilterChange" size="small" :loading="isLoading" :pagination="pagination"
                      />
             </div>
-        </n-card>
+        </n-card :class="`shadow-lg`">
     </n-modal>
     <n-modal v-model:show="modalHistorySurat">
         <div class="w-2/3">
-            <n-card title="Hasil Kunjungan" :segmented="true" size="small">
+            <n-card :class="`shadow-lg`" title="Hasil Kunjungan" :segmented="true" size="small">
                 <!-- <n-timeline>
                 
                             <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
@@ -403,7 +403,7 @@ const pagination = reactive({
                         </n-collapse-item>
                     </n-collapse>
                 </n-scrollbar>
-            </n-card>
+            </n-card :class="`shadow-lg`">
         </div>
     </n-modal>
 </template>

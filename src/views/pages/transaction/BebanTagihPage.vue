@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Beban Tagih" :segmented="true" size="small">
+    <n-card :class="`shadow-lg`" title="Beban Tagih" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -20,7 +20,7 @@
                     :pagination="{ pageSize: 10 }" />
             </n-space>
         </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 
     <n-float-button :right="40" :bottom="40" type="primary" v-if="checkedRowKeys.length > 0"
         @click="modalAssign = true">
@@ -30,7 +30,7 @@
     </n-float-button>
 
     <n-modal v-model:show="modalAssign" :mask-closable="false">
-        <n-card class="w-1/4">
+        <n-card :class="`shadow-lg`" class="w-1/4">
             <n-space>
                 <n-button class="mb-2" round type="info" secondary @click="detailSelectedModal = true">{{
                     checkedRowKeys.length
@@ -49,14 +49,14 @@
                     <n-button type="secondary" @click="modalAssign = false">Batal</n-button>
                 </n-space>
             </n-space>
-        </n-card>
+        </n-card :class="`shadow-lg`">
     </n-modal>
 
     <n-modal v-model:show="detailSelectedModal">
-        <n-card>
+        <n-card :class="`shadow-lg`">
             <n-data-table :columns="selectBebanTagih" :data="checkedRowKeys" :pagination="pagination" :row-key="rowKey"
                 @update:checked-row-keys="handleCheck" :max-height="350" :loading="isLoading" />
-        </n-card>
+        </n-card :class="`shadow-lg`">
     </n-modal>
 </template>
 

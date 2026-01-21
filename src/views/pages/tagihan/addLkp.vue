@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Buat LKP Baru" :segmented="true" size="small">
+    <n-card :class="`shadow-lg`" title="Buat LKP Baru" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -24,7 +24,7 @@
                     </n-form-item>
                 </n-space>
                 <div>
-                    <n-card embedded title="Daftar Tagihan" size="small" :segmented="true">
+                    <n-card :class="`shadow-lg`" embedded title="Daftar Tagihan" size="small" :segmented="true">
                         <template #header-extra>
                             <div class="flex gap-2 pb-4">
                                 <n-input clearable v-model:value="boxSearch" placeholder="cari" class="max-w-sm">
@@ -45,7 +45,7 @@
                             @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                             @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
                             :pagination="pagination" :row-class-name="getRowClassName" />
-                    </n-card>
+                    </n-card :class="`shadow-lg`">
 
                 </div>
             </n-space>
@@ -63,10 +63,10 @@
                 <n-button type="secondary" @click="$emit('cancel', true)">Batal</n-button>
             </n-space>
         </template>
-    </n-card>
+    </n-card :class="`shadow-lg`">
     <n-modal v-model:show="modalHistorySurat">
         <div class="w-2/3">
-            <n-card title="Hasil Kunjungan" :segmented="true" size="small">
+            <n-card :class="`shadow-lg`" title="Hasil Kunjungan" :segmented="true" size="small">
                 <!-- <n-timeline>
                 
                             <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
@@ -113,7 +113,7 @@
                         </n-collapse-item>
                     </n-collapse>
                 </n-scrollbar>
-            </n-card>
+            </n-card :class="`shadow-lg`">
         </div>
     </n-modal>
 </template>

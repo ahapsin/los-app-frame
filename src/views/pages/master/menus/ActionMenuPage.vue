@@ -1,5 +1,5 @@
 <template>
-  <n-card size="small" :segmented="{
+  <n-card :class="`shadow-lg`" size="small" :segmented="{
     content: true,
     footer: 'soft',
   }" :title="`Form ${$route.name}`">
@@ -32,13 +32,13 @@
         <n-button type="error" @click="handleCancel"> Batal </n-button>
       </n-space>
     </template>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-modal v-model:show="colIcon">
-    <n-card class="w-1/2">
+    <n-card :class="`shadow-lg`" class="w-1/2">
       <n-scrollbar style="max-height: 420px">
         <BiIcon @select="handleSelect" />
       </n-scrollbar>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 </template>
 <script setup>

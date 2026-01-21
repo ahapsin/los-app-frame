@@ -1,7 +1,7 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :title="`Tabel Sumber Order`" :segmented="true" size="small" class="shadow-lg">
+            <n-card :class="`shadow-lg`" :title="`Tabel Sumber Order`" :segmented="true" size="small" class="shadow-lg">
                 <template #header-extra>
                     <n-space>
                         <n-input clearable v-model:value="searchBox" placeholder="cari">
@@ -34,10 +34,10 @@
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
                         :loading="isLoading" />
                 </n-space>
-            </n-card>
+            </n-card :class="`shadow-lg`">
         </n-space>
         <n-modal v-model:show="modalRef">
-            <n-card class="w-1/2" size="small" title="Tambah Sumber Order Baru" :segmented="true">
+            <n-card :class="`shadow-lg`" class="w-1/2" size="small" title="Tambah Sumber Order Baru" :segmented="true">
                 <n-form-item label="Nama Sumber">
                     <n-input v-model:value="formData.nama" />
                 </n-form-item>
@@ -54,7 +54,7 @@
                         <n-button type="secondary" @click="handleCancel">Batal</n-button>
                     </n-space>
                 </template>
-            </n-card>
+            </n-card :class="`shadow-lg`">
         </n-modal>
     </div>
 </template>

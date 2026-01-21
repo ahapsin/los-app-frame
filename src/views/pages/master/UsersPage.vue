@@ -1,6 +1,6 @@
 <template>
     <n-space vertical>
-        <n-card :segmented="{
+        <n-card :class="`shadow-lg`" :segmented="{
             content: true,
             footer: 'soft'
         }" :title="`Tabel ${$route.name}`" size="small">
@@ -62,7 +62,7 @@
                 <n-data-table size="small" striped :scroll-x="500" :columns="columns" :data="showData"
                     :pagination="pagination" />
             </n-space>
-        </n-card>
+        </n-card :class="`shadow-lg`">
         <n-modal v-model:show="showModal" preset="dialog" title="Dialog" content="Are you sure?" positive-text="Submit"
             negative-text="Cancel" @positive-click="submitCallback" @negative-click="cancelCallback" />
     </n-space>

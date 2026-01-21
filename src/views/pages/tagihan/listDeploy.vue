@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Deploy Tagihan" :segmented="true" size="small">
+    <n-card :class="`shadow-lg`" title="Deploy Tagihan" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -20,7 +20,7 @@
                         : _.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
                         label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
                 </n-form-item>
-                <n-card embedded title="Daftar Tagihan" size="small" :segmented="true">
+                <n-card :class="`shadow-lg`" embedded title="Daftar Tagihan" size="small" :segmented="true">
                     <template #header-extra>
                         <div class="flex gap-2 pb-4">
                             <n-input clearable v-model:value="boxSearch" placeholder="cari" class="max-w-sm">
@@ -41,7 +41,7 @@
                         @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
                         :pagination="pagination" />
-                </n-card>
+                </n-card :class="`shadow-lg`">
             </n-space>
         </div>
         <template #footer>
@@ -57,7 +57,7 @@
                 </n-space>
             </n-space>
         </template>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

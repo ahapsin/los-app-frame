@@ -1,11 +1,11 @@
 <template>
-  <n-card>
+  <n-card :class="`shadow-lg`">
     <template #header>Batal Pembayaran</template>
     <div>
       <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="props.data"
                     :max-height="300" class="pb-2" :pagination="pagination"/>
     </div>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-modal v-model:show="confModal" preset="dialog" title="Konfirmasi" positive-text="Yakin"
            negative-text="Hmm, belum yakin" @positive-click="handleCancel" @negative-click="cancelCallback">
     Jadi, kamu yakin ingin batalin pembayaran ini ?

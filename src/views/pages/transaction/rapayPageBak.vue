@@ -1,5 +1,5 @@
 <template>
-  <n-card :segmented="{
+  <n-card :class="`shadow-lg`" :segmented="{
     content: true,
     footer: 'soft',
   }">
@@ -182,13 +182,13 @@
         </div>
       </div>
     </n-spin>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-modal class="w-1/4" v-model:show="buktiTransfer" preset="card" :segmented="segmented">
     <file-upload title="Bukti Transfer" :def_value="dataBuktiTransfer" endpoint="payment_attachment"
                  type="bukti_transfer" :idapp="pageData.uid" @fallback="handleResBack"/>
   </n-modal>
   <n-modal class="w-3/4" title="Upload Berkas Pencairan" v-model:show="dialogProses" :mask-closable="false">
-    <n-card title="Transaksi Berhasil">
+    <n-card :class="`shadow-lg`" title="Transaksi Berhasil">
       <div class="flex gap-8 font-mono">
         <table class="table-auto w-1/2">
           <tr>
@@ -270,7 +270,7 @@
           <n-button @click="handleDone">Selesai</n-button>
         </n-space>
       </template>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 </template>
 <script setup>

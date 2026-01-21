@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Daftar Deploy" :segmented="true" size="small" class="shadow-lg">
+    <n-card :class="`shadow-lg`" title="Daftar Deploy" :segmented="true" size="small" class="shadow-lg">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="boxSearch" placeholder="cari">
@@ -50,7 +50,7 @@
                 </div>
             </n-space>
         </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
     <n-modal v-model:show="modalAdd">
         <div class="w-5/6">
             <ListDeploy @cancel="handleCancel" />

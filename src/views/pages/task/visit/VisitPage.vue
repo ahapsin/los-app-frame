@@ -1,5 +1,5 @@
 <template>
-    <n-card size="small" title="Data Kunjungan" :segmented="{
+    <n-card :class="`shadow-lg`" size="small" title="Data Kunjungan" :segmented="{
         content: true,
         footer: 'soft',
     }">
@@ -7,7 +7,7 @@
             <n-button type="primary" @click="handleAddButton">Tambah Kunjungan</n-button>
         </template>
         <n-data-table :columns="columnKunjungan" :data="dataKunjungan" />
-    </n-card>
+    </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

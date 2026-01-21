@@ -26,7 +26,7 @@
         label-width="auto"
         :disabled="actionPage == 'view' ? true : false"
       >
-        <n-card
+        <n-card :class="`shadow-lg`"
           v-show="current == 1"
           title="Informasi Kredit"
           :segmented="{
@@ -181,8 +181,8 @@
               v-model:value="order.tujuan_kredit"
             />
           </n-form-item>
-        </n-card>
-        <n-card
+        </n-card :class="`shadow-lg`">
+        <n-card :class="`shadow-lg`"
           v-show="current == 2"
           title="Data Pelanggan"
           :segmented="{
@@ -277,8 +277,8 @@
               </n-space>
             </n-space>
           </n-space>
-        </n-card>
-        <n-card
+        </n-card :class="`shadow-lg`">
+        <n-card :class="`shadow-lg`"
           v-show="current == 3"
           v-for="jaminan in jaminan"
           title="Data Jaminan"
@@ -361,8 +361,8 @@
               :idapp="pageData.id"
             />
           </n-space>
-        </n-card>
-        <n-card
+        </n-card :class="`shadow-lg`">
+        <n-card :class="`shadow-lg`"
           v-show="current == 4"
           title="Data Survey"
           :segmented="{
@@ -472,7 +472,7 @@
             type="other"
             :idapp="pageData.id"
           />
-        </n-card>
+        </n-card :class="`shadow-lg`">
       </n-form>
       <n-flex justify="between">
         <n-button @click="prev" type="secondary" v-if="current > 1">

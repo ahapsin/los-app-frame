@@ -18,10 +18,10 @@
             </n-tabs>
         </div>
         <div class="p-2 flex flex-col gap-2">
-            <n-card v-if="loadData">
+            <n-card :class="`shadow-lg`" v-if="loadData">
                 <n-skeleton text :repeat="2" />
                 <n-skeleton text style="width: 60%" />
-            </n-card>
+            </n-card :class="`shadow-lg`">
             <div v-if="!loadData && showData.length == 0">
                 <div>
                     <n-alert>
@@ -71,7 +71,7 @@
         </div>
     </div>
     <n-modal class="w-11/12" title="Upload Berkas Pencairan" v-model:show="showModal" :mask-closable="false">
-        <n-card :bordered="false" aria-modal="true">
+        <n-card :class="`shadow-lg`" :bordered="false" aria-modal="true">
             <n-grid :cols="1">
                 <n-gi>
                     <div class="flex">
@@ -112,7 +112,7 @@
             <div class="pt-4 flex justify-end">
                 <n-button @click="handleSelesai" secondary type="primary" round>Selesai</n-button>
             </div>
-        </n-card>
+        </n-card :class="`shadow-lg`">
     </n-modal>
 </template>
 <script setup>

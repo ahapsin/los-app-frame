@@ -1,5 +1,5 @@
 <template>
-  <n-card :segmented="{
+  <n-card :class="`shadow-lg`" :segmented="{
     content: true,
     footer: 'soft',
   }">
@@ -821,7 +821,7 @@ class="flex gap-2 border-t p-4 justify-end"
 
       </div>
     </div>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-modal v-model:show="confModal" preset="dialog" draggable title="Konfirmasi" positive-text="Ajukan Batal Order"
     negative-text="Tidak" @positive-click="handleCancel" @negative-click="cancelCallback">
     <div>Masukan alasan batal order</div>

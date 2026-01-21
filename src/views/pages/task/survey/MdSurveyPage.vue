@@ -1,7 +1,7 @@
 <template>
   <div>
     <n-space vertical>
-      <n-card title="Data Survey" :segmented="{
+      <n-card :class="`shadow-lg`" title="Data Survey" :segmented="{
         content: true,
         footer: 'soft',
       }" size="small">
@@ -50,7 +50,7 @@
           <n-data-table striped ref="tableRef" :scroll-x="750" size="small" :columns="columns" :data="showData"
             :pagination="pagination" :loading="loadData" />
         </n-space>
-      </n-card>
+      </n-card :class="`shadow-lg`">
     </n-space>
   </div>
 </template>

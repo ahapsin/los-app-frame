@@ -1,7 +1,7 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :title="`Tabel ${$route.name}`"  :segmented="true" size="small">
+            <n-card :class="`shadow-lg`" :title="`Tabel ${$route.name}`"  :segmented="true" size="small">
                 <template #header-extra>
                     <n-space class="!gap-1">
                         <div class="me-1">
@@ -34,7 +34,7 @@
                     <n-data-table :loading="loadData" size="small" :columns="columns" :data="showData"
                         :pagination="pagination" ellipsis :scroll-x="800"/>
                 </n-space>
-            </n-card>
+            </n-card :class="`shadow-lg`">
         </n-space>
     </div>
 </template>

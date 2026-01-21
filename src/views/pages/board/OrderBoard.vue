@@ -1,5 +1,5 @@
 <template>
-    <n-card size="small" class="shadow-lg" :segmented="{
+    <n-card :class="`shadow-lg`" size="small" class="shadow-lg" :segmented="{
         content: true,
         footer: 'soft',
     }">
@@ -29,7 +29,7 @@
                 summary Credit bulan berjalan
             </div>
         </template>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

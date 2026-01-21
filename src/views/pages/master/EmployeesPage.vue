@@ -1,7 +1,7 @@
 <template>
     <div class="pt-4">
         <n-space vertical>
-            <n-card :title="`Tabel ${$route.name}`">
+            <n-card :class="`shadow-lg`" :title="`Tabel ${$route.name}`">
                 <template #header-extra>
                     <n-space>
                         <n-popover trigger="click" placement="bottom-end">
@@ -35,7 +35,7 @@
                 <n-space vertical :size="12" class="pt-4">
                     <n-data-table size="small" :columns="columns" :data="dataTable" :pagination="pagination" />
                 </n-space>
-            </n-card>
+            </n-card :class="`shadow-lg`">
         </n-space>
     </div>
 </template>

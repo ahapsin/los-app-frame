@@ -1,5 +1,5 @@
 <template>
-    <n-card title="Edit PIC Tagihan" :segmented="true" size="small">
+    <n-card :class="`shadow-lg`" title="Edit PIC Tagihan" :segmented="true" size="small">
 
         <template #header-extra>
 
@@ -17,7 +17,7 @@
             </n-popconfirm>
         </template>
         <div>
-            <n-card class="mb-2" size="small" embedded>
+            <n-card :class="`shadow-lg`" class="mb-2" size="small" embedded>
                 <div class="grid grid-cols-2 md:grid-cols-5 gap-4">
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">NO SURAT</small>
@@ -101,7 +101,7 @@
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
                 </div>
-            </n-card>
+            </n-card :class="`shadow-lg`">
             <n-space vertical>
                 <n-form-item label="Petugas asal">
 
@@ -126,7 +126,7 @@
                 </n-space>
             </n-space>
         </template>
-    </n-card>
+    </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

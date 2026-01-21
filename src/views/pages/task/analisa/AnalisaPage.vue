@@ -1,10 +1,10 @@
 <template>
-    <n-card size="small" title="Data Analisa" :segmented="{
+    <n-card :class="`shadow-lg`" size="small" title="Data Analisa" :segmented="{
         content: true,
         footer: 'soft',
     }">
         <n-data-table :columns="columnKunjungan" :data="dataKunjungan" />
-    </n-card>
+    </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

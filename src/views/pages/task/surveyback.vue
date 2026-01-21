@@ -24,7 +24,7 @@
         :size="size"
         label-width="auto"
       >
-        <n-card
+        <n-card :class="`shadow-lg`"
           v-show="current == 1"
           title="Informasi Kredit"
           :segmented="{
@@ -177,8 +177,8 @@
               />
             </n-form-item>
           </n-space>
-        </n-card>
-        <n-card
+        </n-card :class="`shadow-lg`">
+        <n-card :class="`shadow-lg`"
           v-show="current == 2"
           title="Data Pelanggan"
           :segmented="{
@@ -296,8 +296,8 @@
               :idapp="dynamicForm.id"
             />
           </div>
-        </n-card>
-        <n-card
+        </n-card :class="`shadow-lg`">
+        <n-card :class="`shadow-lg`"
           v-show="current == 3"
           class="flex"
           title="Data Jaminan"
@@ -393,8 +393,8 @@
               :idapp="dynamicForm.id"
             />
           </n-space>
-        </n-card>
-        <n-card
+        </n-card :class="`shadow-lg`">
+        <n-card :class="`shadow-lg`"
           v-show="current == 4"
           title="Data Survey"
           :segmented="{
@@ -514,7 +514,7 @@
             type="other"
             :idapp="dynamicForm.id"
           />
-        </n-card>
+        </n-card :class="`shadow-lg`">
       </n-form>
       <n-flex justify="between">
         <n-button @click="prev" type="secondary" v-if="current > 1">

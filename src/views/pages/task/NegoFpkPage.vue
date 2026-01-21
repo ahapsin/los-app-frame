@@ -1,5 +1,5 @@
 <template>
-  <n-card>
+  <n-card :class="`shadow-lg`">
     <n-tabs type="line" animated>
       <n-tab-pane name="pelanggan" tab="Pelanggan">
         <div class="flex w-full gap-2">
@@ -866,7 +866,7 @@
         >
       </template>
     </n-tabs>
-  </n-card>
+  </n-card :class="`shadow-lg`">
 </template>
 <script setup>
 import { ref, reactive, computed } from "vue";

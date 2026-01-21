@@ -1,7 +1,7 @@
 <template>
   <div id="drawer-target">
     <n-space vertical>
-      <n-card :title="`Tabel ${$route.name}`" :segmented="{
+      <n-card :class="`shadow-lg`" :title="`Tabel ${$route.name}`" :segmented="{
                 content: true,
                 footer: 'soft',
             }" size="small">
@@ -72,11 +72,11 @@ type="daterange" @update:value="onConfirmDate" />
           <n-data-table size="small" ref="tableRef" triped :scroll-x="1000" :columns="columns"
                         :data="showData" :pagination="pagination" :loading="loadData"/>
         </n-space>
-      </n-card>
+      </n-card :class="`shadow-lg`">
     </n-space>
   </div>
   <n-modal class="w-1/2" title="Upload Berkas Pencairan" v-model:show="showModal" :mask-closable="false">
-    <n-card :bordered="false" aria-modal="true">
+    <n-card :class="`shadow-lg`" :bordered="false" aria-modal="true">
       <n-grid :cols="2">
         <n-gi>
           <div class="flex">
@@ -130,7 +130,7 @@ Klik atau seret file ke area ini untuk diunggah
       <div class="pt-4 flex justify-end">
         <n-button @click="handleSelesai" secondary type="primary" round>Selesai</n-button>
       </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 
 </template>

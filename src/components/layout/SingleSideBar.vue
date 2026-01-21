@@ -37,12 +37,12 @@
     <n-layout position="absolute" style="top: 60px" has-sider>
       <n-layout-sider :width='200' :collapsed-width="0" :show-collapsed-content="false"
         :collapsed="sideMenu.sideEffect ? true : false" content-style="padding: 10px;"
-        class="absolute md:relative h-full z-20 shadow-xl md:shadow-none bg-gradient-to-t from-pr-50">
+        class="absolute md:relative h-full z-20 shadow-xl md:shadow-none bg-slate-100">
         <n-scrollbar>
           <SideMenu />
         </n-scrollbar>
       </n-layout-sider>
-      <n-layout :class="`bg-gradient-to-t from-pr-50`">
+      <n-layout :class="`bg-slate-100`">
         <div class="p-0 md:p-4">
           <n-page-header @back="handleBack">
             <template #header>

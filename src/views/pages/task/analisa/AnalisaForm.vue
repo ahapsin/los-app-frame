@@ -43,7 +43,7 @@
         </n-form-item>
       </div>
       <div v-for="(listBucket,i) in bucketParam" :key="listBucket.key">
-        <n-card :title="listBucket.param" size="small" :segmented="true">
+        <n-card :class="`shadow-lg`" :title="listBucket.param" size="small" :segmented="true">
           <template #header-extra>
             <n-button quaternary circle @click="removeParam(i)">
               <n-icon>
@@ -56,7 +56,7 @@
               <n-input type="textarea" placeholder="Isi disini"
                        v-model:value="itemParam.val"/>
             </n-form-item>
-            <n-card embedded v-else-if="itemParam.mode.type == 'table'" :title="itemParam.title" class="mb-4">
+            <n-card :class="`shadow-lg`" embedded v-else-if="itemParam.mode.type == 'table'" :title="itemParam.title" class="mb-4">
               <template #header-extra>
                 <div class="flex item-center gap-2">
                   <n-upload
@@ -71,21 +71,21 @@
                 </div>
               </template>
               <n-data-table ref="tableRef" :data="dataParse?.data" :columns="convertObjectToArray(dataParse?.data)"/>
-            </n-card>
+            </n-card :class="`shadow-lg`">
             <n-form-item class="w-full" v-else :label="itemParam.title">
               <n-select
                   v-model:value="itemParam.val" placeholder="Silakan pilih"
                   :options="optObject(itemParam.mode.options)"/>
             </n-form-item>
           </div>
-        </n-card>
+        </n-card :class="`shadow-lg`">
 
       </div>
 
     </div>
   </div>
   <n-modal v-model:show="prevModal">
-    <n-card class="w-4/6">
+    <n-card :class="`shadow-lg`" class="w-4/6">
       <n-watermark
           ref="printAreaRef"
           cross
@@ -163,7 +163,7 @@
           <n-button type="info" @click="handlePrintAnalisa">Cetak</n-button>
         </n-space>
       </template>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 </template>
 <script setup>

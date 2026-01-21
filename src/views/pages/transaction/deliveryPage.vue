@@ -1,7 +1,7 @@
 <template>
   <div class="pt-4" id="drawer-target">
     <n-space vertical>
-      <n-card :title="`Transaksi serah terima jaminan`">
+      <n-card :class="`shadow-lg`" :title="`Transaksi serah terima jaminan`">
         <template #header-extra>
           <n-space>
             <n-popover trigger="click" placement="bottom-end">
@@ -58,7 +58,7 @@
           <n-data-table size="small" triped :scroll-x="1000" :columns="columns" :data="showData"
             :pagination="pagination" :loading="loadData" />
         </n-space>
-      </n-card>
+      </n-card :class="`shadow-lg`">
     </n-space>
     <!-- <n-space>
             online at: {{ fingerprint }}
@@ -66,7 +66,7 @@
   </div>
 
   <n-modal class="w-1/2" title="Upload Berkas Pencairan" v-model:show="showModal">
-    <n-card :bordered="false" aria-modal="true">
+    <n-card :class="`shadow-lg`" :bordered="false" aria-modal="true">
       <div class="flex justify-between">
         <div>
           <div class="flex">
@@ -113,7 +113,7 @@
         <n-data-table striped size="small" :row-key="(row) => row" :columns="columnsBpkb" :data="selectedData.bpkb"
           :max-height="300" :on-update:checked-row-keys="handleChecked" />
       </n-space>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 </template>
 <script setup>

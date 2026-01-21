@@ -1,5 +1,5 @@
 <template>
-  <n-card title="Laporan Keuangan Berbasis Harian (LKBH)" :segmented="{
+  <n-card :class="`shadow-lg`" title="Laporan Keuangan Berbasis Harian (LKBH)" :segmented="{
     content: true,
     footer: 'soft',
   }" size="small" class="shadow-lg">
@@ -162,7 +162,7 @@
 
       </n-space>
     </div>
-  </n-card>
+  </n-card :class="`shadow-lg`">
 </template>
 
 <script setup>

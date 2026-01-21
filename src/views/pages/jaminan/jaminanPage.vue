@@ -1,5 +1,5 @@
 <template>
-  <n-card :segmented="true" title="Tabel Jaminan" size="small">
+  <n-card :class="`shadow-lg`" :segmented="true" title="Tabel Jaminan" size="small">
     <n-tabs size="medium" @update:value="handleUpdateValue" class="card-tabs" default-value="jaminan" animated
       type="segment" pane-wrapper-style="margin: 0 -4px" @before-leave="handleSwitchTab"
       pane-style="padding-left: 4px; padding-right: 4px; box-sizing: border-box;">
@@ -89,7 +89,7 @@
           :loading="loadTransactionApproval" :pagination="{ pageSize: 10 }" />
       </n-tab-pane>
     </n-tabs>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-modal v-model:show="showModal" :mask-closable="false">
     <div class="w-3/4">
       <FormTransaksi @batal="showModal = false" v-if="typeTransaksi == 'kirim'" @simpan="handleSimpanModal"
@@ -100,7 +100,7 @@
     </div>
   </n-modal>
   <n-modal v-model:show="showDetailModal" title="Modal" :on-after-leave="closeModal">
-    <n-card class="w-2/3">
+    <n-card :class="`shadow-lg`" class="w-2/3">
       <n-tabs>
         <n-tab-pane name="detail" tab="Detail Jaminan ">
 
@@ -212,10 +212,10 @@
         </n-tab-pane>
 
       </n-tabs>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
   <n-modal v-model:show="modalSuratRilis">
-    <n-card class="w-5/6" title="Surat Tanda Terima">
+    <n-card :class="`shadow-lg`" class="w-5/6" title="Surat Tanda Terima">
       <template #header-extra>
         <n-button type="info" @click="cetakBuktiTerima">cetak</n-button>
       </template>
@@ -365,10 +365,10 @@
           </table>
         </div>
       </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
   <n-modal v-model:show="modalTrx" title="Modal">
-    <n-card class="w-2/3" title="Data Surat">
+    <n-card :class="`shadow-lg`" class="w-2/3" title="Data Surat">
       <template #header-extra>
         <n-button type="primary" @click="handlePrint">
           <n-space>
@@ -438,10 +438,10 @@
         </div>
 
       </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
   <n-modal v-model:show="modalTrxApproval" title="Modal">
-    <n-card class="w-2/3" title="Data Surat">
+    <n-card :class="`shadow-lg`" class="w-2/3" title="Data Surat">
       <template #header-extra>
         <n-button type="primary" @click="handlePrint" v-if="bodyModalTrx.status === 'SELESAI'">
           <n-space>
@@ -516,7 +516,7 @@
         </n-form-item>
         <n-button type="primary" @click="handleApprove">approve</n-button>
       </div>
-    </n-card>
+    </n-card :class="`shadow-lg`">
   </n-modal>
 </template>
 

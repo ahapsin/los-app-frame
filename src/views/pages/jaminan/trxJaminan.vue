@@ -1,5 +1,5 @@
 <template>
-  <n-card :segmented="{
+  <n-card :class="`shadow-lg`" :segmented="{
         content: true,
         footer: 'soft'
     }" :title="`Form ${props.type} jaminan`" id="drawer-target" class="overflow-hidden">
@@ -42,7 +42,7 @@
 </n-button> -->
       </n-space>
     </template>
-  </n-card>
+  </n-card :class="`shadow-lg`">
   <n-drawer v-model:show="modalTrx" :height="400" placement="bottom" to="#drawer-target">
     <n-drawer-content title="Detail Jaminan">
       <n-table :bordered="false" :single-line="false" size="small">
