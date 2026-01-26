@@ -44,7 +44,7 @@
       </n-layout-sider>
       <n-layout :class="`bg-slate-100`">
         <div class="p-0 md:p-4">
-          <n-page-header @back="handleBack">
+          <n-page-header >
             <template #header>
               <div class="border p-1 rounded-2xl bg-white shadow-md w-fit hidden md:flex">
                 <n-breadcrumb v-if="width > 480">

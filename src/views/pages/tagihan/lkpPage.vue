@@ -285,7 +285,7 @@ const pagination = reactive({
 
 </script>
 <template>
-    <n-card :class="`shadow-lg`"+ title="Daftar LKP" size="small" :segmented="true">
+    <n-card :class="`shadow-lg`" title="Daftar LKP" size="small" :segmented="true">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="searchBox" placeholder="cari">
@@ -403,7 +403,7 @@ const pagination = reactive({
                         </n-collapse-item>
                     </n-collapse>
                 </n-scrollbar>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </div>
     </n-modal>
 </template>
