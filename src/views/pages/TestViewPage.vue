@@ -114,7 +114,7 @@ const finalStatus = computed(() => {
 
 <template>
   <n-card title="Avg Down Simulator (Pro)" size="small">
-    <div class="grid grid-cols-3 gap-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
 
       <!-- INPUT -->
       <div>
