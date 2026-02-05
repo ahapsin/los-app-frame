@@ -1,7 +1,11 @@
 <template>
   <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
     <div class="flex gap-2">
-
+      <n-button type="error" size="small" secondary @click="handleBantuan">
+        <template #icon>
+          <v-icon name="bi-headset" />
+        </template>
+        Bantuan</n-button>
       <n-badge :value="tasks.length">
         <n-button type="primary" quaternary circle @click="showAllNotif">
           <template #icon>
@@ -98,11 +102,14 @@ import { useApi } from "../../helpers/axios";
 import { useCollateralStore } from "../../stores/collateral.js";
 import { useMeStore } from "../../stores/me";
 import { useTaskStore } from "../../stores/task";
-import DarkMode from "../atoms/DarkMode.vue";
 
 const message = useMessage();
 const me = useMeStore();
 const dataUser = ref();
+
+const handleBantuan = () => {
+  router.push({ name: "tiket bantuan" })
+}
 const options = [
   {
     label: `Akun`,

@@ -471,6 +471,17 @@ const routes = [
         name: "inquery jaminan",
         component: () => import("../views/pages/laporan/LapJaminan.vue"),
       },
+      {
+        path: "support_ticket",
+        name: "tiket bantuan",
+        component: () => import("../views/pages/laporan/ticket/TicketLayout.vue"),
+      },
+      {
+        path: "ticket/:ticketid",
+        name: "ticket_detail",
+        meta: { breadcrumb: "Ticket" },
+        component: () => import("../views/pages/laporan/ticket/TicketDetail.vue"),
+      },
     ],
   },
   {

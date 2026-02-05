@@ -127,6 +127,7 @@ const handleImagePost = () => {
   const bodyForm = {
     image: state.resizedImage,
     type: props.type,
+    folder: props.path,
     reff: props.reff,
     cr_prospect_id: props.idapp,
     uid: props.idapp,
@@ -157,6 +158,7 @@ const props = defineProps({
   reff: String,
   idapp: String,
   fid: String,
+  path: String,
   def_value: String,
   def_preview: Boolean,
   on_upload:Boolean,
