@@ -9,8 +9,8 @@
                 </div>
                 <div class="flex flex-col gap-2 w-full">
                     <div class="flex items-center pt-1 gap-2">
-                        <n-text strong>
-                            {{ i.CreatedBy }}
+                        <n-text>
+                            <strong>{{ i.CreatedBy }}</strong>
                         </n-text>
                         <n-text>•</n-text>
                         <n-text depth="3" style="font-size: 12px">

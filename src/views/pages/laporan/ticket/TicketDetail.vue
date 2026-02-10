@@ -7,30 +7,44 @@
                     <n-text type="primary">{{ dataDetail.ticket_no }}</n-text>
                 </n-descriptions-item>
                 <n-descriptions-item label="Status">
-                    <n-tag type="error" size="small">{{ dataDetail.status }}</n-tag>
+                    <n-tag :type="getTypeByStatus(dataDetail.status)" size="small" round>{{ dataDetail.status }}</n-tag>
                 </n-descriptions-item>
                 <n-descriptions-item label="Prioritas">
-                    <n-tag type="error" size="small">{{ dataDetail.priority }}</n-tag>
+                    <n-tag :type="getTypeByPriority(dataDetail.priority)" size="small" round>{{ dataDetail.priority
+                        }}</n-tag>
                 </n-descriptions-item>
                 <n-descriptions-item label="Kategori">
                     {{ dataDetail.category }}
                 </n-descriptions-item>
                 <n-descriptions-item label="PIC">
-                    {{ dataDetail.assignee }}
+
+                    <n-tag round type="primary" v-if="dataDetail.assignee">
+                        <template #icon>
+                            <v-icon name="bi-person-circle"></v-icon>
+                        </template>
+                        {{ dataDetail.assignee }}
+                    </n-tag>
+                    <n-button size="small" dashed type="primary" v-if="me?.jabatan === 'HO'" @click="assignAction(dataDetail)">
+                        <template #icon>
+                            <v-icon name="bi-plus-lg"></v-icon>
+                        </template>
+                        tambah
+                    </n-button>
                 </n-descriptions-item>
                 <n-descriptions-item label="Tanggal Dibuat">
                     {{ dataDetail.created_at }}
                 </n-descriptions-item>
                 <n-descriptions-item label="Judul" :span="2">
-                    {{ dataDetail.title }}
+                    <n-text strong>{{ dataDetail.title }}</n-text>
                 </n-descriptions-item>
                 <n-descriptions-item label="Deskripsi" :span="2">
                     {{ dataDetail.description }}
                 </n-descriptions-item>
                 <n-descriptions-item label="Lampiran" :span="2">
-                    <n-space>
+                    <n-space v-if="dataDetail.lampiran">
                         <n-image v-for="i in dataDetail.lampiran" :key="i" :src="i" class="w-16 h-16" />
                     </n-space>
+                    <n-text v-else class="text-red-500">tidak ada lampiran</n-text>
                 </n-descriptions-item>
             </n-descriptions>
             <!-- ===== Response ===== -->
@@ -64,8 +78,9 @@
                     {{ dataDetail.title }}
                 </n-text>
                 <div class="flex gap-2 items-center">
-                    <n-tag size="small" type="success">{{ dataDetail.priority }}</n-tag>
-                    <n-tag size="small" type="success">{{ dataDetail.status }}</n-tag>
+                    <n-tag :type="getTypeByStatus(dataDetail.status)" size="small" round>{{ dataDetail.status }}</n-tag>
+                    <n-tag :type="getTypeByPriority(dataDetail.priority)" size="small" round>{{ dataDetail.priority
+                        }}</n-tag>
                     <n-text depth="3" strong>{{ dataDetail.ticket_no }}</n-text>
                 </div>
             </div>
@@ -75,7 +90,7 @@
                     <div>Apakah masalah sudah selesai dan ticket dapat ditutup ?</div>
                     <div class="flex gap-2">
                         <n-button type="success" @click="handleClose" :loading="isLoading">Ya,Tutup</n-button>
-                        <n-button type="info" tertiary @click="dataDetail.is_closed =false">Tidak</n-button>
+                        <n-button type="info" tertiary @click="dataDetail.is_closed = false">Tidak</n-button>
                     </div>
                 </div>
                 <PostReply :id="dataDetail.key" @newpost="handleNewPost" />
@@ -86,6 +101,22 @@
         <div>
             <ReplyTicket />
         </div>
+    </n-modal>
+    <n-modal v-model:show="assignModal" :mask-closable="false">
+        <n-card title="Pilih PIC" class="w-fit" size="small" :segmented="true">
+            <n-space vertical>
+                <n-form-item label="petugas">
+                    <n-select v-model:value="assignTo" placeholder="pilih petugas" :options="dataUser" value-field="id"
+                        label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
+                </n-form-item>
+            </n-space>
+            <template #action>
+                <n-space>
+                    <n-button type="primary" @click="postAssign(assignBody.key)" :disabled="!assignTo">Oke</n-button>
+                    <n-button type="error" @click="assignModal = false">Batal</n-button>
+                </n-space>
+            </template>
+        </n-card>
     </n-modal>
 </template>
 
@@ -98,10 +129,11 @@ import { useApi } from "../../../../helpers/axios";
 import TicketLogs from "./TicketLogs.vue";
 import PostReply from "./PostReply.vue";
 import { useMessage } from "naive-ui";
+import { useMeStore } from "../../../../stores/me";
 
 const route = useRoute();
 const ticketId = route.params.ticketid;
-
+const { me } = useMeStore();
 const formRef = ref(null);
 const reply = ref(false);
 const lampiranView = ref(false);
@@ -111,6 +143,48 @@ const handleNewPost = () => {
 }
 const message = useMessage();
 const isLoading = ref(false);
+
+const dataUser = ref([]);
+const assignModal = ref(false);
+const assignBody = ref();
+const assignTo = ref(null);
+const assignAction = (e) => {
+    assignModal.value = true;
+    getDataUser();
+    assignBody.value = e;
+}
+const getDataUser = async () => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: "users",
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.error(response.error);
+    } else {
+        dataUser.value = response.data.response;
+    }
+};
+
+const postAssign = async (e) => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "PUT",
+        api: `ticketing/${e}`,
+        token: userToken,
+        data: {
+            assign_id: assignTo.value,
+        }
+    });
+    if (!response.ok) {
+        console.error(response.error);
+    }
+    else {
+        assignModal.value = false;
+        await getData();
+    }
+}
 
 
 const priorityMap = {
@@ -126,6 +200,25 @@ const priorityMap = {
         type: 'error',
         label: 'High'
     }
+}
+
+function getTypeByPriority(priority) {
+    const map = {
+        High: "error",
+        Medium: "warning",
+        Low: "success"
+    };
+
+    return map[priority] || "default";
+}
+
+function getTypeByStatus(status) {
+    const map = {
+        Open: "warning",
+        Pending: "info"
+    };
+
+    return map[status] || "default";
 }
 const responses = ref([
     {
