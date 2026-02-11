@@ -13,11 +13,11 @@
                         <v-icon name="bi-card-image" />
                     </n-button>
                 </n-badge>
-                <n-badge :value="bodyReply.Attach.length || 0">
+                <!-- <n-badge :value="bodyReply.Attach.length || 0">
                     <n-button circle @click="fileModal = true" disabled>
                         <v-icon name="bi-paperclip" />
                     </n-button>
-                </n-badge>
+                </n-badge> -->
                 <!-- Emoji Picker -->
                 <n-popover trigger="click" placement="top" v-model:show="showEmoji">
                     <template #trigger>
@@ -41,7 +41,7 @@
 
         <!-- Upload Modal -->
         <n-modal v-model:show="fileModal">
-            <n-card class="w-1/2">
+            <n-card class="w-fit">
                 <file-upload class="w-full" title="Upload Lampiran" endpoint="uploads" type="lampiran_tiket"
                     path="tiket_reply" :multi="true" :required="false" :def_preview="false"
                     :data_multi="bodyReply.Attach" @fallback="handleFallback" />
