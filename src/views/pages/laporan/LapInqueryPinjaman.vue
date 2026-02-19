@@ -69,26 +69,7 @@
                     <td v-for="item in list" :key="item.id" align="right">{{ item }}</td>
                   </tr>
                   <tr class="border-t border-dashed border-black">
-                    <td colspan="3">JUMLAH</td>
-                    <th align="right">
-                      {{ dataFooter.ttlAmtAngs.toLocaleString() }}
-                    </th>
-                    <th align="right" colspan="3">
-                    </th>
-
-                    <th align="right">
-                      {{ dataFooter.ttlAmtBayar.toLocaleString() }}
-                    </th>
-                    <th align="right">
-                      {{ dataFooter.ttlSisaAngs.toLocaleString() }}
-                    </th>
-                    <th align="right">
-                      {{ dataFooter.ttlDenda.toLocaleString() }}
-                    </th>
-                    <th align="right">
-                      {{ dataFooter.ttlBayarDenda.toLocaleString() }}
-                    </th>
-                    <th align="right">
+                    <th align="right" v-for="ttl in dataFooter" :key="ttl">{{ ttl }}
                     </th>
                   </tr>
                 </table>
@@ -569,6 +550,25 @@ const handleCariInqPinjaman = (e) => {
   getInqPinjaman(e);
   inqView.value = true;
 }
+
+const getColumnTotal = (key) => {
+  if (!dataDetailAngsuran.value || !Array.isArray(dataDetailAngsuran.value)) {
+    return "";
+  }
+
+  const numbers = dataDetailAngsuran.value
+    .map(row => Number(row[key]))
+    .filter(val => !isNaN(val));
+
+  if (numbers.length === 0) return "";
+
+  const total = numbers.reduce((acc, val) => acc + val, 0);
+
+  return total.toLocaleString(undefined, {
+    minimumFractionDigits: 2,
+    maximumFractionDigits: 2
+  });
+};
 const getInqPinjaman = async (e) => {
   loadInqPinjaman.value = true;
   messageReactive = message.loading('memuat inquery pinjaman');
