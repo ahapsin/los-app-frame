@@ -38,126 +38,27 @@
           <table class="w-full font-mono text-xs" cellspacing="10">
             <thead>
               <tr class="border-b border-t border-black border-dashed">
-                <th align="left" class="px-2">CABANG</th>
-                <th align="left" class="px-2">TGL</th>
-                <th align="left" class="px-2">USER</th>
-                <th align="left" class="px-2">POSITION</th>
-                <th align="left" class="px-2">NO KONTRAK</th>
-                <th align="left" class="px-2">TERIMA DARI / KE</th>
-                <th align="left" class="px-2">KETERANGAN</th>
-                <th align="right" class="px-2">AMOUNT</th>
+                <th align="left" class="px-2" v-for="header in dataArusKas.HeaderTable">{{ header }}</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody v-for="body in dataArusKas.Result" :key="body.title">
               <tr>
                 <th colspan="9">
                   <n-divider title-placement="left">
-                    UANG MASUK ( TUNAI )
+                    {{ body.title }}
                   </n-divider>
                 </th>
               </tr>
-              <tr v-for="cashin in cashIn" :key="cashin.id">
-                <td>{{ cashin.cabang }}</td>
-                <td>{{ cashin.tgl }}</td>
-                <td>{{ cashin.user }}</td>
-                <td>{{ cashin.position }}</td>
-                <td>{{ cashin.no_kontrak }}</td>
-                <td>{{ cashin.nama_pelanggan }}</td>
-                <td>
-                  <n-ellipsis style="max-width: 240px">
-                    {{ cashin.keterangan }}
-                  </n-ellipsis>
-                </td>
-                <td align="right">{{ cashin.metode_pembayaran }}</td>
-                <td align="right">{{ cashin.amount.toLocaleString() }}</td>
+              <tr v-for="cashin in body.data" :key="cashin.id">
+                <td v-for="td in cashin">{{ td }}</td>
               </tr>
               <tr class="border-b border-black">
-                <th colspan="8" align="left">JUMLAH</th>
-                <th align="right">{{ jumlahKan(cashIn).toLocaleString("id-ID", { minimumFractionDigits: 2 }) }}</th>
+                <th :colspan="body.colspan-1" align="left" class="pt-4">JUMLAH</th>
+                <th align="left" class="pt-2">{{ body.jumlah }}</th>
               </tr>
             </tbody>
-            <tbody>
-              <tr>
-                <th colspan="9">
-                  <n-divider title-placement="left">
-                    PELUNASAN
-                  </n-divider>
-                </th>
-              </tr>
-              <tr v-for="pelunasan in pelunasan" :key="pelunasan.id">
-                <td>{{ pelunasan.cabang }}</td>
-                <td>{{ pelunasan.tgl }}</td>
-                <td>{{ pelunasan.user }}</td>
-                <td>{{ pelunasan.position }}</td>
-                <td>{{ pelunasan.no_kontrak }}</td>
-                <td>{{ pelunasan.nama_pelanggan }}</td>
-                <td>
-                  <n-ellipsis style="max-width: 240px">
-                    {{ pelunasan.keterangan }}
-                  </n-ellipsis>
-                </td>
-                <td align="right">{{ pelunasan.metode_pembayaran }}</td>
-                <td align="right">{{ pelunasan.amount.toLocaleString() }}</td>
-              </tr>
-              <tr class="border-b border-black">
-                <th colspan="8" align="left">JUMLAH</th>
-                <th align="right">{{ jumlahKan(pelunasan).toLocaleString("id-ID", { minimumFractionDigits: 2 }) }}</th>
-              </tr>
-            </tbody>
-            <tbody>
-              <tr>
-                <th colspan="9">
-                  <n-divider title-placement="left">
-                    UANG MASUK ( TRANSFER )
-                  </n-divider>
-                </th>
-              </tr>
-              <tr v-for="cashin in cashInTrf" :key="cashin.id">
-                <td>{{ cashin.cabang }}</td>
-                <td>{{ cashin.tgl }}</td>
-                <td>{{ cashin.user }}</td>
-                <td>{{ cashin.position }}</td>
-                <td>{{ cashin.no_kontrak }}</td>
-                <td>{{ cashin.nama_pelanggan }}</td>
-                <td>
-                  <n-ellipsis style="max-width: 240px">
-                    {{ cashin.keterangan }}
-                  </n-ellipsis>
-                </td>
-                <td align="right">{{ cashin.metode_pembayaran }}</td>
-                <td align="right">{{ cashin.amount.toLocaleString() }}</td>
-              </tr>
-              <tr class="border-b border-black">
-                <th colspan="8" align="left">JUMLAH</th>
-                <th align="right">{{ jumlahKan(cashInTrf).toLocaleString("id-ID", { minimumFractionDigits: 2 }) }}</th>
-              </tr>
-            </tbody>
-            <tbody>
-              <tr>
-                <th colspan="9">
-                  <n-divider title-placement="left">
-                    UANG KELUAR ( PENCAIRAN )
-                  </n-divider>
-                </th>
-              </tr>
-              <tr v-for="cashout in cashOut" :key="cashout.id">
-                <td>{{ cashout.cabang }}</td>
-                <td>{{ cashout.tgl }}</td>
-                <td>{{ cashout.user }}</td>
-                <td>{{ cashout.position }}</td>
-                <td>{{ cashout.no_kontrak }}</td>
-                <td>{{ cashout.nama_pelanggan }}</td>
-                <td>{{ cashout.keterangan }}</td>
-                <td></td>
-                <td align="right">{{ cashout.amount.toLocaleString() }}</td>
-              </tr>
-              <tr class="border-b border-black">
-                <th colspan="8" align="left">JUMLAH</th>
-                <th align="right">{{ jumlahKan(cashOut).toLocaleString("id-ID", { minimumFractionDigits: 2 }) }}</th>
-              </tr>
-            </tbody>
-          </table>
 
+          </table>
         </div>
 
       </n-space>
@@ -206,7 +107,7 @@ const getArusKas = async (e) => {
   let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "POST",
-    api: "arus_kas",
+    api: "LkbhReport",
     data: e,
     token: userToken,
   });
