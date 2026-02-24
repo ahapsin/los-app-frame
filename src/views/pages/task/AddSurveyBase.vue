@@ -74,6 +74,7 @@
                         <n-form-item label="Kategori Kredit" path="kategori_kredit" class="w-full">
                             <n-select filterable placeholder="Kategori Kredit" :options="optKategori"
                                 default-value="Baru" v-model:value="order.category" disabled />
+                                
                         </n-form-item>
                         <n-form-item label="No KK" path="no_kk" class="w-full">
                             <n-input :allow-input="onlyAllowNumber" placeholder="No Kartu Keluarga"

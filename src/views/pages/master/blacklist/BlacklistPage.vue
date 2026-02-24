@@ -5,17 +5,13 @@
                 <template #header-extra>
                     <n-space class="!gap-1">
                         <div class="me-1">
-                            <n-popover trigger="click" placement="bottom-end">
-                                <template #trigger>
-                                    <n-button circle>
-                                        <n-icon>
-                                            <search-icon />
-                                        </n-icon>
-                                    </n-button>
+                            <n-input autofocus="true" clearable placeholder="cari disini.." v-model:value="searchBox">
+                                <template #prefix>
+                                    <n-icon>
+                                        <search-icon />
+                                    </n-icon>
                                 </template>
-                                <n-input autofocus="true" clearable placeholder="cari disini.."
-                                    v-model:value="searchBox" />
-                            </n-popover>
+                            </n-input>
                         </div>
                         <!-- <div class="hidden md:flex">
                             <n-button>

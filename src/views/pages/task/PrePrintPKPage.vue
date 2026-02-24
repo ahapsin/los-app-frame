@@ -55,8 +55,8 @@ class="flex gap-2 border-t p-4 justify-end"
       </div> -->
       <div class="w-full" v-if="pkData.order_validation?.length != 0">
         <n-alert :title="`${pkData.order_validation?.length} Catatan`" type="warning" class="shadow">
-          <div class="text-red-500" v-for="messageValidation in pkData.order_validation" :key="messageValidation">
-            {{ messageValidation }}
+          <div class="text-red-500" v-for="(messageValidation,i) in pkData.order_validation" :key="messageValidation">
+            {{ i }}. {{ messageValidation }}
           </div>
         </n-alert>
       </div>

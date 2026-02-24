@@ -31,10 +31,10 @@
         <slot name="addition"></slot>
         <div class="sticky sticky-top top-0 z-50" v-if="pageData.order_validation?.length != 0">
             <n-alert :title="`${pageData.order_validation?.length} Catatan`" type="warning"
-                class="animate-pulse shadow">
-                <div class="text-red-500" v-for="messageValidation in pageData.order_validation"
+                class=" shadow">
+                <div class="text-red-500" v-for="(messageValidation,i) in pageData.order_validation"
                     :key="messageValidation">
-                    {{ messageValidation }}
+                    {{ i+1 }}. {{ messageValidation }}
                 </div>
             </n-alert>
         </div>

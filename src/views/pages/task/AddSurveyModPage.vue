@@ -179,7 +179,7 @@
                 <div class="md:flex gap-2">
                     <n-form-item label="Nama" path="nama" class="w-full">
                         <n-input placeholder="Nama" v-model:value="pelanggan.nama"
-                            @input="$event => (pelanggan.nama = $event.toUpperCase())" />
+                            @input="$event => (pelanggan.nama = $event.toUpperCase())" :readonly="order.category === 'RO'"/>
                     </n-form-item>
                     <n-form-item label="Tanggal lahir" path="tgl_lahir" class="w-full">
                         <div class="w-full">
@@ -198,7 +198,7 @@
                 </div>
                 <div class="flex flex-col md:flex-row gap-2 gap-x-2">
                     <n-form-item label="Alamat" path="alamat" class="w-full">
-                        <n-input placeholder="Alamat" v-model:value="pelanggan.alamat"
+                        <n-input placeholder="Alamat" v-model:value="pelanggan.alamat" :readonly="order.category === 'RO'"
                             @input="$event => (pelanggan.alamat = $event.toUpperCase())" class="w-full" />
                     </n-form-item>
 

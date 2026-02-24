@@ -17,8 +17,8 @@
                 <n-space vertical>
                     <n-form-item label="petugas">
                         <n-select v-model:value="assignTo" placeholder="pilih petugas" :options="me.me.cabang_nama === 'Head Office'
-                            ? dataUser
-                            : _.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
+                            ? _.filter(dataUser, { status:'Aktif' })
+                            : _.filter(dataUser, { cabang_nama: me.me.cabang_nama, status:'Aktif' })" value-field="username"
                             label-field="nama" filterable :render-tag="renderSingleSelectTag"
                             :render-label="renderLabel" @update:value="handleChangePetugas" />
                     </n-form-item>
