@@ -93,7 +93,7 @@ const dataAlamat = reactive({
 });
 const provinsiChanged = async (value, option) => {
     try {
-        let getKota = await axios.get(`https://dev.kspdjaya.id/kota?id=${value}`);
+        let getKota = await axios.get(`https://api.kspdjaya.id/kota?id=${value}`);
         col_kota.value = getKota.data;
         emit('update:provinsi', option.text);
     } catch (error) {
@@ -110,7 +110,7 @@ const kotaChanged = async (value, option) => {
 
     sel_kota.value = value;
     try {
-        let getKec = await axios.get(`https://dev.kspdjaya.id/kecamatan?id=${value}`);
+        let getKec = await axios.get(`https://api.kspdjaya.id/kecamatan?id=${value}`);
         col_kec.value = getKec.data;
         emit('update:kota', option.text);
     } catch (error) {
@@ -120,7 +120,7 @@ const kotaChanged = async (value, option) => {
 const kecChanged = async (value, option) => {
     sel_kec.value = value;
     try {
-        let getKec = await axios.get(`https://dev.kspdjaya.id/kelurahan?id=${value}`);
+        let getKec = await axios.get(`https://api.kspdjaya.id/kelurahan?id=${value}`);
         col_desa.value = getKec.data;
         emit('update:kecamatan', option.text);
     } catch (error) {
@@ -174,7 +174,7 @@ const desaUpdate = async () => {
 const desaChanged = async (value, option) => {
     sel_desa.value = value;
     try {
-        let getKodepos =await  axios.get(`https://dev.kspdjaya.id/kode_pos?id=${value}`);
+        let getKodepos =await  axios.get(`https://api.kspdjaya.id/kode_pos?id=${value}`);
         col_kodepos.value = getKodepos.data;
         emit('update:desa', option.text);
     } catch (error) {
@@ -183,6 +183,6 @@ const desaChanged = async (value, option) => {
 
 };
 
-useOpenAPIget("https://dev.kspdjaya.id/provinsi").then(([res]) => { col_provinsi.value = res });
+useOpenAPIget("https://api.kspdjaya.id/provinsi").then(([res]) => { col_provinsi.value = res });
 
 </script>
