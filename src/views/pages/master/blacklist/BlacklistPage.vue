@@ -54,12 +54,57 @@
                     </n-space>
                 </template>
                 <n-space vertical :size="12" class="pt-4">
-
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination" />
                 </n-space>
             </n-card :class="`shadow-lg`">
         </n-space>
     </div>
+    <n-modal v-model:show="modalOpen">
+        <div class="w-1/2">
+            <n-card size="small">
+                <n-alert type="warning" title="Konfirmasi" class="mb-2">
+                    Apakah Anda yakin ingin membuka blacklist ini?
+                </n-alert>
+                <n-descriptions bordered :column="4" size="small">
+                    <n-descriptions-item label="No. Pinjaman">
+                        {{ selectOpen.LOAN_NUMBER }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="Nama Nasabah">
+                        {{ selectOpen.NAME }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="No. KTP">
+                        {{ selectOpen.KTP }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="No. KK">
+                        {{ selectOpen.KK }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="Input Oleh">
+                        {{ selectOpen.PERSON }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="Tanggal Input">
+                        {{ selectOpen.DATE_ADD }}
+                    </n-descriptions-item>
+
+                    <n-descriptions-item label="Keterangan">
+                        {{ selectOpen.NOTE }}
+                    </n-descriptions-item>
+                </n-descriptions>
+                <n-form-item label="Keterangan">
+                    <n-input v-model:value="keterangan" type="textarea" placeholder="Keterangan" />
+                </n-form-item>
+                <template #action>
+                    <n-space justify="end">
+                        <n-button type="error" size="small" @click="handleConfirm">
+                            Ya, Buka
+                        </n-button>
+                        <n-button size="small" @click="handleCancel">
+                            Batal
+                        </n-button>
+                    </n-space>
+                </template>
+            </n-card>
+        </div>
+    </n-modal>
 </template>
 <script setup>
 import { ref, onMounted, h } from "vue";
@@ -72,7 +117,11 @@ import {
     SearchOutlined as SearchIcon,
     FileDownloadOutlined as DownloadIcon,
 
-} from "@vicons/material"
+} from "@vicons/material";
+import {
+    Lock as LockIcon,
+    LockOpen as UnlockIcon
+} from "@vicons/tabler"
 import {
     EditOutlined as EditIcon,
     DeleteOutlined as DeleteIcon,
@@ -81,7 +130,6 @@ import {
 
 
 const message = useMessage();
-const dialog = useDialog();
 const dataTable = ref([]);
 const searchBox = ref();
 
@@ -106,77 +154,63 @@ const columns = [
         sorter: 'default',
         key: "NOTE",
     },
-    // {
-    //     title: "",
-    //     align: "right",
-    //     key: "more",
-    //     render(row, index) {
-    //         return h(
-    //             NDropdown,
-    //             {
-    //                 options: options,
-    //                 size: "small",
-    //                 onSelect: (e) => {
-    //                     if (e === "hapus") {
-    //                         handleConfirm(row, index);
-    //                     }
-    //                     if (e === "detail") {
-    //                         handleDetail(row);
-    //                     }
-    //                     if (e === "edit") {
-    //                         handleUpdate(row);
-    //                     }
-    //                 }
-    //             },
-    //             {
-    //                 default: h(NButton, {
-    //                     size: "small",
-    //                 }, { default: () => 'Action' })
-    //             }
-    //         );
-    //     }
-    // }
-];
-
-const statusTag = (e) => {
-    if (e === "Active") {
-        return "success";
-    } else if (e === "Non-Active") {
-        return "warning";
-    }
-
-}
-const handleConfirm = (row, index) => {
-    dialog.warning({
-        title: "Confirm",
-        content: "Apakah anda yakin ingin menghapus data ?",
-        positiveText: "Ya",
-        negativeText: "Batal",
-        onPositiveClick: async () => {
-            let userToken = localStorage.getItem("token");
-            const response = await useApi({
-                method: 'DELETE',
-                api: `cabang/${row.id}`,
-                token: userToken
-            });
-            if (!response.ok) {
-                message.error("api transaction error");
-            } else {
-                dataTable.value.splice(index, 1);
-                message.success("Data berhasil dihapus");
-            }
-
-        },
-        onNegativeClick: () => {
-            message.error("Batal hapus data !");
+    {
+        render(row) {
+            return h(
+                NButton,
+                {
+                    size: "small",
+                    disabled: row.STATUS === 'ACTIVE' ? false : true,
+                    secondary: true,
+                    type: row.STATUS === 'ACTIVE' ? "error" : "default",
+                    onClick: () => handleOpen(row),
+                    circle: true
+                },
+                {
+                    default: () =>
+                        h(
+                            NIcon,
+                            null,
+                            { default: () => h(row.STATUS === 'ACTIVE' ? LockIcon : UnlockIcon) }
+                        )
+                }
+            );
         }
+    }
+];
+const keterangan = ref();
+const modalOpen = ref(false);
+const selectOpen = ref([]);
+const handleOpen = (evt) => {
+    selectOpen.value = evt;
+    modalOpen.value = true;
+    keterangan.value = null;
+}
+const loadState = ref(false);
+const handleCancel = () => {
+    modalOpen.value = false;
+    selectOpen.value = [];
+}
+const handleConfirm = async (e) => {
+    loadState.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: 'PUT',
+        api: `blacklist/${selectOpen.value?.ID}`,
+        data: {
+            note: keterangan.value
+        },
+        token: userToken
     });
-}
-const handleDetail = (evt) => {
-    router.push(`/master/branch-action/${evt.id}/detail`);
-}
-const handleUpdate = (evt) => {
-    router.push(`/master/branch-action/${evt.id}`);
+    if (!response.ok) {
+        loadState.value = false;
+        modalOpen.value = false;
+    } else {
+        loadState.value = false;
+        message.success('Berhasil buka blacklist');
+        modalOpen.value = false;
+        getData();
+    }
 }
 const handleAdd = () => {
     router.push('/master/branch-action');
