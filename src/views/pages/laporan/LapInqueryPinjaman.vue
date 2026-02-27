@@ -308,6 +308,11 @@ const columnsPinjaman = [
     title: "Nomor Order",
     key: "loan_number",
     sorter: "default",
+  }, 
+  {
+    title: "Nomor Pelanggan",
+    key: "cust_code",
+    sorter: "default",
   }, {
     title: "Nama Debitur",
     key: "customer_name",

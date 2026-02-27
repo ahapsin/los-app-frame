@@ -11,6 +11,9 @@
         <n-form-item label="No Polisi">
           <n-input placeholder="No Polisi" v-model:value="nomorPolisi" clearable />
         </n-form-item>
+        <n-form-item label="No Pelanggan">
+          <n-input placeholder="No Pelanggan" v-model:value="nomorPelanggan" clearable />
+        </n-form-item>
         <n-form-item>
           <n-button type="primary" @click="handleCari">Cari</n-button>
         </n-form-item>
@@ -37,12 +40,14 @@ const tableRef = ref();
 const searchBox = ref();
 const namaDebitur = ref();
 const nomorPolisi = ref();
+const nomorPelanggan = ref();
 const emit = defineEmits('cari');
 const handleCari = () => {
   emit('cari', {
     no_kontrak: searchBox.value,
     nama: namaDebitur.value,
     no_polisi:nomorPolisi.value,
+    cust_code:nomorPelanggan.value,
   });
 }
 
