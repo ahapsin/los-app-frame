@@ -94,11 +94,11 @@ const getBranch = async () => {
     if (me.me?.cabang_nama != "Head Office") {
       selectBranch.value = me.me.cabang_id;
     } else {
-      selectBranch.value = "SEMUA CABANG";
+      selectBranch.value = "semua";
       dataBranch.value = response.data.response;
       dataBranch.value.unshift({
         id: "semua",
-        nama: "SEMUA CABANG"
+        nama: "semua"
       });
     }
   }
@@ -106,38 +106,48 @@ const getBranch = async () => {
 const rangeDate = ref();
 let messageReactive = null;
 const loadingBar = useLoadingBar();
+
 const handleSubmit = async () => {
+  if (!rangeDate.value) {
+    message.warning("Pilih periode dulu")
+    return
+  }
+
   dataListBan.value = []
   ctrDownload.value = true
   percentage.value = 0
+  loadingData.value = true
 
   let basePayload = {
     dari: rangeDate.value,
     cabang_id: null
   }
 
-  messageReactive = message.loading('Memuat data listing beban...', { duration: 0 })
-  loadingData.value = true
+  messageReactive = message.loading("Memuat data listing beban...", { duration: 0 })
 
   try {
 
-    // ===== JIKA SEMUA CABANG =====
+    // ====== JIKA SEMUA CABANG ======
     if (selectBranch.value === "semua") {
 
-      const promises = dataBranch.value
-        .filter(c => c.id !== "semua") // skip option SEMUA CABANG
-        .map(cabang => {
-          return grabAllSP({
-            ...basePayload,
-            cabang_id: cabang.id
-          })
+      const excluded = ["semua", "it", "head office"]
+
+      const filteredBranch = dataBranch.value.filter(c =>
+        !excluded.includes(c.nama?.toLowerCase())
+      )
+
+      const promises = filteredBranch.map(cabang =>
+        grabAllSP({
+          ...basePayload,
+          cabang_id: cabang.id
         })
+      )
 
       await Promise.all(promises)
 
     } else {
 
-      // ===== JIKA SATU CABANG =====
+      // ====== JIKA SATU CABANG ======
       await grabAllSP({
         ...basePayload,
         cabang_id: selectBranch.value
@@ -149,6 +159,7 @@ const handleSubmit = async () => {
   } finally {
     loadingData.value = false
     messageReactive?.destroy()
+    ctrDownload.value = false
   }
 }
 
@@ -208,12 +219,12 @@ const grabListBan = async (payload, uri) => {
   }
 
   if (Array.isArray(response.data)) {
-    // ✅ GABUNG DATA (BUKAN OVERWRITE)
+    // 🔥 GABUNG DATA (tidak overwrite)
     dataListBan.value.push(...response.data)
   }
-
-  ctrDownload.value = false
 }
+
+
 const convertObjectToArray = (obj) => {
   if (!Array.isArray(obj) || obj.length === 0) {
     return [];
