@@ -1,7 +1,7 @@
 <template>
   <n-card :class="`shadow-lg`" title="Laporan Listing Beban" :segmented="true" size="small">
     <div>
-      
+
       <n-space vertical :size="12" class="pt-4">
         <n-space>
           <n-form-item label="TANGGAL AKHIR">
@@ -9,7 +9,7 @@
           </n-form-item>
           <n-form-item label="POS" v-if="me.me.cabang_nama === 'Head Office'">
             <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama" value-field="id"
-              :default-value="defBranch" :options="dataBranch" @update:value="handleUpdateBranch" />
+              :default-value="defBranch" :options="dataBranch" v-model:value="selectBranch" />
           </n-form-item>
           <n-form-item>
             <n-button @click="handleSubmit" type="primary" :disabled="disabledButton">
@@ -49,7 +49,6 @@ const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
 const disabledButton = ref(false);
-const progressBar = ref(false);
 const percentage = ref(0);
 
 const selectedBranch = ref();
@@ -57,128 +56,6 @@ const handleUpdateBranch = (value, option) => {
   selectedBranch.value = option;
 }
 
-
-const dummyData = [{
-  "KODE CABANG": "003-ANJ",
-  "NAMA CABANG": "Anjatan",
-  "NO KONTRAK": 11101190000187,
-  "NAMA PELANGGAN": "DADI BIN SAYAM",
-  "TGL BOOKING": "02/13/2019",
-  "UB": "",
-  "PLATFORM": "",
-  "ALAMAT TAGIH": "BLOK BULU RT 01 RW 01 DS LIMPAS KEC PATROL RT/01 RW/01 KAB. INDRAMAYU JAWA BARAT",
-  "KECAMATAN": "KEC. PATROL",
-  "KELURAHAN": "LIMPAS",
-  "NO TELP": "081220534179",
-  "NO HP1": "",
-  "NO HP2": "",
-  "PEKERJAAN": "WIRASWASTA",
-  "SUPPLIER": "",
-  "SURVEYOR": "NURFAUZI",
-  "CATT SURVEY": "PK ADALAH SEORANG TUKANG OJEK ISTRI PK IRT",
-  "PKK HUTANG": 1500000,
-  "JML ANGS": 12,
-  "JRK ANGS": 1,
-  "PERIOD": 12,
-  "OUT PKK AWAL": 153821,
-  "OUT BNG AWAL": 6179,
-  "OVERDUE AWAL": 1966,
-  "AMBC PKK AWAL": 153821,
-  "AMBC BNG AWAL": 6179,
-  "AMBC TOTAL AWAL": 160000,
-  "CYCLE AWAL": "CX",
-  "STS KONTRAK": "AC",
-  "STS BEBAN": "AC",
-  "POLA BYR AWAL": "",
-  "OUTS PKK AKHIR": 153821,
-  "OUTS BNG AKHIR": 6179,
-  "OVERDUE AKHIR": 1997,
-  "ANGSURAN": 160000,
-  "ANGS KE": 12,
-  "TIPE ANGSURAN": "bulanan",
-  "JTH TEMPO AWAL": "12/2/2020",
-  "JTH TEMPO AKHIR": "12/2/2020",
-  "TGL BAYAR": "",
-  "KOLEKTOR": "unknown",
-  "CARA BYR": null,
-  "AMBC PKK_AKHIR": 153821,
-  "AMBC BNG_AKHIR": 6179,
-  "AMBC TOTAL_AKHIR": 160000,
-  "AC PKK": 0,
-  "AC BNG MRG": 0,
-  "AC TOTAL": 0,
-  "CYCLE AKHIR": "CX",
-  "POLA BYR AKHIR": "",
-  "NAMA BRG": null,
-  "TIPE BRG": "HONDA NF 100 L SUPRA FIT TROMOL",
-  "NO POL": "E4319RH",
-  "NO MESIN": "HB31E1107525",
-  "NO RANGKA": "MH1HB31125KK109961",
-  "TAHUN": "2005",
-  "NILAI PINJAMAN": 1000000,
-  "ADMIN": 500000,
-  "CUST_ID": 1110119000553
-}, {
-  "KODE CABANG": "003-ANJ",
-  "NAMA CABANG": "Anjatan",
-  "NO KONTRAK": 11101190000195,
-  "NAMA PELANGGAN": "WAHYUDIN",
-  "TGL BOOKING": "2/17/2019",
-  "UB": "",
-  "PLATFORM": "",
-  "ALAMAT TAGIH": "DUSUN LUNGMALANG RT 12 RW 03 DS BUGIS KEC ANJATAN RT/12 RW/03 KAB. INDRAMAYU JAWA BARAT",
-  "KECAMATAN": "KEC. ANJATAN",
-  "KELURAHAN": "BUGIS",
-  "NO TELP": "082316695353",
-  "NO HP1": "",
-  "NO HP2": "",
-  "PEKERJAAN": "MENGURUS RUMAH TANGGA",
-  "SUPPLIER": "",
-  "SURVEYOR": "CASDIKIN",
-  "CATT SURVEY": "PK ADALAH SEORANG PEDAGANG SAYUR KELILING ISTRI PK IRT",
-  "PKK HUTANG": 4650000,
-  "JML ANGS": 24,
-  "JRK ANGS": 1,
-  "PERIOD": 24,
-  "OUT PKK AWAL": 4650000,
-  "OUT BNG AWAL": 2310000,
-  "OVERDUE AWAL": 2301,
-  "AMBC PKK AWAL": 4650000,
-  "AMBC BNG AWAL": 2310000,
-  "AMBC TOTAL AWAL": 6960000,
-  "CYCLE AWAL": "CX",
-  "STS KONTRAK": "AC",
-  "STS BEBAN": "AC",
-  "POLA BYR AWAL": "",
-  "OUTS PKK AKHIR": 4650000,
-  "OUTS BNG AKHIR": 2310000,
-  "OVERDUE AKHIR": 2332,
-  "ANGSURAN": 290000,
-  "ANGS KE": 1,
-  "TIPE ANGSURAN": "bulanan",
-  "JTH TEMPO AWAL": "14/3/2019",
-  "JTH TEMPO AKHIR": "14/3/2019",
-  "TGL BAYAR": "",
-  "KOLEKTOR": "unknown",
-  "CARA BYR": null,
-  "AMBC PKK_AKHIR": 4650000,
-  "AMBC BNG_AKHIR": 2310000,
-  "AMBC TOTAL_AKHIR": 6960000,
-  "AC PKK": 0,
-  "AC BNG MRG": 0,
-  "AC TOTAL": 0,
-  "CYCLE AKHIR": "CX",
-  "POLA BYR AKHIR": "",
-  "NAMA BRG": null,
-  "TIPE BRG": "SUZUKI CARRY CARRY",
-  "NO POL": "D1012EG",
-  "NO MESIN": "F10AA1D184275",
-  "NO RANGKA": "SL410285379",
-  "TAHUN": "1988",
-  "NILAI PINJAMAN": 4000000,
-  "ADMIN": 650000,
-  "CUST_ID": 1110119000560
-}]
 function convertEmptyToNull(data) {
   return data.map(item => {
     const newItem = {};
@@ -230,26 +107,59 @@ const rangeDate = ref();
 let messageReactive = null;
 const loadingBar = useLoadingBar();
 const handleSubmit = async () => {
-  disabledButton.value = true;
-  progressBar.value = true;
-  percentage.value = 0;
-  let a = {
+  dataListBan.value = []
+  ctrDownload.value = true
+  percentage.value = 0
+
+  let basePayload = {
     dari: rangeDate.value,
-    cabang_id: selectedBranch.value?.id ? selectedBranch.value.id : me.me.cabang_id,
+    cabang_id: null
   }
-  messageReactive = message.loading('memuat data listing beban', { duration: 0 });
+
+  messageReactive = message.loading('Memuat data listing beban...', { duration: 0 })
+  loadingData.value = true
 
   try {
-    await callSp(a, 'sp1');
-    await callSp(a, 'sp2');
-    await callSp(a, 'sp3');
-    await callSp(a, 'sp4');
-    await grabListBan(a, 'listBanTest');
-  } catch (error) {
-    messageReactive.destroy()
-  }
 
-  disabledButton.value = false;
+    // ===== JIKA SEMUA CABANG =====
+    if (selectBranch.value === "semua") {
+
+      const promises = dataBranch.value
+        .filter(c => c.id !== "semua") // skip option SEMUA CABANG
+        .map(cabang => {
+          return grabAllSP({
+            ...basePayload,
+            cabang_id: cabang.id
+          })
+        })
+
+      await Promise.all(promises)
+
+    } else {
+
+      // ===== JIKA SATU CABANG =====
+      await grabAllSP({
+        ...basePayload,
+        cabang_id: selectBranch.value
+      })
+    }
+
+  } catch (err) {
+    message.error("Terjadi kesalahan saat mengambil data")
+  } finally {
+    loadingData.value = false
+    messageReactive?.destroy()
+  }
+}
+
+
+
+const grabAllSP = async (payload) => {
+  await grabListBan(payload, 'sp1')
+  await grabListBan(payload, 'sp2')
+  await grabListBan(payload, 'sp3')
+  await grabListBan(payload, 'sp4')
+  await grabListBan(payload, 'listBanTest')
 }
 const dataListBan = ref([]);
 const loadingData = ref(false);
@@ -283,38 +193,26 @@ const callSp = async (e, uri) => {
   }
 
 }
-const grabListBan = async (e, uri) => {
+const grabListBan = async (payload, uri) => {
 
-  loadingData.value = true;
-  let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "POST",
     api: uri,
-    data: e,
+    data: payload,
     token: userToken,
   });
+
   if (!response.ok) {
-    messageReactive.destroy();
-    var interval;
-    interval = setInterval(() => {
-      if (timer.value > 0) {
-        timer.value--
-      } else {
-        clearInterval(interval);
-        timer.value = 60;
-        handleSubmit();
-      }
-    }, 1000);
-    messageReactive = message.loading(() => (`data listban sedang sibuk mencoba ulang dalam ${timer.value} s`), { duration: 60000 });
-  } else {
-    messageReactive.destroy();
-    messageReactive = null;
-    dataListBan.value = response.data;
-    loadingData.value = false;
-    ctrDownload.value = false;
-    percentage.value += 20;
+    message.error(`Gagal ambil data dari ${uri}`)
+    return
   }
 
+  if (Array.isArray(response.data)) {
+    // ✅ GABUNG DATA (BUKAN OVERWRITE)
+    dataListBan.value.push(...response.data)
+  }
+
+  ctrDownload.value = false
 }
 const convertObjectToArray = (obj) => {
   if (!Array.isArray(obj) || obj.length === 0) {
