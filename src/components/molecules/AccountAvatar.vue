@@ -1,6 +1,11 @@
 <template>
   <div class="flex items-center gap-4 p-1 cursor-pointer rounded-full">
     <div class="flex gap-2">
+      <n-button type="warning" dashed size="small"  @click="handleDev" v-if="appMode === 'debug'">
+        <template #icon>
+          <v-icon name="bi-plugin"/>
+        </template>
+        DEV PLAY</n-button>
       <n-button type="error" size="small" secondary @click="handleBantuan">
         <template #icon>
           <v-icon name="bi-headset" />
@@ -87,6 +92,7 @@
   </n-modal>
 </template>
 <script setup>
+const appMode = import.meta.env.VITE_APP_MODE;
 import {
   AccountCircleOutlined as Account,
   LockOutlined as Locked,
@@ -109,6 +115,9 @@ const dataUser = ref();
 
 const handleBantuan = () => {
   router.push({ name: "tiket bantuan" })
+}
+const handleDev = () => {
+  router.push({ name: "Dev Playground" })
 }
 const options = [
   {

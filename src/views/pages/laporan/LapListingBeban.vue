@@ -78,41 +78,98 @@ const rangeDate = ref();
 let messageReactive = null;
 const loadingBar = useLoadingBar();
 const handleSubmit = async () => {
+  dataListBan.value = []
 
-  let a = {
+  let basePayload = {
     dari: rangeDate.value,
     cabang_id: null
   }
-  messageReactive = message.loading('memuat data listing beban', { duration: 0 });
-  await grabListBan(a, 'sp1');
-  await grabListBan(a, 'sp2');
-  await grabListBan(a, 'sp3');
-  await grabListBan(a, 'sp4');
-  await grabListBan(a, 'listBan');
+
+  messageReactive = message.loading('Memuat data listing beban...', { duration: 0 })
+  loadingData.value = true
+
+  try {
+
+    // ===== JIKA SEMUA CABANG =====
+    if (!selectBranch.value) {
+
+      const promises = dataBranch.value
+        .filter(c => c.id) // ambil yang ada id saja
+        .map(cabang => {
+          return grabAllSP({
+            ...basePayload,
+            cabang_id: cabang.id
+          })
+        })
+
+      await Promise.all(promises)
+
+    } else {
+
+      // ===== JIKA SATU CABANG =====
+      await grabAllSP({
+        ...basePayload,
+        cabang_id: selectBranch.value
+      })
+    }
+
+  } catch (err) {
+    message.error("Terjadi kesalahan saat mengambil data")
+  } finally {
+    loadingData.value = false
+    messageReactive?.destroy()
+  }
 }
-const dataListBan = ref([]);
-const loadingData = ref(false)
-const grabListBan = async (e, url) => {
-  loadingData.value = true;
-  let userToken = localStorage.getItem("token");
+
+const grabAllSP = async (payload) => {
+  await grabListBan(payload, 'sp1')
+  await grabListBan(payload, 'sp2')
+  await grabListBan(payload, 'sp3')
+  await grabListBan(payload, 'sp4')
+  await grabListBan(payload, 'listBan')
+}
+
+const grabListBan = async (payload, url) => {
   const response = await useApi({
     method: "POST",
     api: url,
-    data: e,
+    data: payload,
     token: userToken,
-  });
-  if (!response.ok) {
-    console.log(response);
-    message.error(response);
-    messageReactive.destroy();
-  } else {
-    messageReactive.destroy();
-    messageReactive = null;
-    dataListBan.value = response.data;
-    loadingData.value = false;
-  }
+  })
 
+  if (!response.ok) {
+    console.log(response)
+    message.error("Gagal ambil data dari " + url)
+  } else {
+    if (Array.isArray(response.data)) {
+      // GABUNG DATA (TIDAK OVERWRITE)
+      dataListBan.value.push(...response.data)
+    }
+  }
 }
+const dataListBan = ref([]);
+const loadingData = ref(false)
+// const grabListBan = async (e, url) => {
+//   loadingData.value = true;
+//   let userToken = localStorage.getItem("token");
+//   const response = await useApi({
+//     method: "POST",
+//     api: url,
+//     data: e,
+//     token: userToken,
+//   });
+//   if (!response.ok) {
+//     console.log(response);
+//     message.error(response);
+//     messageReactive.destroy();
+//   } else {
+//     messageReactive.destroy();
+//     messageReactive = null;
+//     dataListBan.value = response.data;
+//     loadingData.value = false;
+//   }
+
+// }
 
 const exportToExcel = (data) => {
   const ws = XLSX.utils.json_to_sheet(data)

@@ -7,9 +7,12 @@
         <n-dialog-provider>
           <n-loading-bar-provider>
             <div
-              class="py-2 bg-gradient-to-r from-red-500 to-purple-400 animate-pulse font-bold text-white text-center shadow-xl bottom-0 text-bold"
+              class="py-2 fixed z-50 pe-20 ps-4 font-bold text-center bottom-0  bg-gradient-to-r from-gray-500 to-white/0"
               v-if="appMode === 'debug'">
-              DEVELOPER MODE
+              <div class="flex text-white">
+                <v-icon name="bi-record-fill" class="text-red-500 animate-pulse"></v-icon>
+                DEVELOPER MODE
+              </div>
             </div>
             <RouterView />
           </n-loading-bar-provider>
@@ -37,6 +40,9 @@ const themeOverrides = {
   },
   Button: {
     primaryColor: appcolor,
+  },
+  Card: {
+    color: '#fafafa'
   }
 }
 const isLoading = ref(true);
@@ -44,3 +50,9 @@ onMounted(() => {
   setTimeout(() => isLoading.value = false, 1000);
 });
 </script>
+<style lang="css">
+.n-card {
+  border: 1px solid #eee;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+</style>

@@ -31,7 +31,14 @@ const routes = [
   {
     path: "/playground",
     name: "playground",
-    component: () => import("../views/pages/PlaygroundPage.vue"),
+    component: () => import("../views/pages/layout/DashboardLayout.vue"),
+    children:[
+      {
+        path: "devplayground",
+        name: "Dev Playground",
+       component: () => import("../views/pages/TestViewPage.vue"),
+      },
+    ]
   },
   {
     path: "/pass-pk",
@@ -79,6 +86,11 @@ const routes = [
         path: "payment",
         name: "pembayaran",
         component: () => import("../views/pages/transaction/paymentPage.vue"),
+      },
+      {
+        path: "angsuran",
+        name: "pembayaran angsuran",
+        component: () => import("../views/pages/transaction/angsuran/paymentPage.vue"),
       },
       {
         path: "beban_tagih",

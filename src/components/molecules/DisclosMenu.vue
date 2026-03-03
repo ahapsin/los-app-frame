@@ -2,14 +2,14 @@
   <div class="flex flex-col gap-1">
     <div v-for="menu in props.menus" :key="menu.menuid">
       <router-link to="/" v-if="menu.menuitem.labelmenu === 'home'">
-        <div class="flex gap-2  rounded-xl p-2 w-full hover:bg-pr-500 hover:text-white'"
+        <div class="flex gap-2  rounded-xl  w-full hover:bg-pr-500 hover:text-white'"
           :class="$route.name === 'landing' ? 'bg-pr text-white font-bold' : 'bg-white'">
           <v-icon name="bi-grid" />
           DASHBOARD
         </div>
       </router-link>
       <div v-else>
-        <small class="text-pr">{{ menu.menuitem.labelmenu.toUpperCase() }}</small>
+        <small class="text-gray-400 font-semibold">{{ menu.menuitem.labelmenu.toUpperCase() }}</small>
       </div>
       <div v-for="submenu in [...menu.menuitem.submenu].sort((a, b) => a.sublabel.localeCompare(b.sublabel))" class="py-1" :key="submenu">
         <router-link :to="`${menu.menuitem.routename}${submenu.subroute}`" v-slot="{ isActive }" @click="handleStart">
@@ -17,9 +17,9 @@
             width < 620
               ? (sideMenu.sideEffect = !sideMenu.sideEffect)
               : handleStart
-            " :class="isActive ? 'bg-pr text-white font-semibold' : 'hover:bg-pr-500 hover:text-white'">
-            <v-icon :name="submenu.leading[0]" />
-            {{ submenu.sublabel?.toUpperCase() }}
+            " :class="isActive ? 'bg-[#f1f1f1] text-pr font-semibold' : 'text-gray-400 hover:bg-[#f1f1f1] hover:text-pr'">
+              <v-icon :name="submenu.leading[0]" style="stroke-width: 3;"/>
+            <span class="font-semibold capitalize" :class="isActive ? 'text-[#000000]':'text-gray-500'">{{ submenu.sublabel }}</span>
           </div>
         </router-link>
       </div>
@@ -130,8 +130,8 @@
 import { useWindowSize } from "@vueuse/core";
 import { useLoadingBar } from "naive-ui";
 import { ref } from "vue";
+
 import { useSidebar } from "../../stores/sidebar";
-const appAccentColor = import.meta.env.VITE_APP_ACCENT_COLOR;
 const { width } = useWindowSize();
 const sideMenu = useSidebar();
 
@@ -141,6 +141,7 @@ const handleStart = () => {
   loadingBar.start();
   disabledRef.value = false;
 };
+const emit = defineEmits(["route-changed"]);
 const props = defineProps({
   menus: {
     type: Object,

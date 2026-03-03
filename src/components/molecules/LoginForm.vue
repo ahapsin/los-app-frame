@@ -1,5 +1,5 @@
 <template>
-    <div class="w-full border md:bg-white h-full md:h-fit p-10 md:rounded-xl shadow-xl">
+    <div class="w-full md:bg-white h-full md:h-fit p-10 md:rounded-xl">
         <n-form ref="formRef" :model="dynamicForm">
             <div class="flex md:flex-row gap-4 items-center pb-8">
                 <img :src="applogo" alt="logo_company" class="h-14 md:h-16 ">
@@ -24,7 +24,7 @@
                     @click="handleLogin">
                     Login
                 </n-button>
-                <div class="flex justify-center mt-4 text-sm">
+                <div class="flex justify-center mt-4 text-sm text-pr">
                     <n-text>v. {{ appVersion }}</n-text>
                 </div>
             </div>

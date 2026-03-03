@@ -1,5 +1,5 @@
 <template>
-    <div class="pt-4">
+    <div>
         <n-space vertical>
             <n-card :class="`shadow-lg`" :title="`Tabel ${$route.name}`" :segmented="true" size="small">
                 <template #header-extra>
