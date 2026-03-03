@@ -15,7 +15,6 @@
                 </div>
               </n-space>
             </div>
-            n-input
             <SideMenu />
           </div>
         </n-scrollbar>
