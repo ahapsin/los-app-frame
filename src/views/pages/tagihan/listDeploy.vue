@@ -23,11 +23,12 @@
                 <n-card :class="`shadow-lg`" embedded title="Daftar Tagihan" size="small" :segmented="true">
                     <template #header-extra>
                         <div class="flex gap-2 pb-4">
-                            <n-input clearable v-model:value="boxSearch" placeholder="cari" class="max-w-sm">
+                            <n-input clearable v-model:value="boxSearch" placeholder="cari" class="max-w-sm" v-if="!filterAddition">
                                 <template #suffix>
                                     <v-icon name="bi-search"></v-icon>
                                 </template>
                             </n-input>
+                            <n-button circle secondary @click="filterAddition=!filterAddition"><v-icon name="bi-filter"></v-icon></n-button>
                             <n-button type="success" secondary @click="exportToExcel(filteredDataList)"
                                 :disabled="isLoading">
                                 <template #icon>
@@ -37,6 +38,16 @@
                             </n-button>
                         </div>
                     </template>
+                    <div v-if="filterAddition" class="flex gap-2 pb-2">
+                        <n-input v-model:value="additionalFilter.cabang" placeholder="Cabang" clearable />
+                        <n-input v-model:value="additionalFilter.noKontrak" placeholder="No Kontrak" clearable />
+                        <n-input v-model:value="additionalFilter.cycleAwal" placeholder="Cycle Awal" clearable />
+                        <n-input v-model:value="additionalFilter.nBot" placeholder="NBOT" clearable />
+                        <n-input v-model:value="additionalFilter.kecamatan" placeholder="Kecamatan" clearable />
+                        <n-input v-model:value="additionalFilter.desa" placeholder="Desa" clearable />
+
+                        <n-button secondary @click="resetAdditionalFilter" type="error">Reset</n-button>
+                    </div> 
                     <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                         @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
@@ -73,7 +84,14 @@ import { saveAs } from 'file-saver';
 const me = useMeStore();
 const message = useMessage();
 const loadingBar = useLoadingBar();
-
+const filterAddition = ref(false);
+const additionalFilter = reactive({
+    cabang: "",
+    noKontrak: "",
+    cycleAwal: "",
+    desa: "",
+    kecamatan: ""
+});
 const modalAssign = ref(false);
 const assignTo = ref(null);
 const pagination = reactive({
@@ -144,44 +162,29 @@ const columnBebanTagih = reactive([
         key: "CYCLE AWAL",
         sorter: "default",
         width: 150,
-        filter: true,
-        filterMultiple: true,
-        filterOptions: [],
     },
     {
         title: "NBOT",
         key: "NBOT",
         sorter: "default",
-        filter: true,
-        filterMultiple: true,
-        filterOptions: [],
         width: 110,
+    },{
+        title: "KEC",
+        key: "KECAMATAN",
+        sorter: "default",
+        width: 150,
     },
     {
         title: "DESA",
         key: "KELURAHAN",
         sorter: "default",
         width: 150,
-        filter: true,
-        filterMultiple: true,
-        filterOptions: [],
     },
-    {
-        title: "KEC",
-        key: "KECAMATAN",
-        sorter: "default",
-        filter: true,
-        filterMultiple: true,
-        filterOptions: [],
-        width: 150,
-    },
+
     {
         title: "MCF",
         key: "SURVEYOR",
         sorter: "default",
-        filter: true,
-        filterMultiple: true,
-        filterOptions: [],
         width: 150,
     }, {
         title: "ANGSURAN KE",
@@ -307,12 +310,6 @@ const getList = async () => {
             }
         };
         setFilterOptions("NAMA CABANG");
-        setFilterOptions("NBOT");
-        setFilterOptions("CYCLE AWAL");
-        setFilterOptions("KECAMATAN");
-        setFilterOptions("KELURAHAN");
-        setFilterOptions("SURVEYOR");
-        setFilterOptions("SURVEYOR STATUS");
     }
 };
 
@@ -349,7 +346,7 @@ function handleCheck(rowKeys) {
 const filteredDataList = computed(() => {
     let filteredData = dataList.value;
 
-    // Terapkan filter untuk setiap kolom
+    // 🔹 Filter dari n-data-table
     for (const key in filterValue) {
         if (filterValue[key].length > 0) {
             filteredData = filteredData.filter((row) =>
@@ -358,7 +355,56 @@ const filteredDataList = computed(() => {
         }
     }
 
-    // Terapkan filter pencarian global jika ada
+    // 🔹 Filter tambahan manual
+    if (additionalFilter.cabang) {
+        filteredData = filteredData.filter(row =>
+            String(row["NAMA CABANG"] || "")
+                .toLowerCase()
+                .includes(additionalFilter.cabang.toLowerCase())
+        );
+    }
+
+    if (additionalFilter.noKontrak) {
+        filteredData = filteredData.filter(row =>
+            String(row["NO KONTRAK"] || "")
+                .toLowerCase()
+                .includes(additionalFilter.noKontrak.toLowerCase())
+        );
+    }
+
+    if (additionalFilter.cycleAwal) {
+        filteredData = filteredData.filter(row =>
+            String(row["CYCLE AWAL"] || "")
+                .toLowerCase()
+                .includes(additionalFilter.cycleAwal.toLowerCase())
+        );
+    }
+
+    if (additionalFilter.nBot) {
+        filteredData = filteredData.filter(row =>
+            String(row["NBOT"] || "")
+                .toLowerCase()
+                .includes(additionalFilter.nBot.toLowerCase())
+        );
+    }
+
+    if (additionalFilter.desa) {
+        filteredData = filteredData.filter(row =>
+            String(row["KELURAHAN"] || "")
+                .toLowerCase()
+                .includes(additionalFilter.desa.toLowerCase())
+        );
+    }
+
+    if (additionalFilter.kecamatan) {
+        filteredData = filteredData.filter(row =>
+            String(row["KECAMATAN"] || "")
+                .toLowerCase()
+                .includes(additionalFilter.kecamatan.toLowerCase())
+        );
+    }
+
+    // 🔹 Global search
     if (boxSearch.value) {
         const searchTerm = boxSearch.value.toLowerCase();
         filteredData = filteredData.filter((row) => {
@@ -395,6 +441,18 @@ const removeFilter = (key, valueToRemove) => {
             values.splice(index, 1);
         }
     }
+};
+
+const applyAdditionalFilter = () => {
+    pagination.page = 1; // reset ke page 1
+};
+
+const resetAdditionalFilter = () => {
+    additionalFilter.cabang = "";
+    additionalFilter.noKontrak = "";
+    additionalFilter.cycleAwal = "";
+    additionalFilter.desa = "";
+    additionalFilter.kecamatan = "";
 };
 onMounted(() => {
     getData();

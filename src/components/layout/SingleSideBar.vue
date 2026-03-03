@@ -13,14 +13,9 @@
                   <n-ellipsis style="max-width: 150px">{{ apptitle }}</n-ellipsis>
                   <span class="text-[10px]">v. {{ appVersion }}</span>
                 </div>
-
               </n-space>
             </div>
-            <!-- <div>
-              <n-select  filterable placeholder="Please select a song"
-                :options="options" />
-            </div> -->
-
+            n-input
             <SideMenu />
           </div>
         </n-scrollbar>
