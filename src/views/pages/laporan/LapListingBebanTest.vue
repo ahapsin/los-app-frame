@@ -136,14 +136,12 @@ const handleSubmit = async () => {
         !excluded.includes(c.nama?.toLowerCase())
       )
 
-      const promises = filteredBranch.map(cabang =>
-        grabAllSP({
-          ...basePayload,
-          cabang_id: cabang.id
-        })
-      )
-
-      await Promise.all(promises)
+      for (const cabang of filteredBranch) {
+  await grabAllSP({
+    ...basePayload,
+    cabang_id: cabang.id
+  })
+}
 
     } else {
 
