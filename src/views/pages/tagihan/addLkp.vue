@@ -17,9 +17,9 @@
                 <n-space vertical>
                     <n-form-item label="petugas">
                         <n-select v-model:value="assignTo" placeholder="pilih petugas" :options="me.me.cabang_nama === 'Head Office'
-                            ? _.filter(dataUser, { status:'Aktif' })
-                            : _.filter(dataUser, { cabang_nama: me.me.cabang_nama, status:'Aktif' })" value-field="username"
-                            label-field="nama" filterable :render-tag="renderSingleSelectTag"
+                            ? _.filter(dataUser, { status: 'Aktif' })
+                            : _.filter(dataUser, { cabang_nama: me.me.cabang_nama, status: 'Aktif' })"
+                            value-field="username" label-field="nama" filterable :render-tag="renderSingleSelectTag"
                             :render-label="renderLabel" @update:value="handleChangePetugas" />
                     </n-form-item>
                 </n-space>
@@ -41,6 +41,8 @@
                                 </n-button>
                             </div>
                         </template>
+                        <n-alert type="info" v-if="checkedRowKeys.length > 0" class="mb-2">{{ checkedRowKeys.length }}
+                            data dipilih</n-alert>
                         <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                             @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                             @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
@@ -54,7 +56,8 @@
             <n-alert type="info" v-if="checkedRowKeys.length === 0">Pilih data tagihan</n-alert>
             <n-alert type="info" v-else-if="assignTo === null">Pilih petugas</n-alert>
             <n-space v-else>
-                <n-button type="primary" @click="assignTagihan" :disabled="checkedRowKeys.length === 0" :loading="isLoading">
+                <n-button type="primary" @click="assignTagihan" :disabled="checkedRowKeys.length === 0"
+                    :loading="isLoading">
                     <template #icon>
                         <v-icon name="bi-plus-lg" />
                     </template>
@@ -68,7 +71,7 @@
         <div class="w-2/3">
             <n-card :class="`shadow-lg`" title="Hasil Kunjungan" :segmented="true" size="small">
                 <!-- <n-timeline>
-                
+
                             <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
                             <n-timeline-item type="info" title="Laporan Kunjungan" content="nasabah tidak ada dirumah"
                                 time="2018-04-03 20:46" line-type="dashed" />
@@ -190,13 +193,13 @@ const columnBebanTagih = reactive([
         width: 150,
         sorter: "default",
     }, {
-        title: "NO KONTRAK",
-        key: "no_kontrak",
+        title: "MCF",
+        key: "mcf",
         width: 150,
         sorter: "default",
     },
     {
-        title: "NAMA KOMSUMEN",
+        title: "NAMA KONSUMEN",
         key: "nama_customer",
         width: 200,
         sorter: "default",

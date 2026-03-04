@@ -122,6 +122,12 @@ const columnBebanTagih = reactive([
         sorter: "default",
     },
     {
+        title: "MCF",
+        key: "mcf",
+        width: 150,
+        sorter: "default",
+    },
+    {
         title: "NAMA KONSUMEN",
         key: "nama_customer",
         width: 200,
@@ -358,7 +364,7 @@ const pagination = reactive({
         <div class="w-2/3">
             <n-card :class="`shadow-lg`" title="Hasil Kunjungan" :segmented="true" size="small">
                 <!-- <n-timeline>
-                
+
                             <n-timeline-item content="Surat Ditugaskan ke  *nama petugas*" time="2018-04-03 20:46" />
                             <n-timeline-item type="info" title="Laporan Kunjungan" content="nasabah tidak ada dirumah"
                                 time="2018-04-03 20:46" line-type="dashed" />

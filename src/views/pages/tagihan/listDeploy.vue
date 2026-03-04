@@ -51,6 +51,7 @@
 
                         <n-button secondary @click="resetAdditionalFilter" type="error">Reset</n-button>
                     </div>
+                    <n-alert type="info" v-if="checkedRowKeys.length >0" class="mb-2" >{{ checkedRowKeys.length }} data dipilih</n-alert>
                     <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                         @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
