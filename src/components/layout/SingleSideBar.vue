@@ -5,8 +5,8 @@
         :collapsed="sideMenu.sideEffect ? true : false"
         class="absolute md:relative  z-20 shadow-xl md:shadow-none border-r max-h-full">
         <n-scrollbar>
-          <div class="relative px-2 z-10">
-            <div class="sticky sticky-top top-0 mb-2 p-2 bg-white">
+          <div class="relative px-2 z-20">
+            <div class="sticky sticky-top top-0 mb-2 p-2 bg-white z-50">
               <n-space class="bg-white">
                 <img class="h-6 md:h-6" :src="applogo" alt="logo_company" />
                 <div class="flex flex-col items-left justify-center">

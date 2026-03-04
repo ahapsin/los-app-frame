@@ -463,7 +463,7 @@ const routes = [
       {
         path: "beban_tagih",
         name: "Beban Tagih",
-        component: () =>
+        // component: () =>
           import("../views/pages/transaction/BebanTagihPage.vue"),
       },
       {
