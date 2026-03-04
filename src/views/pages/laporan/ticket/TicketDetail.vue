@@ -2,7 +2,7 @@
     <!-- ===== Detail Ticket ===== -->
     <div class="flex gap-4 flex-col md:flex-row">
         <div class="w-full border p-4 rounded-xl bg-white h-fit">
-            <n-descriptions label-placement="top" :column="2">
+            <n-descriptions label-placement="top" :column="3">
                 <n-descriptions-item label="Ticket No">
                     <n-text type="primary">{{ dataDetail.ticket_no }}</n-text>
                 </n-descriptions-item>
@@ -34,13 +34,16 @@
                 <n-descriptions-item label="Tanggal Dibuat">
                     {{ dataDetail.created_at }}
                 </n-descriptions-item>
-                <n-descriptions-item label="Judul" :span="2">
+                <n-descriptions-item label="Dibuat oleh">
+                    {{ dataDetail.created_by }}
+                </n-descriptions-item>
+                <n-descriptions-item label="Judul" :span="3">
                     <n-text strong>{{ dataDetail.title }}</n-text>
                 </n-descriptions-item>
-                <n-descriptions-item label="Deskripsi" :span="2">
+                <n-descriptions-item label="Deskripsi" :span="3">
                     {{ dataDetail.description }}
                 </n-descriptions-item>
-                <n-descriptions-item label="Lampiran" :span="2">
+                <n-descriptions-item label="Lampiran" :span="3">
                     <n-space v-if="dataDetail.lampiran">
                         <n-image v-for="i in dataDetail.lampiran" :key="i" :src="i" class="w-16 h-16" />
                     </n-space>

@@ -198,7 +198,16 @@ const ticketColumns = [
             );
         },
     },
-    { title: "Judul", key: "title", sorter: "default", },
+    {
+        title: "Dibuat Oleh", key: "created_by", sorter: "default", ellipsis: {
+            tooltip: true
+        }
+    },
+    {
+        title: "Judul", key: "title", sorter: "default", ellipsis: {
+            tooltip: true
+        }
+    },
     { title: "Kategori", key: "category", sorter: "default", },
     {
         title: "Prioritas",
