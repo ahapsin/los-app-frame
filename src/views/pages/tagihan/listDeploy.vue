@@ -23,12 +23,14 @@
                 <n-card :class="`shadow-lg`" embedded title="Daftar Tagihan" size="small" :segmented="true">
                     <template #header-extra>
                         <div class="flex gap-2 pb-4">
-                            <n-input clearable v-model:value="boxSearch" placeholder="cari" class="max-w-sm" v-if="!filterAddition">
+                            <n-input clearable v-model:value="boxSearch" placeholder="cari" class="max-w-sm"
+                                v-if="!filterAddition">
                                 <template #suffix>
                                     <v-icon name="bi-search"></v-icon>
                                 </template>
                             </n-input>
-                            <n-button circle secondary @click="filterAddition=!filterAddition"><v-icon name="bi-filter"></v-icon></n-button>
+                            <n-button circle secondary @click="filterAddition = !filterAddition"><v-icon
+                                    name="bi-filter"></v-icon></n-button>
                             <n-button type="success" secondary @click="exportToExcel(filteredDataList)"
                                 :disabled="isLoading">
                                 <template #icon>
@@ -45,9 +47,10 @@
                         <n-input v-model:value="additionalFilter.nBot" placeholder="NBOT" clearable />
                         <n-input v-model:value="additionalFilter.kecamatan" placeholder="Kecamatan" clearable />
                         <n-input v-model:value="additionalFilter.desa" placeholder="Desa" clearable />
+                        <n-input v-model:value="additionalFilter.mcf" placeholder="MCF" clearable />
 
                         <n-button secondary @click="resetAdditionalFilter" type="error">Reset</n-button>
-                    </div> 
+                    </div>
                     <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                         @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
@@ -90,7 +93,8 @@ const additionalFilter = reactive({
     noKontrak: "",
     cycleAwal: "",
     desa: "",
-    kecamatan: ""
+    kecamatan: "",
+    mcf: ""
 });
 const modalAssign = ref(false);
 const assignTo = ref(null);
@@ -141,9 +145,6 @@ const columnBebanTagih = reactive([
         key: "NAMA CABANG",
         width: 150,
         sorter: "default",
-        filter: true,
-        filterMultiple: true,
-        filterOptions: [],
     },
     {
         title: "NO KONTRAK",
@@ -162,13 +163,16 @@ const columnBebanTagih = reactive([
         key: "CYCLE AWAL",
         sorter: "default",
         width: 150,
+        filter: true,
+        filterMultiple: true,
+        filterOptions: [],
     },
     {
         title: "NBOT",
         key: "NBOT",
         sorter: "default",
         width: 110,
-    },{
+    }, {
         title: "KEC",
         key: "KECAMATAN",
         sorter: "default",
@@ -310,6 +314,7 @@ const getList = async () => {
             }
         };
         setFilterOptions("NAMA CABANG");
+        setFilterOptions("CYCLE AWAL");
     }
 };
 
@@ -341,12 +346,8 @@ const assignTagihan = async () => {
 function handleCheck(rowKeys) {
     checkedRowKeys.value = rowKeys;
 }
-
-// Tambahkan computed property untuk data yang difilter
 const filteredDataList = computed(() => {
     let filteredData = dataList.value;
-
-    // 🔹 Filter dari n-data-table
     for (const key in filterValue) {
         if (filterValue[key].length > 0) {
             filteredData = filteredData.filter((row) =>
@@ -354,8 +355,6 @@ const filteredDataList = computed(() => {
             );
         }
     }
-
-    // 🔹 Filter tambahan manual
     if (additionalFilter.cabang) {
         filteredData = filteredData.filter(row =>
             String(row["NAMA CABANG"] || "")
@@ -404,7 +403,13 @@ const filteredDataList = computed(() => {
         );
     }
 
-    // 🔹 Global search
+    if (additionalFilter.mcf) {
+        filteredData = filteredData.filter(row =>
+            String(row["SURVEYOR"] || "")
+                .toLowerCase()
+                .includes(additionalFilter.mcf.toLowerCase())
+        );
+    }
     if (boxSearch.value) {
         const searchTerm = boxSearch.value.toLowerCase();
         filteredData = filteredData.filter((row) => {
@@ -416,7 +421,25 @@ const filteredDataList = computed(() => {
 
     return filteredData;
 });
-// A computed property to get only the filters that have values
+
+watch(filteredDataList, (newData) => {
+    const uniqueValues = (key) => {
+        return [...new Set(newData.map(item => item[key]).filter(Boolean))];
+    };
+
+    const setFilterOptions = (key) => {
+        const col = columnBebanTagih.find(c => c.key === key);
+        if (col) {
+            col.filterOptions = uniqueValues(key).map(val => ({
+                label: val,
+                value: val
+            }));
+        }
+    };
+
+    setFilterOptions("NAMA CABANG");
+    setFilterOptions("CYCLE AWAL");
+});
 const activeFilters = computed(() => {
     const active = {};
     for (const key in filterValue) {
@@ -426,13 +449,9 @@ const activeFilters = computed(() => {
     }
     return active;
 });
-
-// Check if there are any active filters to show
 const hasActiveFilters = computed(() => {
     return Object.keys(activeFilters.value).length > 0;
 });
-
-// Function to remove a single filter tag
 const removeFilter = (key, valueToRemove) => {
     const values = filterValue[key];
     if (values) {
@@ -453,6 +472,7 @@ const resetAdditionalFilter = () => {
     additionalFilter.cycleAwal = "";
     additionalFilter.desa = "";
     additionalFilter.kecamatan = "";
+    additionalFilter.mcf = "";
 };
 onMounted(() => {
     getData();
