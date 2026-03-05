@@ -53,7 +53,7 @@
         <n-card :class="`shadow-lg`" class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
             <template #header-extra>
                 <n-space align="center">
-                    
+
                     <!-- <n-button size="small" quaternary type="info" @click="handleInquiry()">
                         <template #icon>
                             <v-icon name="bi-list" />
@@ -79,6 +79,10 @@
                         <small class="text-reg">NO SURAT</small>
                         <n-text strong class="text-md">{{ bodyDetail.no_surat }}</n-text>
                     </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">CABANG</small>
+                        <n-text strong class="text-md">{{ bodyDetail.cabang }}</n-text>
+                    </div>
 
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]" v-if="bodyDetail?.no_lkp">
                         <small class="text-reg">NO LKP</small>
@@ -95,12 +99,20 @@
                         <n-text strong class="text-md">{{ bodyDetail.nama_customer }}</n-text>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Tgl Bayar</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_bayar }}</n-ellipsis>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Tgl Jatuh Tempo</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_jatuh_tempo }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
-                        <small class="text-reg">Cycle</small>
+                        <small class="text-reg">Cycle Awal</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.cycle_awal }}</n-ellipsis>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Cycle Akhir</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.cycle_akhir }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran ke</small>
@@ -126,6 +138,10 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">MCF</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.mcf }}</n-ellipsis>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">PIC</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.nama_pic }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">CATATAN SURVEYOR</small>

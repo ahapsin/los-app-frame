@@ -127,8 +127,8 @@
                 </n-space>
             </template>
             <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
-                <n-watermark :content="apptitle" cross selectable :font-size="16" :line-height="16" :width="192"
-                    :height="128" :x-offset="12" :y-offset="28" :rotate="-15">
+                <n-watermark :content="(printCount - bodyModal.print_ke)<=2 ?apptitle:'COPY COPY'" cross selectable :font-size="16" :line-height="5" :width="200"
+                    :height="128" :x-offset="12" :y-offset="28" :rotate="-12">
                     <div class="p-2">
                         <div class="flex items-center gap-2 pb-2 justify-between border-b border-dashed border-black">
                             <div class="flex gap-2 items-center">

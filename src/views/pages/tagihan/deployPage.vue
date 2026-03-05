@@ -128,6 +128,12 @@ function onFilterChange(newFilter) {
 
 const columnBebanTagih = reactive([
     {
+        title: "CABANG",
+        key: "cabang",
+        width: 150,
+        sorter: "default",
+    },
+    {
         title: "NO SURAT",
         key: "no_surat",
         width: 150,
@@ -162,17 +168,16 @@ const columnBebanTagih = reactive([
         sorter: "default",
     },
     {
-        title: "DESA",
-        key: "desa",
+        title: "KEC",
+        key: "kec",
         sorter: "default",
         filter: true,
         filterMultiple: true,
         filterOptions: [],
         width: 150,
-    },
-    {
-        title: "KEC",
-        key: "kec",
+    }, {
+        title: "DESA",
+        key: "desa",
         sorter: "default",
         filter: true,
         filterMultiple: true,
@@ -191,6 +196,15 @@ const columnBebanTagih = reactive([
     {
         title: "CYCLE",
         key: "cycle_awal",
+        sorter: "default",
+        width: 150,
+        filter: true,
+        filterMultiple: true,
+        filterOptions: [],
+    },
+    {
+        title: "NBOT",
+        key: "nbot",
         sorter: "default",
         width: 150,
         filter: true,

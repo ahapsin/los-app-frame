@@ -1,8 +1,11 @@
 <template>
     <div>
-        <n-input @click="showModal = !showModal" placeholder="cari" class="z-10">
+        <n-input @click="showModal = !showModal" placeholder="cari" class="z-10" readonly>
+            <template #prefix>
+                <v-icon name="bi-search"></v-icon>
+            </template>
             <template #suffix>
-                <n-tag size="small" round>Ctrl K</n-tag>
+                <n-tag size="small" round disabled>Ctrl+Space</n-tag>
             </template>
         </n-input>
         <DisclosMenu :menus="listMenu.response">

@@ -6,10 +6,16 @@ import AddLkp from './addLkp.vue';
 import { NButton } from 'naive-ui';
 import moment from 'moment'
 import { useSearch } from '../../../helpers/searchObject';
+import { useVueToPrint } from 'vue-to-print';
+import { nextTick } from 'vue';
 
 
 
 const modalAdd = ref(false);
+const modalPrint = ref(false);
+const printRef = ref();
+
+
 const addDeploy = () => {
     modalAdd.value = true;
 }
@@ -21,6 +27,25 @@ const handleDetail = (e) => {
     // console.log(e.no_lkp);
 
 }
+
+
+
+const { handlePrint } = useVueToPrint({
+    content: printRef,
+    documentTitle: "cetak LKP",
+});
+
+const printAction = async () => {
+    modalPrint.value = true;
+}
+watch(modalPrint, async (val) => {
+    if (val) {
+        await nextTick()
+        setTimeout(() => {
+            handlePrint()
+        }, 300) // beri delay kecil supaya modal fully rendered
+    }
+})
 
 const getDetail = async (e) => {
     isLoading.value = true;
@@ -134,14 +159,14 @@ const columnBebanTagih = reactive([
         sorter: "default",
     },
     {
-        title: "DESA",
-        key: "desa",
+        title: "KEC",
+        key: "kec",
         sorter: "default",
         width: 150,
     },
     {
-        title: "KEC",
-        key: "kec",
+        title: "DESA",
+        key: "desa",
         sorter: "default",
         width: 150,
     },
@@ -158,12 +183,21 @@ const columnBebanTagih = reactive([
         width: 150,
     },
     {
+        title: "AMBC TOTAL",
+        key: "ambc_total",
+        sorter: "default",
+        width: 150,
+        render(row) {
+            return h("div", row.ambc_total?.toLocaleString())
+        }
+    },
+    {
         title: "ANGSURAN KE",
         key: "angusran_ke",
         sorter: "default",
         width: 150,
     },
-     {
+    {
         title: "TTL ANGSURAN ",
         key: "total_ambc",
         sorter: "default",
@@ -329,6 +363,14 @@ const pagination = reactive({
     </n-modal>
     <n-modal v-model:show="modalDetail">
         <n-card :class="`shadow-lg`" class="w-4/5" title="Detail LKP" size="small" :segmented="true">
+            <template #header-extra>
+                <n-button @click="printAction">
+                    <template #icon>
+                        <v-icon name="bi-printer"></v-icon>
+                    </template>
+                    Cetak
+                </n-button>
+            </template>
             <div>
                 <n-card :class="`shadow-lg`" class="mb-2" size="small" embedded>
                     <div class="flex  gap-4">
@@ -355,10 +397,49 @@ const pagination = reactive({
                     </div>
                 </n-card :class="`shadow-lg`">
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
-                    @update:filters="onFilterChange" size="small" :loading="isLoading" :pagination="pagination"
-                     />
+                    @update:filters="onFilterChange" size="small" :loading="isLoading" :pagination="pagination" />
             </div>
         </n-card :class="`shadow-lg`">
+    </n-modal>
+    <n-modal v-model:show="modalPrint">
+        <n-card class="w-[33cm]">
+            <div ref="printRef" class="m-[0.5cm]">
+                <div class="flex text-[10px] gap-4 border-b ">
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">No LKP</small>
+                        <n-text strong class="text-md">{{ bodyModalDetail.no_lkp }}</n-text>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Petugas</small>
+                        <n-text strong class="text-md">{{ bodyModalDetail.petugas }}</n-text>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Tanggal</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyModalDetail.tanggal }}</n-ellipsis>
+                    </div>
+                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                        <small class="text-reg">Jumlah Surat Tagih</small>
+                        <n-text strong class="text-md">{{ bodyModalDetail.jml_surat_tgh }}</n-text>
+                    </div>
+                </div>
+                <table class="text-[10px]" width="100%">
+                    <thead>
+                        <tr>
+                            <th v-for="h in columnBebanTagih" :key="h.key" class="border-b">
+                                {{ h.title }}
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="(b, index) in bodyModalDetail.details" :key="index">
+                            <td v-for="col in columnBebanTagih" :key="col.key" class="border-b">
+                                {{ b[col.key] }}
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </n-card>
     </n-modal>
     <n-modal v-model:show="modalHistorySurat">
         <div class="w-2/3">

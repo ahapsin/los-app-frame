@@ -376,6 +376,12 @@ const routes = [
           import("../views/pages/master/blacklist/BlacklistPage.vue"),
       },
       {
+        path: "counter_print_reset",
+        name: "reset print",
+        component: () =>
+          import("../views/pages/master/print/ResetCounterPage.vue"),
+      },
+      {
         path: "customer",
         name: "customer",
         component: () =>
