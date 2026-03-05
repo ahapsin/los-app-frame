@@ -14,6 +14,8 @@ import { nextTick } from 'vue';
 const modalAdd = ref(false);
 const modalPrint = ref(false);
 const printRef = ref();
+const filterDate = ref(null)
+const showFilterDate = ref(false);
 
 
 const addDeploy = () => {
@@ -25,7 +27,15 @@ const handleDetail = (e) => {
     modalDetail.value = true;
     getDetail(e.no_lkp);
     // console.log(e.no_lkp);
+}
 
+const disableOtherMonth = (ts) => {
+    const currentMonth = moment().month()
+    const currentYear = moment().year()
+
+    const date = moment(ts)
+
+    return date.month() !== currentMonth || date.year() !== currentYear
 }
 
 
@@ -279,8 +289,24 @@ const getHistorySurat = async (e) => {
 
 const searchBox = ref();
 const showData = computed(() => {
-    return useSearch(dataList.value, searchBox.value);
-});
+    let data = useSearch(dataList.value, searchBox.value)
+
+    if (!filterDate.value) {
+        const currentMonth = moment().format("MM")
+        const currentYear = moment().format("YYYY")
+
+        return data.filter(item => {
+            const m = moment(item.tanggal)
+            return m.format("MM") === currentMonth && m.format("YYYY") === currentYear
+        })
+    }
+
+    const selectedDate = moment(filterDate.value).format("YYYY-MM-DD")
+
+    return data.filter(item => {
+        return moment(item.tanggal).format("YYYY-MM-DD") === selectedDate
+    })
+})
 
 onMounted(() => {
     getList();
@@ -310,7 +336,7 @@ function timeAgo(dateString) {
 }
 
 const pagination = reactive({
-    pageSize: 5,
+    pageSize: 10,
     showSizePicker: true,
     pageSizes: [10, 20, 30, 50, 100],
     onChange: (page) => {
@@ -333,6 +359,14 @@ const pagination = reactive({
                         <v-icon name="bi-search"></v-icon>
                     </template>
                 </n-input>
+                <n-date-picker v-model:value="filterDate" type="date" format="yyyy-MM-dd" clearable
+                    v-if="showFilterDate" />
+                <n-button @click="showFilterDate = !showFilterDate" circle secondary>
+                    <template #icon>
+                        <v-icon name="bi-calendar" v-if="!showFilterDate"></v-icon>
+                        <v-icon name="bi-x" v-else></v-icon>
+                    </template>
+                </n-button>
                 <n-button type="primary" secondary link @click="modalAdd = true">
                     <template #icon>
                         <v-icon name="bi-plus-lg"></v-icon>
@@ -345,12 +379,12 @@ const pagination = reactive({
                     </template>
                     Export Excel
                 </n-button>
-                <n-button quaternary circle @click="getList">
+                <!-- <n-button quaternary circle @click="getList">
                     <template #icon>
                         <v-icon name="bi-arrow-clockwise"></v-icon>
                     </template>
 
-                </n-button>
+                </n-button> -->
             </n-space>
         </template>
         <n-data-table :columns="columnDeploy" :data="showData" :loading="isLoading" size="small"
