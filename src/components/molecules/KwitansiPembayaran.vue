@@ -63,10 +63,10 @@
 
                             <div class="flex flex-col">
                                 <small class="text-reg">KEMBALIAN</small>
-                               
+
                                     <n-text strong class="text-md"> {{ bodyModal?.kembalian.toLocaleString("US")
                                         }}</n-text>
-                                
+
                             </div>
 
                         </div>
@@ -123,7 +123,7 @@
                                     <th class="border border-black p-1"> POKOK</th>
                                     <th class="border border-black p-1"> BUNGA</th>
                                     <th class="border border-black p-1"> DENDA</th>
-                                    
+
                                     <!--              <th class="border border-black">Jumlah</th>-->
                                 </tr>
                                 <tr v-for="angs in bodyModal?.struktur" :key="angs.id">
@@ -133,7 +133,7 @@
                                     <td class="border text-center border-black">{{ angs?.bayar_bunga.toLocaleString() }}</td>
                                     <td class="border text-center border-black">{{ angs?.bayar_denda.toLocaleString() }}</td>
                                 </tr>
-                         
+
                             </tbody>
                         </table>
                         <table width="100%" class="border border-black" v-if="bodyModal?.payment_type === 'angsuran'">
@@ -200,6 +200,7 @@
 import { useMessage } from "naive-ui";
 import { useApi } from "../../helpers/axios.js";
 import router from "../../router/";
+import { useVueToPrint } from "vue-to-print";
 const prop = defineProps({
     id: String,
     type: String,
