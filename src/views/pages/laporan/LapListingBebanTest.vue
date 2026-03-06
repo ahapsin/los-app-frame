@@ -1,7 +1,6 @@
 <template>
-  <n-card :class="`shadow-lg`" title="Laporan Listing Beban" :segmented="true" size="small">
+  <n-card title="Laporan Listing Beban" :segmented="true" size="small">
     <div>
-
       <n-space vertical :size="12" class="pt-4">
         <n-space>
           <n-form-item label="TANGGAL AKHIR">
@@ -9,20 +8,19 @@
           </n-form-item>
           <n-form-item label="POS" v-if="me.me.cabang_nama === 'Head Office'">
             <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama" value-field="id"
-              :default-value="defBranch" :options="dataBranch" v-model:value="selectBranch" />
+              :default-value="defBranch" :options="dataBranch" @update:value="handleUpdateBranch" />
           </n-form-item>
           <n-form-item>
-            <n-button @click="handleSubmit" type="primary" :disabled="disabledButton">
+            <n-button @click="handleSubmit" type="primary" :disabled="disbaledButton">
               Cari
             </n-button>
           </n-form-item>
           <n-form-item>
-            <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
-              :name="`Listing_Beban_${selectedBranch?.nama ? selectedBranch.nama : me.me.cabang_nama}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false"> -->
-            <n-button type="primary" secondary @click="exportToExcel(convertEmptyToNull(dataListBan))"
-              v-if="dataListBan.length != 0">Download</n-button>
-            <!-- <n-button type="primary" secondary :disabled="ctrDownload">Download</n-button> -->
-            <!-- </json-excel> -->
+            <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
+              :name="`Listing_Beban_${selectedBranch?.nama ? selectedBranch.nama : me.me.cabang_nama}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false">
+              <!--<n-button type="primary" secondary @click="exportToExcel" :disabled="ctrDownload">Download</n-button>-->
+              <n-button type="primary" secondary :disabled="ctrDownload">Download</n-button>
+            </json-excel>
           </n-form-item>
         </n-space>
         <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
@@ -32,14 +30,16 @@
           :pagination="{ pageSize: 10 }" :loading="loadingData" />
       </n-space>
     </div>
-  </n-card :class="`shadow-lg`">
+  </n-card>
 </template>
 <script setup>
+import { ref, onMounted, computed } from "vue";
 import moment from "moment";
+import JsonExcel from "vue-json-excel3";
 import { useLoadingBar, useMessage } from "naive-ui";
-import { computed, onMounted, ref } from "vue";
-import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
+import { useApi } from "../../../helpers/axios.js";
+
 import * as XLSX from "xlsx";
 import { useSearch } from "../../../helpers/searchObject";
 
@@ -48,24 +48,13 @@ const me = useMeStore();
 const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
-const disabledButton = ref(false);
-const percentage = ref(0);
 
 const selectedBranch = ref();
 const handleUpdateBranch = (value, option) => {
   selectedBranch.value = option;
 }
 
-function convertEmptyToNull(data) {
-  return data.map(item => {
-    const newItem = {};
-    for (const key in item) {
-      // if value is an empty string, set to null
-      newItem[key] = item[key] === "" ? null : item[key];
-    }
-    return newItem;
-  });
-}
+
 const periodeTarikan = computed(() => {
   const range = moment(rangeDate.value, 'MMYYYY').format('YYYYMM');
   const rangeMonth = moment(rangeDate.value, 'MMYYYY').format('MM');
@@ -94,11 +83,11 @@ const getBranch = async () => {
     if (me.me?.cabang_nama != "Head Office") {
       selectBranch.value = me.me.cabang_id;
     } else {
-      selectBranch.value = "semua";
+      selectBranch.value = "SEMUA CABANG";
       dataBranch.value = response.data.response;
       dataBranch.value.unshift({
-        id: "semua",
-        nama: "semua"
+        id: "",
+        nama: "SEMUA CABANG"
       });
     }
   }
@@ -106,86 +95,32 @@ const getBranch = async () => {
 const rangeDate = ref();
 let messageReactive = null;
 const loadingBar = useLoadingBar();
-
-const handleSubmit = async () => {
-  if (!rangeDate.value) {
-    message.warning("Pilih periode dulu")
-    return
-  }
-
-  dataListBan.value = []
-  ctrDownload.value = true
-  percentage.value = 0
-  loadingData.value = true
-
-  let basePayload = {
+const handleSubmit = () => {
+  let a = {
     dari: rangeDate.value,
-    cabang_id: null
+    cabang_id: selectedBranch.value?.id ? selectedBranch.value.id : me.me.cabang_id,
   }
-
-  messageReactive = message.loading("Memuat data listing beban...", { duration: 0 })
-
-  try {
-
-    // ====== JIKA SEMUA CABANG ======
-    if (selectBranch.value === "semua") {
-
-      const excluded = ["semua", "it", "head office"]
-
-      const filteredBranch = dataBranch.value.filter(c =>
-        !excluded.includes(c.nama?.toLowerCase())
-      )
-
-      for (const cabang of filteredBranch) {
-  await grabAllSP({
-    ...basePayload,
-    cabang_id: cabang.id
-  })
-}
-
-    } else {
-
-      // ====== JIKA SATU CABANG ======
-      await grabAllSP({
-        ...basePayload,
-        cabang_id: selectBranch.value
-      })
-    }
-
-  } catch (err) {
-    message.error("Terjadi kesalahan saat mengambil data")
-  } finally {
-    loadingData.value = false
-    messageReactive?.destroy()
-    ctrDownload.value = false
-  }
-}
-
-
-
-const grabAllSP = async (payload) => {
-  await grabListBan(payload, 'sp1')
-  await grabListBan(payload, 'sp2')
-  await grabListBan(payload, 'sp3')
-  await grabListBan(payload, 'sp4')
-  await grabListBan(payload, 'listBanTest')
+  messageReactive = message.loading('memuat data listing beban', { duration: 0 });
+  grabListBan(a);
 }
 const dataListBan = ref([]);
 const loadingData = ref(false);
 const timer = ref(60);
+const disbaledButton = ref(false);
 const ctrDownload = ref(true);
-const callSp = async (e, uri) => {
+const grabListBan = async (e) => {
 
   loadingData.value = true;
   let userToken = localStorage.getItem("token");
   const response = await useApi({
     method: "POST",
-    api: uri,
+    api: "listBanTest",
     data: e,
     token: userToken,
   });
   if (!response.ok) {
     messageReactive.destroy();
+    disbaledButton.value = true;
     var interval;
     interval = setInterval(() => {
       if (timer.value > 0) {
@@ -198,31 +133,15 @@ const callSp = async (e, uri) => {
     }, 1000);
     messageReactive = message.loading(() => (`data listban sedang sibuk mencoba ulang dalam ${timer.value} s`), { duration: 60000 });
   } else {
-    percentage.value += 20;
+    messageReactive.destroy();
+    messageReactive = null;
+    disbaledButton.value = false;
+    dataListBan.value = response.data;
+    loadingData.value = false;
+    ctrDownload.value = false;
   }
 
 }
-const grabListBan = async (payload, uri) => {
-
-  const response = await useApi({
-    method: "POST",
-    api: uri,
-    data: payload,
-    token: userToken,
-  });
-
-  if (!response.ok) {
-    message.error(`Gagal ambil data dari ${uri}`)
-    return
-  }
-
-  if (Array.isArray(response.data)) {
-    // 🔥 GABUNG DATA (tidak overwrite)
-    dataListBan.value.push(...response.data)
-  }
-}
-
-
 const convertObjectToArray = (obj) => {
   if (!Array.isArray(obj) || obj.length === 0) {
     return [];
@@ -231,118 +150,19 @@ const convertObjectToArray = (obj) => {
   return keys.map(key => ({ title: key, key: key }));
 }
 
-// const exportToExcel = () => {
-//   const headTable = [
-//     { pos: selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama, bulan: periodeTarikan.value },
-//   ];
-//   const bodyTable = dataListBan.value;
-//   const ws = XLSX.utils.json_to_sheet(headTable);
-//   const startRow = headTable.length + 4;
-//   XLSX.utils.sheet_add_json(ws, bodyTable, { origin: `A${startRow}` });
-//   const wb = XLSX.utils.book_new();
-//   XLSX.utils.book_append_sheet(wb, ws, "listing beban");
-//   // Write the workbook to an Excel file
-//   XLSX.writeFile(wb, `listing_beban_${selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
-// }
-
-const exportToExcel = (data) => {
-  // Validasi format tanggal MM/DD/YYYY dan eksistensinya
-  const isValidDate = (str) => {
-    const regex = /^(\d{2})\/(\d{2})\/(\d{4})$/;
-    const match = str.match(regex);
-    if (!match) return false;
-
-    const month = parseInt(match[1], 10);
-    const day = parseInt(match[2], 10);
-    const year = parseInt(match[3], 10);
-    const date = new Date(Date.UTC(year, month - 1, day));
-
-    return (
-      date.getUTCFullYear() === year &&
-      date.getUTCMonth() === month - 1 &&
-      date.getUTCDate() === day
-    );
-  };
-
-  // Deteksi kolom yang semua non-kosong isinya tanggal valid
-  const dateCandidateCounts = {};
-  const nonNullCounts = {};
-
-  data.forEach(row => {
-    Object.entries(row).forEach(([key, value]) => {
-      const isEmpty = value === null || value === undefined || value === '';
-      if (!isEmpty) {
-        nonNullCounts[key] = (nonNullCounts[key] || 0) + 1;
-        if ((typeof value === 'string' && isValidDate(value)) || value instanceof Date) {
-          dateCandidateCounts[key] = (dateCandidateCounts[key] || 0) + 1;
-        }
-      }
-    });
-  });
-
-  const potentialDateColumns = Object.keys(dateCandidateCounts).filter(key => {
-    return dateCandidateCounts[key] === nonNullCounts[key];
-  });
-
-  // Konversi string tanggal ke objek Date
-  const formattedData = data.map(row => {
-    const newRow = { ...row };
-    potentialDateColumns.forEach(col => {
-      const val = newRow[col];
-      if (typeof val === 'string' && isValidDate(val)) {
-        const [monthStr, dayStr, yearStr] = val.split('/');
-        const month = parseInt(monthStr, 10);
-        const day = parseInt(dayStr, 10);
-        const year = parseInt(yearStr, 10);
-        newRow[col] = new Date(Date.UTC(year, month - 1, day));
-      }
-    });
-    return newRow;
-  });
-
-  // Buat worksheet dan workbook
-  const ws = XLSX.utils.json_to_sheet(formattedData, { cellDates: true });
-
-  // Format tanggal di worksheet ke 'dd/mm/yyyy'
-  Object.keys(ws).forEach(cell => {
-    if (cell[0] === '!') return;
-    const val = ws[cell].v;
-    if (val instanceof Date && !isNaN(val.getTime())) {
-      ws[cell].t = 'd';
-      ws[cell].z = 'dd/mm/yyyy';
-    }
-  });
-
+const exportToExcel = () => {
+  const headTable = [
+    { pos: selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama, bulan: periodeTarikan.value },
+  ];
+  const bodyTable = dataListBan.value;
+  const ws = XLSX.utils.json_to_sheet(headTable);
+  const startRow = headTable.length + 4;
+  XLSX.utils.sheet_add_json(ws, bodyTable, { origin: `A${startRow}` });
   const wb = XLSX.utils.book_new();
-  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1');
-  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' });
-
-  // Ambil nama cabang dan periode dari variabel global (opsional)
-  const cabang = (typeof selectedBranch !== 'undefined' && selectedBranch?.value?.nama)
-    || (typeof me !== 'undefined' && me?.me?.cabang_nama)
-    || 'cabang';
-
-  const tanggal = typeof rangeDate !== 'undefined' ? rangeDate?.value : 'tanggal';
-  const periode = typeof periodeTarikan !== 'undefined' ? periodeTarikan?.value : 'periode';
-
-  const filename = `listing_beban_${cabang}_${tanggal}_${periode}.xlsx`.replace(/[^\w\d-_]+/g, '_');
-
-  // Download file langsung tanpa saveAs
-  const blob = new Blob([wbout], {
-    type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-  });
-  const url = URL.createObjectURL(blob);
-  const link = document.createElement('a');
-  link.href = url;
-  link.download = filename;
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
-  URL.revokeObjectURL(url);
-};
-
-
-
+  XLSX.utils.book_append_sheet(wb, ws, "listing beban");
+  // Write the workbook to an Excel file
+  XLSX.writeFile(wb, `listing_beban_${selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
+}
 const boxSearch = ref();
 const stack = ref()
 const showData = computed(() => {
