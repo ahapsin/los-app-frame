@@ -456,6 +456,11 @@ const routes = [
         component: () => import("../views/pages/laporan/LapPembayaran.vue"),
       },
       {
+        path: "laporan_kunjungan",
+        name: "Laporan Kunjungan",
+        component: () => import("../views/pages/laporan/LapKunjungan.vue"),
+      },
+      {
         path: "list_ban_test",
         name: "Listing Beban test",
         component: () =>

@@ -1,0 +1,213 @@
+<template>
+    <n-card :class="`shadow-lg`" content-style="padding: 0;" :segmented="{
+        content: true,
+        footer: 'soft',
+    }" size="small">
+        <template #header>Laporan Kunjungan
+        </template>
+        <div>
+            <div class="flex gap-2 p-4 bg-sc-50/50 border-b">
+                <n-form-item label="POS" class="w-full" v-if="me.me.cabang_nama === 'Head Office'">
+                    <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
+                        value-field="id" :default-value="defBranch" :options="dataBranch"
+                        v-model:value="selectBranch" />
+                </n-form-item>
+                <n-form-item label="TANGGAL" class="w-full">
+                    <n-date-picker v-model:formatted-value="rangeDate" :default-calendar-start-time="Date.now()"
+                        clearable start-placeholder="dari" type="daterange" end-placeholder="sampai"
+                        format="yyyy-MM-dd" />
+                </n-form-item>
+                <n-form-item class="w-full">
+                    <n-space>
+                        <n-button type="primary" @click="filterData" class="px-4"> Cari</n-button>
+                        <n-button type="primary" secondary @click="exportToExcel(listData.map(item => _.omit(item, ['PathFile'])))">Download</n-button>
+                    </n-space>
+                </n-form-item>
+            </div>
+            <div class="p-2 bg-white rounded-b-xl">
+                <n-data-table :columns="columnsKunjungan" :data="listData"
+                    :pagination="{ pageSize: 10 }" striped :loading="loadData" />
+            </div>
+        </div>
+    </n-card :class="`shadow-lg`">
+
+
+</template>
+<script setup>
+import _ from "lodash"
+import { NImage, NSpace, useMessage } from "naive-ui"
+import { useApi } from "../../../helpers/axios.js"
+import { useMeStore } from "../../../stores/me.js";
+import * as XLSX from 'xlsx'
+import { saveAs } from 'file-saver';
+const dataBranch = ref([]);
+const selectBranch = ref();
+const defBranch = ref('SEMUA CABANG');
+const userToken = localStorage.getItem("token");
+const loadingBranch = ref(false);
+const message = useMessage();
+const rangeDate = ref();
+const dynamicSearch = reactive({
+    cabang_id: computed(() => selectBranch.value),
+    no_transaksi: '',
+    atas_nama: '',
+    no_kontrak: '',
+    dari: null,
+});
+
+const columnsKunjungan = [
+    {
+        title: "Tanggal",
+        key: "TglVisit",
+        sorter: "default",
+    },
+    {
+        title: "Cabang",
+        key: "Cabang",
+        sorter: "default",
+    },
+    {
+        title: "Petugas",
+        key: "NamaMcf",
+        sorter: "default",
+    },
+    {
+        title: "Alamat",
+        key: "AlamatNasabah",
+        sorter: "default",
+    },
+    {
+        title: "No HP",
+        key: "TeleponNasaba",
+        sorter: "default",
+    },
+    {
+        title: "Kategori",
+        key: "StatusNasabah",
+        sorter: "default",
+    },
+    {
+        title: "Follow Up",
+        key: "NoKontrak",
+        sorter: "default",
+    },
+    {
+        title: "Ref / Sumber",
+        key: "SumberOrder",
+        sorter: "default",
+    },
+    {
+        title: "Keterangan",
+        key: "Keterangan",
+        sorter: "default",
+    },
+    {
+        title: "Lampiran",
+        key: "PathFile",
+        render(row) {
+            let images = row.PathFile
+
+            // normalize ke array
+            if (!Array.isArray(images)) {
+                if (!images) return "-"
+                images = [images]
+            }
+
+            return h(
+                NSpace,
+                { size: 4 },
+                () =>
+                    images.map((url) =>
+                        h(NImage, {
+                            src: url,
+                            width: 50,
+                            height: 50,
+                            objectFit: "cover",
+                            style: "border-radius: 6px"
+                        })
+                    )
+            )
+        }
+    }
+]
+
+
+const getBranch = async () => {
+    loadingBranch.value = true;
+    const response = await useApi({
+        method: "GET",
+        api: "cabang",
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        loadingBranch.value = false;
+
+        if (me.me.cabang_nama != "Head Office") {
+            defBranch.value = me.me.cabang_nama;
+            selectBranch.value = me.me.cabang_id;
+        } else {
+            selectBranch.value = "SEMUA CABANG";
+            dataBranch.value = response.data.response;
+            dataBranch.value.unshift({
+                id: "",
+                nama: "SEMUA CABANG"
+            });
+        }
+    }
+}
+
+
+const listData = ref([]);
+const loadData = ref(false);
+
+const getData = async () => {
+    loadData.value = true;
+    const response = await useApi({
+        method: "POST",
+        api: "VisitReports",
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        loadData.value = false;
+        listData.value = response.data;
+    }
+}
+const filterData = async () => {
+    let a = {
+        dari: rangeDate.value[0],
+        sampai: rangeDate.value[1],
+        cabang_id: selectBranch.value ? selectBranch.value : null
+    }
+    loadData.value = true;
+    const response = await useApi({
+        method: "POST",
+        data: a,
+        api: "VisitReports",
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        loadData.value = false;
+        listData.value = response.data;
+    }
+}
+
+const exportToExcel = (data) => {
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx')
+}
+const me = useMeStore();
+onMounted(() => {
+    getBranch();
+    getData();
+    me;
+});
+</script>
