@@ -64,6 +64,11 @@
                             <n-date-picker v-model:formatted-value="dynamicSearch.tanggal" :default-value="Date.now()"
                                 clearable format="yyyy-MM-dd" placeholder="TANGGAL" class="w-full" />
                         </n-form-item>
+                        <n-form-item label="POS" class="w-full" v-if="me.me.cabang_nama === 'Head Office'">
+                            <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
+                                value-field="id" :default-value="defBranch" :options="dataBranch"
+                                v-model:value="selectBranch" />
+                        </n-form-item>
 
                         <n-form-item class="w-full">
                             <n-button type="primary" @click="handleSearch" class="px-4"> Cari</n-button>
@@ -135,21 +140,19 @@ Klik atau seret file ke area ini untuk diunggah
 
 </template>
 <script setup>
-import { ref, reactive, onMounted, h, computed } from "vue";
-import { useApi } from "../../../../helpers/axios";
-import router from "../../../../router";
-import { useMessage, NIcon, NTag, NButton } from "naive-ui";
-import { useSearch } from "../../../../helpers/searchObject";
-import { useLoadingBar } from "naive-ui";
-
-const loadingBar = useLoadingBar();
 import {
-
-    ImageFilled as UploadIcon,
-
     FilterAltOutlined as FilterIcon,
+    ImageFilled as UploadIcon,
 } from "@vicons/material";
 import _ from "lodash";
+import { NButton, NIcon, NTag, useLoadingBar, useMessage } from "naive-ui";
+import { computed, h, onMounted, reactive, ref } from "vue";
+import { useApi } from "../../../../helpers/axios";
+import { useSearch } from "../../../../helpers/searchObject";
+import router from "../../../../router";
+import { useMeStore } from "../../../../stores/me";
+
+const loadingBar = useLoadingBar();
 
 
 const dynamicSearch = reactive({
@@ -173,6 +176,36 @@ const handleSelesai = () => {
     getData();
     showModal.value = false;
 };
+
+const loadingBranch = ref(false);
+const selectBranch = ref();
+const dataBranch = ref();
+const defBranch = ref();
+const getBranch = async () => {
+    loadingBranch.value = true;
+    const response = await useApi({
+        method: "GET",
+        api: "cabang",
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        loadingBranch.value = false;
+
+        if (me.me.cabang_nama != "Head Office") {
+            defBranch.value = me.me.cabang_nama;
+            selectBranch.value = me.me.cabang_id;
+        } else {
+            selectBranch.value = "SEMUA CABANG";
+            dataBranch.value = response.data.response;
+            dataBranch.value.unshift({
+                id: "",
+                nama: "SEMUA CABANG"
+            });
+        }
+    }
+}
 
 const findDocByType = (c, e) => {
     const docPath = ref(_.find(c, { TYPE: e }));
@@ -448,7 +481,7 @@ const getData = async () => {
     loadData.value = true;
     const response = await useApi({
         method: "GET",
-        api: `kunjungan_admin?no_order=${dynamicSearch.no_order == null ? '' : dynamicSearch.no_order}&nama=${dynamicSearch.atas_nama == null ? '' : dynamicSearch.atas_nama}&tgl_order=${dynamicSearch.tanggal == null ? '' : dynamicSearch.tanggal}`,
+        api: `kunjungan_admin?no_order=${dynamicSearch.no_order == null ? '' : dynamicSearch.no_order}&nama=${dynamicSearch.atas_nama == null ? '' : dynamicSearch.atas_nama}&tgl_order=${dynamicSearch.tanggal == null ? '' : dynamicSearch.tanggal}&cabang=${selectBranch.value}`,
         token: userToken,
     });
     if (!response.ok) {
@@ -462,7 +495,12 @@ const getData = async () => {
 const pagination = {
     pageSize: 10,
 };
-onMounted(() => getData());
+
+const me = useMeStore();
+onMounted(() => {
+    getData(); getBranch();
+    me;
+});
 
 
 const showData = computed(() => {

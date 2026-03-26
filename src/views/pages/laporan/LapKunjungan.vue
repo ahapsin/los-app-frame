@@ -72,6 +72,11 @@ const columnsKunjungan = [
         sorter: "default",
     },
     {
+        title: "Nasabah",
+        key: "NamaNasabah",
+        sorter: "default",
+    },
+    {
         title: "Alamat",
         key: "AlamatNasabah",
         sorter: "default",
@@ -84,11 +89,6 @@ const columnsKunjungan = [
     {
         title: "Kategori",
         key: "StatusNasabah",
-        sorter: "default",
-    },
-    {
-        title: "Follow Up",
-        key: "NoKontrak",
         sorter: "default",
     },
     {

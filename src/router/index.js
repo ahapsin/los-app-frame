@@ -32,13 +32,13 @@ const routes = [
     path: "/playground",
     name: "playground",
     component: () => import("../views/pages/layout/DashboardLayout.vue"),
-    children:[
+    children: [
       {
         path: "devplayground",
         name: "Dev Playground",
-       component: () => import("../views/pages/TestViewPage.vue"),
+        component: () => import("../views/pages/TestViewPage.vue"),
       },
-    ]
+    ],
   },
   {
     path: "/pass-pk",
@@ -90,7 +90,8 @@ const routes = [
       {
         path: "angsuran",
         name: "pembayaran angsuran",
-        component: () => import("../views/pages/transaction/angsuran/paymentPage.vue"),
+        component: () =>
+          import("../views/pages/transaction/angsuran/paymentPage.vue"),
       },
       {
         path: "beban_tagih",
@@ -446,6 +447,11 @@ const routes = [
           import("../views/pages/laporan/LapListingBebanTest.vue"),
       },
       {
+        path: "nasabah_lunas",
+        name: "Nasabah Lunas",
+        component: () => import("../views/pages/laporan/LapNasabahLunas.vue"),
+      },
+      {
         path: "dokumen",
         name: "Dokumen",
         component: () => import("../views/pages/laporan/LapDokumen.vue"),
@@ -474,7 +480,8 @@ const routes = [
       {
         path: "beban_tagih",
         name: "Beban Tagih",
-        component: () =>import("../views/pages/transaction/BebanTagihPage.vue"),
+        component: () =>
+          import("../views/pages/transaction/BebanTagihPage.vue"),
       },
       {
         path: "lap_inq_pinjaman",
@@ -496,13 +503,15 @@ const routes = [
       {
         path: "support_ticket",
         name: "tiket bantuan",
-        component: () => import("../views/pages/laporan/ticket/TicketLayout.vue"),
+        component: () =>
+          import("../views/pages/laporan/ticket/TicketLayout.vue"),
       },
       {
         path: "ticket/:ticketid",
         name: "ticket_detail",
         meta: { breadcrumb: "Ticket" },
-        component: () => import("../views/pages/laporan/ticket/TicketDetail.vue"),
+        component: () =>
+          import("../views/pages/laporan/ticket/TicketDetail.vue"),
       },
     ],
   },

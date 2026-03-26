@@ -68,6 +68,12 @@
                                 v-model:formatted-value="dynamicSearch.dari" :default-value="Date.now()" clearable
                                 format="yyyy-MM-dd" />
                         </n-form-item>
+                        <n-form-item label="POS" class="w-full" v-if="me.me.cabang_nama === 'Head Office'">
+                            <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
+                                value-field="id" :default-value="defBranch" :options="dataBranch"
+                                v-model:value="dynamicSearch.cabang" />
+                        </n-form-item>
+
                         <n-form-item class="w-full">
                             <n-button type="primary" @click="handleSearch" class="w-full"> Cari</n-button>
                         </n-form-item>
@@ -127,8 +133,9 @@
                 </n-space>
             </template>
             <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
-                <n-watermark :content="(printCount - bodyModal.print_ke)<=2 ?apptitle:'COPY COPY'" cross selectable :font-size="16" :line-height="5" :width="200"
-                    :height="128" :x-offset="12" :y-offset="28" :rotate="-12">
+                <n-watermark :content="(printCount - bodyModal.print_ke) <= 2 ? apptitle : 'COPY COPY'" cross selectable
+                    :font-size="16" :line-height="5" :width="200" :height="128" :x-offset="12" :y-offset="28"
+                    :rotate="-12">
                     <div class="p-2">
                         <div class="flex items-center gap-2 pb-2 justify-between border-b border-dashed border-black">
                             <div class="flex gap-2 items-center">
@@ -323,6 +330,7 @@ import _ from "lodash";
 import { NButton, NIcon, NImage, NInput, NTag, useLoadingBar, useMessage } from "naive-ui";
 import { computed, h, onMounted, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
+import { useMeStore } from "../../../stores/me";
 
 const loadingBar = useLoadingBar();
 const apptitle = import.meta.env.VITE_APP_TITLE;
@@ -339,13 +347,14 @@ const searchBox = ref();
 const checkedRowCredit = ref([]);
 const tableRef = ref();
 const { width } = useWindowSize();
+const userToken = localStorage.getItem("token");
 const printReceiptRef = ref();
 const { handlePrint } = useVueToPrint({
     content: printReceiptRef,
     documentTitle: "Receipt",
 });
 const printNota = async (e) => {
-    let userToken = localStorage.getItem("token");
+
     const bodyPostPrint = {
         id: e,
     }
@@ -593,6 +602,12 @@ const createColumns = () => {
             sorter: "default",
         },
         {
+            title: "CABANG",
+            width: 130,
+            key: "cabang",
+            sorter: "default",
+        },
+        {
             title: "TANGGAL",
             width: 150,
             key: "tgl_transaksi",
@@ -736,7 +751,7 @@ const getDataPayment = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: `payment?dari=${dynamicSearch.dari}&notrx=${dynamicSearch.no_transaksi}&nama=${dynamicSearch.atas_nama}&no_kontrak=${dynamicSearch.no_kontrak}&tipe=pembayaran`,
+        api: `payment?dari=${dynamicSearch.dari}&notrx=${dynamicSearch.no_transaksi}&nama=${dynamicSearch.atas_nama}&no_kontrak=${dynamicSearch.no_kontrak}&tipe=pembayaran&cabang=${dynamicSearch.cabang}`,
         token: userToken,
     });
     if (!response.ok) {
@@ -780,7 +795,38 @@ const showData = computed(() => {
         return o.tgl_transaksi.substring(0, 10) === filterDate?.value ? true : false;
     });
 });
+const me = useMeStore();
+const loadingBranch = ref(false);
+const dataBranch = ref();
+const defBranch = ref();
+const getBranch = async () => {
+    loadingBranch.value = true;
+    const response = await useApi({
+        method: "GET",
+        api: "cabang",
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        loadingBranch.value = false;
+
+        if (me.me.cabang_nama != "Head Office") {
+            defBranch.value = me.me.cabang_nama;
+            dynamicSearch.cabang = me.me.cabang_id;
+        } else {
+            dynamicSearch.cabang = "SEMUA CABANG";
+            dataBranch.value = response.data.response;
+            dataBranch.value.unshift({
+                id: "",
+                nama: "SEMUA CABANG"
+            });
+        }
+    }
+}
 onMounted(() => {
     getDataPayment();
+    getBranch();
+    me;
 });
 </script>
