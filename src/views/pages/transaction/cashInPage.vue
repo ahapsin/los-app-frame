@@ -59,7 +59,7 @@
                 :data="dataStrukturKredit" :max-height="300" :checked-row-keys="checkedRowCredit"
                 :loading="loadStructure" v-else-if="dataAngsuran" :on-update:checked-row-keys="handleAngsuran"
                 class="py-2" />
-            <n-space vertical  v-if="isLasted && totalInstallment() === totalInstallmentTertagih()">
+            <n-space vertical v-if="isLasted && totalInstallment() === totalInstallmentTertagih()">
                 <n-alert :type="pageData.penangguhan_denda === 'no' ? 'warning' : 'error'" :show-icon="false"
                     class="mb-2">
                     <div class="flex justify-between gap-4">
@@ -101,25 +101,30 @@
                     </div>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Total Tagihan" class="w-full">
-                    <n-input-number  placeholder="Jumlah Pembayaran"
-                        v-model:value="totalPay" :show-button="false" :parse="parseCurrency" :format="formatCurrency" clearable
-                        class="w-full" readonly>
+                    <n-input-number placeholder="Jumlah Pembayaran" v-model:value="totalPay" :show-button="false"
+                        :parse="parseCurrency" :format="formatCurrency" clearable class="w-full" readonly>
+                    </n-input-number>
+                </n-form-item>
+                <n-form-item path="nestedValue.path2" label="Total Denda" class="w-full">
+
+                    <n-input-number placeholder="Jumlah Pembayaran" v-model:value="totalDendaTertagih"
+                        :show-button="false" :parse="parseCurrency" :format="formatCurrency" class="w-full" readonly>
                     </n-input-number>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Uang Pelanggan" class="w-full">
-                    <n-input-number placeholder="Jumlah Pembayaran"
-                        @focus="handleFocus" ref="inputFocus" v-model:value="pageData.jumlah_uang" :show-button="false"
-                        :parse="parseCurrency" :format="formatCurrency" clearable class="w-full">
+                    <n-input-number placeholder="Jumlah Pembayaran" @focus="handleFocus" ref="inputFocus"
+                        v-model:value="pageData.jumlah_uang" :show-button="false" :parse="parseCurrency"
+                        :format="formatCurrency" clearable class="w-full">
                     </n-input-number>
                 </n-form-item>
                 <n-form-item label="Pembulatan" class="w-full">
-                    <n-input-number :show-button="false" :parse="parseCurrency" min="0"
-                        :format="formatCurrency" :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan"
-                        clearable class="w-full" />
+                    <n-input-number :show-button="false" :parse="parseCurrency" min="0" :format="formatCurrency"
+                        :max="pageData.jumlah_uang - totalPay" v-model:value="pageData.pembulatan" clearable
+                        class="w-full" />
                 </n-form-item>
                 <n-form-item label="Kembalian" class="w-full">
-                    <n-input-number  :show-button="false" min="0;" :parse="parseCurrency"
-                        :format="formatCurrency" v-model:value="pageData.kembalian" readonly class="w-full" />
+                    <n-input-number :show-button="false" min="0;" :parse="parseCurrency" :format="formatCurrency"
+                        v-model:value="pageData.kembalian" readonly class="w-full" />
                 </n-form-item>
                 <n-form-item class="w-full">
                     <n-button type="primary" @click="handleProses" :loading="loadProses" class="w-full" :disabled="pageData.bayar_dengan_diskon === 'ya' && totalPay === 0 && pageData.jumlah_uang === 0
@@ -387,6 +392,17 @@ const totalDenda = computed(() => {
         );
     return totalPenalty() - totalPayPenalty();
 });
+
+const totalDendaTertagih = computed(() => {
+    const totalPenalty = () =>
+        checkedRowCredit.value.reduce(
+            (total, installment) => total + installment.denda,
+            0
+        );
+
+    return totalPenalty();
+});
+
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const uuid = uuidv4();

@@ -51,7 +51,8 @@
 
                         <n-button secondary @click="resetAdditionalFilter" type="error">Reset</n-button>
                     </div>
-                    <n-alert type="info" v-if="checkedRowKeys.length >0" class="mb-2" >{{ checkedRowKeys.length }} data dipilih</n-alert>
+                    <n-alert type="info" v-if="checkedRowKeys.length > 0" class="mb-2">{{ checkedRowKeys.length }} data
+                        dipilih</n-alert>
                     <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
                         @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
@@ -76,14 +77,13 @@
 </template>
 
 <script setup>
-import { NAvatar, NTag, NText } from 'naive-ui';
-import { ref, reactive, computed, onMounted } from "vue";
-import { useLoadingBar, useMessage } from "naive-ui";
+import { saveAs } from 'file-saver';
+import _ from "lodash";
+import { NAvatar, NTag, NText, useLoadingBar, useMessage } from 'naive-ui';
+import { computed, onMounted, reactive, ref } from "vue";
+import * as XLSX from 'xlsx';
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
-import _ from "lodash";
-import * as XLSX from 'xlsx'
-import { saveAs } from 'file-saver';
 
 const me = useMeStore();
 const message = useMessage();

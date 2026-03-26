@@ -43,14 +43,34 @@
             </n-alert>
             <n-space vertical :size="12">
                 <div>
+                    <div class="mb-2" v-if="checkedRowKeys.length > 0">
+                        <n-alert :show-icon="false" type="warning">
+                            <div class="flex justify-between items-center">
+                                <n-space>
+                                    <n-badge :value="checkedRowKeys.length" :max="15" size="large" />
+                                    <n-text strong>Data Dipilih</n-text>
+                                </n-space>
+                                <n-space>
+                                    <n-button type="warning" @click="handleBatchUpdate">Ganti</n-button>
+                                    <n-popconfirm @positive-click="handlePositiveClick"
+                                        @negative-click="handleNegativeClick" negative-text="Batal" positive-text="Ya!">
+                                        <template #trigger>
+                                            <n-button type="error">Hapus</n-button>
+                                        </template>
+                                        Yakin ingin menghapus data ?
+                                    </n-popconfirm>
+                                </n-space>
+                            </div>
+                        </n-alert>
+                    </div>
                     <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                        @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
+                        @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row.id"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
                         :pagination="pagination" :scroll-x="1900" />
                 </div>
             </n-space>
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
     <n-modal v-model:show="modalAdd">
         <div class="w-5/6">
             <ListDeploy @cancel="handleCancel" />
@@ -61,19 +81,31 @@
             <ChangeDeploy @cancel="handleCancel" :data="bodyEdit" @success="handleSuccessEdit" />
         </div>
     </n-modal>
+    <n-modal v-model:show="modalUpdateBatch">
+        <n-card class="w-2/6" bordered size="small">
+            <template #header>
+                {{ checkedRowKeys.length }} Data dipilih
+            </template>
+            <n-form-item label="Ganti Petugas Ke">
+                <n-select v-model:value="assignTo" placeholder="pilih petugas"
+                    :options="_.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
+                    label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
+            </n-form-item>
+            <n-button type="primary">simpan</n-button>
+        </n-card>
+    </n-modal>
 </template>
 
 <script setup>
-import { NAvatar, NButton, NTag, NText } from 'naive-ui';
-import { ref, reactive, computed, onMounted } from "vue";
-import { useLoadingBar, useMessage } from "naive-ui";
+import { saveAs } from 'file-saver';
+import _ from 'lodash';
+import { NAvatar, NButton, NTag, NText, useLoadingBar, useMessage } from 'naive-ui';
+import { computed, onMounted, reactive, ref } from "vue";
+import * as XLSX from 'xlsx';
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
-import _ from "lodash";
-import ListDeploy from './listDeploy.vue';
-import * as XLSX from 'xlsx'
-import { saveAs } from 'file-saver';
 import ChangeDeploy from './changeDeploy.vue';
+import ListDeploy from './listDeploy.vue';
 
 const me = useMeStore();
 const message = useMessage();
@@ -82,6 +114,20 @@ const modalAdd = ref(false);
 const addDeploy = () => {
     modalAdd.value = true;
 }
+const getDataUser = async () => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: "users",
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.error(response.error);
+    } else {
+        loadingBar.finish();
+        dataUser.value = response.data.response;
+    }
+};
 const modalAssign = ref(false);
 const assignTo = ref(null);
 const pagination = reactive({
@@ -119,7 +165,11 @@ const filterValue = reactive({
     SURVEYOR: [],
     "SURVEYOR STATUS": [],
 });
-
+const modalUpdateBatch = ref(false);
+const handleBatchUpdate = () => {
+    modalUpdateBatch.value = true;
+    getDataUser();
+}
 function onFilterChange(newFilter) {
     Object.keys(newFilter).forEach((key) => {
         filterValue[key] = newFilter[key] || [];
@@ -127,6 +177,9 @@ function onFilterChange(newFilter) {
 }
 
 const columnBebanTagih = reactive([
+    {
+        type: "selection",
+    },
     {
         title: "CABANG",
         key: "cabang",

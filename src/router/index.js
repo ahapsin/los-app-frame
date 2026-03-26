@@ -377,6 +377,12 @@ const routes = [
           import("../views/pages/master/blacklist/BlacklistPage.vue"),
       },
       {
+        path: "fee_bunga_menurun",
+        name: "Fee Bunga Menurun",
+        component: () =>
+          import("../views/pages/master/bunga_menurun/BungaMenurun.vue"),
+      },
+      {
         path: "counter_print_reset",
         name: "reset print",
         component: () =>

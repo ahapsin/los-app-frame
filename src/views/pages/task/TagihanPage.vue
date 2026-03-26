@@ -1,6 +1,7 @@
 <template>
 
-    <n-card :class="`shadow-lg`" title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412" class="shadow-lg">
+    <n-card :class="`shadow-lg`" title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412"
+        class="shadow-lg">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="boxSearch" placeholder="cari">
@@ -58,8 +59,8 @@
                         <template #icon>
                             <v-icon name="bi-list" />
                         </template>
-                        Inquiry
-                    </n-button> -->
+        Inquiry
+        </n-button> -->
                     <n-button size="small" quaternary type="info" @click="handleHistory(bodyDetail.no_surat)">
                         <template #icon>
                             <v-icon name="bi-clock-history" />
@@ -168,7 +169,8 @@
             <n-divider title-placement="left">Dokumen Pelanggan</n-divider>
             <n-image-group>
                 <div>
-                    <n-image v-for="i in bodyDetail.col_path" :src="i" width="40" :height="40" object-fit="fill"  class="w-[40px] h-[40px]"/>
+                    <n-image v-for="i in bodyDetail.col_path" :src="i" width="40" :height="40" object-fit="fill"
+                        class="w-[40px] h-[40px]" />
                 </div>
             </n-image-group>
             <!-- <n-table size="small">
@@ -213,7 +215,8 @@
                 </n-form-item>
                 <n-form-item label="Tanggal JB/FU">
                     <n-date-picker placeholder="Tanggal JB/FU" class="w-full" value-format="yyyy-MM-dd"
-                        format="dd-MM-yyyy" type="date" v-model:value="formDataKunjungan.tgl_jb" />
+                        format="dd-MM-yyyy" type="date" v-model:value="formDataKunjungan.tgl_jb"
+                        :is-date-disabled="isDateDisabled" />
                 </n-form-item>
                 <n-form-item label="Dokumen Kunjungan">
                     <file-upload :def_preview="true" :multi="true" title="dokumen kunjungan" endpoint="cl_survey_upload"
@@ -225,7 +228,7 @@
                 <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
 
                     <n-button type="primary" @click="handleSubmitKunjungan"
-                        :disabled="!formDataKunjungan.keterangan || statsUpload">Simpan</n-button>
+                        :disabled="!formDataKunjungan.keterangan || statsUpload || formDataKunjungan.path.length === 0">Simpan</n-button>
                     <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
                 </div>
             </template>
@@ -289,14 +292,13 @@
 </template>
 <script setup>
 import { useWindowSize } from "@vueuse/core";
-import { NButton, useLoadingBar, useMessage } from "naive-ui";
-import { onMounted, ref } from "vue";
-import { useApi } from "../../../helpers/axios.js";
-import { useMeStore } from "../../../stores/me";
-import _ from "lodash";
-import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
 import moment from 'moment';
+import { NButton, useLoadingBar, useMessage } from "naive-ui";
+import { onMounted, ref } from "vue";
+import * as XLSX from 'xlsx';
+import { useApi } from "../../../helpers/axios.js";
+import { useMeStore } from "../../../stores/me";
 
 const { width } = useWindowSize();
 const me = useMeStore();
@@ -304,7 +306,20 @@ const message = useMessage();
 const isLoading = ref(false);
 const modalHistory = ref(false);
 
+const startOfDay = (date) => {
+    const d = new Date(date)
+    d.setHours(0, 0, 0, 0)
+    return d
+}
 
+const isDateDisabled = (ts) => {
+    const today = startOfDay(new Date())
+
+    const maxDate = new Date(today)
+    maxDate.setDate(today.getDate() + 5)
+
+    return ts < today.getTime() || ts > maxDate.getTime()
+}
 const selectedBranch = ref();
 const bodyHistory = ref([]);
 const handleHistory = async (e) => {
@@ -400,30 +415,30 @@ const handleSubmit = () => {
 }
 const formDataKunjungan = ref({
     no_surat: null,
-  keterangan: null,
+    keterangan: null,
     tgl_jb: null,
     path: []
 });
 
-const screenData = (list)=>{
-    list.map(item=>({
-        NO_SURAT:item.no_surat,
-        CUSTOMER:item.nama_customer,
-        NO_LKP:item.no_lkp,
-        NO_KONTRAK:item.no_kontrak,
-        TGL_JATUH_TEMPO:item.tgl_jatuh_tempo,
-        ANGSURAN_KE:item.angsuran_ke,
-        ANGSURAN:item.angsuran,
-        ALAMAT:item.alamat
+const screenData = (list) => {
+    list.map(item => ({
+        NO_SURAT: item.no_surat,
+        CUSTOMER: item.nama_customer,
+        NO_LKP: item.no_lkp,
+        NO_KONTRAK: item.no_kontrak,
+        TGL_JATUH_TEMPO: item.tgl_jatuh_tempo,
+        ANGSURAN_KE: item.angsuran_ke,
+        ANGSURAN: item.angsuran,
+        ALAMAT: item.alamat
     }));
 }
 
-const statsUpload=ref(false);
+const statsUpload = ref(false);
 const handleFallback = (e) => {
     formDataKunjungan.value.path.push(e);
 }
 const handleOnUpload = (e) => {
-   statsUpload.value=e;
+    statsUpload.value = e;
 }
 const handleSubmitKunjungan = async () => {
     await postKunjungan(formDataKunjungan.value);
