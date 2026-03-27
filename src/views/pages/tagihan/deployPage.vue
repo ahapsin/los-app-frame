@@ -52,7 +52,7 @@
                                 </n-space>
                                 <n-space>
                                     <n-button type="warning" @click="handleBatchUpdate">Ganti</n-button>
-                                    <n-popconfirm @positive-click="handlePositiveClick"
+                                    <n-popconfirm @positive-click="handleDeleteBulk"
                                         @negative-click="handleNegativeClick" negative-text="Batal" positive-text="Ya!">
                                         <template #trigger>
                                             <n-button type="error">Hapus</n-button>
@@ -91,7 +91,7 @@
                     :options="_.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
                     label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
             </n-form-item>
-            <n-button type="primary">simpan</n-button>
+            <n-button type="primary" @click="handleUpdateBulk">simpan</n-button>
         </n-card>
     </n-modal>
 </template>
@@ -128,6 +128,43 @@ const getDataUser = async () => {
         dataUser.value = response.data.response;
     }
 };
+const handleUpdateBulk = async () => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "PATCH",
+        data: {
+            id: checkedRowKeys.value,
+            user_id: assignTo.value
+        },
+        api: "cl_deploy_update/bulk",
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.error(response.error);
+    } else {
+        message.success("update berhasil");
+        modalUpdateBatch.value = false;
+        getList();
+    }
+}
+const handleDeleteBulk = async () => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "DELETE",
+        data: {
+            id: checkedRowKeys.value,
+        },
+        api: "cl_deploy_delete/bulk",
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.error(response.error);
+    } else {
+        message.success("berhasil hapus data !");
+        checkedRowKeys.value = [];
+        getList();
+    }
+}
 const modalAssign = ref(false);
 const assignTo = ref(null);
 const pagination = reactive({

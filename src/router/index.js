@@ -67,7 +67,7 @@ const routes = [
       },
       {
         path: "lkp_tagihan",
-        name: "lkp",
+        name: "LKP",
         component: () => import("../views/pages/tagihan/lkpPage.vue"),
       },
       {

@@ -1,13 +1,13 @@
 <script setup>
-import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
-import { useApi } from '../../../helpers/axios';
-import AddLkp from './addLkp.vue';
-import { NButton } from 'naive-ui';
-import moment from 'moment'
-import { useSearch } from '../../../helpers/searchObject';
+import moment from 'moment';
+import { NButton, NProgress } from 'naive-ui';
+import { h, nextTick } from 'vue';
 import { useVueToPrint } from 'vue-to-print';
-import { nextTick } from 'vue';
+import * as XLSX from 'xlsx';
+import { useApi } from '../../../helpers/axios';
+import { useSearch } from '../../../helpers/searchObject';
+import AddLkp from './addLkp.vue';
 
 
 
@@ -75,6 +75,11 @@ const getDetail = async (e) => {
 };
 const columnDeploy = reactive([
     {
+        title: "CABANG",
+        key: "cabang",
+        sorter: "default",
+    },
+    {
         title: "NO LKP",
         key: "no_lkp",
         sorter: "default",
@@ -90,10 +95,26 @@ const columnDeploy = reactive([
         sorter: "default",
     },
     {
-        title: "JUMLAH SRAT TAGIH",
+        title: "JML SURAT",
         key: "jml_surat_tgh",
         sorter: "default",
     },
+    {
+        title: "PROGRES",
+        key: "status",
+        sorter: "default",
+        render(row) {
+            return h(NProgress, {
+                percentage: row.presentase,
+            }, {})
+        }
+    },
+    {
+        title: "STATUS",
+        key: "status",
+        sorter: "default",
+    },
+
     {
         key: "detail",
         align: "right",
@@ -351,7 +372,7 @@ const pagination = reactive({
 
 </script>
 <template>
-    <n-card :class="`shadow-lg`" title="Daftar LKP" size="small" :segmented="true">
+    <n-card :class="`shadow-lg`" title="Daftar LKP" size="small">
         <template #header-extra>
             <n-space>
                 <n-input clearable v-model:value="searchBox" placeholder="cari">
