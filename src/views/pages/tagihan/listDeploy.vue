@@ -57,7 +57,7 @@
                         @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
                         @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
                         :pagination="pagination" />
-                </n-card :class="`shadow-lg`">
+                </n-card>
             </n-space>
         </div>
         <template #footer>
@@ -73,7 +73,7 @@
                 </n-space>
             </n-space>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 
 <script setup>

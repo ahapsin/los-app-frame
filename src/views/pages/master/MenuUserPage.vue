@@ -39,16 +39,16 @@
                 </n-button>
             </n-space>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 <script setup>
-import { useMessage } from 'naive-ui';
-import { ref, reactive, onMounted } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-const { width, height } = useWindowSize();
+import { useMessage } from 'naive-ui';
+import { onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useApi } from '../../../helpers/axios';
 import router from '../../../router';
-import { useRoute } from 'vue-router';
+const { width, height } = useWindowSize();
 const dataBranch = ref();
 
 const dynamicForm = reactive({
@@ -136,7 +136,7 @@ const getMenu = useApi({
         message.error("error koneksi api");
     } else {
         getMenuData.value = Array.from(res.data.response).map((v, i) => ({
-            label: `${v.parent?v.parent:'Parent'}->${v.menu_name}`,
+            label: `${v.parent ? v.parent : 'Parent'}->${v.menu_name}`,
             value: v.id,
         }));
     }

@@ -94,6 +94,12 @@ const routes = [
           import("../views/pages/transaction/angsuran/paymentPage.vue"),
       },
       {
+        path: "batal_cair",
+        name: "Batal Cair",
+        component: () =>
+          import("../views/pages/transaction/batal_cair/BatalCair.vue"),
+      },
+      {
         path: "beban_tagih",
         name: "Beban Tagihan",
         component: () =>

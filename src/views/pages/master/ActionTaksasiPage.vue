@@ -42,7 +42,7 @@
                 <n-button type="error" @click="handleCancel"> Batal </n-button>
             </n-space>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 <script setup>
 import { useWindowSize } from "@vueuse/core";
@@ -200,13 +200,13 @@ const format = (value) => {
     if (value === null) return "";
     return value.toLocaleString("en-US");
 };
-const optJenis =  [
-  { label: "MOBIL PENUMPANG", value: "MOBIL PENUMPANG" },
-  { label: "SEPEDA MOTOR", value: "SEPEDA MOTOR" },
-  { label: "MOBIL BUS", value: "MOBIL BUS" },
-  { label: "MOBIL BARANG", value: "MOBIL BARANG" },
-  { label: "KENDARAAN KHUSUS", value: "KENDARAAN KHUSUS" },
-  { label: "KERETA API", value: "KERETA API" },
-  { label: "KENDARAAN BERBASIS ENERGI TERBARUKAN", value: "KENDARAAN BERBASIS ENERGI TERBARUKAN" }
+const optJenis = [
+    { label: "MOBIL PENUMPANG", value: "MOBIL PENUMPANG" },
+    { label: "SEPEDA MOTOR", value: "SEPEDA MOTOR" },
+    { label: "MOBIL BUS", value: "MOBIL BUS" },
+    { label: "MOBIL BARANG", value: "MOBIL BARANG" },
+    { label: "KENDARAAN KHUSUS", value: "KENDARAAN KHUSUS" },
+    { label: "KERETA API", value: "KERETA API" },
+    { label: "KENDARAAN BERBASIS ENERGI TERBARUKAN", value: "KENDARAAN BERBASIS ENERGI TERBARUKAN" }
 ];
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <n-card :class="`shadow-lg`" title="Buat LKP Baru" :segmented="true" size="small">
+    <n-card :class="`shadow-lg`" title="Update LKP" :segmented="true" size="small">
         <div>
             <n-alert v-if="hasActiveFilters" type="warning" :show-icon="false" class="mb-4 filter-status"
                 title="Filter Aktif">
@@ -16,11 +16,7 @@
             <n-space vertical :size="12">
                 <n-space vertical>
                     <n-form-item label="petugas">
-                        <n-select v-model:value="assignTo" placeholder="pilih petugas" :options="me.me.cabang_nama === 'Head Office'
-                            ? _.filter(dataUser, { status: 'Aktif' })
-                            : _.filter(dataUser, { cabang_nama: me.me.cabang_nama, status: 'Aktif' })"
-                            value-field="username" label-field="nama" filterable :render-tag="renderSingleSelectTag"
-                            :render-label="renderLabel" @update:value="handleChangePetugas" />
+                        <n-input v-model:value="props.data.petugas" disabled />
                     </n-form-item>
                 </n-space>
                 <div>
@@ -48,9 +44,10 @@
                             3
                             LKP aktif</n-alert>
                         <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                            @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-                            @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
-                            :pagination="pagination" :row-class-name="getRowClassName" />
+                            @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys"
+                            :row-key="(row) => row.no_surat" @update:checked-row-keys="handleCheck"
+                            :loading="dataLoading" size="small" :pagination="pagination"
+                            :row-class-name="getRowClassName" />
                     </n-card>
 
                 </div>
@@ -58,7 +55,6 @@
         </div>
         <template #footer>
             <n-alert type="info" v-if="checkedRowKeys.length === 0">Pilih data tagihan</n-alert>
-            <n-alert type="info" v-else-if="assignTo === null">Pilih petugas</n-alert>
             <n-space v-else>
                 <n-button type="primary" secondary @click="assignTagihan(true)" :disabled="checkedRowKeys.length === 0"
                     :loading="isLoading">
@@ -134,7 +130,6 @@
 
 <script setup>
 import { saveAs } from 'file-saver';
-import _ from "lodash";
 import moment from 'moment';
 import { NAvatar, NButton, NTag, NText, useLoadingBar, useMessage } from 'naive-ui';
 import { computed, onMounted, reactive, ref } from "vue";
@@ -159,9 +154,37 @@ const dataList = ref([]);
 const isLoading = ref(false);
 const checkedRowKeys = ref([]);
 const boxSearch = ref("");
-
+const bodyModalDetail = ref();
 const rowKey = (row) => row["NO KONTRAK"];
+const getDetail = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `cl_lkp_detail/${e}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        isLoading.value = false;
+        console.error(response.error);
+    } else {
+        isLoading.value = false;
+        bodyModalDetail.value = response.data;
+        checkedRowKeys.value = bodyModalDetail.value.details
+            .filter(item => {
+                if (!item.tgl_jatuh_tempo) return false;
 
+                const today = new Date();
+                const itemDate = item.tgl_jb ? new Date(item.tgl_jb) : new Date(item.tgl_jatuh_tempo);
+                const isOverdue = itemDate <= today;
+                const isUnpaid = item.bayar <= item.angsuran;
+
+                return isOverdue && isUnpaid;
+            })
+            .map(item => item.no_surat); // pastikan ini sesuai row-key yang digunakan
+
+    }
+};
 const filterValue = reactive({
     NBOT: [],
     KECAMATAN: [],
@@ -387,39 +410,27 @@ const getData = async () => {
     }
 };
 const today = new Date();
+const dataLoading = ref(false);
 const dataResponse = ref();
-const handleChangePetugas = async () => {
-    isLoading.value = true;
+const handleChangePetugas = async (e) => {
+    dataLoading.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "GET",
-        api: `cl_deploy_by_pic/${assignTo.value}`,
+        api: `cl_deploy_by_pic/${e}`,
         token: userToken,
     });
 
     if (!response.ok) {
-        isLoading.value = false;
+        dataLoading.value = false;
         console.error(response.error);
     } else {
-        isLoading.value = false;
-        loadingBar.finish();
+        dataLoading.value = false;
         dataResponse.value = response.data;
         dataList.value = response.data.list;
 
         // Filter untuk auto-check berdasarkan tgl_jatuh_tempo
         const today = new Date();
-        checkedRowKeys.value = response.data.list
-            .filter(item => {
-                if (!item.tgl_jatuh_tempo) return false;
-
-                const today = new Date();
-                const itemDate = item.tgl_jb ? new Date(item.tgl_jb) : new Date(item.tgl_jatuh_tempo);
-                const isOverdue = itemDate <= today;
-                const isUnpaid = item.bayar <= item.angsuran;
-
-                return isOverdue && isUnpaid;
-            })
-            .map(item => item); // pastikan ini sesuai row-key yang digunakan
 
         // Set filter options
         const uniqueValues = (key) => {
@@ -449,18 +460,23 @@ const handleChangePetugas = async () => {
 };
 
 const emit = defineEmits();
+const props = defineProps({
+    data: Object
+})
 const assignTagihan = async (e) => {
     if (isLoading.value) return;
+    const set = new Set(checkedRowKeys.value);
     const bodyPost = {
-        user_id: assignTo.value,
+        user_id: props.data.petugas,
         IsDraf: e,
-        list_lkp: checkedRowKeys.value,
+        LkpId: props.data.id,
+        list_lkp: filteredDataList.value.filter(item => set.has(item.no_surat)),
     };
     isLoading.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "POST",
-        api: "cl_lkp_add",
+        api: "cl_lkp_edit",
         data: bodyPost,
         token: userToken,
     });
@@ -468,7 +484,7 @@ const assignTagihan = async (e) => {
         console.error(response);
     } else {
         isLoading.value = false;
-        message.success("Berhasil");
+        message.success("Berhasil mengirimkan tagihan");
         emit('saved', true);
         modalAssign.value = false;
         assignTo.value = null;
@@ -559,8 +575,11 @@ const getHistorySurat = async (e) => {
         bodyHistorySurat.value = response.data;
     }
 };
-onMounted(() => {
+onMounted(async () => {
     loadingBar.finish();
-    getData();
+    await getData();
+    await getDetail(props.data?.no_lkp);
+    await handleChangePetugas(props.data.petugas);
+
 });
 </script>

@@ -77,7 +77,7 @@
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
                         :loading="loading" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
     </div>
 </template>
@@ -103,7 +103,7 @@ const dataTable = ref([]);
 const searchBox = ref();
 
 const columns = [
-     {
+    {
         title: "MERK",
         sorter: 'default',
         key: "merk"
@@ -113,7 +113,7 @@ const columns = [
         sorter: 'default',
         key: "tipe"
     },
-   
+
     {
         title: "JENIS",
         sorter: 'default',
@@ -128,8 +128,8 @@ const columns = [
         title: "TAHUN",
         sorter: 'default',
         key: "tahun",
-        render(row){
-return h("div",`${row.dari} - ${row.sampai}`)
+        render(row) {
+            return h("div", `${row.dari} - ${row.sampai}`)
         }
     },
     {

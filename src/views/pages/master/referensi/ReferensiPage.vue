@@ -34,7 +34,7 @@
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination"
                         :loading="isLoading" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
         <n-modal v-model:show="modalRef">
             <n-card :class="`shadow-lg`" class="w-1/2" size="small" title="Tambah Sumber Order Baru" :segmented="true">
@@ -54,23 +54,21 @@
                         <n-button type="secondary" @click="handleCancel">Batal</n-button>
                     </n-space>
                 </template>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-modal>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, h } from "vue";
-import * as XLSX from 'xlsx'
-import { saveAs } from 'file-saver';
-import { useDialog, useMessage, NDropdown, NIcon, NButton, useLoadingBar, NSwitch } from "naive-ui";
 import {
-    EditOutlined as EditIcon,
     DeleteOutlined as DeleteIcon,
     ListAltOutlined as DetailIcon
 } from "@vicons/material";
+import { saveAs } from 'file-saver';
+import { NButton, NIcon, NSwitch, useDialog, useLoadingBar, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
+import * as XLSX from 'xlsx';
 import { useApi } from "../../../../helpers/axios";
 import { useSearch } from "../../../../helpers/searchObject";
-import router from "../../../../router";
 
 
 const message = useMessage();

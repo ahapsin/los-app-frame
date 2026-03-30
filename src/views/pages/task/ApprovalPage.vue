@@ -1,7 +1,7 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :class="`shadow-lg`" :title="`Tabel ${$route.name}`"  :segmented="true" size="small">
+            <n-card :class="`shadow-lg`" :title="`Tabel ${$route.name}`" :segmented="true" size="small">
                 <template #header-extra>
                     <n-space class="!gap-1">
                         <div class="me-1">
@@ -32,24 +32,23 @@
                 </template>
                 <n-space vertical :size="12">
                     <n-data-table :loading="loadData" size="small" :columns="columns" :data="showData"
-                        :pagination="pagination" ellipsis :scroll-x="800"/>
+                        :pagination="pagination" ellipsis :scroll-x="800" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, h, computed } from "vue";
-import { useApi } from "../../../helpers/axios";
-import { useSearch } from "../../../helpers/searchObject";
-import router from "../../../router";
-import { useMessage, NIcon, NTag, NButton } from "naive-ui";
 import {
     SearchOutlined as SearchIcon,
 } from "@vicons/material";
-import { useLoadingBar } from "naive-ui";
 import { useWindowSize } from "@vueuse/core";
 import _ from "lodash";
+import { NButton, NIcon, NTag, useLoadingBar, useMessage } from "naive-ui";
+import { computed, h, onMounted, ref } from "vue";
+import { useApi } from "../../../helpers/axios";
+import { useSearch } from "../../../helpers/searchObject";
+import router from "../../../router";
 const loadingBar = useLoadingBar();
 const { width } = useWindowSize();
 
@@ -164,7 +163,7 @@ const getData = async () => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(response.error);
+        console.log(response.error);
     } else {
         loadingBar.finish();
         loadData.value = false;

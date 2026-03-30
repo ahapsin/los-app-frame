@@ -30,11 +30,10 @@
     <n-spin :show="suspense">
         <slot name="addition"></slot>
         <div class="sticky sticky-top top-0 z-50" v-if="pageData.order_validation?.length != 0">
-            <n-alert :title="`${pageData.order_validation?.length} Catatan`" type="warning"
-                class=" shadow">
-                <div class="text-red-500" v-for="(messageValidation,i) in pageData.order_validation"
+            <n-alert :title="`${pageData.order_validation?.length} Catatan`" type="warning" class=" shadow">
+                <div class="text-red-500" v-for="(messageValidation, i) in pageData.order_validation"
                     :key="messageValidation">
-                    {{ i+1 }}. {{ messageValidation }}
+                    {{ i + 1 }}. {{ messageValidation }}
                 </div>
             </n-alert>
         </div>
@@ -50,7 +49,7 @@
                     <n-step title="Tambahan" />
                     <n-step title="Ekstra" :status="statusEkstra" />
                 </n-steps>
-            </n-card :class="`shadow-lg`">
+            </n-card>
             <n-card :class="`shadow-lg`" size="small" v-show="current == 1" title="Informasi pelanggan" :segmented="{
                 content: true,
                 footer: 'soft',
@@ -293,7 +292,7 @@
             </div>
           </div> -->
                 </n-form>
-            </n-card :class="`shadow-lg`">
+            </n-card>
             <n-card :class="`shadow-lg`" v-show="current == 2" title="Informasi Order" :segmented="{
                 content: true,
                 footer: 'soft',
@@ -390,7 +389,8 @@
                                 </n-button>
                             </div>
                         </template>
-                        <n-card :class="`shadow-lg`" :segmented="true" class="my-2  ring-yellow-100 rounded-xl hover:ring-4 hover:ring-pr"
+                        <n-card :class="`shadow-lg`" :segmented="true"
+                            class="my-2  ring-yellow-100 rounded-xl hover:ring-4 hover:ring-pr"
                             v-for="(coll) in orderJaminan" :key="coll" :title="`${coll.type}`">
                             <template #header-extra>
                                 <div class="flex gap-2" v-if="!viewMode">
@@ -426,7 +426,7 @@
                                 <div class="pb-2"
                                     v-if="coll.type == 'KENDARAAN' && coll.atr.tahun && tahunJaminanValidate(coll.atr.tahun) > 10">
                                     <n-alert type="warning">usia KENDARAAN <b>{{ tahunJaminanValidate(coll.atr.tahun)
-                                            }}</b>
+                                    }}</b>
                                         tahun</n-alert>
                                 </div>
                                 <div class="pt-2">
@@ -494,11 +494,11 @@
                                     </div>
                                 </div>
                             </div>
-                        </n-card :class="`shadow-lg`">
-                    </n-card :class="`shadow-lg`">
+                        </n-card>
+                    </n-card>
                     <n-modal v-model:show="showModal">
-                        <n-card :class="`shadow-lg`" class="md:w-1/2" closable @close="showModal = false" :segmented="true"
-                            :title="`form ${jenisJaminan}`">
+                        <n-card :class="`shadow-lg`" class="md:w-1/2" closable @close="showModal = false"
+                            :segmented="true" :title="`form ${jenisJaminan}`">
                             <component :is="JaminanKendaraan" v-if="jenisJaminan.toLowerCase() == 'kendaraan'"
                                 @childData="handleChildData" :def_data="dataProp" :viewMode />
                             <component :is="JaminanSertifikat" v-if="jenisJaminan.toLowerCase() == 'sertifikat'"
@@ -513,7 +513,7 @@
 
                                 </n-space>
                             </template>
-                        </n-card :class="`shadow-lg`">
+                        </n-card>
                     </n-modal>
                     <!-- <div class="flex-col gap-2">
             <taksasi-select-state v-model:brand="dataTaksasi.merk" v-model:tipe="dataTaksasi.tipe"
@@ -546,7 +546,7 @@
             </div>
           </div> -->
                 </n-form>
-            </n-card :class="`shadow-lg`">
+            </n-card>
             <n-card :class="`shadow-lg`" v-show="current == 3" title="Informasi Tambahan" :segmented="{
                 content: true,
                 footer: 'soft',
@@ -713,7 +713,7 @@
                         </template>
                     </n-dynamic-input>
                 </n-form>
-            </n-card :class="`shadow-lg`">
+            </n-card>
             <n-card :class="`shadow-lg`" v-show="current == 4" title="Data Ekstra" :segmented="{
                 content: true,
                 footer: 'soft',
@@ -838,9 +838,9 @@
                                     </n-radio-group>
                                 </div>
                                  <div class="flex flex-col md:flex-row" v-show="calcCredit.jenis_angsuran == 'bunga_menurun'">
-                
+
                             <n-radio-group v-model:value="calcCredit.tenor" name="radiogroup">
-                                
+
                                 <n-radio name="tenor" :value="5">
                                     5 bulan<n-text code>
                                         {{
@@ -1011,7 +1011,7 @@
                         </div>
                     </div>
                 </n-form>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-flex>
         <n-space class="pt-4" justify="between">
             <n-button @click="prev" type="secondary" v-if="current > 1">
@@ -1049,29 +1049,29 @@
     </n-spin>
 </template>
 <script setup>
-import { ref, reactive, computed, onMounted, toRef } from "vue";
+import {
+    AccountCircleRound as AccountIcon,
+    PlusRound as AddIcon,
+    ChevronLeftSharp as ArrowBack,
+    ChevronRightSharp as ArrowForward,
+    DeleteOutlineFilled as DeleteIcon,
+    EditOutlined as EditIcon,
+    SaveRound as SaveIcon,
+    SendRound as SendIcon,
+    RemoveRedEyeOutlined as ViewIcon,
+} from "@vicons/material";
+import { useWindowSize } from "@vueuse/core";
+import _ from "lodash";
+import { NAvatar, NText, useMessage } from "naive-ui";
+import { computed, onMounted, reactive, ref, toRef } from "vue";
 import { useRoute } from "vue-router";
 import { useApi } from "../../../helpers/axios";
 import { useBlacklist } from "../../../helpers/blacklist";
 import router from "../../../router";
-import { NAvatar, NText, useMessage } from "naive-ui";
-import { useWindowSize } from "@vueuse/core";
-import _ from "lodash";
-import {
-    PlusRound as AddIcon,
-    EditOutlined as EditIcon,
-    RemoveRedEyeOutlined as ViewIcon,
-    DeleteOutlineFilled as DeleteIcon,
-    ChevronLeftSharp as ArrowBack,
-    ChevronRightSharp as ArrowForward,
-    AccountCircleRound as AccountIcon,
-    SendRound as SendIcon,
-    SaveRound as SaveIcon,
-} from "@vicons/material";
 import { useJaminanStore } from "../../../stores/jaminan";
+import { useMeStore } from "../../../stores/me";
 import JaminanKendaraan from "./survey/JaminanKendaraan.vue";
 import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
-import { useMeStore } from "../../../stores/me";
 const message = useMessage();
 const loading = ref(false);
 const loadingSend = ref(false);

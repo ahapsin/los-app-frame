@@ -83,7 +83,7 @@
                 :scroll-x="1070" :data="showData" :max-height="500" :on-update:checked-row-keys="handleFasilitas"
                 :loading="loadDataPayment" class="p-4" :pagination="{ pageSize: 10 }" />
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
     <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal" :on-after-leave="onAfterLeave">
         <n-card :class="`shadow-lg`" title="DETAIL PEMBAYARAN" :segmented="{
             content: true,
@@ -151,7 +151,7 @@
                         <div class="flex justify-between">
                             <n-text strong class="text-md"> {{ bodyModal.tgl_transaksi }}</n-text>
                             <n-text strong class="text-md"> {{ bodyModal.payment_method == 'cash' ? 'TUNAI' : 'TRANSFER'
-                                }}</n-text>
+                            }}</n-text>
 
                         </div>
                         <div class="flex justify-between border-b border-dashed border-black"
@@ -189,11 +189,11 @@
                                 <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_pokok).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_bunga).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td align="right" class="border pe-2 border-black text-right">
                                     {{
@@ -220,76 +220,76 @@
                         </table>
                     </div>
                     <div class="grid border-t border-b border-dashed border-black my-2 px-2"
-                            :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '"
-                            v-if="bodyModal.payment_type != 'pelunasan'">
-                            <div class="flex flex-col">
-                                <small class="text-reg">JML. ANGS</small>
-                                <n-text strong class="text-md"> {{
-                                    bodyModal.bayar_angsuran.toLocaleString('US') ?
-                                        bodyModal.bayar_angsuran.toLocaleString('US') : 'n/a'
-                                }}
-                                </n-text>
-                            </div>
-                            <div class="flex flex-col">
-                                <small class="text-reg">JML. DENDA</small>
-                                <n-text strong class="text-md">
-                                    {{ bodyModal.bayar_denda.toLocaleString() }}
-                                </n-text>
-                            </div>
-                            <div class="flex flex-col">
-                                <small class="text-reg">CUST. BAYAR</small>
-                                <n-text strong class="text-md"> {{ bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}</n-text>
-                            </div>
-                            <div class="flex flex-col">
-                                <small class="text-reg">PEMBULATAN</small>
-                                <n-text strong class="text-md"> {{ bodyModal.pembulatan.toLocaleString() }}</n-text>
-                            </div>
-
-                            <div class="flex flex-col">
-                                <small class="text-reg">KEMBALIAN</small>
-                                <td>
-                                    <n-text strong class="text-md"> {{ bodyModal.kembalian.toLocaleString("US")
-                                        }}</n-text>
-                                </td>
-                            </div>
-
+                        :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '"
+                        v-if="bodyModal.payment_type != 'pelunasan'">
+                        <div class="flex flex-col">
+                            <small class="text-reg">JML. ANGS</small>
+                            <n-text strong class="text-md"> {{
+                                bodyModal.bayar_angsuran.toLocaleString('US') ?
+                                    bodyModal.bayar_angsuran.toLocaleString('US') : 'n/a'
+                            }}
+                            </n-text>
                         </div>
-                        <div class="grid border-b border-dashed border-black pb-2"
-                            :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '" v-else>
-                            <div class="flex flex-col">
-                                <small class="text-reg">Total Pelunasan</small>
-                                <n-text class="text-md font-bold"> {{
-                                    bodyModal.total_bayar.toLocaleString('US') ?
-                                        bodyModal.total_bayar.toLocaleString('US') : 'n/a'
-                                }}
-                                </n-text>
-                            </div>
-                            <div class="flex flex-col">
-                                <small class="text-reg">Pembulatan</small>
-                                <n-text class="text-md font-bold"> {{ bodyModal.pembulatan }}</n-text>
-                            </div>
-                            <div class="flex flex-col">
-                                <small class="text-reg">Cust. Bayar</small>
-                                <n-text class="text-md font-bold"> {{
-                                    bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}
-                                </n-text>
-                            </div>
-                            <div class="flex flex-col">
-                                <small class="text-reg">Diskon</small>
-                                <n-text class="text-md font-bold"> {{
-                                    (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
-                                    }}
-                                </n-text>
-                            </div>
-                            <div class="flex flex-col">
-                                <small class="text-reg">Metode Pembayaran</small>
-                                <n-text class="text-md font-bold"> {{ bodyModal.payment_method }}
-                                    {{ bodyModal.payment_type == 'pelunasan' ? '/ pelunasan' : '' }}
-                                </n-text>
-                            </div>
+                        <div class="flex flex-col">
+                            <small class="text-reg">JML. DENDA</small>
+                            <n-text strong class="text-md">
+                                {{ bodyModal.bayar_denda.toLocaleString() }}
+                            </n-text>
                         </div>
+                        <div class="flex flex-col">
+                            <small class="text-reg">CUST. BAYAR</small>
+                            <n-text strong class="text-md"> {{ bodyModal.jumlah_uang.toLocaleString("US")
+                            }}</n-text>
+                        </div>
+                        <div class="flex flex-col">
+                            <small class="text-reg">PEMBULATAN</small>
+                            <n-text strong class="text-md"> {{ bodyModal.pembulatan.toLocaleString() }}</n-text>
+                        </div>
+
+                        <div class="flex flex-col">
+                            <small class="text-reg">KEMBALIAN</small>
+                            <td>
+                                <n-text strong class="text-md"> {{ bodyModal.kembalian.toLocaleString("US")
+                                }}</n-text>
+                            </td>
+                        </div>
+
+                    </div>
+                    <div class="grid border-b border-dashed border-black pb-2"
+                        :class="width > 850 ? 'grid-cols-5 gap-4' : 'grid-cols-1 '" v-else>
+                        <div class="flex flex-col">
+                            <small class="text-reg">Total Pelunasan</small>
+                            <n-text class="text-md font-bold"> {{
+                                bodyModal.total_bayar.toLocaleString('US') ?
+                                    bodyModal.total_bayar.toLocaleString('US') : 'n/a'
+                            }}
+                            </n-text>
+                        </div>
+                        <div class="flex flex-col">
+                            <small class="text-reg">Pembulatan</small>
+                            <n-text class="text-md font-bold"> {{ bodyModal.pembulatan }}</n-text>
+                        </div>
+                        <div class="flex flex-col">
+                            <small class="text-reg">Cust. Bayar</small>
+                            <n-text class="text-md font-bold"> {{
+                                bodyModal.jumlah_uang.toLocaleString("US")
+                            }}
+                            </n-text>
+                        </div>
+                        <div class="flex flex-col">
+                            <small class="text-reg">Diskon</small>
+                            <n-text class="text-md font-bold"> {{
+                                (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
+                            }}
+                            </n-text>
+                        </div>
+                        <div class="flex flex-col">
+                            <small class="text-reg">Metode Pembayaran</small>
+                            <n-text class="text-md font-bold"> {{ bodyModal.payment_method }}
+                                {{ bodyModal.payment_type == 'pelunasan' ? '/ pelunasan' : '' }}
+                            </n-text>
+                        </div>
+                    </div>
                     <div class="flex flex-col border-b border-dashed border-black pb-4 ms-3">
                         <div class="flex gap-4">
                             <div class="border-b border-black pt-20 px-4">
@@ -310,7 +310,7 @@
                 <n-divider>bukti transfer</n-divider>
                 <n-image :src="bodyModal.attachment" class="max-w-36" />
             </div>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
     <n-modal v-model:show="confCancelModal" preset="dialog" draggable title="Konfirmasi"
         positive-text="Ya, Ajukan Sekarang !" negative-text="hmm, nanti dulu deh" @positive-click="postCancelPayment">

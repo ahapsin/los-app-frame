@@ -223,8 +223,9 @@
                         </div>
                     </template>
 
-                    <n-card :class="`shadow-lg`" :segmented="true" class="my-2 bg-white rounded-xl hover:ring-4 hover:ring-pr"
-                        v-for="(coll) in orderJaminan" :key="coll" :title="`${coll.type}`">
+                    <n-card :class="`shadow-lg`" :segmented="true"
+                        class="my-2 bg-white rounded-xl hover:ring-4 hover:ring-pr" v-for="(coll) in orderJaminan"
+                        :key="coll" :title="`${coll.type}`">
                         <template #header-extra>
                             <div class="flex gap-2" v-if="false">
                                 <n-button type="warning" @click="viewModal(coll)" secondary>
@@ -312,8 +313,8 @@
                         </div>
 
 
-                    </n-card :class="`shadow-lg`">
-                </n-card :class="`shadow-lg`">
+                    </n-card>
+                </n-card>
             </div>
             <n-modal v-model:show="showModal">
                 <n-card :class="`shadow-lg`" class="md:w-1/2" closable @close="showModal = false" :segmented="true"
@@ -332,7 +333,7 @@
                             <n-button type="warning" @click="showModal = false">batal</n-button>
                         </n-space>
                     </template>
-                </n-card :class="`shadow-lg`">
+                </n-card>
             </n-modal>
             <div v-show="current === 4">
                 <n-form ref="formSurvey" :model="survey" :rules="rulesSurvey" require-mark-placement="right-hanging"
@@ -428,30 +429,28 @@
                     </n-button>
                 </n-flex>
             </template>
-        </n-card :class="`shadow-lg`">
-    </n-card :class="`shadow-lg`">
+        </n-card>
+    </n-card>
 </template>
 <script setup>
-import { ref, reactive, onMounted, toRef } from "vue";
-import { v4 as uuidv4 } from "uuid";
 import {
-    ArrowBackOutlined as ArrowBack,
     AddFilled as AddIcon,
-    EditOutlined as EditIcon,
-    DeleteOutlineFilled as DeleteIcon,
+    ArrowBackOutlined as ArrowBack,
     ArrowForwardOutlined as ArrowForward,
-
+    DeleteOutlineFilled as DeleteIcon,
+    EditOutlined as EditIcon,
 } from "@vicons/material";
-import { useMessage } from "naive-ui";
-import router from "../../../router";
 import { useWindowSize } from "@vueuse/core";
+import _ from "lodash";
+import { useMessage } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
+import { computed, onMounted, reactive, ref, toRef } from "vue";
+import { useRoute } from "vue-router";
 import { useApi } from "../../../helpers/axios";
 import { useBlacklist } from "../../../helpers/blacklist";
+import router from "../../../router";
 import JaminanKendaraan from "./survey/JaminanKendaraan.vue";
 import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
-import _ from "lodash";
-import { useRoute } from "vue-router";
-import { computed } from "vue";
 
 // import JaminanBillyet from "./survey/JaminanBillyet.vue";
 // import JaminanEmas from "./survey/JaminanEmas.vue";

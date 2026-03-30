@@ -35,26 +35,22 @@
                 <n-space vertical :size="12" class="pt-4">
                     <n-data-table size="small" :columns="columns" :data="dataTable" :pagination="pagination" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, h } from "vue";
-import { useApi } from "../../../helpers/axios";
-import router from '../../../router';
-import { useDialog, useMessage, NDropdown, NIcon, NTag, NButton } from "naive-ui";
 import {
     AddCircleOutlineRound as AddIcon,
-    SearchOutlined as SearchIcon,
-    FileDownloadOutlined as DownloadIcon,
-
-} from "@vicons/material"
-import {
-    EditOutlined as EditIcon,
     DeleteOutlined as DeleteIcon,
-    ListAltOutlined as DetailIcon
+    ListAltOutlined as DetailIcon,
+    FileDownloadOutlined as DownloadIcon,
+    SearchOutlined as SearchIcon,
 } from "@vicons/material";
+import { NButton, NDropdown, NIcon, useDialog, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
+import { useApi } from "../../../helpers/axios";
+import router from '../../../router';
 
 
 const message = useMessage();
@@ -163,7 +159,7 @@ const getData = async () => {
         token: userToken
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         dataTable.value = response.data.response;
     }

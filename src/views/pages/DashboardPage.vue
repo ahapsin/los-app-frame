@@ -1,14 +1,14 @@
 <template>
-  <n-card :class="`shadow-lg`" class="shadow-lg">
-    Hi,<b>{{ me.me.nama }} 👋</b>
-  </n-card :class="`shadow-lg`">
-  <MenuContainer class="mt-2" v-if="width <= 480" />
+    <n-card :class="`shadow-lg`" class="shadow-lg">
+        Hi,<b>{{ me.me.nama }} 👋</b>
+    </n-card>
+    <MenuContainer class="mt-2" v-if="width <= 480" />
 
-  <div class="grid grid-flow-col md:grid-cols-3 gap-4 mt-4">
-    <OrderBoard v-if="findAccessMenu('Order')" class="w-screen md:w-full" />
-    <PaymentBoard v-if="findAccessMenu('Pembayaran')" class="w-screen md:w-full " />
-    <JaminanBoard v-if="findAccessMenu('jaminan')" class="w-screen md:w-full " />
-  </div>
+    <div class="grid grid-flow-col md:grid-cols-3 gap-4 mt-4">
+        <OrderBoard v-if="findAccessMenu('Order')" class="w-screen md:w-full" />
+        <PaymentBoard v-if="findAccessMenu('Pembayaran')" class="w-screen md:w-full " />
+        <JaminanBoard v-if="findAccessMenu('jaminan')" class="w-screen md:w-full " />
+    </div>
 </template>
 <script setup>
 import { useWindowSize } from '@vueuse/core';
@@ -22,7 +22,7 @@ const { width } = useWindowSize();
 
 
 const findAccessMenu = (e) => {
-  return _.includes(me.me.accessMenu, e);
+    return _.includes(me.me.accessMenu, e);
 }
 
 const OrderBoard = defineAsyncComponent(() => import("./board/OrderBoard.vue"));

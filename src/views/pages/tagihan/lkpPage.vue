@@ -8,6 +8,7 @@ import * as XLSX from 'xlsx';
 import { useApi } from '../../../helpers/axios';
 import { useSearch } from '../../../helpers/searchObject';
 import AddLkp from './addLkp.vue';
+import UpdateLkp from './UpdateLkp.vue';
 
 
 
@@ -27,6 +28,12 @@ const handleDetail = (e) => {
     modalDetail.value = true;
     getDetail(e.no_lkp);
     // console.log(e.no_lkp);
+}
+const bodyModalUpdate = ref();
+const handleUpdate = (e) => {
+    modalAdd.value = true;
+    addMode.value = false;
+    bodyModalUpdate.value = e;
 }
 
 const disableOtherMonth = (ts) => {
@@ -122,9 +129,9 @@ const columnDeploy = reactive([
             return h(NButton, {
                 size: "small",
                 secondary: true,
-                onClick: () => handleDetail(row),
+                onClick: () => row.status === 'DRAFT' ? handleUpdate(row) : handleDetail(row),
             }, {
-                default: () => "Detail",
+                default: () => row.status === 'DRAFT' ? "Edit" : "Detail",
             })
         }
     }
@@ -368,7 +375,11 @@ const pagination = reactive({
         pagination.page = 1;
     }
 })
-
+const addMode = ref(false);
+const handleAddLkp = () => {
+    modalAdd.value = true;
+    addMode.value = true;
+}
 
 </script>
 <template>
@@ -388,7 +399,7 @@ const pagination = reactive({
                         <v-icon name="bi-x" v-else></v-icon>
                     </template>
                 </n-button>
-                <n-button type="primary" secondary link @click="modalAdd = true">
+                <n-button type="primary" secondary link @click="handleAddLkp">
                     <template #icon>
                         <v-icon name="bi-plus-lg"></v-icon>
                     </template>
@@ -410,10 +421,11 @@ const pagination = reactive({
         </template>
         <n-data-table :columns="columnDeploy" :data="showData" :loading="isLoading" size="small"
             :pagination="pagination" />
-    </n-card :class="`shadow-lg`">
+    </n-card>
     <n-modal v-model:show="modalAdd">
         <div class="w-4/5">
-            <AddLkp @cancel="handleCancel" @saved="handleSaved" />
+            <AddLkp v-if="addMode" @cancel="handleCancel" @saved="handleSaved" />
+            <UpdateLkp v-if="!addMode" :data="bodyModalUpdate" @cancel="handleCancel" @saved="handleSaved" />
         </div>
     </n-modal>
     <n-modal v-model:show="modalDetail">
@@ -450,11 +462,11 @@ const pagination = reactive({
                         </div>
 
                     </div>
-                </n-card :class="`shadow-lg`">
+                </n-card>
                 <n-data-table :columns="columnBebanTagih" :data="bodyModalDetail.details" :filter-value="filterValue"
                     @update:filters="onFilterChange" size="small" :loading="isLoading" :pagination="pagination" />
             </div>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
     <n-modal v-model:show="modalPrint">
         <n-card class="w-[33cm]">

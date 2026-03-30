@@ -62,32 +62,32 @@
                 <n-data-table size="small" striped :scroll-x="500" :columns="columns" :data="showData"
                     :pagination="pagination" />
             </n-space>
-        </n-card :class="`shadow-lg`">
+        </n-card>
         <n-modal v-model:show="showModal" preset="dialog" title="Dialog" content="Are you sure?" positive-text="Submit"
             negative-text="Cancel" @positive-click="submitCallback" @negative-click="cancelCallback" />
     </n-space>
 </template>
 <script setup>
-import { ref, onMounted, h } from "vue";
+import {
+    AddCircleOutlineRound as AddIcon,
+    ListAltOutlined as DetailIcon,
+    FileDownloadOutlined as DownloadIcon,
+    SearchOutlined as SearchIcon,
+    SettingsRound as SettingIcon,
+} from "@vicons/material";
+import {
+    NButton,
+    NDropdown,
+    NEllipsis,
+    NIcon,
+    NTag,
+    useDialog,
+    useMessage,
+} from "naive-ui";
+import { h, onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios";
 import { useSearch } from "../../../helpers/searchObject";
 import router from "../../../router";
-import {
-    useDialog,
-    useMessage,
-    NDropdown,
-    NIcon,
-    NTag,
-    NButton,
-    NEllipsis,
-} from "naive-ui";
-import {
-    SettingsRound as SettingIcon,
-    AddCircleOutlineRound as AddIcon,
-    SearchOutlined as SearchIcon,
-    FileDownloadOutlined as DownloadIcon,
-} from "@vicons/material";
-import { ListAltOutlined as DetailIcon } from "@vicons/material";
 
 const searchBox = ref();
 const message = useMessage();
@@ -264,7 +264,7 @@ const getData = async () => {
         token: userToken,
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         loadingBar.finish();
         // console.log(response.data.response)

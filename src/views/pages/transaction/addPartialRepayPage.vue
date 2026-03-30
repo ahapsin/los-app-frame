@@ -108,7 +108,8 @@
                         </tr>
                     </tbody>
                 </n-table>
-                <div class="p-2 class= bg-orange-100 border border-orange-500 rounded-lg mb-2" v-if="pelunasan.UANG_PELANGGAN != 0 && pelunasan.UANG_PELANGGAN<pelunasan.JUMLAH_TAGIHAN">
+                <div class="p-2 class= bg-orange-100 border border-orange-500 rounded-lg mb-2"
+                    v-if="pelunasan.UANG_PELANGGAN != 0 && pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN">
                     <n-checkbox v-model:checked="lunasDiskon" @update:checked="handleLunasDiskon" type="warning">
                         <span class="text-red-500 font-semibold">Pelunasan dengan diskon</span>
                     </n-checkbox>
@@ -177,7 +178,7 @@
                 </div>
             </div>
         </n-spin>
-    </n-card :class="`shadow-lg`">
+    </n-card>
     <n-modal class="w-1/4" v-model:show="buktiTransfer" preset="card" :segmented="true">
         <file-upload title="Bukti Transfer" :def_value="dataBuktiTransfer" endpoint="payment_attachment"
             type="bukti_transfer" :idapp="pelunasan.uid" @fallback="handleResBack" />
@@ -214,19 +215,19 @@
                                     <small class="text-reg">No Transaksi : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.no_transaksi
-                                        }}
+                                    }}
                                     </n-text>
                                     <small class="text-reg">No Pelanggan : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.cust_code
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col py-4">
                                     <small class="text-reg">Terima dari (No Kontrak)</small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.nama
-                                        }}
+                                    }}
                                     </n-text>
                                     <small class="text-lg">{{ responseProsesPayment.res.no_fasilitas }}</small>
                                 </div>
@@ -237,7 +238,7 @@
                                     <small class="text-reg">Tanggal & Waktu</small>
                                     <n-text strong class="text-md">{{
                                         responseProsesPayment.res.tgl_transaksi
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col">
@@ -259,7 +260,7 @@
                                     <td>
                                         <n-text strong class="text-md"> {{
                                             responseProsesPayment.res.kembalian
-                                            }}
+                                        }}
                                         </n-text>
                                     </td>
                                 </div>
@@ -267,7 +268,7 @@
                                     <small class="text-reg">Metode Pembayaran</small>
                                     <n-text strong class="text-md"> {{
                                         responseProsesPayment.res.payment_method
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                             </div>
@@ -285,11 +286,11 @@
                                     <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_denda).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td align="right" class="border pe-2 border-black">
                                         {{
@@ -303,7 +304,7 @@
                                     <td colspan="3" align="right" class="pe-2">
                                         <strong>{{
                                             responseProsesPayment.res.total_bayar.toLocaleString("US")
-                                            }}</strong>
+                                        }}</strong>
                                     </td>
                                 </tr>
                             </table>
@@ -313,13 +314,13 @@
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.created_by
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.nama
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                             </div>
@@ -335,7 +336,7 @@
                     </div>
                 </template>
             </n-result>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
 </template>
 <script setup>
@@ -351,10 +352,10 @@ import {
     useDialog,
     useMessage,
 } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
 import { computed, h, onMounted, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
 import { useApi } from "../../../helpers/axios";
-import { v4 as uuidv4 } from "uuid";
 import router from "../../../router";
 const uuid = uuidv4();
 const apptitle = import.meta.env.VITE_APP_TITLE;

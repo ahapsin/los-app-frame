@@ -1,45 +1,47 @@
 <template>
-  <n-card :class="`shadow-lg`" title="Laporan Listing Beban" :segmented="true" size="small">
-    <div>
-      <n-space vertical :size="12" class="pt-4">
-        <n-space>
-          <!--          <n-form-item label="TANGGAL AKHIR">-->
-          <!--            <n-date-picker v-model:formatted-value="rangeDate" :default-value="Date.now()" clearable-->
-          <!--                           format="yyyy-MM-dd"/>-->
-          <!--          </n-form-item>-->
-          <n-form-item label="POS">
-            <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama" value-field="id"
-              :default-value="defBranch" :options="dataBranch" v-model:value="selectBranch" />
-          </n-form-item>
-          <n-form-item>
-            <n-button @click="handleSubmit" type="primary">
-              Cari
-            </n-button>
-          </n-form-item>
-          <n-form-item>
-            <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
+    <n-card :class="`shadow-lg`" title="Laporan Listing Beban" :segmented="true" size="small">
+        <div>
+            <n-space vertical :size="12" class="pt-4">
+                <n-space>
+                    <!--          <n-form-item label="TANGGAL AKHIR">-->
+                    <!--            <n-date-picker v-model:formatted-value="rangeDate" :default-value="Date.now()" clearable-->
+                    <!--                           format="yyyy-MM-dd"/>-->
+                    <!--          </n-form-item>-->
+                    <n-form-item label="POS">
+                        <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
+                            value-field="id" :default-value="defBranch" :options="dataBranch"
+                            v-model:value="selectBranch" />
+                    </n-form-item>
+                    <n-form-item>
+                        <n-button @click="handleSubmit" type="primary">
+                            Cari
+                        </n-button>
+                    </n-form-item>
+                    <n-form-item>
+                        <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
                         :name="`Listing Beban_${selectBranch}_${rangeDate} `"
                         :stringifyLongNum="false">
               <n-button type="primary" secondary>Download</n-button>
             </json-excel> -->
 
-            <n-button type="primary" secondary @click="exportToExcel(dataListBan)">Download</n-button>
-          </n-form-item>
-        </n-space>
-        <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x :scroll-x="10000"
-          :min-row-height="48" virtual-scroll-header :columns="convertObjectToArray(dataListBan)" :data="dataListBan"
-          :pagination="{ pageSize: 10 }" :loading="loadingData" />
-      </n-space>
-    </div>
-  </n-card :class="`shadow-lg`">
+                        <n-button type="primary" secondary @click="exportToExcel(dataListBan)">Download</n-button>
+                    </n-form-item>
+                </n-space>
+                <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x
+                    :scroll-x="10000" :min-row-height="48" virtual-scroll-header
+                    :columns="convertObjectToArray(dataListBan)" :data="dataListBan" :pagination="{ pageSize: 10 }"
+                    :loading="loadingData" />
+            </n-space>
+        </div>
+    </n-card>
 </template>
 <script setup>
-import { ref, onMounted } from "vue";
-import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
 import { useLoadingBar, useMessage } from "naive-ui";
-import { useMeStore } from "../../../stores/me";
+import { onMounted, ref } from "vue";
+import * as XLSX from 'xlsx';
 import { useApi } from "../../../helpers/axios.js";
+import { useMeStore } from "../../../stores/me";
 
 const tableRef = ref();
 const me = useMeStore();
@@ -50,102 +52,102 @@ const defBranch = ref('SEMUA CABANG');
 const userToken = localStorage.getItem("token");
 const loadingBranch = ref(false);
 const getBranch = async () => {
-  loadingBranch.value = true;
-  const response = await useApi({
-    method: "GET",
-    api: "cabang",
-    token: userToken,
-  });
-  if (!response.ok) {
-    message.error("ERROR API");
-  } else {
-    loadingBranch.value = false;
-
-    if (me.me.cabang_nama != "Head Office") {
-      defBranch.value = me.me.cabang_nama;
-      selectBranch.value = me.me.cabang_id;
+    loadingBranch.value = true;
+    const response = await useApi({
+        method: "GET",
+        api: "cabang",
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
     } else {
-      selectBranch.value = "SEMUA CABANG";
-      dataBranch.value = response.data.response;
-      dataBranch.value.unshift({
-        id: "",
-        nama: "SEMUA CABANG"
-      });
+        loadingBranch.value = false;
+
+        if (me.me.cabang_nama != "Head Office") {
+            defBranch.value = me.me.cabang_nama;
+            selectBranch.value = me.me.cabang_id;
+        } else {
+            selectBranch.value = "SEMUA CABANG";
+            dataBranch.value = response.data.response;
+            dataBranch.value.unshift({
+                id: "",
+                nama: "SEMUA CABANG"
+            });
+        }
     }
-  }
 }
 const rangeDate = ref();
 let messageReactive = null;
 const loadingBar = useLoadingBar();
 const handleSubmit = async () => {
-  dataListBan.value = []
+    dataListBan.value = []
 
-  let basePayload = {
-    dari: rangeDate.value,
-    cabang_id: null
-  }
-
-  messageReactive = message.loading('Memuat data listing beban...', { duration: 0 })
-  loadingData.value = true
-
-  try {
-
-    // ===== JIKA SEMUA CABANG =====
-    if (!selectBranch.value) {
-
-      const promises = dataBranch.value
-        .filter(c => c.id) // ambil yang ada id saja
-        .map(cabang => {
-          return grabAllSP({
-            ...basePayload,
-            cabang_id: cabang.id
-          })
-        })
-
-      await Promise.all(promises)
-
-    } else {
-
-      // ===== JIKA SATU CABANG =====
-      await grabAllSP({
-        ...basePayload,
-        cabang_id: selectBranch.value
-      })
+    let basePayload = {
+        dari: rangeDate.value,
+        cabang_id: null
     }
 
-  } catch (err) {
-    message.error("Terjadi kesalahan saat mengambil data")
-  } finally {
-    loadingData.value = false
-    messageReactive?.destroy()
-  }
+    messageReactive = message.loading('Memuat data listing beban...', { duration: 0 })
+    loadingData.value = true
+
+    try {
+
+        // ===== JIKA SEMUA CABANG =====
+        if (!selectBranch.value) {
+
+            const promises = dataBranch.value
+                .filter(c => c.id) // ambil yang ada id saja
+                .map(cabang => {
+                    return grabAllSP({
+                        ...basePayload,
+                        cabang_id: cabang.id
+                    })
+                })
+
+            await Promise.all(promises)
+
+        } else {
+
+            // ===== JIKA SATU CABANG =====
+            await grabAllSP({
+                ...basePayload,
+                cabang_id: selectBranch.value
+            })
+        }
+
+    } catch (err) {
+        message.error("Terjadi kesalahan saat mengambil data")
+    } finally {
+        loadingData.value = false
+        messageReactive?.destroy()
+    }
 }
 
 const grabAllSP = async (payload) => {
-  await grabListBan(payload, 'sp1')
-  await grabListBan(payload, 'sp2')
-  await grabListBan(payload, 'sp3')
-  await grabListBan(payload, 'sp4')
-  await grabListBan(payload, 'listBan')
+    await grabListBan(payload, 'sp1')
+    await grabListBan(payload, 'sp2')
+    await grabListBan(payload, 'sp3')
+    await grabListBan(payload, 'sp4')
+    await grabListBan(payload, 'listBan')
 }
 
 const grabListBan = async (payload, url) => {
-  const response = await useApi({
-    method: "POST",
-    api: url,
-    data: payload,
-    token: userToken,
-  })
+    const response = await useApi({
+        method: "POST",
+        api: url,
+        data: payload,
+        token: userToken,
+    })
 
-  if (!response.ok) {
-    console.log(response)
-    message.error("Gagal ambil data dari " + url)
-  } else {
-    if (Array.isArray(response.data)) {
-      // GABUNG DATA (TIDAK OVERWRITE)
-      dataListBan.value.push(...response.data)
+    if (!response.ok) {
+        console.log(response)
+        message.error("Gagal ambil data dari " + url)
+    } else {
+        if (Array.isArray(response.data)) {
+            // GABUNG DATA (TIDAK OVERWRITE)
+            dataListBan.value.push(...response.data)
+        }
     }
-  }
 }
 const dataListBan = ref([]);
 const loadingData = ref(false)
@@ -172,25 +174,25 @@ const loadingData = ref(false)
 // }
 
 const exportToExcel = (data) => {
-  const ws = XLSX.utils.json_to_sheet(data)
-  const wb = XLSX.utils.book_new()
-  XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
-  const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
-  saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx')
+    const ws = XLSX.utils.json_to_sheet(data)
+    const wb = XLSX.utils.book_new()
+    XLSX.utils.book_append_sheet(wb, ws, 'Sheet1')
+    const wbout = XLSX.write(wb, { bookType: 'xlsx', type: 'array' })
+    saveAs(new Blob([wbout], { type: 'application/octet-stream' }), 'data.xlsx')
 }
 const convertObjectToArray = (obj) => {
-  if (!Array.isArray(obj) || obj.length === 0) {
-    return [];
-  }
-  const keys = Object.keys(obj[0]);
-  return keys.map(key => ({ title: key, key: key }));
+    if (!Array.isArray(obj) || obj.length === 0) {
+        return [];
+    }
+    const keys = Object.keys(obj[0]);
+    return keys.map(key => ({ title: key, key: key }));
 }
 onMounted(() => {
-  loadingBar.finish();
-  getBranch();
-  me;
+    loadingBar.finish();
+    getBranch();
+    me;
 }
 )
-  ;
+    ;
 
 </script>

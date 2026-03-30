@@ -5,7 +5,7 @@
                 <div class="flex w-full items-center justify-around px-10">
                     <img :src="applogo" class="w-[100px] h-[100px]" />
                     <div class="w-fit">
-                      <v-icon name="bi-exclamation-diamond" animation="spin" hover />
+                        <v-icon name="bi-exclamation-diamond" animation="spin" hover />
                     </div>
                     <img :src="app503" class="w-[100px]" />
                 </div>
@@ -15,7 +15,7 @@
                     <n-button type="info" @click="handleBack">Kembali</n-button>
                 </div>
             </div>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </div>
 </template>
 

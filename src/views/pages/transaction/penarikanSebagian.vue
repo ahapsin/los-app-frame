@@ -83,7 +83,7 @@
                 :scroll-x="1070" :data="showData" :max-height="500" :on-update:checked-row-keys="handleFasilitas"
                 :loading="loadDataPayment" class="p-4" :pagination="{ pageSize: 10 }" />
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
     <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal" :on-after-leave="onAfterLeave">
         <n-card :class="`shadow-lg`" title="DETAIL PEMBAYARAN" :segmented="{
             content: true,
@@ -154,7 +154,7 @@
                         <div class="flex justify-between">
                             <n-text strong class="text-md"> {{ bodyModal.tgl_transaksi }}</n-text>
                             <n-text strong class="text-md"> {{ bodyModal.payment_method == 'cash' ? 'TUNAI' : 'TRANSFER'
-                                }}</n-text>
+                            }}</n-text>
 
                         </div>
                         <div class="flex justify-between border-b border-dashed border-black"
@@ -192,7 +192,7 @@
                             <div class="flex flex-col">
                                 <small class="text-reg">CUST. BAYAR</small>
                                 <n-text strong class="text-md"> {{ bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}</n-text>
+                                }}</n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">PEMBULATAN</small>
@@ -203,7 +203,7 @@
                                 <small class="text-reg">KEMBALIAN</small>
                                 <td>
                                     <n-text strong class="text-md"> {{ bodyModal.kembalian.toLocaleString("US")
-                                        }}</n-text>
+                                    }}</n-text>
                                 </td>
                             </div>
 
@@ -226,14 +226,14 @@
                                 <small class="text-reg">Cust. Bayar</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Diskon</small>
                                 <n-text class="text-md font-bold"> {{
                                     (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -264,11 +264,11 @@
                                 <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_pokok).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_bunga).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td align="right" class="border pe-2 border-black text-right">
                                     {{
@@ -314,7 +314,7 @@
                 <n-divider>bukti transfer</n-divider>
                 <n-image :src="bodyModal.attachment" class="max-w-36" />
             </div>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
     <n-modal v-model:show="confCancelModal" preset="dialog" draggable title="Konfirmasi"
         positive-text="Ya, Ajukan Sekarang !" negative-text="hmm, nanti dulu deh" @positive-click="postCancelPayment">
@@ -323,7 +323,9 @@
         <n-input type="textarea" placeholder="isi dulu alasannya disini" v-model:value="bodyCancel.descr" />
     </n-modal>
     <n-modal v-model:show="modalAdd">
-        <div class="w-1/2"><AddPenarikanSebagian/></div>
+        <div class="w-1/2">
+            <AddPenarikanSebagian />
+        </div>
     </n-modal>
 </template>
 <script setup>
@@ -341,7 +343,6 @@ import { computed, h, onMounted, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
 import { useApi } from "../../../helpers/axios";
 import { useSearch } from "../../../helpers/searchObject";
-import router from "../../../router";
 import AddPenarikanSebagian from "./AddPenarikanSebagian.vue";
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;

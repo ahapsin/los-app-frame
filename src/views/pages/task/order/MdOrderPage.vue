@@ -77,7 +77,7 @@
                     <n-data-table size="small" ref="tableRef" triped :scroll-x="1000" :columns="columns"
                         :data="showData" :pagination="pagination" :loading="loadData" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
     </div>
     <n-modal class="w-1/2" title="Upload Berkas Pencairan" v-model:show="showModal" :mask-closable="false">
@@ -135,7 +135,7 @@ Klik atau seret file ke area ini untuk diunggah
             <div class="pt-4 flex justify-end">
                 <n-button @click="handleSelesai" secondary type="primary" round>Selesai</n-button>
             </div>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
 
 </template>

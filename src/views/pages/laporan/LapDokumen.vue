@@ -1,13 +1,14 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :class="`shadow-lg`" :title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small" class="shadow-lg">
+            <n-card :class="`shadow-lg`" :title="`Laporan Dokumen Pelanggan`" :segmented="true" size="small"
+                class="shadow-lg">
                 <n-space vertical :size="12" class="pt-4">
                     <div class="flex gap-2">
                         <n-form-item label="Periode" class="w-full">
-                            <n-date-picker v-model:formatted-value="dynamicSearch.periode" :default-calendar-start-time="Date.now()"
-                                clearable start-placeholder="dari" type="daterange" end-placeholder="sampai"
-                                format="yyyy-MM-dd" />
+                            <n-date-picker v-model:formatted-value="dynamicSearch.periode"
+                                :default-calendar-start-time="Date.now()" clearable start-placeholder="dari"
+                                type="daterange" end-placeholder="sampai" format="yyyy-MM-dd" />
                         </n-form-item>
                         <n-form-item label="Nomor Kontrak" class="w-full">
                             <n-input v-model:value="dynamicSearch.loan_number" placeholder="Nomor Kontrak" clearable />
@@ -27,19 +28,18 @@
                     <n-data-table :loading="loadTable" size="small" :columns="columns" :data="dataTable"
                         :pagination="pagination" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, computed, reactive } from "vue";
+import {
+    NButton,
+    NImage
+} from "naive-ui";
+import { computed, onMounted, reactive, ref } from "vue";
 import { useApi } from "../../../helpers/axios";
 import { useSearch } from "../../../helpers/searchObject";
-import {
-    useMessage,
-    NButton,
-    NImage,
-} from "naive-ui";
 import { useMeStore } from "../../../stores/me";
 const dataTable = ref([]);
 const searchBox = ref();

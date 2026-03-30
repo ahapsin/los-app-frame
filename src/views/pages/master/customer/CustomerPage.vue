@@ -54,7 +54,7 @@
                 <n-data-table remote :loading="loadingPage" size="small" :columns="columns" :data="dataTable" />
                 <n-pagination @update:page="handlePageChange" v-model:page="pageLocation" :page-count="countItem" />
             </n-space>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-space>
     <n-modal v-model:show="modalDetailCustomer">
 
@@ -221,29 +221,26 @@
                     </n-tab-pane>
                 </n-tabs>
             </n-spin>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
 </template>
 <script setup>
-import { ref, onMounted, h, computed } from "vue";
-import { useApi } from "../../../../helpers/axios";
-import router from "../../../../router";
-import {
-    useDialog,
-    useMessage,
-    NDropdown,
-    NIcon,
-
-    NButton,
-    useLoadingBar,
-} from "naive-ui";
 import {
     AddCircleOutlineRound as AddIcon,
+    ListAltOutlined as DetailIcon,
     FileDownloadOutlined as DownloadIcon,
 } from "@vicons/material";
 import {
-    ListAltOutlined as DetailIcon,
-} from "@vicons/material";
+    NButton,
+    NDropdown,
+    NIcon,
+    useDialog,
+    useLoadingBar,
+    useMessage,
+} from "naive-ui";
+import { computed, h, onMounted, ref } from "vue";
+import { useApi } from "../../../../helpers/axios";
+import router from "../../../../router";
 
 const message = useMessage();
 const dialog = useDialog();

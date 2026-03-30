@@ -5,7 +5,7 @@
             <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="props.data"
                 :max-height="300" class="pb-2" :pagination="pagination" />
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
     <n-modal v-model:show="confModal" preset="dialog" draggable title="Konfirmasi" positive-text="Yakin"
         negative-text="Hmm, belum yakin" @positive-click="handleCancel" @negative-click="cancelCallback">
         Jadi, kamu yakin ingin batalin order ini ?
@@ -13,12 +13,11 @@
     </n-modal>
 </template>
 <script setup>
-import { useApi } from "../../../../helpers/axios";
 import {
     NButton, useMessage
 } from "naive-ui";
 import { computed, h, reactive, ref } from "vue";
-import router from "../../../../router";
+import { useApi } from "../../../../helpers/axios";
 
 const checkedRowCredit = ref([]);
 const pagination = ref({ pageSize: 10 });
@@ -140,10 +139,10 @@ const handleCancel = async () => {
     if (!response.ok) {
         message.error("ERROR API");
     } else {
-        emit('conf',true);
+        emit('conf', true);
         bodyCancel.descr_ho = null;
         message.success("order berhasil dibatalkan !");
-        confModal.value=false;
+        confModal.value = false;
     }
 };
 </script>

@@ -33,7 +33,7 @@
             v-show="props.embed ? true : displayFasilitas" />
         <n-spin v-if="displayDetail" :show="spinnerShow">
 
-            <div class="flex gap-4 rounded-xl bg-yellow-50 p-4 mb-4" >
+            <div class="flex gap-4 rounded-xl bg-yellow-50 p-4 mb-4">
                 <n-table size="small">
                     <tr>
                         <th colspan="2">Pinjaman</th>
@@ -64,7 +64,7 @@
                         <th>Terpakai</th>
                         <td><strong class="text-er">1, 235, 560,158</strong></td>
                     </tr>
-                    <tr >
+                    <tr>
                         <th>Tersedia</th>
                         <td><strong class="text-pr">1, 235, 560,158</strong></td>
                     </tr>
@@ -99,7 +99,7 @@
 
             <div class="md:flex gap-2 bg-pr/10 rounded-xl items-center pt-4 px-4"
                 v-show="props.embed ? true : displayFasilitas">
-                
+
                 <n-form-item path="nestedValue.path2" label="Nilai Penarikan" class="w-full">
                     <n-input-number placeholder="Jumlah Pembayaran" size="large"
                         v-model:value="pelunasan.UANG_PELANGGAN" :show-button="false" :parse="parseCurrency"
@@ -108,16 +108,15 @@
                     </n-input-number>
                 </n-form-item>
                 <n-form-item path="nestedValue.path2" label="Tanggal Valuta" class="w-full">
-                   <n-date-picker  type="date" />
+                    <n-date-picker type="date" />
                 </n-form-item>
                 <n-form-item label="No referensi" class="w-full">
-                    <n-input :show-button="false" :parse="parseCurrency" :format="formatCurrency"
-                       clearable class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
+                    <n-input :show-button="false" :parse="parseCurrency" :format="formatCurrency" clearable
+                        class="w-full" :disabled="pelunasan.UANG_PELANGGAN < pelunasan.JUMLAH_TAGIHAN ? true : false
                             " />
                 </n-form-item>
                 <n-form-item label="Keterangan" class="w-full">
-                    <n-input 
-                        class="w-full" />
+                    <n-input class="w-full" />
                 </n-form-item>
                 <n-form-item class="w-full">
                     <n-button type="primary" @click="handleProses" :loading="loadProses" class="w-full" :disabled="pelunasan.UANG_PELANGGAN === 0
@@ -136,7 +135,7 @@
                 </n-form-item>
             </div>
         </n-spin>
-    </n-card :class="`shadow-lg`">
+    </n-card>
     <n-modal class="w-1/4" v-model:show="buktiTransfer" preset="card" :segmented="true">
         <file-upload title="Bukti Transfer" :def_value="dataBuktiTransfer" endpoint="payment_attachment"
             type="bukti_transfer" :idapp="pelunasan.uid" @fallback="handleResBack" />
@@ -147,27 +146,22 @@
                 <n-spin size="small" />
                 <n-text>memproses pelunasan</n-text>
             </div>
-            
-        </n-card :class="`shadow-lg`">
+
+        </n-card>
     </n-modal>
 </template>
 <script setup>
 import {
-    ChevronLeftRound as backIcon,
-    CheckCircleRound as checkIcon,
-} from "@vicons/material";
-import {
     NButton,
-    NIcon,
     NInput,
     NInputNumber,
     useDialog,
-    useMessage,
+    useMessage
 } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
 import { computed, h, onMounted, reactive, ref } from "vue";
 import { useVueToPrint } from "vue-to-print";
 import { useApi } from "../../../helpers/axios";
-import { v4 as uuidv4 } from "uuid";
 import router from "../../../router";
 const uuid = uuidv4();
 const apptitle = import.meta.env.VITE_APP_TITLE;

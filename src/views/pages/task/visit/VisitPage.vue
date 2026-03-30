@@ -7,12 +7,12 @@
             <n-button type="primary" @click="handleAddButton">Tambah Kunjungan</n-button>
         </template>
         <n-data-table :columns="columnKunjungan" :data="dataKunjungan" />
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 
 <script setup>
-import router from '../../../../router';
 import { useLoadingBar } from 'naive-ui';
+import router from '../../../../router';
 
 
 const loadingBar = useLoadingBar();

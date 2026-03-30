@@ -29,7 +29,7 @@
                         <small class="text-reg">NO LKP</small>
                         <n-text type="error">
                             <strong>{{ props.data
-                            }}</strong>
+                                }}</strong>
                         </n-text>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
@@ -41,28 +41,28 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Customer</small>
                         <n-text strong class="text-md">{{ props.data.nama_customer
-                        }}</n-text>
+                            }}</n-text>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Tgl Jatuh Tempo</small>
                         <n-ellipsis class="text-md font-semibold">{{ props.data.tgl_jatuh_tempo
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Cycle</small>
                         <n-ellipsis class="text-md font-semibold">{{ props.data.cycle_awal
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran ke</small>
                         <n-ellipsis class="text-md font-semibold">{{ props.data.angusran_ke
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ props.data.angsuran
 
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -101,7 +101,7 @@
                         <n-ellipsis class="text-md font-semibold">~kosong</n-ellipsis>
                     </div>
                 </div>
-            </n-card :class="`shadow-lg`">
+            </n-card>
             <n-space vertical>
                 <n-form-item label="Petugas asal">
 
@@ -126,16 +126,15 @@
                 </n-space>
             </n-space>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 
 <script setup>
-import { NAvatar, NText } from 'naive-ui';
-import { ref, reactive, onMounted } from "vue";
-import { useLoadingBar, useMessage } from "naive-ui";
+import _ from "lodash";
+import { NAvatar, NText, useLoadingBar, useMessage } from 'naive-ui';
+import { onMounted, reactive, ref } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
-import _, { each } from "lodash";
 
 const me = useMeStore();
 const message = useMessage();

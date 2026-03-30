@@ -226,8 +226,8 @@
                         </div>
 
                     </div>
-                </n-card :class="`shadow-lg`">
-            </n-card :class="`shadow-lg`">
+                </n-card>
+            </n-card>
         </div>
         <n-modal v-model:show="showModal">
             <n-card :class="`shadow-lg`" class="md:w-1/2" closable @close="showModal = false" :segmented="true"
@@ -247,7 +247,7 @@
                         <n-button type="warning" @click="showModal = false">batal</n-button>
                     </n-space>
                 </template>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-modal>
         <div v-show="current === 4">
             <n-form ref="formSurvey" :model="survey" :rules="rulesSurvey" require-mark-placement="right-hanging">
@@ -338,23 +338,22 @@
                 </n-button>
             </n-flex>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 <script setup>
-import { ref, reactive, onMounted } from "vue";
-import { v4 as uuidv4 } from "uuid";
 import {
-    ArrowBackOutlined as ArrowBack,
     AddFilled as AddIcon,
-    EditOutlined as EditIcon,
-    DeleteOutlineFilled as DeleteIcon,
+    ArrowBackOutlined as ArrowBack,
     ArrowForwardOutlined as ArrowForward,
-
+    DeleteOutlineFilled as DeleteIcon,
+    EditOutlined as EditIcon,
 } from "@vicons/material";
-import { useMessage } from "naive-ui";
-import router from "../../router";
 import { useWindowSize } from "@vueuse/core";
+import { useMessage } from "naive-ui";
+import { v4 as uuidv4 } from "uuid";
+import { onMounted, reactive, ref } from "vue";
 import { useApi } from "../../helpers/axios";
+import router from "../../router";
 
 import _ from "lodash";
 import { computed } from "vue";

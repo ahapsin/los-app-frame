@@ -56,7 +56,7 @@
                 <n-space vertical :size="12" class="pt-4">
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
     </div>
     <n-modal v-model:show="modalOpen">
@@ -107,26 +107,22 @@
     </n-modal>
 </template>
 <script setup>
-import { ref, onMounted, h } from "vue";
-import { useApi } from "../../../../helpers/axios";
-import { useSearch } from "../../../../helpers/searchObject";
-import router from '../../../../router';
-import { useDialog, useMessage, NDropdown, NIcon, NTag, NButton, NEllipsis, useLoadingBar } from "naive-ui";
 import {
     AddCircleOutlineRound as AddIcon,
-    SearchOutlined as SearchIcon,
+    DeleteOutlined as DeleteIcon,
+    ListAltOutlined as DetailIcon,
     FileDownloadOutlined as DownloadIcon,
-
+    SearchOutlined as SearchIcon,
 } from "@vicons/material";
 import {
     Lock as LockIcon,
     LockOpen as UnlockIcon
-} from "@vicons/tabler"
-import {
-    EditOutlined as EditIcon,
-    DeleteOutlined as DeleteIcon,
-    ListAltOutlined as DetailIcon
-} from "@vicons/material";
+} from "@vicons/tabler";
+import { NButton, NIcon, useLoadingBar, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
+import { useApi } from "../../../../helpers/axios";
+import { useSearch } from "../../../../helpers/searchObject";
+import router from '../../../../router';
 
 
 const message = useMessage();

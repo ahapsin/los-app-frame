@@ -25,11 +25,10 @@
                         <n-input-number :parse="parse" :format="format" v-model:value="order.plafond"
                             placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full" clearable
                             :on-update:value="handlePlafond" />
-                            <!-- <n-select v-model:value="order.plafond" label-field="l" filterable value-field="v" :filter="filterByValueOrLabel" :options="optPlafond"/> -->
+                        <!-- <n-select v-model:value="order.plafond" label-field="l" filterable value-field="v" :filter="filterByValueOrLabel" :options="optPlafond"/> -->
                     </n-form-item>
                     <n-form-item label="Jenis Angsuran" path="jenis_angsuran" class="w-full">
-                        <n-select filterable placeholder="Jenis Angsuran"
-                            :options="jenisAngsuran"
+                        <n-select filterable placeholder="Jenis Angsuran" :options="jenisAngsuran"
                             v-model:value="order.jenis_angsuran" :on-update:value="handleTipe"
                             :disabled="order.plafond != 0 ? false : true" />
                     </n-form-item>
@@ -37,9 +36,11 @@
                 <div class="md:flex gap-2">
 
                     <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
-                        
-                        <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000" v-if="order.jenis_angsuran === 'bunga_menurun' && order.plafond < 1500000"/>
-                        <n-alert v-else-if="skemaAngsuran.length == 0" type="warning">Tenor dan Angsuran tidak tersedia</n-alert>
+
+                        <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000"
+                            v-if="order.jenis_angsuran === 'bunga_menurun' && order.plafond < 1500000" />
+                        <n-alert v-else-if="skemaAngsuran.length == 0" type="warning">Tenor dan Angsuran tidak
+                            tersedia</n-alert>
                         <div v-else>
                             <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bulanan'">
                                 <n-radio-group v-model:value="order.tenor" name="radiogroup">
@@ -179,7 +180,8 @@
                 <div class="md:flex gap-2">
                     <n-form-item label="Nama" path="nama" class="w-full">
                         <n-input placeholder="Nama" v-model:value="pelanggan.nama"
-                            @input="$event => (pelanggan.nama = $event.toUpperCase())" :readonly="order.category === 'RO'"/>
+                            @input="$event => (pelanggan.nama = $event.toUpperCase())"
+                            :readonly="order.category === 'RO'" />
                     </n-form-item>
                     <n-form-item label="Tanggal lahir" path="tgl_lahir" class="w-full">
                         <div class="w-full">
@@ -198,7 +200,8 @@
                 </div>
                 <div class="flex flex-col md:flex-row gap-2 gap-x-2">
                     <n-form-item label="Alamat" path="alamat" class="w-full">
-                        <n-input placeholder="Alamat" v-model:value="pelanggan.alamat" :readonly="order.category === 'RO'"
+                        <n-input placeholder="Alamat" v-model:value="pelanggan.alamat"
+                            :readonly="order.category === 'RO'"
                             @input="$event => (pelanggan.alamat = $event.toUpperCase())" class="w-full" />
                     </n-form-item>
 
@@ -331,8 +334,8 @@
                         </div>
 
                     </div>
-                </n-card :class="`shadow-lg`">
-            </n-card :class="`shadow-lg`">
+                </n-card>
+            </n-card>
         </div>
         <n-modal v-model:show="showModal">
             <n-card :class="`shadow-lg`" class="md:w-1/2" closable @close="showModal = false" :segmented="true"
@@ -354,7 +357,7 @@
                         <n-button type="warning" @click="showModal = false">batal</n-button>
                     </n-space>
                 </template>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-modal>
         <div v-show="current === 4">
             <n-form ref="formSurvey" :model="survey" :rules="rulesSurvey" require-mark-placement="right-hanging">
@@ -447,7 +450,7 @@
                 </n-button>
             </n-flex>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 <script setup>
 import {
@@ -470,8 +473,8 @@ import JaminanSertifikat from "./survey/JaminanSertifikat.vue";
 // import JaminanBillyet from "./survey/JaminanBillyet.vue";
 // import JaminanEmas from "./survey/JaminanEmas.vue";
 import { useJaminanStore } from "../../../stores/jaminan";
-import JaminanBillyet from "./survey/JaminanBillyet.vue";
 import { useMeStore } from "../../../stores/me";
+import JaminanBillyet from "./survey/JaminanBillyet.vue";
 const { width } = useWindowSize();
 const message = useMessage();
 const me = useMeStore();
@@ -510,11 +513,11 @@ const formOrder = ref(null);
 const formPelanggan = ref(null);
 
 const optPlafond = Array.from({ length: ((7000000 - 1000000) / 100000) + 1 }, (_, i) => {
-  const value = 1000000 + i * 100000;
-  return {
-    v: value,
-    l: value.toLocaleString('id-ID') // format rekening Indonesia
-  };
+    const value = 1000000 + i * 100000;
+    return {
+        v: value,
+        l: value.toLocaleString('id-ID') // format rekening Indonesia
+    };
 });
 
 
@@ -898,11 +901,11 @@ const endForm = () => {
 }
 
 const filterByValueOrLabel = (pattern, option) => {
-  const search = pattern.toLowerCase()
-  return (
-    option.v.toString().includes(search) ||
-    option.l.toLowerCase().includes(search)
-  )
+    const search = pattern.toLowerCase()
+    return (
+        option.v.toString().includes(search) ||
+        option.l.toLowerCase().includes(search)
+    )
 }
 
 const handleSave = async (type) => {

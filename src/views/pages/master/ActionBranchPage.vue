@@ -61,16 +61,16 @@
                 </n-button>
             </n-space>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 <script setup>
-import { useMessage } from 'naive-ui';
-import { ref, reactive, onMounted } from 'vue';
 import { useWindowSize } from '@vueuse/core';
-const { width } = useWindowSize();
+import { useMessage } from 'naive-ui';
+import { onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useApi } from '../../../helpers/axios';
 import router from '../../../router';
-import { useRoute } from 'vue-router';
+const { width } = useWindowSize();
 
 const dynamicForm = reactive({
     ID: "",

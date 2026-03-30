@@ -20,16 +20,17 @@
                 <n-form-item class="w-full">
                     <n-space>
                         <n-button type="primary" @click="filterData" class="px-4"> Cari</n-button>
-                        <n-button type="primary" secondary @click="exportToExcel(listData.map(item => _.omit(item, ['PathFile'])))">Download</n-button>
+                        <n-button type="primary" secondary
+                            @click="exportToExcel(listData.map(item => _.omit(item, ['PathFile'])))">Download</n-button>
                     </n-space>
                 </n-form-item>
             </div>
             <div class="p-2 bg-white rounded-b-xl">
-                <n-data-table :columns="columnsKunjungan" :data="listData"
-                    :pagination="{ pageSize: 10 }" striped :loading="loadData" />
+                <n-data-table :columns="columnsKunjungan" :data="listData" :pagination="{ pageSize: 10 }" striped
+                    :loading="loadData" />
             </div>
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 
 
 </template>

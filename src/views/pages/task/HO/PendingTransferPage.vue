@@ -1,127 +1,129 @@
 <template>
-  <n-card :class="`shadow-lg`" :segmented="true" size="small">
-    <template #header>Pending Transfer</template>
-    <template #header-extra>
-      <n-space>
-        <n-badge :value="dataPending.length" :max="99" type="warning">
-          <n-button v-show="!searchField" strong secondary type="warning" @click="dataPayment = dataPending">
-            <template #icon>
-              <n-icon>
-                <pending-icon />
-              </n-icon>
-            </template>
-            acc HO
-          </n-button>
-        </n-badge>
-      </n-space>
-    </template>
-    <div>
-      <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns" :data="dataPayment"
-        :max-height="300" class="pb-2" :pagination="pagination" :loading="loadDataPayment" />
-    </div>
-  </n-card :class="`shadow-lg`">
-  <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal">
-    <n-card :class="`shadow-lg`" :bordered="false" aria-modal="true" title="Detail" :segmented="{
-      content: true,
-      footer: 'soft',
-    }" size="small">
-      <template #header-extra>
-        <n-popconfirm :show-icon="false" positive-text="konfirmasi" negative-text="reject"
-          @positive-click="handlePositiveClick(bodyModal.no_transaksi)"
-          @negative-click="handleNegativeClick(bodyModal.no_transaksi)">
-          <template #trigger>
-            <n-button type="primary">Approve</n-button>
-          </template>
-          <n-input type="textarea" placeholder="keterangan" v-model:value="keterangan"></n-input>
-        </n-popconfirm>
-      </template>
-      <div class="flex justify-between">
-        <div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Status</label><span>
-              <n-tag strong :type="statusTag(bodyModal.STATUS)">
-                {{ bodyModal.STATUS }}</n-tag></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Tanggal</label><span>
-              <n-text strong> {{ bodyModal.tgl_transaksi }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">No Kontrak</label><span>
-              <n-text strong> {{ bodyModal.no_fasilitas }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">No Transaksi</label><span>
-              <n-text strong> {{ bodyModal.no_transaksi }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Atas Nama </label><span>
-              <n-text strong> {{ bodyModal.nama }}</n-text></span>
-          </div>
-          <div class="flex justify-between">
-            <div class="w-36">Alamat</div>
-            <n-text strong> {{ bodyModal.alamat }}</n-text>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Total Bayar</label><span>
-              <n-text strong>
-                {{ bodyModal.total_bayar.toLocaleString("US") }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Jumlah Uang</label><span>
-              <n-text strong>
-                {{ bodyModal.jumlah_uang.toLocaleString("US") }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Pembulatan</label><span>
-              <n-text strong>
-                {{ bodyModal.pembulatan.toLocaleString("US") }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Metode Pembayaran</label><span>
-              <n-text strong> {{ bodyModal.payment_method }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">kembalian</label><span>
-              <n-text strong>
-                {{ bodyModal.kembalian.toLocaleString("US") }}</n-text></span>
-          </div>
-          <div class="flex border-b p-1">
-            <label class="w-36">Untuk Pembayaran</label>
+    <n-card :class="`shadow-lg`" :segmented="true" size="small">
+        <template #header>Pending Transfer</template>
+        <template #header-extra>
             <n-space>
-              <n-tag size="small" v-for="pembayaran in bodyModal.pembayaran" :bordered="false" :key="pembayaran">{{
-                pembayaran.title }}
-                {{ parseInt(pembayaran.bayar_angsuran).toLocaleString("US") }}
-                <span v-show="pembayaran.bayar_denda > 0">,denda
-                  {{
-                    parseInt(pembayaran.bayar_denda).toLocaleString("US")
-                  }}</span>
-              </n-tag>
+                <n-badge :value="dataPending.length" :max="99" type="warning">
+                    <n-button v-show="!searchField" strong secondary type="warning" @click="dataPayment = dataPending">
+                        <template #icon>
+                            <n-icon>
+                                <pending-icon />
+                            </n-icon>
+                        </template>
+                        acc HO
+                    </n-button>
+                </n-badge>
             </n-space>
-          </div>
+        </template>
+        <div>
+            <n-data-table striped size="small" :row-key="(row) => row.loan_number" :columns="columns"
+                :data="dataPayment" :max-height="300" class="pb-2" :pagination="pagination"
+                :loading="loadDataPayment" />
         </div>
-      </div>
-      <div v-show="bodyModal.payment_method == 'transfer'">
-        <n-divider>bukti transfer</n-divider>
-        <n-image :src="bodyModal.attachment" class="max-w-36 w-20 h-20" />
-      </div>
-    </n-card :class="`shadow-lg`">
-  </n-modal>
+    </n-card>
+    <n-modal class="w-fit" title="Upload Berkas Pencairan" v-model:show="showModal">
+        <n-card :class="`shadow-lg`" :bordered="false" aria-modal="true" title="Detail" :segmented="{
+            content: true,
+            footer: 'soft',
+        }" size="small">
+            <template #header-extra>
+                <n-popconfirm :show-icon="false" positive-text="konfirmasi" negative-text="reject"
+                    @positive-click="handlePositiveClick(bodyModal.no_transaksi)"
+                    @negative-click="handleNegativeClick(bodyModal.no_transaksi)">
+                    <template #trigger>
+                        <n-button type="primary">Approve</n-button>
+                    </template>
+                    <n-input type="textarea" placeholder="keterangan" v-model:value="keterangan"></n-input>
+                </n-popconfirm>
+            </template>
+            <div class="flex justify-between">
+                <div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">Status</label><span>
+                            <n-tag strong :type="statusTag(bodyModal.STATUS)">
+                                {{ bodyModal.STATUS }}</n-tag></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">Tanggal</label><span>
+                            <n-text strong> {{ bodyModal.tgl_transaksi }}</n-text></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">No Kontrak</label><span>
+                            <n-text strong> {{ bodyModal.no_fasilitas }}</n-text></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">No Transaksi</label><span>
+                            <n-text strong> {{ bodyModal.no_transaksi }}</n-text></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">Atas Nama </label><span>
+                            <n-text strong> {{ bodyModal.nama }}</n-text></span>
+                    </div>
+                    <div class="flex justify-between">
+                        <div class="w-36">Alamat</div>
+                        <n-text strong> {{ bodyModal.alamat }}</n-text>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">Total Bayar</label><span>
+                            <n-text strong>
+                                {{ bodyModal.total_bayar.toLocaleString("US") }}</n-text></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">Jumlah Uang</label><span>
+                            <n-text strong>
+                                {{ bodyModal.jumlah_uang.toLocaleString("US") }}</n-text></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">Pembulatan</label><span>
+                            <n-text strong>
+                                {{ bodyModal.pembulatan.toLocaleString("US") }}</n-text></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">Metode Pembayaran</label><span>
+                            <n-text strong> {{ bodyModal.payment_method }}</n-text></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">kembalian</label><span>
+                            <n-text strong>
+                                {{ bodyModal.kembalian.toLocaleString("US") }}</n-text></span>
+                    </div>
+                    <div class="flex border-b p-1">
+                        <label class="w-36">Untuk Pembayaran</label>
+                        <n-space>
+                            <n-tag size="small" v-for="pembayaran in bodyModal.pembayaran" :bordered="false"
+                                :key="pembayaran">{{
+                                pembayaran.title }}
+                                {{ parseInt(pembayaran.bayar_angsuran).toLocaleString("US") }}
+                                <span v-show="pembayaran.bayar_denda > 0">,denda
+                                    {{
+                                        parseInt(pembayaran.bayar_denda).toLocaleString("US")
+                                    }}</span>
+                            </n-tag>
+                        </n-space>
+                    </div>
+                </div>
+            </div>
+            <div v-show="bodyModal.payment_method == 'transfer'">
+                <n-divider>bukti transfer</n-divider>
+                <n-image :src="bodyModal.attachment" class="max-w-36 w-20 h-20" />
+            </div>
+        </n-card>
+    </n-modal>
 </template>
 <script setup>
 import { useApi } from "../../../../helpers/axios";
 // import { useSearch } from "../../../../helpers/searchObject";
 import {
-  AccessTimeRound as pendingIcon
+    AccessTimeRound as pendingIcon
 } from "@vicons/material";
 import _ from "lodash";
 import {
-  NBadge,
-  NButton,
-  NIcon,
-  NInput,
-  NTag,
-  useMessage
+    NBadge,
+    NButton,
+    NIcon,
+    NInput,
+    NTag,
+    useMessage
 } from "naive-ui";
 import { computed, h, onMounted, reactive, ref } from "vue";
 import router from "../../../../router";
@@ -129,224 +131,224 @@ const searchField = ref(false);
 const checkedRowCredit = ref([]);
 const pagination = ref({ pageSize: 10 });
 const totalPay = computed(() => {
-  const totalInstallment = () =>
-    checkedRowCredit.value.reduce(
-      (total, installment) => total + installment.bayar_angsuran,
-      0
-    );
-  const totalPenalty = () =>
-    checkedRowCredit.value.reduce(
-      (total, installment) => total + installment.bayar_denda,
-      0
-    );
-  const combinedTotal = () => totalInstallment() + totalPenalty();
-  return combinedTotal();
+    const totalInstallment = () =>
+        checkedRowCredit.value.reduce(
+            (total, installment) => total + installment.bayar_angsuran,
+            0
+        );
+    const totalPenalty = () =>
+        checkedRowCredit.value.reduce(
+            (total, installment) => total + installment.bayar_denda,
+            0
+        );
+    const combinedTotal = () => totalInstallment() + totalPenalty();
+    return combinedTotal();
 });
 const pageData = reactive({
-  no_facility: null,
-  total_bayar: totalPay,
-  jumlah_uang: 0,
-  payment_method: "cash",
-  pembulatan: 0,
-  kembalian: computed(() =>
-    pageData.jumlah_uang
-      ? pageData.jumlah_uang - pageData.total_bayar - pageData.pembulatan
-      : 0
-  ),
-  struktur: checkedRowCredit,
-  bank_tujuan: null,
-  no_rekening: null,
-  bukti_transafer: null,
+    no_facility: null,
+    total_bayar: totalPay,
+    jumlah_uang: 0,
+    payment_method: "cash",
+    pembulatan: 0,
+    kembalian: computed(() =>
+        pageData.jumlah_uang
+            ? pageData.jumlah_uang - pageData.total_bayar - pageData.pembulatan
+            : 0
+    ),
+    struktur: checkedRowCredit,
+    bank_tujuan: null,
+    no_rekening: null,
+    bukti_transafer: null,
 });
 const createColumns = () => {
-  return [
-    {
-      title: "cabang",
-      sorter: "default",
-      key: "cabang",
-    },
-    {
-      title: "no kontrak",
-      sorter: "default",
-      key: "no_fasilitas",
-    },
-    {
-      title: "no transaksi",
-      sorter: "default",
-      ellipsis: {
-        tooltip: true
-      },
-      key: "no_transaksi",
-    },
-    {
-      title: "tanggal",
-      key: "tgl_transaksi",
-      sorter: "default",
-    },
-    {
-      title: "metode",
-      key: "payment_method",
-      sorter: "default",
-    },
-    {
-      title: "atas nama",
-      key: "nama",
-      sorter: "default",
-    },
-    {
-      title: "nominal",
-      key: "total_bayar",
-      align: 'right',
-      render(row) {
-        return h("div", row.total_bayar.toLocaleString("US"));
-      },
-      sorter: "default",
-    },
-    {
-      title: "status",
-      key: "STATUS",
-      render(row) {
-        return h(
-          NTag,
-          {
-            type: statusTag(row.STATUS),
-            onClick: () => {
-              handleAction(row);
+    return [
+        {
+            title: "cabang",
+            sorter: "default",
+            key: "cabang",
+        },
+        {
+            title: "no kontrak",
+            sorter: "default",
+            key: "no_fasilitas",
+        },
+        {
+            title: "no transaksi",
+            sorter: "default",
+            ellipsis: {
+                tooltip: true
             },
-          },
-          {
-            default: () => row.STATUS,
-          }
-        );
-      },
-    },
-    {
-      align: "right",
-      key: "action",
-      render(row) {
-        return h(
-          NBadge,
-          {
-            dot: true,
-            show: row.STATUS == "PENDING" ? true : false,
-          },
-          {
-            default: () => {
-              return h(
-                NButton,
-                {
-                  secondary: true,
-                  round: true,
-                  onClick: () => {
-                    handleAction(row);
-                  },
-                },
-                {
-                  default: () => "detail",
-                }
-              );
+            key: "no_transaksi",
+        },
+        {
+            title: "tanggal",
+            key: "tgl_transaksi",
+            sorter: "default",
+        },
+        {
+            title: "metode",
+            key: "payment_method",
+            sorter: "default",
+        },
+        {
+            title: "atas nama",
+            key: "nama",
+            sorter: "default",
+        },
+        {
+            title: "nominal",
+            key: "total_bayar",
+            align: 'right',
+            render(row) {
+                return h("div", row.total_bayar.toLocaleString("US"));
             },
-          }
-        );
-      },
-    },
-  ];
+            sorter: "default",
+        },
+        {
+            title: "status",
+            key: "STATUS",
+            render(row) {
+                return h(
+                    NTag,
+                    {
+                        type: statusTag(row.STATUS),
+                        onClick: () => {
+                            handleAction(row);
+                        },
+                    },
+                    {
+                        default: () => row.STATUS,
+                    }
+                );
+            },
+        },
+        {
+            align: "right",
+            key: "action",
+            render(row) {
+                return h(
+                    NBadge,
+                    {
+                        dot: true,
+                        show: row.STATUS == "PENDING" ? true : false,
+                    },
+                    {
+                        default: () => {
+                            return h(
+                                NButton,
+                                {
+                                    secondary: true,
+                                    round: true,
+                                    onClick: () => {
+                                        handleAction(row);
+                                    },
+                                },
+                                {
+                                    default: () => "detail",
+                                }
+                            );
+                        },
+                    }
+                );
+            },
+        },
+    ];
 };
 const showModal = ref(false);
 const bodyModal = ref([]);
 const handleAction = (e) => {
-  showModal.value = true;
-  bodyModal.value = e;
+    showModal.value = true;
+    bodyModal.value = e;
 };
 
 const statusTag = (e) => {
-  if (e === "CANCEL") {
-    return "error";
-  }
-  if (e === "PAID") {
-    return "success";
-  }
-  if (e === "PENDING") {
-    return "warning";
-  }
+    if (e === "CANCEL") {
+        return "error";
+    }
+    if (e === "PAID") {
+        return "success";
+    }
+    if (e === "PENDING") {
+        return "warning";
+    }
 }
 const columns = createColumns();
 let userToken = localStorage.getItem("token");
 const keterangan = ref();
 const loadingConf = ref(false);
 const handlePositiveClick = async (e) => {
-  loadingConf.value = true;
-  const bodyPost = {
-    no_invoice: e,
-    flag: "yes",
-    keterangan: keterangan.value,
-    struktur: bodyModal.value.struktur,
-  };
-  const response = await useApi({
-    method: "POST",
-    api: `payment_approval`,
-    data: bodyPost,
-    token: userToken,
-  });
-  if (!response.ok) {
     loadingConf.value = true;
-    message.error("konfirmasi gagal");
-  } else {
-    loadingConf.value = false;
-    message.success("konfirmasi berhasil");
-    getDataPayment();
-    showModal.value = false;
-    router.push({ name: "pending transfer" });
-  }
+    const bodyPost = {
+        no_invoice: e,
+        flag: "yes",
+        keterangan: keterangan.value,
+        struktur: bodyModal.value.struktur,
+    };
+    const response = await useApi({
+        method: "POST",
+        api: `payment_approval`,
+        data: bodyPost,
+        token: userToken,
+    });
+    if (!response.ok) {
+        loadingConf.value = true;
+        message.error("konfirmasi gagal");
+    } else {
+        loadingConf.value = false;
+        message.success("konfirmasi berhasil");
+        getDataPayment();
+        showModal.value = false;
+        router.push({ name: "pending transfer" });
+    }
 };
 const handleNegativeClick = async (e) => {
-  loadingConf.value = true;
-  const bodyPost = {
-    no_invoice: e,
-    flag: "no",
-    keterangan: keterangan.value,
-    struktur: bodyModal.value.struktur,
-  };
-  const response = await useApi({
-    method: "POST",
-    api: `payment_approval`,
-    data: bodyPost,
-    token: userToken,
-  });
-  if (!response.ok) {
     loadingConf.value = true;
-    message.error("konfirmasi gagal");
-  } else {
-    loadingConf.value = false;
-    message.success("konfirmasi berhasil");
-    getDataPayment();
-    showModal.value = false;
-    router.push({ name: "pending transfer" });
-  }
+    const bodyPost = {
+        no_invoice: e,
+        flag: "no",
+        keterangan: keterangan.value,
+        struktur: bodyModal.value.struktur,
+    };
+    const response = await useApi({
+        method: "POST",
+        api: `payment_approval`,
+        data: bodyPost,
+        token: userToken,
+    });
+    if (!response.ok) {
+        loadingConf.value = true;
+        message.error("konfirmasi gagal");
+    } else {
+        loadingConf.value = false;
+        message.success("konfirmasi berhasil");
+        getDataPayment();
+        showModal.value = false;
+        router.push({ name: "pending transfer" });
+    }
 };
 const dataPayment = ref([]);
 const loadDataPayment = ref(false);
 const dataPending = ref([]);
 const message = useMessage();
 const getDataPayment = async () => {
-  loadDataPayment.value = true;
-  let userToken = localStorage.getItem("token");
-  const response = await useApi({
-    method: "GET",
-    api: "payment",
-    token: userToken,
-  });
-  if (!response.ok) {
-    console.log(response.error);
-  } else {
-    loadDataPayment.value = false;
-    dataPayment.value = response.data;
-    dataPending.value = _.filter(dataPayment.value, { STATUS: "PENDING" });
-  }
+    loadDataPayment.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: "payment",
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(response.error);
+    } else {
+        loadDataPayment.value = false;
+        dataPayment.value = response.data;
+        dataPending.value = _.filter(dataPayment.value, { STATUS: "PENDING" });
+    }
 };
 const handleExpand = () => {
-  const fullPage = router.resolve({ name: "expand transaction" });
-  window.open(fullPage.href, "_blank");
+    const fullPage = router.resolve({ name: "expand transaction" });
+    window.open(fullPage.href, "_blank");
 };
 onMounted(() => getDataPayment());
 </script>

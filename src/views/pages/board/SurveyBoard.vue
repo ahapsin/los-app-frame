@@ -1,5 +1,5 @@
 <template>
-    <n-card :class="`shadow-lg`" size="small" class="shadow-lg":segmented="{
+    <n-card :class="`shadow-lg`" size="small" class="shadow-lg" :segmented="{
         content: true,
         footer: 'soft',
     }">
@@ -17,13 +17,13 @@
                 </n-statistic>
             </div>
         </n-spin>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 
 <script setup>
 import _ from "lodash";
-import { ref } from "vue";
 import { useMessage } from 'naive-ui';
+import { ref } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import router from "../../../router/index.js";
 

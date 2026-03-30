@@ -9,7 +9,7 @@
                             <n-text strong class="text-md"> {{ bodyModal?.tgl_transaksi }}</n-text>
                             <n-text strong class="text-md"> {{ bodyModal?.payment_method == 'cash' ? 'TUNAI' :
                                 'TRANSFER'
-                            }}</n-text>
+                                }}</n-text>
 
                         </div>
                         <div class="flex justify-between border-b border-dashed border-black">
@@ -54,7 +54,7 @@
                             <div class="flex flex-col">
                                 <small class="text-reg">CUST. BAYAR</small>
                                 <n-text strong class="text-md"> {{ bodyModal?.jumlah_uang.toLocaleString("US")
-                                    }}</n-text>
+                                }}</n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">PEMBULATAN</small>
@@ -64,8 +64,8 @@
                             <div class="flex flex-col">
                                 <small class="text-reg">KEMBALIAN</small>
 
-                                    <n-text strong class="text-md"> {{ bodyModal?.kembalian.toLocaleString("US")
-                                        }}</n-text>
+                                <n-text strong class="text-md"> {{ bodyModal?.kembalian.toLocaleString("US")
+                                }}</n-text>
 
                             </div>
 
@@ -88,21 +88,21 @@
                                 <small class="text-reg">Cust. Bayar</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal?.jumlah_uang.toLocaleString("US")
-                                }}
+                                    }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Diskon</small>
                                 <n-text class="text-md font-bold"> {{
                                     (Math.abs(bodyModal?.total_bayar - bodyModal?.jumlah_uang)).toLocaleString("US")
-                                }}
+                                    }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Pinalti</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.pinalti.toLocaleString("US")
-                                }}
+                                    }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -115,7 +115,8 @@
                     </div>
                     <div class="px-3">
 
-                        <table width="100%" class="border border-black" v-if="bodyModal?.payment_type === 'pokok_sebagian'">
+                        <table width="100%" class="border border-black"
+                            v-if="bodyModal?.payment_type === 'pokok_sebagian'">
                             <tbody>
                                 <tr>
                                     <th class="border border-black p-1">ANGS-KE</th>
@@ -127,11 +128,15 @@
                                     <!--              <th class="border border-black">Jumlah</th>-->
                                 </tr>
                                 <tr v-for="angs in bodyModal?.struktur" :key="angs.id">
-                                    <td class="border text-center border-black">{{ angs?.angsuran_ke.toLocaleString() }}</td>
+                                    <td class="border text-center border-black">{{ angs?.angsuran_ke.toLocaleString() }}
+                                    </td>
                                     <td class="border text-center border-black">{{ angs.tgl_angsuran }}</td>
-                                    <td class="border text-center border-black">{{ angs?.bayar_pokok.toLocaleString() }}</td>
-                                    <td class="border text-center border-black">{{ angs?.bayar_bunga.toLocaleString() }}</td>
-                                    <td class="border text-center border-black">{{ angs?.bayar_denda.toLocaleString() }}</td>
+                                    <td class="border text-center border-black">{{ angs?.bayar_pokok.toLocaleString() }}
+                                    </td>
+                                    <td class="border text-center border-black">{{ angs?.bayar_bunga.toLocaleString() }}
+                                    </td>
+                                    <td class="border text-center border-black">{{ angs?.bayar_denda.toLocaleString() }}
+                                    </td>
                                 </tr>
 
                             </tbody>
@@ -151,11 +156,11 @@
                                     <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
                                     <td class="border pe-2 border-black text-right">{{
                                         parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td class="border pe-2 border-black text-right">{{
                                         parseInt(angs.bayar_denda).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td align="right" class="border pe-2 border-black text-right">
                                         {{
@@ -194,13 +199,12 @@
                     :disabled="keterangan ? false : true">Kirim</n-button>
             </div>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 <script setup>
 import { useMessage } from "naive-ui";
 import { useApi } from "../../helpers/axios.js";
 import router from "../../router/";
-import { useVueToPrint } from "vue-to-print";
 const prop = defineProps({
     id: String,
     type: String,

@@ -6,18 +6,18 @@
                     <v-icon name="bi-clock-history" /> History
                 </template>
                 asdasd
-            </n-card :class="`shadow-lg`">
+            </n-card>
             <n-card :class="`shadow-lg`" size="small">
                 <template #header>
                     <v-icon name="bi-people" /> Groups
                 </template>
-            </n-card :class="`shadow-lg`">
+            </n-card>
             <n-card :class="`shadow-lg`" size="small">
                 <template #header>
                     <v-icon name="bi-clock-history" /> History
                 </template>
 
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>

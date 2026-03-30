@@ -1,43 +1,44 @@
 <template>
-  <div id="app">
-    <n-card :class="`shadow-lg`" title="Update taksasi" size="small" :segmented="true">
-      <template #header-extra>
-        <n-space v-if="!loadDataRef">
-          <input id="files" type="file" @change="handleFileUpload" class="hidden" accept=".csv" />
-          <label for="files"
-            class="border-2 bg-pr  text-white flex p-2  hover:shadow justify-center rounded-xl cursor-pointer">
-            <v-icon name="bi-trash"></v-icon>Import
-          </label>
-          <div class="border-2 border-pr  text-pr flex p-2  hover:shadow justify-center rounded-xl cursor-pointer"
-            @click="downloadCsv" v-if="dataTakasasi.length > 0"><v-icon name="bi-trash"></v-icon>Download Taksasi</div>
-        </n-space>
-      </template>
-      <n-card :class="`shadow-lg`" v-if="importChange">
-        <n-alert type="warning" :show-icon="false">
-          <div class="flex justify-between items-center">
-            <div class="text-xl">{{ csvData.length?.toLocaleString() }} baris data</div>
-            <n-button type="primary" @click="importData">update data</n-button>
-          </div>
-        </n-alert>
-        <table class="table table-striped">
-          <thead class="sticky top-0">
-            <th v-for="head in csvHeaders" :key="head">{{ head }}</th>
-          </thead>
-          <tbody class="h-96 overflow-y-auto">
-            <tr v-for="body in csvData" :key="body">
-              <td v-for="item in body" :key="item">{{ item }}</td>
-            </tr>
-          </tbody>
-        </table>
+    <div id="app">
+        <n-card :class="`shadow-lg`" title="Update taksasi" size="small" :segmented="true">
+            <template #header-extra>
+                <n-space v-if="!loadDataRef">
+                    <input id="files" type="file" @change="handleFileUpload" class="hidden" accept=".csv" />
+                    <label for="files"
+                        class="border-2 bg-pr  text-white flex p-2  hover:shadow justify-center rounded-xl cursor-pointer">
+                        <v-icon name="bi-trash"></v-icon>Import
+                    </label>
+                    <div class="border-2 border-pr  text-pr flex p-2  hover:shadow justify-center rounded-xl cursor-pointer"
+                        @click="downloadCsv" v-if="dataTakasasi.length > 0"><v-icon name="bi-trash"></v-icon>Download
+                        Taksasi</div>
+                </n-space>
+            </template>
+            <n-card :class="`shadow-lg`" v-if="importChange">
+                <n-alert type="warning" :show-icon="false">
+                    <div class="flex justify-between items-center">
+                        <div class="text-xl">{{ csvData.length?.toLocaleString() }} baris data</div>
+                        <n-button type="primary" @click="importData">update data</n-button>
+                    </div>
+                </n-alert>
+                <table class="table table-striped">
+                    <thead class="sticky top-0">
+                        <th v-for="head in csvHeaders" :key="head">{{ head }}</th>
+                    </thead>
+                    <tbody class="h-96 overflow-y-auto">
+                        <tr v-for="body in csvData" :key="body">
+                            <td v-for="item in body" :key="item">{{ item }}</td>
+                        </tr>
+                    </tbody>
+                </table>
 
-      </n-card :class="`shadow-lg`">
+            </n-card>
 
-      <n-data-table :columns="columns" :data="dataTakasasi" :pagination="{ pageSize: 10 }" ref="tableRef"
-        :loading="loadDataRef"></n-data-table>
+            <n-data-table :columns="columns" :data="dataTakasasi" :pagination="{ pageSize: 10 }" ref="tableRef"
+                :loading="loadDataRef"></n-data-table>
 
-    </n-card :class="`shadow-lg`">
+        </n-card>
 
-  </div>
+    </div>
 </template>
 <script setup>
 import { useMessage } from "naive-ui";
@@ -53,115 +54,115 @@ const importChange = ref(false);
 
 const loadDataRef = ref(false);
 const handleFileUpload = async (event) => {
-  // Get the file from the input element
-  const file = event.target.files[0];
+    // Get the file from the input element
+    const file = event.target.files[0];
 
-  if (file) {
-    importChange.value = true;
-    // Parse the CSV file using PapaParse
-    await Papa.parse(file, {
-      complete: (result) => {
-        console.log(result); // Output parsed CSV result for debugging
+    if (file) {
+        importChange.value = true;
+        // Parse the CSV file using PapaParse
+        await Papa.parse(file, {
+            complete: (result) => {
+                console.log(result); // Output parsed CSV result for debugging
 
-        // Set the headers and data from parsed result
-        csvHeaders.value = result.data[0]; // Assuming the first row contains headers
-        csvData.value = result.data.slice(1); // Data starts from the second row
-        format.value = formattedData(csvData.value);
-      },
-      header: false, // Disable header processing (optional, if you want to keep it as data)
-      skipEmptyLines: true, // Skip empty lines
-    });
-  }
+                // Set the headers and data from parsed result
+                csvHeaders.value = result.data[0]; // Assuming the first row contains headers
+                csvData.value = result.data.slice(1); // Data starts from the second row
+                format.value = formattedData(csvData.value);
+            },
+            header: false, // Disable header processing (optional, if you want to keep it as data)
+            skipEmptyLines: true, // Skip empty lines
+        });
+    }
 }
 
 const columns = [
     {
-    title: "MERK",
-    sorter: 'default',
-    key: "merk"
-  },
-  {
-    title: "TIPE",
-    sorter: 'default',
-    key: "tipe"
-  },
-
-  {
-    title: "JENIS",
-    sorter: 'default',
-    key: "jenis"
-  },
-  {
-    title: "KETERANGAN",
-    sorter: 'default',
-    key: "keterangan"
-  },
-  {
-    title: "TAHUN",
-    sorter: 'default',
-    key: "tahun"
-  }, {
-    title: "HARGA",
-    sorter: 'default',
-    align: "right",
-    key: "harga",
-    render(row) {
-      return h("div", row.harga?.toLocaleString("US"));
+        title: "MERK",
+        sorter: 'default',
+        key: "merk"
     },
-  },
+    {
+        title: "TIPE",
+        sorter: 'default',
+        key: "tipe"
+    },
+
+    {
+        title: "JENIS",
+        sorter: 'default',
+        key: "jenis"
+    },
+    {
+        title: "KETERANGAN",
+        sorter: 'default',
+        key: "keterangan"
+    },
+    {
+        title: "TAHUN",
+        sorter: 'default',
+        key: "tahun"
+    }, {
+        title: "HARGA",
+        sorter: 'default',
+        align: "right",
+        key: "harga",
+        render(row) {
+            return h("div", row.harga?.toLocaleString("US"));
+        },
+    },
 ]
 const formattedData = (e) => {
-  console.log(csvHeaders.value);
-  const retData = e.map(item => (
-    {
-      merk: item[0],
-      tipe: item[1],
-      jenis: item[2],
-      keterangan: item[3],
-      tahun: item[4],
-      harga: item[5],
-    }));
-  return retData;
+    console.log(csvHeaders.value);
+    const retData = e.map(item => (
+        {
+            merk: item[0],
+            tipe: item[1],
+            jenis: item[2],
+            keterangan: item[3],
+            tahun: item[4],
+            harga: item[5],
+        }));
+    return retData;
 }
 const message = useMessage();
 
 const importData = async () => {
-  let messageReactive = null;
-  messageReactive = message.loading("mengupdate data taksasi", { duration: 0 });
-  const userToken = localStorage.getItem("token");
-  const response = await useApi({
-    method: "post",
-    api: "taksasi_dump",
-    data: format.value,
-    token: userToken,
-  });
-  if (!response.ok) {
-    message.error("sesi berakhir");
-  } else {
-    message.success("update taksasi selesai....");
-    messageReactive.destroy();
-    messageReactive = null;
-  }
+    let messageReactive = null;
+    messageReactive = message.loading("mengupdate data taksasi", { duration: 0 });
+    const userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "post",
+        api: "taksasi_dump",
+        data: format.value,
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("sesi berakhir");
+    } else {
+        message.success("update taksasi selesai....");
+        messageReactive.destroy();
+        messageReactive = null;
+    }
 }
 
 const dataTakasasi = ref([]);
 const getTaksasi = async () => {
-  loadDataRef.value = true;
-  message.loading("memuat data taksasi....");
-  const userToken = localStorage.getItem("token");
-  const response = await useApi({
-    method: "get",
-    api: "taksasi_download",
-    token: userToken,
-  });
-  if (!response.ok) {
-    message.error("sesi berakhir");
+    loadDataRef.value = true;
+    message.loading("memuat data taksasi....");
+    const userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "get",
+        api: "taksasi_download",
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("sesi berakhir");
 
-  } else {
-    dataTakasasi.value = response.data;
-    loadDataRef.value = false;
-    message.success("data taksasi dimuat....");
-  }
+    } else {
+        dataTakasasi.value = response.data;
+        loadDataRef.value = false;
+        message.success("data taksasi dimuat....");
+    }
 }
 
 const tableRef = ref();
@@ -169,8 +170,8 @@ const time = Date.now();
 
 const downloadCsv = () => tableRef.value?.downloadCsv({
 
-  fileName: `format_taksasi${time}`,
-  keepOriginalData: true
+    fileName: `format_taksasi${time}`,
+    keepOriginalData: true
 });
 
 onMounted(() => getTaksasi());
@@ -179,18 +180,18 @@ onMounted(() => getTaksasi());
 <style scoped>
 /* Simple styling for the table */
 table {
-  width: 100%;
-  border-collapse: collapse;
+    width: 100%;
+    border-collapse: collapse;
 }
 
 th,
 td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: left;
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: left;
 }
 
 th {
-  background-color: #f4f4f4;
+    background-color: #f4f4f4;
 }
 </style>

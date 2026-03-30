@@ -1,6 +1,6 @@
 <template>
-    <n-card :class="`shadow-lg`" title="Inquery Piutang" :segmented="true" size="small">
-        <TabInqPinjaman :columns="columnsPinjaman" :data="dataInqPinjaman" :loading="loadInqPinjaman"
+    <n-card :class="`shadow-lg`" title="Pembatalan Pencairan" :segmented="true" size="small">
+        <DataCredit :columns="columnsPinjaman" :data="dataInqPinjaman" :loading="loadInqPinjaman"
             @cari="handleCariInqPinjaman" :available="inqView" />
     </n-card>
     <n-modal v-model:show="modalDetail">
@@ -216,16 +216,19 @@
 
 <script setup>
 import { h, ref } from "vue";
-import { useApi } from "../../../helpers/axios";
 
 
+import _ from "lodash";
 import {
     NButton,
+    NPopconfirm,
     useMessage,
 } from "naive-ui";
+import { useRouter } from "vue-router";
 import { useVueToPrint } from "vue-to-print";
-import { useMeStore } from "../../../stores/me.js";
-import TabInqPinjaman from "./TabInqPinjaman.vue";
+import { useApi } from "../../../../helpers/axios";
+import { useMeStore } from "../../../../stores/me";
+import DataCredit from "./DataCredit.vue";
 const apptitle = import.meta.env.VITE_APP_TITLE;
 const applogo = import.meta.env.VITE_APP_LOGO;
 const message = useMessage();
@@ -310,9 +313,20 @@ function convertToValuesArray(dataArray) {
     }
 }
 
+const isToday = (date) => {
+    const today = new Date();
+    const d = new Date(date);
+
+    return (
+        d.getFullYear() === today.getFullYear() &&
+        d.getMonth() === today.getMonth() &&
+        d.getDate() === today.getDate()
+    );
+};
+
 const columnsPinjaman = [
     {
-        title: "Nomor Order",
+        title: "Nomor Kontrak",
         key: "loan_number",
         sorter: "default",
     },
@@ -340,24 +354,39 @@ const columnsPinjaman = [
     {
         title: "Action",
         align: "right",
-        width: 100,
+        width: 120,
         key: "more",
         render(row) {
+            const disabled = isToday(row.created_at);
             return h(
-                NButton,
+                NPopconfirm,
                 {
-                    secondary: false,
-                    size: "small",
-                    onClick: () => handleDetailRow(row),
+                    onPositiveClick: () => handleCancelCredit(row),
+                    positiveText: "Ya !",
+                    negativeText: "Tidak",
+                    disabled: !disabled,
                 },
                 {
-                    default: "detail",
+                    trigger: () =>
+                        h(
+                            NButton,
+                            {
+                                size: "small",
+                                type: "error",
+                                disabled: !disabled
+                            },
+                            { default: () => "Batalkan" }
+                        ),
+
+                    default: () => "Yakin ingin batal cair?",
                 }
             );
         },
-    },
+    }
 
 ];
+
+
 
 let messageReactive = null;
 
@@ -373,6 +402,22 @@ const handleDetailRow = async (e) => {
     getDetailPinjaman(trow.credit_id);
     modalDetail.value = true;
 
+}
+const router = useRouter();
+const handleCancelCredit = async (e) => {
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "POST",
+        api: `CreditCancel`,
+        data: { LoanNumber: e.loan_number },
+        token: userToken,
+    });
+    if (!response.ok) {
+        message.error("ERROR API");
+    } else {
+        message.success("Pembatalan Berhasil !");
+        router.go(0);
+    }
 }
 
 const loadData = ref(false);
@@ -583,7 +628,7 @@ const getColumnTotal = (key) => {
 };
 const getInqPinjaman = async (e) => {
     loadInqPinjaman.value = true;
-    messageReactive = message.loading('memuat inquery pinjaman');
+    messageReactive = message.loading('memuat data kredit');
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "POST",
@@ -597,7 +642,7 @@ const getInqPinjaman = async (e) => {
         messageReactive.destroy();
         messageReactive = null;
         loadInqPinjaman.value = false;
-        dataInqPinjaman.value = response.data;
+        dataInqPinjaman.value = _.filter(response.data, { status: "A" });
     }
 }
 

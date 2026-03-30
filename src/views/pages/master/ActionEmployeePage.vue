@@ -140,15 +140,15 @@
                 </n-button>
             </n-space>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 <script setup>
-import { v4 as uuidv4 } from 'uuid';
 import { useMessage } from 'naive-ui';
-import { ref, reactive, onMounted } from 'vue';
+import { v4 as uuidv4 } from 'uuid';
+import { onMounted, reactive, ref } from 'vue';
+import { useRoute } from 'vue-router';
 import { useApi } from '../../../helpers/axios';
 import router from '../../../router';
-import { useRoute } from 'vue-router';
 
 const uuid = uuidv4();
 const status = [{

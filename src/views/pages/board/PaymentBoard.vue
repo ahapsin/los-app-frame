@@ -35,16 +35,16 @@
                 summary transasksi bulan berjalan
             </div>
         </template>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 
 <script setup>
+import { DotsVertical as OptionIcon } from "@vicons/tabler";
 import _ from "lodash";
-import { ref, computed, onMounted } from "vue";
 import { useMessage } from 'naive-ui';
+import { computed, onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import router from "../../../router/index.js";
-import { DotsVertical as OptionIcon } from "@vicons/tabler";
 
 const loadData = ref(false);
 const data = ref([]);

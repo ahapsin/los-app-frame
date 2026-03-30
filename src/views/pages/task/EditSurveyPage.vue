@@ -24,14 +24,13 @@
                     <div class="md:flex gap-2">
                         <n-form-item label="Plafond" path="plafond" class="w-full">
                             <n-input-number :parse="parse" :format="format" v-model:value="order.plafond"
-                            placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full" clearable
-                            :on-update:value="handlePlafond" />
+                                placeholder="plafond" :loading="loading" :show-button="false" class="flex !w-full"
+                                clearable :on-update:value="handlePlafond" />
                             <!-- <n-select v-model:value="order.plafond" label-field="l" filterable value-field="v"
                                 :filter="filterByValueOrLabel" :options="optPlafond" /> -->
                         </n-form-item>
                         <n-form-item label="Jenis angsuran" path="jenis_angsuran" class="w-full">
-                            <n-select filterable placeholder="Jenis?.angsuran"
-                                :options="jenisAngsuran"
+                            <n-select filterable placeholder="Jenis?.angsuran" :options="jenisAngsuran"
                                 v-model:value="order.jenis_angsuran" :on-update:value="handleTipe"
                                 :disabled="order.plafond != 0 ? false : true" />
                         </n-form-item>
@@ -40,7 +39,8 @@
                         <n-form-item label="Tenor / Angsuran" path="tenor" class="w-full">
                             <n-alert type="error" title="Plafond Bunga menurun minimal 1.500.000"
                                 v-if="order.jenis_angsuran === 'bunga_menurun' && order.plafond < 1500000" />
-                                <n-alert v-else-if="skemaAngsuran.length == 0" type="warning">Tenor dan Angsuran tidak tersedia</n-alert>
+                            <n-alert v-else-if="skemaAngsuran.length == 0" type="warning">Tenor dan Angsuran tidak
+                                tersedia</n-alert>
                             <div v-else>
                                 <div class="flex flex-col md:flex-row" v-show="tipeAngsuran == 'bulanan'">
                                     <n-radio-group v-model:value="order.tenor" name="radiogroup">
@@ -245,8 +245,9 @@
                         </div>
                     </template>
 
-                    <n-card :class="`shadow-lg`" :segmented="true" class="my-2 bg-white rounded-xl hover:ring-4 hover:ring-pr"
-                        v-for="(coll) in orderJaminan" :key="coll" :title="`${coll.type}`">
+                    <n-card :class="`shadow-lg`" :segmented="true"
+                        class="my-2 bg-white rounded-xl hover:ring-4 hover:ring-pr" v-for="(coll) in orderJaminan"
+                        :key="coll" :title="`${coll.type}`">
                         <template #header-extra>
                             <div class="flex gap-2">
                                 <n-button type="warning" @click="viewModal(coll)" secondary>
@@ -333,8 +334,8 @@
                         </div>
 
 
-                    </n-card :class="`shadow-lg`">
-                </n-card :class="`shadow-lg`">
+                    </n-card>
+                </n-card>
             </div>
             <n-modal v-model:show="showModal">
                 <n-card :class="`shadow-lg`" class="md:w-1/2" closable @close="showModal = false" :segmented="true"
@@ -353,7 +354,7 @@
                             <n-button type="warning" @click="showModal = false">batal</n-button>
                         </n-space>
                     </template>
-                </n-card :class="`shadow-lg`">
+                </n-card>
             </n-modal>
             <div v-show="current === 4">
                 <n-form ref="formSurvey" :model="survey" :rules="rulesSurvey" require-mark-placement="right-hanging">
@@ -448,8 +449,8 @@
                     </n-button>
                 </n-flex>
             </template>
-        </n-card :class="`shadow-lg`">
-    </n-card :class="`shadow-lg`">
+        </n-card>
+    </n-card>
 </template>
 <script setup>
 import {
@@ -626,18 +627,18 @@ const tujuanKredit = ["KONSUMSI", "INVESTASI"].map((v) => ({
 }));
 
 const optPlafond = Array.from({ length: ((7000000 - 1000000) / 100000) + 1 }, (_, i) => {
-  const value = 1000000 + i * 100000;
-  return {
-    v: value,
-    l: value.toLocaleString('id-ID') // format rekening Indonesia
-  };
+    const value = 1000000 + i * 100000;
+    return {
+        v: value,
+        l: value.toLocaleString('id-ID') // format rekening Indonesia
+    };
 });
 const filterByValueOrLabel = (pattern, option) => {
-  const search = pattern.toLowerCase()
-  return (
-    option.v.toString().includes(search) ||
-    option.l.toLowerCase().includes(search)
-  )
+    const search = pattern.toLowerCase()
+    return (
+        option.v.toString().includes(search) ||
+        option.l.toLowerCase().includes(search)
+    )
 }
 
 const jenisAngsuran = [

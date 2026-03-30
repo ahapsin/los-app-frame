@@ -1,58 +1,61 @@
 <template>
-  <div>
-    <n-space vertical>
-      <n-card :class="`shadow-lg`" title="Data Survey" :segmented="{
-        content: true,
-        footer: 'soft',
-      }" size="small">
-        <template #header-extra>
-          <n-space class="!gap-1">
-            <div class="me-1">
-              <n-popover trigger="click" placement="bottom-end">
-                <template #trigger>
-                  <n-button :circle="width <= 520 ? true : false">
-                    <n-icon>
-                      <search-icon />
-                    </n-icon>
-                    <span v-if="width >= 520">Cari</span>
-                  </n-button>
+    <div>
+        <n-space vertical>
+            <n-card :class="`shadow-lg`" title="Data Survey" :segmented="{
+                content: true,
+                footer: 'soft',
+            }" size="small">
+                <template #header-extra>
+                    <n-space class="!gap-1">
+                        <div class="me-1">
+                            <n-popover trigger="click" placement="bottom-end">
+                                <template #trigger>
+                                    <n-button :circle="width <= 520 ? true : false">
+                                        <n-icon>
+                                            <search-icon />
+                                        </n-icon>
+                                        <span v-if="width >= 520">Cari</span>
+                                    </n-button>
+                                </template>
+                                <n-space vertical>
+                                    <n-input autofocus="true" clearable placeholder="cari disini.."
+                                        v-model:value="searchBox" />
+                                    <n-date-picker :default-value="[Date.now(), Date.now()]"
+                                        :update-value-on-close="updateValueOnClose" type="daterange"
+                                        @update:value="onConfirmDate" v-if="width > 480" />
+                                </n-space>
+                            </n-popover>
+                        </div>
+                        <div>
+                            <n-button type="primary" secondary @click="downloadCsv"
+                                :circle="width <= 520 ? true : false">
+                                <template #icon>
+                                    <n-icon>
+                                        <download-icon />
+                                    </n-icon>
+                                </template>
+                                <span v-if="width >= 520">Download</span>
+                            </n-button>
+                        </div>
+                        <div>
+                            <n-button type="primary" strong @click="handleAdd" :circle="width <= 520 ? true : false">
+                                <template #icon>
+                                    <n-icon>
+                                        <add-icon />
+                                    </n-icon>
+                                </template>
+                                <span v-if="width >= 520">Tambah</span>
+                            </n-button>
+                        </div>
+                    </n-space>
                 </template>
-                <n-space vertical>
-                  <n-input autofocus="true" clearable placeholder="cari disini.." v-model:value="searchBox" />
-                  <n-date-picker :default-value="[Date.now(), Date.now()]" :update-value-on-close="updateValueOnClose"
-                    type="daterange" @update:value="onConfirmDate" v-if="width > 480" />
+                <n-space vertical :size="12" class="pt-4">
+                    <n-data-table striped ref="tableRef" :scroll-x="750" size="small" :columns="columns"
+                        :data="showData" :pagination="pagination" :loading="loadData" />
                 </n-space>
-              </n-popover>
-            </div>
-            <div>
-              <n-button type="primary" secondary @click="downloadCsv" :circle="width <= 520 ? true : false">
-                <template #icon>
-                  <n-icon>
-                    <download-icon />
-                  </n-icon>
-                </template>
-                <span v-if="width >= 520">Download</span>
-              </n-button>
-            </div>
-            <div>
-              <n-button type="primary" strong @click="handleAdd" :circle="width <= 520 ? true : false">
-                <template #icon>
-                  <n-icon>
-                    <add-icon />
-                  </n-icon>
-                </template>
-                <span v-if="width >= 520">Tambah</span>
-              </n-button>
-            </div>
-          </n-space>
-        </template>
-        <n-space vertical :size="12" class="pt-4">
-          <n-data-table striped ref="tableRef" :scroll-x="750" size="small" :columns="columns" :data="showData"
-            :pagination="pagination" :loading="loadData" />
+            </n-card>
         </n-space>
-      </n-card :class="`shadow-lg`">
-    </n-space>
-  </div>
+    </div>
 </template>
 <script setup>
 import { computed, h, onMounted, ref } from "vue";
@@ -61,22 +64,22 @@ import { useSearch } from "../../../../helpers/searchObject";
 import router from "../../../../router";
 
 import {
-  AddCircleOutlineRound as AddIcon,
-  DeleteOutlined as DeleteIcon,
-  ListAltOutlined as DetailIcon,
-  FileDownloadOutlined as DownloadIcon,
-  EditOutlined as EditIcon,
-  SearchOutlined as SearchIcon,
+    AddCircleOutlineRound as AddIcon,
+    DeleteOutlined as DeleteIcon,
+    ListAltOutlined as DetailIcon,
+    FileDownloadOutlined as DownloadIcon,
+    EditOutlined as EditIcon,
+    SearchOutlined as SearchIcon,
 } from "@vicons/material";
 import { useWindowSize } from "@vueuse/core";
 import {
-  NButton,
-  NDropdown,
-  NIcon,
-  NTag,
-  useDialog,
-  useLoadingBar,
-  useMessage,
+    NButton,
+    NDropdown,
+    NIcon,
+    NTag,
+    useDialog,
+    useLoadingBar,
+    useMessage,
 } from "naive-ui";
 
 const loadingBar = useLoadingBar();
@@ -86,230 +89,230 @@ const loadData = ref(false);
 const dataTable = ref([]);
 const tableRef = ref();
 const downloadCsv = () =>
-  tableRef.value?.downloadCsv({ fileName: "export-data-survey" });
+    tableRef.value?.downloadCsv({ fileName: "export-data-survey" });
 
 
 const { width } = useWindowSize();
 const columns = [
-  {
-    title: "Tanggal",
-    sorter: "default",
-    key: "visit_date",
-    width: 100,
-  },
-  {
-    title: "Nama",
-    sorter: "default",
-    key: "nama_debitur",
-    fixed: "left",
-    ellipsis: {
-      tooltip: true,
+    {
+        title: "Tanggal",
+        sorter: "default",
+        key: "visit_date",
+        width: 100,
     },
-    width: 200,
-  },
-  {
-    title: "Plafond",
-    sorter: "default",
-    align: 'right',
-    key: "plafond",
-    wisth: 100,
-    render(row) {
-      return h("div", format(row.plafond));
-    },
-  },
-  {
-    title: "Tipe",
-    sorter: "default",
-    align: 'right',
-    key: "jenis_angsuran",
-    width: 100,
-    render(row) {
-      return h("div", row.jenis_angsuran);
-    },
-  },
-  {
-    title: "Status",
-    sorter: "default",
-    key: "status",
-    width: 150,
-    render(row) {
-      return h(
-        NTag,
-        {
-          round: true,
-          type: statusTag(row.status_code),
-          size: "small",
+    {
+        title: "Nama",
+        sorter: "default",
+        key: "nama_debitur",
+        fixed: "left",
+        ellipsis: {
+            tooltip: true,
         },
-        { default: () => statusLabel(row.status) }
-      );
+        width: 200,
     },
-  },
-  {
-    title: "",
-    align: "right",
-    key: "more",
-    fixed: "left",
-    width: 100,
-    render(row, index) {
-      return h(
-        NDropdown,
-        {
-          options: options(row),
-          size: "small",
-          onSelect: (e) => {
-            if (e === "hapus") {
-              handleConfirm(row, index);
-            }
-            if (e === "detail") {
-              handleDetail(row);
-            }
-            if (e === "edit") {
-              handleEdit(row);
-            }
-          },
+    {
+        title: "Plafond",
+        sorter: "default",
+        align: 'right',
+        key: "plafond",
+        wisth: 100,
+        render(row) {
+            return h("div", format(row.plafond));
         },
-        {
-          default: () => h(
-            NButton,
-            {
-              round: true,
-              type: statusTag(row.status_code),
-              size: "small",
-            },
-            { default: () => "Action" }
-          ),
-        }
-      );
     },
-  },
+    {
+        title: "Tipe",
+        sorter: "default",
+        align: 'right',
+        key: "jenis_angsuran",
+        width: 100,
+        render(row) {
+            return h("div", row.jenis_angsuran);
+        },
+    },
+    {
+        title: "Status",
+        sorter: "default",
+        key: "status",
+        width: 150,
+        render(row) {
+            return h(
+                NTag,
+                {
+                    round: true,
+                    type: statusTag(row.status_code),
+                    size: "small",
+                },
+                { default: () => statusLabel(row.status) }
+            );
+        },
+    },
+    {
+        title: "",
+        align: "right",
+        key: "more",
+        fixed: "left",
+        width: 100,
+        render(row, index) {
+            return h(
+                NDropdown,
+                {
+                    options: options(row),
+                    size: "small",
+                    onSelect: (e) => {
+                        if (e === "hapus") {
+                            handleConfirm(row, index);
+                        }
+                        if (e === "detail") {
+                            handleDetail(row);
+                        }
+                        if (e === "edit") {
+                            handleEdit(row);
+                        }
+                    },
+                },
+                {
+                    default: () => h(
+                        NButton,
+                        {
+                            round: true,
+                            type: statusTag(row.status_code),
+                            size: "small",
+                        },
+                        { default: () => "Action" }
+                    ),
+                }
+            );
+        },
+    },
 ];
 const searchBox = ref();
 const statusTag = (e) => {
-  if (e === "DRSVY") {
-    return "warning";
-  }
-  if (e === "CROR") {
-    return "primary";
-  }
-  if (e === "APKPS") {
-    return "primary";
-  }
-  if (e === "WAKPS") {
-    return "info";
-  }
-  if (e === "WADM") {
-    return "info";
-  }
-  if (e === "APHO") {
-    return "primary";
-  }
-  if (e === "REORKPS") {
-    return "error";
-  }
+    if (e === "DRSVY") {
+        return "warning";
+    }
+    if (e === "CROR") {
+        return "primary";
+    }
+    if (e === "APKPS") {
+        return "primary";
+    }
+    if (e === "WAKPS") {
+        return "info";
+    }
+    if (e === "WADM") {
+        return "info";
+    }
+    if (e === "APHO") {
+        return "primary";
+    }
+    if (e === "REORKPS") {
+        return "error";
+    }
 };
 const statusLabel = (e) => {
-  let upLabel = e;
-  return upLabel.toUpperCase();
+    let upLabel = e;
+    return upLabel.toUpperCase();
 };
 const format = (e) => {
-  const toNum = parseInt(e);
-  return toNum.toLocaleString("en-US");
+    const toNum = parseInt(e);
+    return toNum.toLocaleString("en-US");
 };
 const handleConfirm = (row, index) => {
-  dialog.warning({
-    title: "Confirm",
-    content: "Apakah anda yakin ingin menghapus data ?",
-    positiveText: "Ya",
-    negativeText: "Batal",
-    onPositiveClick: async () => {
-      let userToken = localStorage.getItem("token");
-      const response = await useApi({
-        method: "DELETE",
-        api: `kunjungan/${row.id}`,
-        token: userToken,
-      });
-      if (!response.ok) {
-        message.error("api transaction error");
-      } else {
-        dataTable.value.splice(index, 1);
-        message.success("Data berhasil dihapus");
-      }
-    },
-    onNegativeClick: () => {
-      message.error("Batal hapus data !");
-    },
-  });
+    dialog.warning({
+        title: "Confirm",
+        content: "Apakah anda yakin ingin menghapus data ?",
+        positiveText: "Ya",
+        negativeText: "Batal",
+        onPositiveClick: async () => {
+            let userToken = localStorage.getItem("token");
+            const response = await useApi({
+                method: "DELETE",
+                api: `kunjungan/${row.id}`,
+                token: userToken,
+            });
+            if (!response.ok) {
+                message.error("api transaction error");
+            } else {
+                dataTable.value.splice(index, 1);
+                message.success("Data berhasil dihapus");
+            }
+        },
+        onNegativeClick: () => {
+            message.error("Batal hapus data !");
+        },
+    });
 };
 const handleDetail = (evt) => {
-  if (evt.status_code === "WADM") {
-    router.push({ name: "detail survey", params: { idsurvey: evt.id } });
-  } else if (evt.status_code === "CROR") {
-    router.push({ name: "Detail Kredit", params: { idapplication: evt.id } });
-  } else {
-    router.push({ name: "detail survey", params: { idsurvey: evt.id } });
-  }
+    if (evt.status_code === "WADM") {
+        router.push({ name: "detail survey", params: { idsurvey: evt.id } });
+    } else if (evt.status_code === "CROR") {
+        router.push({ name: "Detail Kredit", params: { idapplication: evt.id } });
+    } else {
+        router.push({ name: "detail survey", params: { idsurvey: evt.id } });
+    }
 };
 const handleEdit = (evt) => {
-  router.push({ name: "edit survey", params: { idsurvey: evt.id } });
+    router.push({ name: "edit survey", params: { idsurvey: evt.id } });
 };
 const handleAdd = () => {
-  router.push("/task/new-survey");
+    router.push("/task/new-survey");
 };
 const getData = async () => {
-  loadData.value = true;
-  let userToken = localStorage.getItem("token");
-  const response = await useApi({
-    method: "GET",
-    api: "kunjungan",
-    token: userToken,
-  });
-  if (!response.ok) {
-    console.log(response.error);
-  } else {
-    loadingBar.finish();
-    loadData.value = false;
-    dataTable.value = response.data.response;
-  }
+    loadData.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: "kunjungan",
+        token: userToken,
+    });
+    if (!response.ok) {
+        console.log(response.error);
+    } else {
+        loadingBar.finish();
+        loadData.value = false;
+        dataTable.value = response.data.response;
+    }
 };
 
 const showData = computed(() => {
-  return useSearch(dataTable.value, searchBox.value?.toLowerCase());
+    return useSearch(dataTable.value, searchBox.value?.toLowerCase());
 
 });
 const renderIcon = (icon) => {
-  return () => {
-    return h(NIcon, null, {
-      default: () => h(icon),
-    });
-  };
+    return () => {
+        return h(NIcon, null, {
+            default: () => h(icon),
+        });
+    };
 };
 const options = (e) => {
-  let status = e.status_code;
-  if (status === "DRSVY") {
-    return [
-      {
-        label: "Edit",
-        key: "edit",
-        icon: renderIcon(EditIcon),
-      },
-      {
-        label: "Hapus",
-        key: "hapus",
-        icon: renderIcon(DeleteIcon),
-      },
-    ];
-  } else {
-    return [
-      {
-        label: "Detail",
-        key: "detail",
-        icon: renderIcon(DetailIcon),
-      },
-    ];
-  }
+    let status = e.status_code;
+    if (status === "DRSVY") {
+        return [
+            {
+                label: "Edit",
+                key: "edit",
+                icon: renderIcon(EditIcon),
+            },
+            {
+                label: "Hapus",
+                key: "hapus",
+                icon: renderIcon(DeleteIcon),
+            },
+        ];
+    } else {
+        return [
+            {
+                label: "Detail",
+                key: "detail",
+                icon: renderIcon(DetailIcon),
+            },
+        ];
+    }
 };
 const pagination = {
-  pageSize: 10,
+    pageSize: 10,
 };
 onMounted(() => getData());
 </script>

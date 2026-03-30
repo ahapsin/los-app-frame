@@ -4,7 +4,7 @@
         footer: 'soft',
     }">
         <n-data-table :columns="columnKunjungan" :data="dataKunjungan" />
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 
 <script setup>
@@ -64,15 +64,15 @@ const dataKunjungan = [{
     plafon: 12000000000,
     alamat: "lemahwungkuk rt 12 rw 2 kab.burau"
 }, {
-        id: "CFA-0002",
-        tgl: "22-08-1994",
-        nama_cust: "Sakura Haruno",
-        no_hp: "088878987978",
-        plafon: 13000000000,
-        alamat: "Konohagakure rt 12 rw 2 kab."
-    }];
+    id: "CFA-0002",
+    tgl: "22-08-1994",
+    nama_cust: "Sakura Haruno",
+    no_hp: "088878987978",
+    plafon: 13000000000,
+    alamat: "Konohagakure rt 12 rw 2 kab."
+}];
 
-const handleAddButton = (row) => router.push({ name: 'addanalisa',query:row });
+const handleAddButton = (row) => router.push({ name: 'addanalisa', query: row });
 
 loadingBar.finish();
 </script>

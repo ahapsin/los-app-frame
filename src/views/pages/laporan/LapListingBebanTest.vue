@@ -33,7 +33,7 @@
                     :loading="loadingData" />
             </n-space>
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 <script setup>
 import moment from "moment";

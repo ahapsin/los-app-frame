@@ -30,7 +30,7 @@
                     :loading="isLoading" size="small" :pagination="pagination" :scroll-x="1300" />
             </n-space>
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
     <div v-else class="m-2">
         <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" @blur="searchData" />
         <n-infinite-scroll style="height: 80dvh" :distance="10" class="mt-2">
@@ -122,7 +122,7 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -165,7 +165,7 @@
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.no_hp }}</n-ellipsis>
                     </div>
                 </div>
-            </n-card :class="`shadow-lg`">
+            </n-card>
             <n-divider title-placement="left">Dokumen Pelanggan</n-divider>
             <n-image-group>
                 <div>
@@ -283,10 +283,10 @@
                             </n-tab-pane>
                         </n-tabs>
 
-                    </n-card :class="`shadow-lg`">
+                    </n-card>
                 </div>
             </n-modal>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
 
 </template>

@@ -40,7 +40,7 @@
                     <n-data-table :loading="loadTable" size="small" :columns="columns" :data="showData"
                         :pagination="pagination" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
         <n-modal v-model:show="showDetailModal" title="Modal">
             <n-card :class="`shadow-lg`" class="w-2/3" title="Detail Jaminan" size="small">
@@ -108,7 +108,7 @@
                         </tr>
                     </tbody>
                 </n-table>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-modal>
         <n-modal v-model:show="showSuratPengantar">
             <n-card :class="`shadow-lg`" class="w-fit" title="Surat Pengantar" size="small" :segmented="true">
@@ -181,7 +181,7 @@
                             </table>
                         </div>
                         <div><i>Sampai saat ini masih disimpan di <b>KSP DJAYA {{ bodyModal.nama_cabang?.toUpperCase()
-                                    }}</b>
+                        }}</b>
                                 sehubungan Hutang
                                 Pinjaman
                                 Konsumen
@@ -210,7 +210,7 @@
                         </div>
                     </div>
                 </div>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-modal>
     </div>
 </template>

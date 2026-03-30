@@ -64,18 +64,17 @@
                 </n-button>
             </n-space>
         </n-space>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 </template>
 
 <script setup>
-import { onMounted, ref, h, reactive } from "vue";
-import { NInputNumber, NInput, NButton, useLoadingBar } from "naive-ui";
-import { useApi } from "../../../helpers/axios";
-import { useMessage } from "naive-ui";
-import _ from "lodash";
 import {
     CloseOutlined as CloseIcon
 } from "@vicons/material";
+import _ from "lodash";
+import { NButton, NInput, NInputNumber, useLoadingBar, useMessage } from "naive-ui";
+import { h, onMounted, reactive, ref } from "vue";
+import { useApi } from "../../../helpers/axios";
 const message = useMessage();
 const rangeNum = ref([1, 2]);
 const loading = ref(false);
@@ -399,7 +398,7 @@ const createMainColumnsMusiman = () => [
     //         return row.tipe;
 
     //     }
-    // }, 
+    // },
     {
         title: "Plafon",
         key: "plafond",

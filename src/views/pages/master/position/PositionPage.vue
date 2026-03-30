@@ -60,27 +60,23 @@
                 <n-space vertical :size="12" class="pt-4">
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, h } from "vue";
+import {
+    AddCircleOutlineRound as AddIcon,
+    DeleteOutlined as DeleteIcon,
+    ListAltOutlined as DetailIcon,
+    FileDownloadOutlined as DownloadIcon,
+    SearchOutlined as SearchIcon,
+} from "@vicons/material";
+import { NButton, NDropdown, NIcon, useDialog, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
 import { useApi } from "../../../../helpers/axios";
 import { useSearch } from "../../../../helpers/searchObject";
 import router from '../../../../router';
-import { useDialog, useMessage, NDropdown, NIcon, NTag, NButton, NEllipsis } from "naive-ui";
-import {
-    AddCircleOutlineRound as AddIcon,
-    SearchOutlined as SearchIcon,
-    FileDownloadOutlined as DownloadIcon,
-
-} from "@vicons/material"
-import {
-    EditOutlined as EditIcon,
-    DeleteOutlined as DeleteIcon,
-    ListAltOutlined as DetailIcon
-} from "@vicons/material";
 
 import { useLoadingBar } from "naive-ui";
 
@@ -88,7 +84,7 @@ const message = useMessage();
 const dialog = useDialog();
 const dataTable = ref([]);
 const searchBox = ref();
-const loadingBar=useLoadingBar();
+const loadingBar = useLoadingBar();
 const columns = [
     {
         title: "ID",
@@ -100,7 +96,7 @@ const columns = [
         key: "name",
         sorter: 'default',
     },
-    
+
     {
         title: "",
         align: "right",
@@ -121,7 +117,7 @@ const columns = [
                     }
                 },
                 {
-                    default:()=> h(NButton, {
+                    default: () => h(NButton, {
                         size: "small",
                     }, { default: () => 'Action' })
                 }
@@ -171,7 +167,7 @@ const handleUpdate = (evt) => {
     router.push(`/master/branch-action/${evt.id}`);
 }
 const handleAdd = () => {
-    router.push({name:'position action'});
+    router.push({ name: 'position action' });
 }
 const getData = async () => {
     let userToken = localStorage.getItem("token");

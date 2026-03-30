@@ -1,7 +1,7 @@
 <template>
     <div>
         <n-space vertical>
-            <n-card :class="`shadow-lg`" :title="`Tabel ${$route.name}`"  :segmented="true" size="small">
+            <n-card :class="`shadow-lg`" :title="`Tabel ${$route.name}`" :segmented="true" size="small">
                 <template #header-extra>
                     <n-space class="!gap-1">
                         <div class="me-1">
@@ -60,27 +60,23 @@
                 <n-space vertical :size="12" class="pt-4">
                     <n-data-table size="small" :columns="columns" :data="showData" :pagination="pagination" />
                 </n-space>
-            </n-card :class="`shadow-lg`">
+            </n-card>
         </n-space>
     </div>
 </template>
 <script setup>
-import { ref, onMounted, h } from "vue";
+import {
+    AddCircleOutlineRound as AddIcon,
+    DeleteOutlined as DeleteIcon,
+    ListAltOutlined as DetailIcon,
+    FileDownloadOutlined as DownloadIcon,
+    SearchOutlined as SearchIcon,
+} from "@vicons/material";
+import { NButton, NDropdown, NIcon, useDialog, useLoadingBar, useMessage } from "naive-ui";
+import { h, onMounted, ref } from "vue";
 import { useApi } from "../../../helpers/axios";
 import { useSearch } from "../../../helpers/searchObject";
 import router from '../../../router';
-import { useDialog, useMessage, NDropdown, NIcon, NTag, NButton, NEllipsis, useLoadingBar } from "naive-ui";
-import {
-    AddCircleOutlineRound as AddIcon,
-    SearchOutlined as SearchIcon,
-    FileDownloadOutlined as DownloadIcon,
-
-} from "@vicons/material"
-import {
-    EditOutlined as EditIcon,
-    DeleteOutlined as DeleteIcon,
-    ListAltOutlined as DetailIcon
-} from "@vicons/material";
 
 
 const message = useMessage();
@@ -138,7 +134,7 @@ const columns = [
                     }
                 },
                 {
-                    default:()=> h(NButton, {
+                    default: () => h(NButton, {
                         size: "small",
                     }, { default: () => 'Action' })
                 }
@@ -190,7 +186,7 @@ const handleUpdate = (evt) => {
 const handleAdd = () => {
     router.push('/master/branch-action');
 }
-const loadingBar=useLoadingBar();
+const loadingBar = useLoadingBar();
 const getData = async () => {
     let userToken = localStorage.getItem("token");
     const response = await useApi({
@@ -199,7 +195,7 @@ const getData = async () => {
         token: userToken
     });
     if (!response.ok) {
-      console.log(reponse.error);
+        console.log(reponse.error);
     } else {
         loadingBar.finish();
         dataTable.value = response.data.response;

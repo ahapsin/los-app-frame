@@ -20,7 +20,7 @@
                     :pagination="{ pageSize: 10 }" />
             </n-space>
         </div>
-    </n-card :class="`shadow-lg`">
+    </n-card>
 
     <n-float-button :right="40" :bottom="40" type="primary" v-if="checkedRowKeys.length > 0"
         @click="modalAssign = true">
@@ -34,7 +34,7 @@
             <n-space>
                 <n-button class="mb-2" round type="info" secondary @click="detailSelectedModal = true">{{
                     checkedRowKeys.length
-                    }} data dipilih</n-button>
+                }} data dipilih</n-button>
             </n-space>
 
             <n-space vertical>
@@ -49,24 +49,23 @@
                     <n-button type="secondary" @click="modalAssign = false">Batal</n-button>
                 </n-space>
             </n-space>
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
 
     <n-modal v-model:show="detailSelectedModal">
         <n-card :class="`shadow-lg`">
             <n-data-table :columns="selectBebanTagih" :data="checkedRowKeys" :pagination="pagination" :row-key="rowKey"
                 @update:checked-row-keys="handleCheck" :max-height="350" :loading="isLoading" />
-        </n-card :class="`shadow-lg`">
+        </n-card>
     </n-modal>
 </template>
 
 <script setup>
-import { NTag } from 'naive-ui';
-import { ref, reactive, computed, onMounted } from "vue";
-import { useLoadingBar, useMessage } from "naive-ui";
+import _ from "lodash";
+import { NTag, useLoadingBar, useMessage } from 'naive-ui';
+import { computed, onMounted, reactive, ref } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
-import _ from "lodash";
 
 const me = useMeStore();
 const message = useMessage();
