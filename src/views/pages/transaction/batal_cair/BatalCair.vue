@@ -633,7 +633,7 @@ const getInqPinjaman = async (e) => {
     const response = await useApi({
         method: "POST",
         data: e,
-        api: "inquiryList",
+        api: "CancelCreditList",
         token: userToken,
     });
     if (!response.ok) {

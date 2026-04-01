@@ -12,6 +12,12 @@
                         value-field="id" :default-value="defBranch" :options="dataBranch"
                         v-model:value="selectBranch" />
                 </n-form-item>
+                <n-form-item label="No Kontrak" class="w-full">
+                    <n-input v-model:value="no_kontrak" placeholder="No Kontrak" />
+                </n-form-item>
+                <n-form-item label="Nasabah" class="w-full">
+                    <n-input v-model:value="nasabah" placeholder="Nasabah" />
+                </n-form-item>
                 <n-form-item label="TANGGAL" class="w-full">
                     <n-date-picker v-model:formatted-value="rangeDate" :default-calendar-start-time="Date.now()"
                         clearable start-placeholder="dari" type="daterange" end-placeholder="sampai"
@@ -35,12 +41,12 @@
 
 </template>
 <script setup>
-import _ from "lodash"
-import { NImage, NSpace, useMessage } from "naive-ui"
-import { useApi } from "../../../helpers/axios.js"
-import { useMeStore } from "../../../stores/me.js";
-import * as XLSX from 'xlsx'
 import { saveAs } from 'file-saver';
+import _ from "lodash";
+import { NImage, NSpace, useMessage } from "naive-ui";
+import * as XLSX from 'xlsx';
+import { useApi } from "../../../helpers/axios.js";
+import { useMeStore } from "../../../stores/me.js";
 const dataBranch = ref([]);
 const selectBranch = ref();
 const defBranch = ref('SEMUA CABANG');
@@ -60,6 +66,11 @@ const columnsKunjungan = [
     {
         title: "Tanggal",
         key: "TglVisit",
+        sorter: "default",
+    },
+    {
+        title: "No Kontrak",
+        key: "NoKontrak",
         sorter: "default",
     },
     {
@@ -177,10 +188,14 @@ const getData = async () => {
         listData.value = response.data;
     }
 }
+const no_kontrak = ref();
+const nasabah = ref();
 const filterData = async () => {
     let a = {
         dari: rangeDate.value[0],
         sampai: rangeDate.value[1],
+        no_kontrak: no_kontrak.value,
+        nama: nasabah.value,
         cabang_id: selectBranch.value ? selectBranch.value : null
     }
     loadData.value = true;
