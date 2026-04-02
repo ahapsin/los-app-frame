@@ -192,11 +192,11 @@ const no_kontrak = ref();
 const nasabah = ref();
 const filterData = async () => {
     let a = {
-        dari: rangeDate.value[0],
-        sampai: rangeDate.value[1],
+        dari: rangeDate.value?.[0] ?? null,
+        sampai: rangeDate.value?.[1] ?? null,
         no_kontrak: no_kontrak.value,
         nama: nasabah.value,
-        cabang_id: selectBranch.value ? selectBranch.value : null
+        cabang_id: selectBranch.value ?? null
     }
     loadData.value = true;
     const response = await useApi({
