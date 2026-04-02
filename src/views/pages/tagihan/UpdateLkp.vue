@@ -155,7 +155,6 @@ const isLoading = ref(false);
 const checkedRowKeys = ref([]);
 const boxSearch = ref("");
 const bodyModalDetail = ref();
-const rowKey = (row) => row["NO KONTRAK"];
 const getDetail = async (e) => {
     isLoading.value = true;
     let userToken = localStorage.getItem("token");
@@ -171,17 +170,7 @@ const getDetail = async (e) => {
         isLoading.value = false;
         bodyModalDetail.value = response.data;
         checkedRowKeys.value = bodyModalDetail.value.details
-            .filter(item => {
-                if (!item.tgl_jatuh_tempo) return false;
-
-                const today = new Date();
-                const itemDate = item.tgl_jb ? new Date(item.tgl_jb) : new Date(item.tgl_jatuh_tempo);
-                const isOverdue = itemDate <= today;
-                const isUnpaid = item.bayar <= item.angsuran;
-
-                return isOverdue && isUnpaid;
-            })
-            .map(item => item.no_surat); // pastikan ini sesuai row-key yang digunakan
+            .map(item => item.no_surat);
 
     }
 };
@@ -434,7 +423,7 @@ const handleChangePetugas = async (e) => {
 
         // Set filter options
         const uniqueValues = (key) => {
-            return [...new Set(response.data.map((item) => item[key]).filter(Boolean))];
+            return [...new Set(dataList.value.map(item => item[key]).filter(Boolean))];
         };
 
         const setFilterOptions = (key, sortNumeric = false) => {

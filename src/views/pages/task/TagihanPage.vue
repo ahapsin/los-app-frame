@@ -122,7 +122,7 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -417,6 +417,7 @@ const formDataKunjungan = ref({
     no_surat: null,
     keterangan: null,
     tgl_jb: null,
+    lkp_number: null,
     path: []
 });
 
@@ -441,6 +442,7 @@ const handleOnUpload = (e) => {
     statsUpload.value = e;
 }
 const handleSubmitKunjungan = async () => {
+    formDataKunjungan.value.lkp_number = bodyDetail.value.no_lkp;
     await postKunjungan(formDataKunjungan.value);
     modalDetail.value = false;
 }
@@ -514,8 +516,8 @@ const columnBebanTagih = [
         title: "No Surat",
         key: "no_surat",
         sorter: 'default',
-        width: 120,
         fixed: "left",
+        width: 150
     },
     {
         title: "Customer",
@@ -528,7 +530,7 @@ const columnBebanTagih = [
         title: "No LKP",
         key: "no_lkp",
         sorter: 'default',
-        width: 120,
+        width: 120
     },
     {
         title: "No Kontrak",
@@ -567,18 +569,18 @@ const columnBebanTagih = [
             tooltip: true,
         }
     },
-    {
-        title: "",
-        align: "right",
-        width: 120,
-        render(row) {
-            return h(NButton, {
-                type: 'primary',
-                size: "small",
-                onClick: () => handleDetail(row),
-            }, { default: () => 'Kunjungan' })
-        }
-    },
+    // {
+    //     title: "",
+    //     align: "right",
+    //     width: 120,
+    //     render(row) {
+    //         return h(NButton, {
+    //             type: 'primary',
+    //             size: "small",
+    //             onClick: () => handleDetail(row),
+    //         }, { default: () => 'Kunjungan' })
+    //     }
+    // },
 ];
 const dataList = ref([]);
 const getData = async () => {

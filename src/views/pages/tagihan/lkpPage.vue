@@ -1,7 +1,7 @@
 <script setup>
 import { saveAs } from 'file-saver';
 import moment from 'moment';
-import { NButton, NProgress } from 'naive-ui';
+import { NButton, NProgress, NTag } from 'naive-ui';
 import { h, nextTick } from 'vue';
 import { useVueToPrint } from 'vue-to-print';
 import * as XLSX from 'xlsx';
@@ -120,6 +120,15 @@ const columnDeploy = reactive([
         title: "STATUS",
         key: "status",
         sorter: "default",
+        render(row) {
+            return h(NTag, {
+                size: "small",
+                round: true,
+                type: row.status === 'DRAFT' ? 'warning' : row.status === 'OPEN' ? 'success' : 'error'
+            }, {
+                default: () => row.status
+            })
+        }
     },
 
     {
@@ -533,6 +542,10 @@ const handleAddLkp = () => {
                         <n-collapse-item :title="moment(i.tgl_buat).format('DD-MM-YYYY HH:mm')"
                             v-for="i in bodyHistorySurat">
                             <div class="grid grid-flow-col">
+                                <div class="flex flex-col flex-1 ">
+                                    <small class="text-reg">NO LKP</small>
+                                    <n-text strong class="text-md">{{ i.no_lkp }}</n-text>
+                                </div>
                                 <div class="flex flex-col flex-1 ">
                                     <small class="text-reg">NO SURAT</small>
                                     <n-text strong class="text-md">{{ i.no_surat }}</n-text>
