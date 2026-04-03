@@ -122,7 +122,7 @@
                     <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -569,18 +569,18 @@ const columnBebanTagih = [
             tooltip: true,
         }
     },
-    // {
-    //     title: "",
-    //     align: "right",
-    //     width: 120,
-    //     render(row) {
-    //         return h(NButton, {
-    //             type: 'primary',
-    //             size: "small",
-    //             onClick: () => handleDetail(row),
-    //         }, { default: () => 'Kunjungan' })
-    //     }
-    // },
+    {
+        title: "",
+        align: "right",
+        width: 120,
+        render(row) {
+            return h(NButton, {
+                type: 'primary',
+                size: "small",
+                onClick: () => handleDetail(row),
+            }, { default: () => 'Kunjungan' })
+        }
+    },
 ];
 const dataList = ref([]);
 const getData = async () => {

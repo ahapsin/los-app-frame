@@ -110,9 +110,12 @@ const columnDeploy = reactive([
         title: "PROGRES",
         key: "status",
         sorter: "default",
+        width: 180,
         render(row) {
             return h(NProgress, {
                 percentage: row.presentase,
+                indicatorPlacement: "inside",
+                status: row.status === 'DRAFT' ? 'warning' : row.status === 'OPEN' ? 'info' : 'success'
             }, {})
         }
     },
@@ -124,7 +127,7 @@ const columnDeploy = reactive([
             return h(NTag, {
                 size: "small",
                 round: true,
-                type: row.status === 'DRAFT' ? 'warning' : row.status === 'OPEN' ? 'success' : 'error'
+                type: row.status === 'DRAFT' ? 'warning' : row.status === 'OPEN' ? 'info' : 'success'
             }, {
                 default: () => row.status
             })
