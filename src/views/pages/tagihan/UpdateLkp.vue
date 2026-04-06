@@ -9,6 +9,7 @@
                         <n-tag v-for="value in values" :key="value" closable round size="small"
                             :on-close="() => removeFilter(key, value)" class="filter-tag">
                             {{ value }}
+                            ==
                         </n-tag>
                     </div>
                 </div>
@@ -574,7 +575,7 @@ onMounted(async () => {
     loadingBar.finish();
     await getData();
     await getDetail(props.data?.no_lkp);
-    await handleChangePetugas(props.data.petugas);
+    await handleChangePetugas(props.data.id_petugas);
 
 });
 </script>
