@@ -228,7 +228,7 @@
                 <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
 
                     <n-button type="primary" @click="handleSubmitKunjungan"
-                        :disabled="!formDataKunjungan.keterangan || statsUpload || formDataKunjungan.path.length === 0">Simpan</n-button>
+                        :disabled="isSubmitDisabled">Simpan</n-button>
                     <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
                 </div>
             </template>
@@ -311,6 +311,15 @@ const startOfDay = (date) => {
     d.setHours(0, 0, 0, 0)
     return d
 }
+
+const isSubmitDisabled = computed(() => {
+    return (
+        !formDataKunjungan.value.keterangan ||
+        !formDataKunjungan.value.tgl_jb ||
+        statsUpload.value ||
+        !formDataKunjungan.value.path?.length
+    )
+})
 
 const isDateDisabled = (ts) => {
     const today = startOfDay(new Date())
