@@ -24,6 +24,7 @@
                     </n-form-item>
                 </n-space>
                 <div>
+                    <n-alert title="Draft Ditemukan" type="warning" size="small" class="mb-2" v-if="drafted"></n-alert>
                     <n-card :class="`shadow-lg`" embedded title="Daftar Tagihan" size="small" :segmented="true">
                         <template #header-extra>
                             <div class="flex gap-2 pb-4">
@@ -48,9 +49,9 @@
                             3
                             LKP aktif</n-alert>
                         <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                            @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys" :row-key="(row) => row"
-                            @update:checked-row-keys="handleCheck" :loading="isLoading" size="small"
-                            :pagination="pagination" :row-class-name="getRowClassName" />
+                            @update:filters="onFilterChange" :checked-row-keys="checkedRowKeys"
+                            :row-key="(row) => row.no_surat" @update:checked-row-keys="handleCheck" :loading="isLoading"
+                            size="small" :pagination="pagination" :row-class-name="getRowClassName" />
                     </n-card>
 
                 </div>
@@ -388,6 +389,8 @@ const getData = async () => {
 };
 const today = new Date();
 const dataResponse = ref();
+const drafted = ref();
+const lkpid = ref();
 const handleChangePetugas = async () => {
     isLoading.value = true;
     let userToken = localStorage.getItem("token");
@@ -404,23 +407,28 @@ const handleChangePetugas = async () => {
         isLoading.value = false;
         loadingBar.finish();
         dataResponse.value = response.data;
+        drafted.value = response.data?.DRAFTED;
+        lkpid.value = response.data?.ID;
         dataList.value = response.data.list;
 
         // Filter untuk auto-check berdasarkan tgl_jatuh_tempo
         const today = new Date();
-        checkedRowKeys.value = response.data.list
-            .filter(item => {
-                if (!item.tgl_jatuh_tempo) return false;
+        if (drafted.value) {
+            await getDetail(response.data?.LKP_NUMBER);
+        } else {
+            checkedRowKeys.value = response.data.list
+                .filter(item => {
+                    if (!item.tgl_jatuh_tempo) return false;
 
-                const today = new Date();
-                const itemDate = item.tgl_jb ? new Date(item.tgl_jb) : new Date(item.tgl_jatuh_tempo);
-                const isOverdue = itemDate <= today;
-                const isUnpaid = item.bayar <= item.angsuran;
+                    const today = new Date();
+                    const itemDate = item.tgl_jb ? new Date(item.tgl_jb) : new Date(item.tgl_jatuh_tempo);
+                    const isOverdue = itemDate <= today;
+                    const isUnpaid = item.bayar <= item.angsuran;
 
-                return isOverdue && isUnpaid;
-            })
-            .map(item => item); // pastikan ini sesuai row-key yang digunakan
-
+                    return isOverdue && isUnpaid;
+                })
+                .map(item => item.no_surat); // pastikan ini sesuai row-key yang digunakan
+        }
         // Set filter options
         const uniqueValues = (key) => {
             return [...new Set(response.data.map((item) => item[key]).filter(Boolean))];
@@ -451,16 +459,18 @@ const handleChangePetugas = async () => {
 const emit = defineEmits();
 const assignTagihan = async (e) => {
     if (isLoading.value) return;
+    const set = new Set(checkedRowKeys.value);
     const bodyPost = {
         user_id: assignTo.value,
         IsDraf: e,
-        list_lkp: checkedRowKeys.value,
+        LkpId: lkpid.value,
+        list_lkp: filteredDataList.value.filter(item => set.has(item.no_surat)),
     };
     isLoading.value = true;
     let userToken = localStorage.getItem("token");
     const response = await useApi({
         method: "POST",
-        api: "cl_lkp_add",
+        api: drafted.value === 1 ? "cl_lkp_edit" : "cl_lkp_add",
         data: bodyPost,
         token: userToken,
     });
@@ -473,6 +483,26 @@ const assignTagihan = async (e) => {
         modalAssign.value = false;
         assignTo.value = null;
         checkedRowKeys.value = [];
+    }
+};
+const dataUpdate = ref();
+const getDetail = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `cl_lkp_detail/${e}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        isLoading.value = false;
+        console.error(response.error);
+    } else {
+        isLoading.value = false;
+        dataUpdate.value = response.data;
+        checkedRowKeys.value = dataUpdate.value.details
+            .map(item => item.no_surat);
+
     }
 };
 
