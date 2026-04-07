@@ -27,7 +27,7 @@
                 <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
                 <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                    :loading="isLoading" size="small" :pagination="pagination" :scroll-x="1300" />
+                    :loading="isLoading" size="small" :pagination="pagination" :scroll-x="1300" striped="true" />
             </n-space>
         </div>
     </n-card>
@@ -74,93 +74,109 @@
                     </n-button>
                 </n-space>
             </template>
+            <n-card size="small" title="Kunjungan terakhir" class="mb-2">
+                <n-descriptions :columns="4" bordered size="small">
+                    <n-descriptions-item label="Tanggal Kunjungan">
+                        {{ bodyDetail.kunjungan_terakhir.tgl_kunjungan }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="Tanggal Janji Bayar">
+                        {{ bodyDetail.kunjungan_terakhir.tgl_jb }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="Hasil Kunjungan">
+                        {{ bodyDetail.kunjungan_terakhir.hasil_kunjungan }}
+                    </n-descriptions-item>
+                    <n-descriptions-item label="Dokumen Kunjungan">
+                        <n-image v-for="i in bodyDetail.kunjungan_terakhir.path" :src="i" class="w-[40px]" />
+                    </n-descriptions-item>
+                </n-descriptions>
+            </n-card>
             <n-card :class="`shadow-lg`" class="mb-2" size="small" embedded>
-                <div class="grid grid-cols-1 md:grid-cols-5 gap-4 h-[200px] overflow-auto">
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                <div class="grid grid-cols-2 md:grid-cols-5 gap-4 overflow-auto">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">NO SURAT</small>
                         <n-text strong class="text-md">{{ bodyDetail.no_surat }}</n-text>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">CABANG</small>
                         <n-text strong class="text-md">{{ bodyDetail.cabang }}</n-text>
                     </div>
 
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]" v-if="bodyDetail?.no_lkp">
+                    <div class="flex flex-col flex-1 w-full " v-if="bodyDetail?.no_lkp">
                         <small class="text-reg">NO LKP</small>
                         <n-text type="error">
                             <strong>{{ bodyDetail.no_lkp }}</strong>
                         </n-text>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">No Kontrak</small>
                         <n-text strong class="text-md">{{ bodyDetail.no_kontrak }}</n-text>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Customer</small>
                         <n-text strong class="text-md">{{ bodyDetail.nama_customer }}</n-text>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Tgl Bayar</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_bayar }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Tgl Jatuh Tempo</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_jatuh_tempo }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Cycle Awal</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.cycle_awal }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Cycle Akhir</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.cycle_akhir }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran ke</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angusran_ke }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
                         <n-text strong class="text-md">{{ bodyDetail.alamat }}</n-text>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">DENDA</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.denda }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">TENOR</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tenor }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">MCF</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.mcf }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">PIC</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.nama_pic }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">CATATAN SURVEYOR</small>
                         <n-text class="text-md font-semibold">{{ bodyDetail.catatan_survey }}</n-text>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">UNIT</small>
-                        <n-text class="text-md font-semibold text-wrap">{{ bodyDetail.unit }}</n-text>
+                        <n-text class="text-md font-semibold">{{ bodyDetail.unit }}</n-text>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">NO POLISI</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.no_polisi }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">TAHUN MOTOR</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tahun_motor }}</n-ellipsis>
                     </div>
-                    <div class="flex flex-col flex-1 min-w-[250px] md:max-w-[25%]">
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">NO HP</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.no_hp }}</n-ellipsis>
                     </div>
@@ -168,8 +184,15 @@
             </n-card>
             <n-divider title-placement="left">Dokumen Pelanggan</n-divider>
             <n-image-group>
-                <div>
+                <div class="flex gap-2">
                     <n-image v-for="i in bodyDetail.col_path" :src="i" width="40" :height="40" object-fit="fill"
+                        class="w-[40px] h-[40px]" />
+                </div>
+            </n-image-group>
+            <n-divider title-placement="left">Dokumen Pendukung</n-divider>
+            <n-image-group>
+                <div class="flex gap-2">
+                    <n-image v-for="i in bodyDetail.other_path" :src="i" width="40" :height="40" object-fit="fill"
                         class="w-[40px] h-[40px]" />
                 </div>
             </n-image-group>
@@ -291,10 +314,11 @@
 
 </template>
 <script setup>
+import { CreateOutlined, RemoveRedEyeOutlined } from "@vicons/material";
 import { useWindowSize } from "@vueuse/core";
 import { saveAs } from 'file-saver';
 import moment from 'moment';
-import { NButton, useLoadingBar, useMessage } from "naive-ui";
+import { NButton, NIcon, NTag, useLoadingBar, useMessage } from "naive-ui";
 import { onMounted, ref } from "vue";
 import * as XLSX from 'xlsx';
 import { useApi } from "../../../helpers/axios.js";
@@ -514,10 +538,6 @@ const grabListBan = async (e) => {
 
 }
 
-const postForm = () => {
-
-}
-
 
 
 const columnBebanTagih = [
@@ -534,12 +554,53 @@ const columnBebanTagih = [
         sorter: 'default',
         width: 120,
         fixed: "left",
+        ellipsis: {
+            tooltip: true,
+        }
     },
     {
         title: "No LKP",
-        key: "no_lkp",
-        sorter: 'default',
-        width: 120
+        width: 150,
+        render(row) {
+            return h(NTag, {
+                type: row.no_lkp ? 'primary' : 'default',
+                size: "small",
+                secondary: true,
+                onClick: () => handleDetail(row),
+            }, { default: () => row.no_lkp ? row.no_lkp : 'Belum Ada' })
+        }
+    },
+    {
+        title: "Hasil Kunjungan",
+        width: 150,
+        render(row) {
+            const hasLkp = !!row.no_lkp
+            const isEmpty = row.kunjungan_terakhir == null
+
+            // 🔥 tentukan icon & label
+            let icon = RemoveRedEyeOutlined
+            let label = "Detail"
+
+            if (hasLkp && isEmpty) {
+                icon = CreateOutlined
+                label = "Isi"
+            }
+
+            return h(NButton, {
+                type: hasLkp && isEmpty ? 'info' : 'default',
+                size: "small",
+                onClick: () => handleDetail(row),
+            }, {
+                default: () => [
+                    h("div", {
+                        style: "display:flex; align-items:center; gap:4px;"
+                    }, [
+                        h(NIcon, { size: 16 }, { default: () => h(icon) }),
+                        isEmpty ? label : 'Lihat'
+                    ])
+                ]
+            })
+        }
     },
     {
         title: "No Kontrak",
@@ -554,7 +615,7 @@ const columnBebanTagih = [
         width: 150,
     },
     {
-        title: "Angsuran ke",
+        title: "Angs ke",
         key: "angusran_ke",
         sorter: 'default',
         width: 120,
@@ -577,19 +638,8 @@ const columnBebanTagih = [
         ellipsis: {
             tooltip: true,
         }
-    },
-    {
-        title: "",
-        align: "right",
-        width: 120,
-        render(row) {
-            return h(NButton, {
-                type: 'primary',
-                size: "small",
-                onClick: () => handleDetail(row),
-            }, { default: () => 'Kunjungan' })
-        }
-    },
+    }
+
 ];
 const dataList = ref([]);
 const getData = async () => {
@@ -612,17 +662,34 @@ const getData = async () => {
 
 const modalDetail = ref(false);
 const bodyDetail = ref();
-const handleDetail = (e) => {
+const handleDetail = async (e) => {
     formDataKunjungan.value = {
         no_surat: null,
         keterangan: null,
         tgl_jb: null,
         path: []
     }
-    bodyDetail.value = e;
+    await getDetail(e)
     modalDetail.value = true;
     formDataKunjungan.value.no_surat = e.no_surat;
 }
+
+const getDetail = async (e) => {
+    isLoading.value = true;
+    let userToken = localStorage.getItem("token");
+    const response = await useApi({
+        method: "GET",
+        api: `list_tagihan_collector/detail/${e.id}`,
+        token: userToken,
+    });
+    if (!response.ok) {
+        isLoading.value = false;
+        console.log(response.error);
+    } else {
+        isLoading.value = false;
+        bodyDetail.value = response.data;
+    }
+};
 
 const checkedRowKeys = ref([]);
 const filterValue = reactive({

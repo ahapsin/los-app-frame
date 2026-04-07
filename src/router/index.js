@@ -182,6 +182,12 @@ const routes = [
         component: () => import("../views/pages/task/visit/AddVisit.vue"),
       },
       {
+        path: "canvasing",
+        name: "canvasing",
+        component: () =>
+          import("../views/pages/task/canvasing/ListCanvasing.vue"),
+      },
+      {
         path: "analisa",
         name: "analisa",
         component: () => import("../views/pages/task/analisa/AnalisaPage.vue"),

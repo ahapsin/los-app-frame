@@ -3,9 +3,9 @@
         <div>
             <n-space vertical :size="12" class="pt-4">
                 <n-space>
-                    <n-form-item label="TANGGAL AKHIR">
+                    <!-- <n-form-item label="TANGGAL AKHIR">
                         <n-date-picker v-model:formatted-value="rangeDate" format="MMyyyy" type="month" clearable />
-                    </n-form-item>
+                    </n-form-item> -->
                     <n-form-item label="POS" v-if="me.me.cabang_nama === 'Head Office'">
                         <n-select :loading="loadingBranch" filterable placeholder="Pilih POS" label-field="nama"
                             value-field="id" :default-value="defBranch" :options="dataBranch"
@@ -29,7 +29,7 @@
                     @blur="searchData" />
                 <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x
                     :scroll-x="10000" :min-row-height="48" virtual-scroll-header
-                    :columns="convertObjectToArray(dataListBan)" :data="showData" :pagination="{ pageSize: 10 }"
+                    :columns="convertObjectToArray(dataList)" :data="showData" :pagination="{ pageSize: 10 }"
                     :loading="loadingData" />
             </n-space>
         </div>
@@ -111,25 +111,26 @@ let messageReactive = null;
 const loadingBar = useLoadingBar();
 const handleSubmit = async () => {
     disabledButton.value = true;
-    progressBar.value = true;
-    percentage.value = 0;
-    let a = {
-        dari: rangeDate.value,
-        cabang_id: selectedBranch.value?.id ? selectedBranch.value.id : me.me.cabang_id,
-    }
-    messageReactive = message.loading('memuat data listing beban', { duration: 0 });
+    // progressBar.value = true;
+    // percentage.value = 0;
+    // let a = {
+    //     dari: rangeDate.value,
+    //     cabang_id: selectedBranch.value?.id ? selectedBranch.value.id : me.me.cabang_id,
+    // }
+    // messageReactive = message.loading('memuat data listing beban', { duration: 0 });
 
-    try {
-        await callSp(a, 'sp1');
-        await callSp(a, 'sp2');
-        await callSp(a, 'sp3');
-        await callSp(a, 'sp4');
-        await grabListBan(a, 'listBanTest');
-    } catch (error) {
-        messageReactive.destroy()
-    }
+    // try {
+    //     await callSp(a, 'sp1');
+    //     await callSp(a, 'sp2');
+    //     await callSp(a, 'sp3');
+    //     await callSp(a, 'sp4');
+    //     await grabListBan(a, 'listBanTest');
+    // } catch (error) {
+    //     messageReactive.destroy()
+    // }
 
-    disabledButton.value = false;
+    // disabledButton.value = false;
+    getList();
 }
 const dataListBan = ref([]);
 const loadingData = ref(false);
@@ -319,8 +320,25 @@ const exportToExcel = (data) => {
 const boxSearch = ref();
 const stack = ref()
 const showData = computed(() => {
-    return useSearch(dataListBan.value, stack.value);
+    return useSearch(dataList.value, stack.value);
 });
+const dataList = ref([])
+const getList = async () => {
+    loadingData.value = true;
+    const response = await useApi({
+        method: "POST",
+        api: 'FasilitasLunasReport',
+        data: { cabang: selectedBranch.value?.id },
+        token: userToken,
+    });
+    if (!response.ok) {
+        loadingData.value = false;
+        message.error("error api")
+    } else {
+        loadingData.value = false;
+        dataList.value = response.data;
+    }
+}
 const searchData = () => {
     stack.value = boxSearch.value;
 }
