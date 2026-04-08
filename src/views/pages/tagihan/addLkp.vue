@@ -203,6 +203,12 @@ const columnBebanTagih = reactive([
         key: "no_surat",
         width: 150,
         sorter: "default",
+    },
+    {
+        title: "NO KONTRAK",
+        key: "no_kontrak",
+        width: 150,
+        sorter: "default",
     }, {
         title: "MCF",
         key: "mcf",

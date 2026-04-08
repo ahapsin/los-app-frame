@@ -25,12 +25,11 @@
                 :disabled="dynamicForm.Status === 'Existing'" clearable />
         </n-form-item>
         <n-form-item label="Hasil Follow Up">
-            <n-input v-model:value="dynamicForm.HasilFollowup" placeholder="Hasil Follow Up" />
+            <n-select v-model:value="dynamicForm.HasilFollowup" :options="optHasilFollowup" />
         </n-form-item>
         <n-form-item label="Sumber Order">
-            <n-input v-model:value="dynamicForm.SumberOrder" placeholder="Sumber Order" />
+            <n-select v-model:value="dynamicForm.SumberOrder" :options="optSumberOrder" />
         </n-form-item>
-
 
         <n-form-item label="Keterangan">
             <n-input type="textarea" v-model:value="dynamicForm.Keterangan" placeholder="Keterangan" />
@@ -65,6 +64,43 @@ const dynamicForm = reactive({
     Dokumen: []
 })
 
+
+const optSumberOrder = [
+    {
+        label: "KANVASING",
+        value: "KANVASING"
+    },
+    {
+        label: "MEDIATOR",
+        value: "MEDIATOR"
+    },
+    {
+        label: "SHOWROOM",
+        value: "SHOWROOM"
+    },
+]
+const optHasilFollowup = [
+    {
+        label: "PIKIR-PIKIR",
+        value: "PIKIR-PIKIR"
+    },
+    {
+        label: "BELUM BUTUH",
+        value: "BELUM BUTUH"
+    },
+    {
+        label: "BERMINAT",
+        value: "BERMINAT"
+    },
+    {
+        label: "PENCAIRAN HARI INI",
+        value: "PENCAIRAN HARI INI"
+    },
+    {
+        label: "RUNDINGAN KELUARGA",
+        value: "RUNDINGAN KELUARGA"
+    },
+]
 const nasabahList = [
     {
         id: "NSB001",
