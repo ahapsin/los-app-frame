@@ -466,7 +466,7 @@ const assignTagihan = async (e) => {
         user_id: props.data.petugas,
         IsDraf: e,
         LkpId: props.data.id,
-        list_lkp: filteredDataList.value.filter(item => set.has(item.no_surat)),
+        list_lkp: dataList.value.filter(item => set.has(item.no_surat)),
     };
     isLoading.value = true;
     let userToken = localStorage.getItem("token");

@@ -470,7 +470,7 @@ const assignTagihan = async (e) => {
         user_id: assignTo.value,
         IsDraf: e,
         LkpId: lkpid.value,
-        list_lkp: filteredDataList.value.filter(item => set.has(item.no_surat)),
+        list_lkp: dataList.value.filter(item => set.has(item.no_surat)),
     };
     isLoading.value = true;
     let userToken = localStorage.getItem("token");
