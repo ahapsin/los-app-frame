@@ -121,6 +121,10 @@
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.bayar }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 w-full ">
+                        <small class="text-reg">Tanggal Bayar</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_bayar }}</n-ellipsis>
+                    </div>
+                    <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Tgl Jatuh Tempo</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_jatuh_tempo }}</n-ellipsis>
                     </div>
@@ -139,7 +143,7 @@
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
