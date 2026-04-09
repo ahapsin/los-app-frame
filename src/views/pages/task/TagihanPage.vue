@@ -113,11 +113,12 @@
                     </div>
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Customer</small>
+                        komposisi kredit
                         <n-text strong class="text-md">{{ bodyDetail.nama_customer }}</n-text>
                     </div>
                     <div class="flex flex-col flex-1 w-full ">
-                        <small class="text-reg">Tgl Bayar</small>
-                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.tgl_bayar }}</n-ellipsis>
+                        <small class="text-reg">Bayar</small>
+                        <n-ellipsis class="text-md font-semibold">{{ bodyDetail.bayar }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Tgl Jatuh Tempo</small>
@@ -138,7 +139,7 @@
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>

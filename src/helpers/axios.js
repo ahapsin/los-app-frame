@@ -5,14 +5,18 @@ export async function useApi({ ...args }) {
       method: args.method,
       data: args.data,
       params: args.params,
+      responseType: args.responseType || "json",
       headers: {
         ...args.header,
-        "Content-Type": "application/json",
+        ...(args.responseType === "blob"
+          ? {}
+          : { "Content-Type": "application/json" }),
         Authorization: `Bearer ${args.token}`,
       },
       baseURL: import.meta.env.VITE_APP_API_BASE + args.api,
     });
-    return { ok: true, data: response.data };
+
+    return { ok: true, data: response.data, headers: response.headers };
   } catch (error) {
     return { ok: false, error: error.response };
   }
@@ -63,4 +67,4 @@ const useOpenAPIget = async (url) => {
     console.log(error);
   }
 };
-export { useAPIPost, useAPIGet, useOpenAPIget };
+export { useAPIGet, useAPIPost, useOpenAPIget };
