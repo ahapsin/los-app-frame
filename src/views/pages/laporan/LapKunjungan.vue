@@ -33,7 +33,7 @@
             </div>
             <div class="p-2 bg-white rounded-b-xl">
                 <n-data-table :columns="columnsKunjungan" :data="listData" :pagination="{ pageSize: 10 }" striped
-                    :loading="loadData" />
+                    :loading="loadData" :scroll-x="1600" />
             </div>
         </div>
     </n-card>
@@ -67,54 +67,73 @@ const columnsKunjungan = [
         title: "Tanggal",
         key: "TglVisit",
         sorter: "default",
+        width: 120, ellipsis: {
+            tooltip: true,
+        },
     },
     {
         title: "No Kontrak",
         key: "NoKontrak",
         sorter: "default",
+        width: 150
     },
     {
         title: "Cabang",
         key: "Cabang",
         sorter: "default",
+        width: 120
     },
     {
         title: "Petugas",
         key: "NamaMcf",
         sorter: "default",
+        width: 200
     },
     {
         title: "Nasabah",
         key: "NamaNasabah",
         sorter: "default",
+        width: 200
     },
     {
         title: "Alamat",
         key: "AlamatNasabah",
         sorter: "default",
+        width: 120,
+        ellipsis: {
+            tooltip: true,
+        },
     },
     {
         title: "No HP",
-        key: "TeleponNasaba",
+        key: "TeleponNasabah",
         sorter: "default",
+        width: 120
     },
     {
         title: "Kategori",
         key: "StatusNasabah",
         sorter: "default",
+        width: 120
+
     },
     {
         title: "Ref / Sumber",
         key: "SumberOrder",
         sorter: "default",
+        width: 200
     },
     {
         title: "Keterangan",
         key: "Keterangan",
         sorter: "default",
+        width: 200,
+        ellipsis: {
+            tooltip: true,
+        },
     },
     {
-        title: "Lampiran",
+        title: "#",
         key: "PathFile",
         render(row) {
             let images = row.PathFile
@@ -135,7 +154,7 @@ const columnsKunjungan = [
                             width: 50,
                             height: 50,
                             objectFit: "cover",
-                            style: "border-radius: 6px"
+                            style: "border-radius: 6px; height:20px;"
                         })
                     )
             )
