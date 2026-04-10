@@ -33,7 +33,7 @@
             </div>
             <div class="p-2 bg-white rounded-b-xl">
                 <n-data-table :columns="columnsKunjungan" :data="listData" :pagination="{ pageSize: 10 }" striped
-                    :loading="loadData" :scroll-x="2400" />
+                    :loading="loadData" :scroll-x="2600" />
             </div>
         </div>
     </n-card>
@@ -130,10 +130,22 @@ const columnsKunjungan = [
         width: 200
     },
     {
+        title: "AMBC Total",
+        key: "AmbcTotal",
+        sorter: "default",
+        width: 200,
+        render(row) {
+            return h("div", row.AmbcTotal?.toLocaleString())
+        }
+    },
+    {
         title: "Pembayaran",
         key: "Pembayaran",
         sorter: "default",
-        width: 200
+        width: 200,
+        render(row) {
+            return h("div", row.Pembayaran?.toLocaleString())
+        }
     },
     {
         title: "Cycle Awal",
@@ -147,6 +159,7 @@ const columnsKunjungan = [
         sorter: "default",
         width: 200
     },
+
     {
         title: "Keterangan",
         key: "Keterangan",

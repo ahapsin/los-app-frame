@@ -2,22 +2,21 @@
     <n-card title="Data Canvasing" size="small">
         <template #header-extra>
             <n-space>
-                <n-popover trigger="click" placement="top" v-model:show="showEmoji">
-                    <template #trigger>
-                        <n-button circle>
-                            <v-icon name="bi-search" />
-                        </n-button>
-                    </template>
-                    <n-input v-model:value="searchBox" />
-                </n-popover>
-
                 <json-excel :data="dataList" :name="`Data Canvasing`" :fields="json_fields">
                     <n-button type="success" secondary>Download</n-button>
                 </json-excel>
                 <n-button @click="handleAdd" type="primary">Tambah</n-button>
             </n-space>
         </template>
-        <n-data-table :columns="columnList" :data="showData" :loading="loadList" :pagination="pagination" />
+        <div class="flex gap-2">
+            <n-form-item label="tanggal">
+                <n-date-picker v-model:value="searchBox.tanggal" type="date" />
+            </n-form-item>
+            <n-form-item label="Nama MCF">
+                <n-input v-model:value="searchBox.nama_mcf" clearable />
+            </n-form-item>
+        </div>
+        <n-data-table :columns="columnList" :data="filteredData" :loading="loadList" :pagination="pagination" />
     </n-card>
     <n-modal v-model:show="viewModal">
         <n-card class="w-full md:w-3/4" title="Form Canvasing">
@@ -30,12 +29,14 @@ import { NButton, NImage, NTag } from 'naive-ui';
 import { h, onMounted, ref } from 'vue';
 import JsonExcel from "vue-json-excel3";
 import { useApi } from '../../../../helpers/axios';
-import { useSearch } from '../../../../helpers/searchObject';
 import AddCanvasing from './AddCanvasing.vue';
 
 const loadList = ref(false)
 const viewModal = ref(false)
-const searchBox = ref();
+const searchBox = reactive({
+    tanggal: null,
+    nama_mcf: null
+});
 
 const handleAdd = () => {
     viewModal.value = true
@@ -66,6 +67,7 @@ const columnList = [
     {
         title: "Nama MCF",
         key: "NamaMcf",
+        sorter: "default",
     },
     {
         title: "Nama Nasabah",
@@ -97,6 +99,8 @@ const columnList = [
         render(row) {
             return h(NImage, {
                 src: row.Path ? row.Path : noImage,
+                style: "border-radius: 6px; height:30px;",
+                objectFit: "cover",
                 width: 30,
             })
         }
@@ -126,7 +130,6 @@ const getList = async () => {
     if (!response.ok) {
         console.error(response.error);
     } else {
-
         dataList.value = response.data;
     }
 }
@@ -148,9 +151,19 @@ const handleCancel = () => {
     viewModal.value = false;
     getList();
 }
+const filteredData = computed(() => {
+    return dataList.value.filter((item) => {
+        const matchTanggal = searchBox.tanggal
+            ? new Date(item.TanggalKunjungan).toDateString() ===
+            new Date(searchBox.tanggal).toDateString()
+            : true;
 
-const showData = computed(() => {
-    return useSearch(dataList.value, searchBox.value);
+        const matchNama = searchBox.nama_mcf
+            ? item.NamaMcf?.toLowerCase().includes(searchBox.nama_mcf.toLowerCase())
+            : true;
+
+        return matchTanggal && matchNama;
+    });
 });
 onMounted(() => {
     getList();

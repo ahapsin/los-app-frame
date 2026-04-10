@@ -17,8 +17,9 @@
                 <n-form-item label="petugas">
                     <n-select v-model:value="assignTo" placeholder="pilih petugas" :options="me.me.cabang_nama === 'Head Office'
                         ? _.filter(dataUser, { status: 'Aktif' })
-                        : _.filter(dataUser, { cabang_nama: me.me.cabang_nama, status: 'Aktif' })" value-field="username"
-                        label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
+                        : _.filter(dataUser, { cabang_nama: me.me.cabang_nama, status: 'Aktif' })"
+                        value-field="username" label-field="nama" filterable :render-tag="renderSingleSelectTag"
+                        :render-label="renderLabel" />
                 </n-form-item>
                 <n-card :class="`shadow-lg`" embedded title="Daftar Tagihan" size="small" :segmented="true">
                     <template #header-extra>
@@ -65,7 +66,7 @@
                 <n-alert type="info" v-if="assignTo === null">Pilih petugas</n-alert>
                 <n-alert type="info" v-else-if="checkedRowKeys.length === 0">Pilih data tagihan</n-alert>
                 <n-space v-else>
-                    <n-button type="primary" @click="assignTagihan" :disabled="checkedRowKeys.length === 0">
+                    <n-button type="primary" @click="assignTagihan" :disabled="isLoading" :loading="isLoading">
                         <v-icon name="bi-plus-lg" />
                         Simpan
                     </n-button>
@@ -333,6 +334,7 @@ const assignTagihan = async () => {
         token: userToken,
     });
     if (!response.ok) {
+        isLoading.value = false;
         console.error(response);
     } else {
         isLoading.value = false;

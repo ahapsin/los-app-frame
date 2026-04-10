@@ -12,23 +12,20 @@
                             @update:value="handleUpdateBranch" />
                     </n-form-item>
                     <n-form-item>
-                        <n-button @click="handleSubmit" type="primary" :disabled="disabledButton">
+                        <n-button @click="handleSubmit" type="primary" :loading="loadingData">
                             Cari
                         </n-button>
                     </n-form-item>
                     <n-form-item>
-                        <!-- <json-excel v-if="dataListBan.length > 0" :data="dataListBan"
-              :name="`Listing_Beban_${selectedBranch?.nama ? selectedBranch.nama : me.me.cabang_nama}_${rangeDate}_${periodeTarikan} `" :stringifyLongNum="false"> -->
-                        <n-button type="primary" secondary @click="exportToExcel(convertEmptyToNull(dataListBan))"
-                            v-if="dataListBan.length != 0">Download</n-button>
-                        <!-- <n-button type="primary" secondary :disabled="ctrDownload">Download</n-button> -->
-                        <!-- </json-excel> -->
+
+                        <n-button type="primary" secondary @click="exportToExcel(convertEmptyToNull(dataList))"
+                            v-if="dataList.length != 0" :disabled="loadingData">Download</n-button>
+
                     </n-form-item>
                 </n-space>
-                <n-input type="text" placeholder="nyari apa ?" v-model:value="boxSearch" v-if="!ctrDownload"
-                    @blur="searchData" />
+                <n-input v-model:value="stack" clearable v-if="dataList.length != 0" />
                 <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x
-                    :scroll-x="10000" :min-row-height="48" virtual-scroll-header
+                    :scroll-x="7000" :min-row-height="48" virtual-scroll-header
                     :columns="convertObjectToArray(dataList)" :data="showData" :pagination="{ pageSize: 10 }"
                     :loading="loadingData" />
             </n-space>
@@ -50,7 +47,6 @@ const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
 const disabledButton = ref(false);
-const progressBar = ref(false);
 const percentage = ref(0);
 
 const selectedBranch = ref();
@@ -97,39 +93,17 @@ const getBranch = async () => {
         if (me.me?.cabang_nama != "Head Office") {
             selectBranch.value = me.me.cabang_id;
         } else {
-            selectBranch.value = "SEMUA CABANG";
+
             dataBranch.value = response.data.response;
-            dataBranch.value.unshift({
-                id: "semua",
-                nama: "SEMUA CABANG"
-            });
+
         }
     }
 }
 const rangeDate = ref();
 let messageReactive = null;
 const loadingBar = useLoadingBar();
+const isLoading = ref(false);
 const handleSubmit = async () => {
-    disabledButton.value = true;
-    // progressBar.value = true;
-    // percentage.value = 0;
-    // let a = {
-    //     dari: rangeDate.value,
-    //     cabang_id: selectedBranch.value?.id ? selectedBranch.value.id : me.me.cabang_id,
-    // }
-    // messageReactive = message.loading('memuat data listing beban', { duration: 0 });
-
-    // try {
-    //     await callSp(a, 'sp1');
-    //     await callSp(a, 'sp2');
-    //     await callSp(a, 'sp3');
-    //     await callSp(a, 'sp4');
-    //     await grabListBan(a, 'listBanTest');
-    // } catch (error) {
-    //     messageReactive.destroy()
-    // }
-
-    // disabledButton.value = false;
     getList();
 }
 const dataListBan = ref([]);
@@ -202,7 +176,7 @@ const convertObjectToArray = (obj) => {
         return [];
     }
     const keys = Object.keys(obj[0]);
-    return keys.map(key => ({ title: key, key: key }));
+    return keys.map(key => ({ title: key, key: key, width: 120 }));
 }
 
 // const exportToExcel = () => {
@@ -299,7 +273,7 @@ const exportToExcel = (data) => {
     const tanggal = typeof rangeDate.value !== 'undefined' ? rangeDate?.value : 'tanggal';
     const periode = typeof periodeTarikan.value !== 'undefined' ? periodeTarikan?.value : 'periode';
 
-    const filename = `listing_beban_${cabang}_${tanggal}_${periode}.xlsx`.replace(/[^\w\d-_]+/g, '_');
+    const filename = `laporan_nasabah_lunas_${cabang}.xlsx`.replace(/[^\w\d-_]+/g, '_');
 
     // Download file langsung tanpa saveAs
     const blob = new Blob([wbout], {
