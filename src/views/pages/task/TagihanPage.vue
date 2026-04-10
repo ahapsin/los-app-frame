@@ -143,7 +143,7 @@
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -255,8 +255,8 @@
             <template #footer>
                 <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
 
-                    <n-button type="primary" @click="handleSubmitKunjungan"
-                        :disabled="isSubmitDisabled">Simpan</n-button>
+                    <n-button type="primary" @click="handleSubmitKunjungan" :disabled="isSubmitDisabled"
+                        :loading="isLoading">Simpan</n-button>
                     <n-button type="secondary" @click="modalDetail = false">Batal</n-button>
                 </div>
             </template>
@@ -268,7 +268,7 @@
                                 <n-scrollbar style="max-height: 300px">
                                     <n-timeline>
                                         <n-timeline-item type="success" v-for="(i, index) in bodyHistory" :key="i"
-                                            :content="i.description" :time="timeAgo(i.create_date)" />
+                                            :content="i.description" :time="i.create_date" />
                                     </n-timeline>
                                 </n-scrollbar>
                             </n-tab-pane>
@@ -281,24 +281,23 @@
                                     <n-collapse>
                                         <n-collapse-item :title="moment(i.tgl_buat).format('DD-MM-YYYY HH:mm')"
                                             v-for="i in bodyHistorySurat">
-                                            <div class="grid grid-flow-col">
-                                                <div class="flex flex-col flex-1 ">
-                                                    <small class="text-reg">NO SURAT</small>
-                                                    <n-text strong class="text-md">{{ i.no_surat }}</n-text>
-                                                </div>
-                                                <div class="flex flex-col flex-1 ">
-                                                    <small class="text-reg">PETUGAS</small>
-                                                    <n-text strong class="text-md">{{ i.oleh }}</n-text>
-                                                </div>
-                                                <div class="flex flex-col flex-1 ">
-                                                    <small class="text-reg">JB</small>
-                                                    <n-text strong class="text-md">{{ i.tgl_jb }}</n-text>
-                                                </div>
-                                                <div class="flex flex-col flex-1 ">
-                                                    <small class="text-reg">KETERANGAN</small>
-                                                    <n-text strong class="text-md">{{ i.ket }}</n-text>
-                                                </div>
-                                            </div>
+                                            <n-descriptions :column="3" size="small" bordered class="mb-2">
+                                                <n-descriptions-item label="NO SURAT">
+                                                    {{ i.no_surat }}
+                                                </n-descriptions-item>
+
+                                                <n-descriptions-item label="PETUGAS">
+                                                    {{ i.oleh }}
+                                                </n-descriptions-item>
+
+                                                <n-descriptions-item label="JB">
+                                                    {{ i.tgl_jb }}
+                                                </n-descriptions-item>
+
+                                                <n-descriptions-item label="KETERANGAN">
+                                                    {{ i.ket }}
+                                                </n-descriptions-item>
+                                            </n-descriptions>
                                             <div class="flex flex-col p-2 border rounded-lg">
                                                 <small class="text-reg">DOK KUNJUNGAN</small>
                                                 <div class="flex gap-2">
@@ -310,7 +309,6 @@
                                 </n-scrollbar>
                             </n-tab-pane>
                         </n-tabs>
-
                     </n-card>
                 </div>
             </n-modal>
@@ -346,7 +344,8 @@ const isSubmitDisabled = computed(() => {
         !formDataKunjungan.value.keterangan ||
         !formDataKunjungan.value.tgl_jb ||
         statsUpload.value ||
-        !formDataKunjungan.value.path?.length
+        !formDataKunjungan.value.path?.length ||
+        isLoading.value === true
     )
 })
 
@@ -483,6 +482,7 @@ const handleSubmitKunjungan = async () => {
     formDataKunjungan.value.lkp_number = bodyDetail.value.no_lkp;
     await postKunjungan(formDataKunjungan.value);
     modalDetail.value = false;
+    getData();
 }
 
 
@@ -496,6 +496,7 @@ const postKunjungan = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
+        isLoading.value = false;
         console.log(response.error);
     } else {
         message.success("kunjungan berhasil ditambahkan");
