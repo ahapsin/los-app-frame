@@ -88,6 +88,12 @@ const routes = [
         component: () => import("../views/pages/transaction/paymentPage.vue"),
       },
       {
+        path: "pembayaran_remidial",
+        name: "pembayaran remidial",
+        component: () =>
+          import("../views/pages/transaction/remidial/paymentPage.vue"),
+      },
+      {
         path: "angsuran",
         name: "pembayaran angsuran",
         component: () =>
@@ -111,14 +117,32 @@ const routes = [
         component: () => import("../views/pages/transaction/cashInPage.vue"),
       },
       {
+        path: "add_remidial_payment",
+        name: "tambah pembayaran remidial",
+        component: () =>
+          import("../views/pages/transaction/remidial/cashInPage.vue"),
+      },
+      {
         path: "repayment",
         name: "pelunasan",
         component: () => import("../views/pages/transaction/repaymentPage.vue"),
       },
       {
+        path: "pelunasan_remidial",
+        name: "pelunasan remidial",
+        component: () =>
+          import("../views/pages/transaction/remidial/repaymentPage.vue"),
+      },
+      {
         path: "addrepayment",
         name: "tambah pelunasan",
         component: () => import("../views/pages/transaction/repayPage.vue"),
+      },
+      {
+        path: "add_repayment_remidial",
+        name: "tambah pelunasan remidial",
+        component: () =>
+          import("../views/pages/transaction/remidial/repayPage.vue"),
       },
       {
         path: "partialrepay",

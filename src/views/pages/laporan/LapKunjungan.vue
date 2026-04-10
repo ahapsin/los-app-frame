@@ -49,7 +49,7 @@ import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me.js";
 const dataBranch = ref([]);
 const selectBranch = ref();
-const defBranch = ref('SEMUA CABANG');
+const defBranch = ref();
 const userToken = localStorage.getItem("token");
 const loadingBranch = ref(false);
 const message = useMessage();
