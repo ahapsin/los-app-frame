@@ -33,7 +33,7 @@
             </div>
             <div class="p-2 bg-white rounded-b-xl">
                 <n-data-table :columns="columnsKunjungan" :data="listData" :pagination="{ pageSize: 10 }" striped
-                    :loading="loadData" :scroll-x="1600" />
+                    :loading="loadData" :scroll-x="2400" />
             </div>
         </div>
     </n-card>
@@ -120,6 +120,30 @@ const columnsKunjungan = [
     {
         title: "Ref / Sumber",
         key: "SumberOrder",
+        sorter: "default",
+        width: 200
+    },
+    {
+        title: "Tanggal Bayar",
+        key: "TanggalBayar",
+        sorter: "default",
+        width: 200
+    },
+    {
+        title: "Pembayaran",
+        key: "Pembayaran",
+        sorter: "default",
+        width: 200
+    },
+    {
+        title: "Cycle Awal",
+        key: "CycleAwal",
+        sorter: "default",
+        width: 200
+    },
+    {
+        title: "Cycle Akhir",
+        key: "CycleAkhir",
         sorter: "default",
         width: 200
     },

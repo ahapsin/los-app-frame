@@ -47,7 +47,7 @@
                         <n-alert :show-icon="false" type="warning">
                             <div class="flex justify-between items-center">
                                 <n-space>
-                                    <n-badge :value="checkedRowKeys.length" :max="15" size="large" />
+                                    <n-badge :value="checkedRowKeys.length" size="large" />
                                     <n-text strong>Data Dipilih</n-text>
                                 </n-space>
                                 <n-space>
@@ -89,9 +89,8 @@
             <n-form-item label="Ganti Petugas Ke">
                 <n-select v-model:value="assignTo" placeholder="pilih petugas" :options="me.me.cabang_nama === 'Head Office'
                     ? _.filter(dataUser, { status: 'Aktif' })
-                    : _.filter(dataUser, { cabang_nama: me.me.cabang_nama, status: 'Aktif' })"
-                    value-field="username" label-field="nama" filterable :render-tag="renderSingleSelectTag"
-                    :render-label="renderLabel" />
+                    : _.filter(dataUser, { cabang_nama: me.me.cabang_nama, status: 'Aktif' })" value-field="username"
+                    label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
             </n-form-item>
             <n-button type="primary" @click="handleUpdateBulk">simpan</n-button>
         </n-card>
