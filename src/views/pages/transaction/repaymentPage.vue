@@ -134,8 +134,9 @@
                 </n-space>
             </template>
             <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
-                <n-watermark content="KSP DJAYA" cross selectable :font-size="16" :line-height="16" :width="192"
-                    :height="128" :x-offset="12" :y-offset="28" :rotate="-15">
+                <n-watermark :content="bodyModal.print_ke >= 2 ? apptitle : 'COPY COPY'" cross selectable
+                    :font-size="16" :line-height="16" :width="192" :height="128" :x-offset="12" :y-offset="28"
+                    :rotate="-15">
                     <div class="p-2">
                         <div class="flex items-center gap-2 pb-2 justify-between border-b border-dashed border-black">
                             <div class="flex gap-2 items-center">
@@ -148,13 +149,13 @@
                             <div class="text-lg font-bold hidden md:flex">KWITANSI {{
                                 bodyModal.payment_type ==
                                     'pelunasan' ? 'PELUNASAN' : 'PEMBAYARAN'
-                                }}
+                            }}
                             </div>
                         </div>
                         <div class="flex justify-between">
                             <n-text strong class="text-md"> {{ bodyModal.tgl_transaksi }}</n-text>
                             <n-text strong class="text-md"> {{ bodyModal.payment_method == 'cash' ? 'TUNAI' : 'TRANSFER'
-                                }}</n-text>
+                            }}</n-text>
 
                         </div>
                         <div class="flex justify-between border-b border-dashed border-black"
@@ -180,7 +181,7 @@
                                 <n-text strong class="text-md"> {{
                                     bodyModal.bayar_angsuran.toLocaleString('US') ?
                                         bodyModal.bayar_angsuran.toLocaleString('US') : 'n/a'
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -192,7 +193,7 @@
                             <div class="flex flex-col">
                                 <small class="text-reg">CUST. BAYAR</small>
                                 <n-text strong class="text-md"> {{ bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}</n-text>
+                                }}</n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">PEMBULATAN</small>
@@ -203,7 +204,7 @@
                                 <small class="text-reg">KEMBALIAN</small>
                                 <td>
                                     <n-text strong class="text-md"> {{ bodyModal.kembalian.toLocaleString("US")
-                                        }}</n-text>
+                                    }}</n-text>
                                 </td>
                             </div>
 
@@ -215,7 +216,7 @@
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.total_bayar.toLocaleString('US') ?
                                         bodyModal.total_bayar.toLocaleString('US') : 'n/a'
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -226,14 +227,14 @@
                                 <small class="text-reg">Cust. Bayar</small>
                                 <n-text class="text-md font-bold"> {{
                                     bodyModal.jumlah_uang.toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
                                 <small class="text-reg">Diskon</small>
                                 <n-text class="text-md font-bold"> {{
                                     (bodyModal.total_bayar - bodyModal.jumlah_uang).toLocaleString("US")
-                                    }}
+                                }}
                                 </n-text>
                             </div>
                             <div class="flex flex-col">
@@ -260,11 +261,11 @@
                                 <td class="border  border-black text-center">{{ angs.tgl_angsuran }}</td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td class="border pe-2 border-black text-right">{{
                                     parseInt(angs.bayar_denda).toLocaleString('US')
-                                    }}
+                                }}
                                 </td>
                                 <td align="right" class="border pe-2 border-black text-right">
                                     {{
