@@ -749,10 +749,15 @@ const getData = async () => {
         const setFilterOptions = (key, sortNumeric = false) => {
             const col = columnBebanTagih.find((c) => c.key === key);
             if (col) {
-                let values = uniqueValues(key);
+                let values = [...new Set(dataList.value.map((item) => item[key]).filter(Boolean))];
+
                 if (sortNumeric) {
                     values = values.sort((a, b) => Number(a) - Number(b));
+                } else {
+                    // 🔥 SORT ALPHABET
+                    values = values.sort((a, b) => a.localeCompare(b));
                 }
+
                 col.filterOptions = values.map((val) => ({
                     label: val,
                     value: val,
