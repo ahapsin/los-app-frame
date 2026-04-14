@@ -103,7 +103,7 @@
             <template #footer>
                 <n-space>
                     <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
-                        v-show="bodyModal.STATUS == 'PAID'" :disabled="bodyModal.print_ke > 1500">
+                        v-show="bodyModal.STATUS == 'PAID'" :disabled="(printCount - bodyModal.print_ke) === 0">
                         <n-space>
                             <n-icon>
                                 <print-icon />
@@ -134,7 +134,7 @@
                 </n-space>
             </template>
             <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
-                <n-watermark :content="bodyModal.print_ke >= 2 ? apptitle : 'COPY COPY'" cross selectable
+                <n-watermark :content="(printCount - bodyModal.print_ke) < 2 ? 'COPY COPY' : apptitle" cross selectable
                     :font-size="16" :line-height="16" :width="192" :height="128" :x-offset="12" :y-offset="28"
                     :rotate="-15">
                     <div class="p-2">

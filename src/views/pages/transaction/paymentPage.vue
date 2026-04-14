@@ -100,7 +100,7 @@
                             {{ bodyModal.STATUS }}
                         </n-tag> -->
                         <n-button type="warning" @click="printNota(bodyModal.no_transaksi)"
-                            :disabled="bodyModal.print_ke > 2" v-if="bodyModal.status != 'CANCEL'">
+                            :disabled="(printCount - bodyModal.print_ke) === 0" v-if="bodyModal.status != 'CANCEL'">
                             <n-space>
                                 <n-icon>
                                     <print-icon />
@@ -133,7 +133,7 @@
                 </n-space>
             </template>
             <div ref="printReceiptRef" class="flex flex-col" :class="width > 850 ? 'p-4' : 'p-0'" v-if="!uploadState">
-                <n-watermark :content="bodyModal.print_ke >= 2 ? apptitle : 'COPY COPY'" cross selectable
+                <n-watermark :content="(printCount - bodyModal.print_ke) < 2 ? 'COPY COPY' : apptitle" cross selectable
                     :font-size="16" :line-height="5" :width="200" :height="128" :x-offset="12" :y-offset="28"
                     :rotate="-12">
                     <div class="p-2">
