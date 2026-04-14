@@ -23,11 +23,22 @@
             </n-space>
         </template>
         <div>
+            <!-- <n-space>
+                <n-form-item label-placement="left" label="PIC">
+                    <n-input type="text" placeholder="PIC" v-model:value="filter.pic" />
+                </n-form-item>
+                <n-form-item label-placement="left" label="CYCLE AWAL">
+                    <n-input type="text" placeholder="Cycle" v-model:value="filter.cycle_awal" />
+                </n-form-item>
+                <n-form-item label-placement="left" label="CYCLE AKHIR">
+                    <n-input type="text" placeholder="Cycle" v-model:value="filter.cycle_akhir" />
+                </n-form-item>
+            </n-space> -->
             <n-space vertical :size="12">
-                <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" v-if="!ctrDownload"
-                    @blur="searchData" />
                 <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                    :loading="isLoading" size="small" :pagination="pagination" :scroll-x="3000" striped="true" />
+                    @update:filters="onFilterChange" :loading="isLoading" size="small" :pagination="pagination"
+                    :scroll-x="3000" striped="true" />
+
             </n-space>
         </div>
     </n-card>
@@ -143,7 +154,7 @@
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -326,7 +337,6 @@ import { onMounted, ref } from "vue";
 import * as XLSX from 'xlsx';
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
-
 const { width } = useWindowSize();
 const me = useMeStore();
 const message = useMessage();
@@ -634,7 +644,10 @@ const columnBebanTagih = [
         title: "PIC",
         key: "nama_pic",
         sorter: 'default',
-        width: 100
+        width: 100,
+        filter: true,
+        filterMultiple: true,
+        filterOptions: [],
     },
     {
         title: "TGL BAYAR",
@@ -654,15 +667,19 @@ const columnBebanTagih = [
     },
     {
         title: "CYCLE AWAL",
-        key: "cycle_awal",
+        key: "cyclee_awal",
         sorter: 'default',
-        width: 100
+        width: 100, filter: true,
+        filterMultiple: true,
+        filterOptions: [],
     },
     {
         title: "CYCLE AKHIR",
         key: "cycle_akhir",
         sorter: 'default',
-        width: 100
+        width: 100, filter: true,
+        filterMultiple: true,
+        filterOptions: [],
     },
     {
         title: "KUNJ. TERAKHIR",
@@ -725,6 +742,26 @@ const getData = async () => {
         // console.log(response.data.response)
         isLoading.value = false;
         dataList.value = response.data;
+        const uniqueValues = (key) => {
+            return [...new Set(response.data.map((item) => item[key]).filter(Boolean))];
+        };
+
+        const setFilterOptions = (key, sortNumeric = false) => {
+            const col = columnBebanTagih.find((c) => c.key === key);
+            if (col) {
+                let values = uniqueValues(key);
+                if (sortNumeric) {
+                    values = values.sort((a, b) => Number(a) - Number(b));
+                }
+                col.filterOptions = values.map((val) => ({
+                    label: val,
+                    value: val,
+                }));
+            }
+        };
+        setFilterOptions("nama_pic");
+        setFilterOptions("cycle_awal");
+        setFilterOptions("cycle_akhir");
     }
 };
 
@@ -759,7 +796,12 @@ const getDetail = async (e) => {
     }
 };
 
-const checkedRowKeys = ref([]);
+function onFilterChange(newFilter) {
+    Object.keys(newFilter).forEach((key) => {
+        filterValue[key] = newFilter[key] || [];
+    });
+}
+
 const filterValue = reactive({
     NBOT: [],
     KECAMATAN: [],
@@ -827,6 +869,8 @@ const pagination = reactive({
         pagination.page = 1;
     }
 })
+
+
 onMounted(() => {
     loadingBar.finish();
     getData();
