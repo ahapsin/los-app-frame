@@ -27,7 +27,7 @@
                 <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" v-if="!ctrDownload"
                     @blur="searchData" />
                 <n-data-table :columns="columnBebanTagih" :data="filteredDataList" :filter-value="filterValue"
-                    :loading="isLoading" size="small" :pagination="pagination" :scroll-x="1300" striped="true" />
+                    :loading="isLoading" size="small" :pagination="pagination" :scroll-x="3000" striped="true" />
             </n-space>
         </div>
     </n-card>
@@ -143,7 +143,7 @@
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -548,25 +548,32 @@ const grabListBan = async (e) => {
 
 const columnBebanTagih = [
     {
-        title: "No Surat",
+        title: "CABANG",
+        key: "cabang",
+        sorter: 'default',
+        fixed: "left",
+        width: 100
+    },
+    {
+        title: "NO SURAT",
         key: "no_surat",
         sorter: 'default',
         fixed: "left",
-        width: 150
+        width: 100
     },
     {
-        title: "Customer",
+        title: "CUSTOMER",
         key: "nama_customer",
         sorter: 'default',
-        width: 120,
+        width: 100,
         fixed: "left",
         ellipsis: {
             tooltip: true,
         }
     },
     {
-        title: "No LKP",
-        width: 150,
+        title: "NO LKP",
+        width: 100,
         render(row) {
             return h(NTag, {
                 type: row.no_lkp ? 'primary' : 'default',
@@ -577,8 +584,8 @@ const columnBebanTagih = [
         }
     },
     {
-        title: "Hasil Kunjungan",
-        width: 150,
+        title: "HASIL KUNJUNGAN",
+        width: 100,
         render(row) {
             const hasLkp = !!row.no_lkp
             const isEmpty = row.kunjungan_terakhir == null
@@ -609,42 +616,97 @@ const columnBebanTagih = [
         }
     },
     {
-        title: "No Kontrak",
+        title: "NO KONTRAK",
         key: "no_kontrak",
-        width: 150,
+        width: 100,
         sorter: 'default',
     },
     {
-        title: "Tgl Jth Tempo",
-        key: "tgl_jatuh_tempo",
-        sorter: 'default',
-        width: 150,
-    },
-    {
-        title: "Angs ke",
-        key: "angusran_ke",
-        sorter: 'default',
-        width: 120,
-    },
-    {
-        title: "Angsuran",
-        key: "angsuran",
-        sorter: 'default',
-        width: 120,
-        render(row) {
-            return h("div", row.angsuran.toLocaleString())
-        }
-    },
-
-    {
-        title: "Alamat",
+        title: "ALAMAT",
         key: "alamat",
         sorter: 'default',
         width: 120,
         ellipsis: {
             tooltip: true,
         }
-    }
+    },
+    {
+        title: "PIC",
+        key: "nama_pic",
+        sorter: 'default',
+        width: 100
+    },
+    {
+        title: "TGL BAYAR",
+        key: "tgl_bayar",
+        sorter: 'default',
+        width: 100
+    },
+
+    {
+        title: "PEMBAYARAN",
+        key: "total_bayar",
+        sorter: 'default',
+        width: 100,
+        render(row) {
+            return h("div", row.total_bayar.toLocaleString())
+        }
+    },
+    {
+        title: "CYCLE AWAL",
+        key: "cycle_awal",
+        sorter: 'default',
+        width: 100
+    },
+    {
+        title: "CYCLE AKHIR",
+        key: "cycle_akhir",
+        sorter: 'default',
+        width: 100
+    },
+    {
+        title: "KUNJ. TERAKHIR",
+        key: "hasil_kunjungan",
+        sorter: 'default',
+        width: 100,
+        ellipsis: {
+            tooltip: true,
+        }
+    },
+    {
+        title: "TGL KUNJ. TERAKHIR",
+        key: "tgl_kunjungan",
+        sorter: 'default',
+        width: 100
+    },
+    {
+        title: "TGL JTH TEMPO",
+        key: "tgl_jatuh_tempo",
+        sorter: 'default',
+        width: 100,
+    },
+    {
+        title: "TGL JB",
+        key: "tgl_jb",
+        sorter: 'default',
+        width: 100,
+    },
+    {
+        title: "ANGS KE",
+        key: "angusran_ke",
+        sorter: 'default',
+        width: 100,
+    },
+    {
+        title: "ANGSURAN",
+        key: "angsuran",
+        sorter: 'default',
+        width: 100,
+        render(row) {
+            return h("div", row.angsuran.toLocaleString())
+        }
+    },
+
 
 ];
 const dataList = ref([]);
