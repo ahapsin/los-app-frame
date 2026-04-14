@@ -667,7 +667,7 @@ const columnBebanTagih = [
     },
     {
         title: "CYCLE AWAL",
-        key: "cyclee_awal",
+        key: "cycle_awal",
         sorter: 'default',
         width: 100, filter: true,
         filterMultiple: true,
