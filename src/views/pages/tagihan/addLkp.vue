@@ -256,7 +256,7 @@ const columnBebanTagih = reactive([
         width: 150,
     },
     {
-        title: "ANGSURAN KE",
+        title: "ANGS. KE",
         key: "angsuran_ke",
         sorter: "default",
         filter: true,
@@ -271,6 +271,15 @@ const columnBebanTagih = reactive([
         width: 150,
         render(row) {
             return h("div", row.angsuran?.toLocaleString())
+        }
+    },
+    {
+        title: "AMBC TOTAL ",
+        key: "angsuran",
+        sorter: "default",
+        width: 150,
+        render(row) {
+            return h("div", row.total_angsuran?.toLocaleString())
         }
     },
     {
