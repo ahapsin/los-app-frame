@@ -195,7 +195,8 @@ const columnBebanTagih = reactive([
         type: "selection",
         sorter: "default",
         disabled(row) {
-            return checkedRowKeys.value.includes(row.no_surat) || row.bayar >= row.total_angsuran
+            const today = new Date().toISOString().split('T')[0]
+            return row.tgl_jb === today || row.bayar >= row.total_angsuran
         }
     },
     {
