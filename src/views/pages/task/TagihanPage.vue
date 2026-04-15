@@ -154,7 +154,7 @@
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                        }}</n-ellipsis>
+                            }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
@@ -245,9 +245,11 @@
 
             <div v-if="bodyDetail?.no_lkp">
                 <n-divider title-placement="left">Hasil Kunjungan</n-divider>
-
                 <n-form-item label="No surat">
-                    <n-input v-model:value="bodyDetail.no_surat" disabled> </n-input>
+                    <n-input v-model:value="formDataKunjungan.no_surat" disabled> </n-input>
+                </n-form-item>
+                <n-form-item label="No LKP">
+                    <n-input v-model:value="formDataKunjungan.lkp_number" disabled> </n-input>
                 </n-form-item>
                 <n-form-item label="Hasil Kunjungan">
                     <n-input type="textarea" v-model:value="formDataKunjungan.keterangan"></n-input>
@@ -489,7 +491,6 @@ const handleOnUpload = (e) => {
     statsUpload.value = e;
 }
 const handleSubmitKunjungan = async () => {
-    formDataKunjungan.value.lkp_number = bodyDetail.value.no_lkp;
     await postKunjungan(formDataKunjungan.value);
     modalDetail.value = false;
     getData();
@@ -798,6 +799,7 @@ const getDetail = async (e) => {
     } else {
         isLoading.value = false;
         bodyDetail.value = response.data;
+        formDataKunjungan.value.lkp_number = bodyDetail.value.no_lkp;
     }
 };
 
