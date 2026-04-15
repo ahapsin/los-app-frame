@@ -112,10 +112,10 @@
                         <n-text strong class="text-md">{{ bodyDetail.cabang }}</n-text>
                     </div>
 
-                    <div class="flex flex-col flex-1 w-full " v-if="bodyDetail?.no_lkp">
+                    <div class="flex flex-col flex-1 w-full " v-if="rowDetail?.no_lkp">
                         <small class="text-reg">NO LKP</small>
                         <n-text type="error">
-                            <strong>{{ bodyDetail.no_lkp }}</strong>
+                            <strong>{{ rowDetail.no_lkp }}</strong>
                         </n-text>
                     </div>
                     <div class="flex flex-col flex-1 w-full ">
@@ -242,14 +242,13 @@
                     </tr>
                 </tfoot>
             </n-table> -->
-
             <div v-if="bodyDetail?.no_lkp">
                 <n-divider title-placement="left">Hasil Kunjungan</n-divider>
                 <n-form-item label="No surat">
                     <n-input v-model:value="formDataKunjungan.no_surat" disabled> </n-input>
                 </n-form-item>
                 <n-form-item label="No LKP">
-                    <n-input v-model:value="formDataKunjungan.lkp_number" disabled> </n-input>
+                    <n-input v-model:value="rowDetail.no_lkp" disabled> </n-input>
                 </n-form-item>
                 <n-form-item label="Hasil Kunjungan">
                     <n-input type="textarea" v-model:value="formDataKunjungan.keterangan"></n-input>
@@ -264,7 +263,6 @@
                         type="other" @fallback="handleFallback" @onUpload="handleOnUpload" />
                 </n-form-item>
             </div>
-
             <template #footer>
                 <div class="flex gap-2" v-if="bodyDetail?.no_lkp">
 
@@ -773,6 +771,7 @@ const getData = async () => {
 
 const modalDetail = ref(false);
 const bodyDetail = ref();
+const rowDetail = ref();
 const handleDetail = async (e) => {
     formDataKunjungan.value = {
         no_surat: null,
@@ -780,6 +779,7 @@ const handleDetail = async (e) => {
         tgl_jb: null,
         path: []
     }
+    rowDetail.value = e;
     await getDetail(e)
     modalDetail.value = true;
     formDataKunjungan.value.no_surat = e.no_surat;
@@ -799,7 +799,7 @@ const getDetail = async (e) => {
     } else {
         isLoading.value = false;
         bodyDetail.value = response.data;
-        formDataKunjungan.value.lkp_number = bodyDetail.value.no_lkp;
+        formDataKunjungan.value.lkp_number = rowDetail.value.no_lkp;
     }
 };
 
