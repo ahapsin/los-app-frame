@@ -24,10 +24,6 @@
                     </n-form-item>
                 </n-space>
                 <n-input v-model:value="stack" clearable v-if="dataList.length != 0" @blur="handleBlur" />
-                <!-- <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x
-                    :scroll-x="7000" :min-row-height="48" virtual-scroll-header
-                    :columns="convertObjectToArray(dataList)" :data="showData" :pagination="{ pageSize: 10 }"
-                    :loading="loadingData" /> -->
                 <div class="w-full overflow-auto max-h-screen">
                     <n-table striped bordered size="small">
                         <thead>
@@ -38,7 +34,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            <tr v-for="(row, index) in showData" :key="index">
+                            <tr v-for="(row, index) in paginatedData" :key="index">
                                 <td v-for="col in convertObjectToArray(dataList)" :key="col.key"
                                     class="w-fit text-nowrap">
                                     {{ row[col.key] }}
@@ -46,7 +42,10 @@
                             </tr>
                         </tbody>
                     </n-table>
+
                 </div>
+                <n-pagination v-model:page="page" :page-size="pageSize" :item-count="total"
+                    :page-sizes="[10, 20, 50, 100]" />
             </n-space>
         </div>
     </n-card>
@@ -60,12 +59,12 @@ import { useApi } from "../../../helpers/axios.js";
 import { useSearch } from "../../../helpers/searchObject";
 import { useMeStore } from "../../../stores/me";
 
-const tableRef = ref();
 const me = useMeStore();
 const message = useMessage();
 const dataBranch = ref([]);
 const selectBranch = ref();
-const disabledButton = ref(false);
+const page = ref(1)
+const pageSize = ref(10)
 const percentage = ref(0);
 
 const selectedBranch = ref();
@@ -157,39 +156,7 @@ const callSp = async (e, uri) => {
     }
 
 }
-const grabListBan = async (e, uri) => {
 
-    loadingData.value = true;
-    let userToken = localStorage.getItem("token");
-    const response = await useApi({
-        method: "POST",
-        api: uri,
-        data: e,
-        token: userToken,
-    });
-    if (!response.ok) {
-        messageReactive.destroy();
-        var interval;
-        interval = setInterval(() => {
-            if (timer.value > 0) {
-                timer.value--
-            } else {
-                clearInterval(interval);
-                timer.value = 60;
-                handleSubmit();
-            }
-        }, 1000);
-        messageReactive = message.loading(() => (`data listban sedang sibuk mencoba ulang dalam ${timer.value} s`), { duration: 60000 });
-    } else {
-        messageReactive.destroy();
-        messageReactive = null;
-        dataListBan.value = response.data;
-        loadingData.value = false;
-        ctrDownload.value = false;
-        percentage.value += 20;
-    }
-
-}
 const convertObjectToArray = (obj) => {
     if (!Array.isArray(obj) || obj.length === 0) {
         return [];
@@ -197,20 +164,6 @@ const convertObjectToArray = (obj) => {
     const keys = Object.keys(obj[0]);
     return keys.map(key => ({ title: key, key: key, width: 120 }));
 }
-
-// const exportToExcel = () => {
-//   const headTable = [
-//     { pos: selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama, bulan: periodeTarikan.value },
-//   ];
-//   const bodyTable = dataListBan.value;
-//   const ws = XLSX.utils.json_to_sheet(headTable);
-//   const startRow = headTable.length + 4;
-//   XLSX.utils.sheet_add_json(ws, bodyTable, { origin: `A${startRow}` });
-//   const wb = XLSX.utils.book_new();
-//   XLSX.utils.book_append_sheet(wb, ws, "listing beban");
-//   // Write the workbook to an Excel file
-//   XLSX.writeFile(wb, `listing_beban_${selectedBranch.value?.nama ? selectedBranch.value.nama : me.me.cabang_nama}_${rangeDate.value}_${periodeTarikan.value}.xlsx`);
-// }
 
 const exportToExcel = (data) => {
     // Validasi format tanggal MM/DD/YYYY dan eksistensinya
@@ -319,6 +272,14 @@ const handleBlur = () => {
 
 const showData = computed(() => {
     return useSearch(dataList.value, stack.value)
+})
+
+const total = computed(() => showData.value.length)
+
+const paginatedData = computed(() => {
+    const start = (page.value - 1) * pageSize.value
+    const end = start + pageSize.value
+    return showData.value.slice(start, end)
 })
 const dataList = ref([])
 const getList = async () => {

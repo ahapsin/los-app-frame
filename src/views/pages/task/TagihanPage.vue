@@ -46,8 +46,8 @@
         <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" @blur="searchData" />
         <n-infinite-scroll style="height: 80dvh" :distance="10" class="mt-2">
             <div class="flex flex-col gap-2">
-                <div class="flex justify-between p-6 border rounded-2xl focus:bg-red-500 bg-white" v-for="i in dataList"
-                    @click="handleDetail(i)">
+                <div class="flex justify-between p-6 border rounded-2xl focus:bg-red-500 bg-white"
+                    v-for="i in filteredDataList" @click="handleDetail(i)">
                     <div class="flex flex-col">
                         <p>Surat #:<n-text class="font-bold text-pr">{{ i.no_surat }}</n-text></p>
                         <n-text class="font-bold text-neutral">{{ i.nama_customer }}</n-text>
