@@ -23,11 +23,30 @@
 
                     </n-form-item>
                 </n-space>
-                <n-input v-model:value="stack" clearable v-if="dataList.length != 0" />
-                <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x
+                <n-input v-model:value="stack" clearable v-if="dataList.length != 0" @blur="handleBlur" />
+                <!-- <n-data-table ref="tableRef" :max-height="300" virtual-scroll size="small" virtual-scroll-x
                     :scroll-x="7000" :min-row-height="48" virtual-scroll-header
                     :columns="convertObjectToArray(dataList)" :data="showData" :pagination="{ pageSize: 10 }"
-                    :loading="loadingData" />
+                    :loading="loadingData" /> -->
+                <div class="w-full overflow-auto max-h-screen">
+                    <n-table striped bordered size="small">
+                        <thead>
+                            <tr>
+                                <th v-for="col in convertObjectToArray(dataList)" :key="col.key">
+                                    {{ col.title }}
+                                </th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="(row, index) in showData" :key="index">
+                                <td v-for="col in convertObjectToArray(dataList)" :key="col.key"
+                                    class="w-fit text-nowrap">
+                                    {{ row[col.key] }}
+                                </td>
+                            </tr>
+                        </tbody>
+                    </n-table>
+                </div>
             </n-space>
         </div>
     </n-card>
@@ -293,9 +312,14 @@ const exportToExcel = (data) => {
 
 const boxSearch = ref();
 const stack = ref()
+
+const handleBlur = () => {
+    stack.value = stack.value.trim().toLowerCase()
+}
+
 const showData = computed(() => {
-    return useSearch(dataList.value, stack.value);
-});
+    return useSearch(dataList.value, stack.value)
+})
 const dataList = ref([])
 const getList = async () => {
     loadingData.value = true;
