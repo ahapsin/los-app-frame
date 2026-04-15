@@ -561,7 +561,10 @@ const columnBebanTagih = [
         key: "cabang",
         sorter: 'default',
         fixed: "left",
-        width: 100
+        width: 100,
+        filter: true,
+        filterMultiple: true,
+        filterOptions: [],
     },
     {
         title: "NO SURAT",
@@ -763,6 +766,7 @@ const getData = async () => {
                 }));
             }
         };
+        setFilterOptions("cabang");
         setFilterOptions("nama_pic");
         setFilterOptions("cycle_awal");
         setFilterOptions("cycle_akhir");
