@@ -119,6 +119,14 @@
                         </tr>
                     </tbody>
                 </n-table>
+                <n-alert title="info" type="info"
+                    v-if="pelunasan.BAYAR_POKOK < pelunasan.SISA_POKOK && pelunasan.BAYAR_POKOK !== 0">
+                    <span class="uppercase">
+                        pembayaran pelunasan kurang dari pokok pinjaman dan konsumen akan di blacklist setelah
+                        pelunasan, anda
+                        yakin ingin melanjutkan?
+                    </span>
+                </n-alert>
                 <div class="md:flex gap-2 bg-pr/10 rounded-xl items-center pt-4 px-4"
                     v-show="props.embed ? true : displayFasilitas">
                     <n-form-item path="nestedValue.path2" label="Jenis Pembayaran" class="w-full">
@@ -220,19 +228,19 @@
                                     <small class="text-reg">No Transaksi : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.no_transaksi
-                                        }}
+                                    }}
                                     </n-text>
                                     <small class="text-reg">No Pelanggan : </small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.cust_code
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col py-4">
                                     <small class="text-reg">Terima dari (No Kontrak)</small>
                                     <n-text strong class="text-lg font-bold"> {{
                                         responseProsesPayment.res.nama
-                                        }}
+                                    }}
                                     </n-text>
                                     <small class="text-lg">{{ responseProsesPayment.res.no_fasilitas }}</small>
                                 </div>
@@ -243,7 +251,7 @@
                                     <small class="text-reg">Tanggal & Waktu</small>
                                     <n-text strong class="text-md">{{
                                         responseProsesPayment.res.tgl_transaksi
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="flex flex-col">
@@ -265,7 +273,7 @@
                                     <td>
                                         <n-text strong class="text-md"> {{
                                             responseProsesPayment.res.kembalian
-                                            }}
+                                        }}
                                         </n-text>
                                     </td>
                                 </div>
@@ -273,7 +281,7 @@
                                     <small class="text-reg">Metode Pembayaran</small>
                                     <n-text strong class="text-md"> {{
                                         responseProsesPayment.res.payment_method
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                             </div>
@@ -291,11 +299,11 @@
                                     <td class="border text-center border-black">{{ angs.angsuran_ke }}</td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_angsuran).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td class="border pe-2 border-black">{{
                                         parseInt(angs.bayar_denda).toLocaleString('US')
-                                        }}
+                                    }}
                                     </td>
                                     <td align="right" class="border pe-2 border-black">
                                         {{
@@ -309,7 +317,7 @@
                                     <td colspan="3" align="right" class="pe-2">
                                         <strong>{{
                                             responseProsesPayment.res.total_bayar.toLocaleString("US")
-                                            }}</strong>
+                                        }}</strong>
                                     </td>
                                 </tr>
                             </table>
@@ -319,13 +327,13 @@
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.created_by
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                                 <div class="border-b border-black pt-20 px-4">
                                     <n-text strong class="text-md font-bold">{{
                                         responseProsesPayment.res.nama
-                                        }}
+                                    }}
                                     </n-text>
                                 </div>
                             </div>

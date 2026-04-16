@@ -90,6 +90,13 @@
                         <span class="text-red-500 font-semibold">Pelunasan dengan diskon</span>
                     </n-checkbox>
                 </div>
+                <n-alert title="info" type="info" v-if="pelunasan.DISKON_POKOK !== 0">
+                    <span class="uppercase">
+                        pembayaran pelunasan kurang dari pokok pinjaman dan konsumen akan di blacklist setelah
+                        pelunasan, anda
+                        yakin ingin melanjutkan?
+                    </span>
+                </n-alert>
                 <div class="md:flex gap-2 bg-pr/10 rounded-xl items-center pt-4 px-4"
                     v-show="props.embed ? true : displayFasilitas">
                     <n-form-item path="nestedValue.path2" label="Jenis Pembayaran" class="w-full">
