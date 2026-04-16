@@ -1,6 +1,6 @@
 <template>
 
-    <n-card :class="`shadow-lg`" title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 412"
+    <n-card :class="`shadow-lg`" title="Daftar Tagihan" :segmented="true" size="small" v-if="width > 767"
         class="shadow-lg">
         <template #header-extra>
             <n-space>
@@ -44,22 +44,28 @@
     </n-card>
     <div v-else class="m-2">
         <n-input type="text" placeholder="cari ?" v-model:value="boxSearch" @blur="searchData" />
-        <n-infinite-scroll style="height: 80dvh" :distance="10" class="mt-2">
-            <div class="flex flex-col gap-2">
-                <div class="flex justify-between p-6 border rounded-2xl focus:bg-red-500 bg-white"
-                    v-for="i in filteredDataList" @click="handleDetail(i)">
-                    <div class="flex flex-col">
-                        <p>Surat #:<n-text class="font-bold text-pr">{{ i.no_surat }}</n-text></p>
-                        <n-text class="font-bold text-neutral">{{ i.nama_customer }}</n-text>
-                        <n-button size="small" type="warning" secondary v-if="i.no_lkp">LKP : {{ i.no_lkp }}</n-button>
-                    </div>
-                    <div class="flex flex-col gap-4 items-end">
-                        <n-text class="font-bold">{{ i.angsuran?.toLocaleString() }}</n-text>
-                        <n-button size="small">{{ i.tgl_jatuh_tempo }}</n-button>
+        <n-spin :show="isLoading">
+            <n-infinite-scroll style="height: 80dvh" :distance="10" class="mt-2">
+
+                <div class="flex flex-col gap-2">
+                    <div class="flex justify-between p-6 border rounded-2xl focus:bg-red-500 bg-white"
+                        v-for="i in filteredDataList" @click="handleDetail(i)">
+                        <div class="flex flex-col">
+                            <p>Surat #:<n-text class="font-bold text-pr">{{ i.no_surat }}</n-text></p>
+                            <n-text class="font-bold text-neutral">{{ i.nama_customer }}</n-text>
+                            <n-button size="small" type="warning" secondary v-if="i.no_lkp">LKP : {{ i.no_lkp
+                                }}</n-button>
+                        </div>
+                        <div class="flex flex-col gap-4 items-end">
+                            <n-text class="font-bold">{{ i.angsuran?.toLocaleString() }}</n-text>
+                            <n-button size="small">{{ i.tgl_jatuh_tempo }}</n-button>
+                        </div>
                     </div>
                 </div>
-            </div>
-        </n-infinite-scroll>
+
+            </n-infinite-scroll>
+        </n-spin>
+
     </div>
     <n-modal v-model:show="modalDetail" :mask-closable="false">
         <n-card :class="`shadow-lg`" class="w-full md:w-5/6" title="DETAIL TAGIHAN" :segmented="true" size="small">
@@ -154,7 +160,7 @@
                     <div class="flex flex-col flex-1 w-full ">
                         <small class="text-reg">Angsuran</small>
                         <n-ellipsis class="text-md font-semibold">{{ bodyDetail.angsuran?.toLocaleString()
-                            }}</n-ellipsis>
+                        }}</n-ellipsis>
                     </div>
                     <div class="flex flex-col w-full">
                         <small class="text-reg">Alamat</small>
