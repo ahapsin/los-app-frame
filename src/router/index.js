@@ -157,6 +157,18 @@ const routes = [
           import("../views/pages/transaction/addPartialRepayPage.vue"),
       },
       {
+        path: "partialrepay_remidial",
+        name: "pelunasan sebagian remidial",
+        component: () =>
+          import("../views/pages/transaction/remidial/partialRepayPage.vue"),
+      },
+      {
+        path: "addpartialrepay_remidial",
+        name: "tambah pelunasan sebagian remidial",
+        component: () =>
+          import("../views/pages/transaction/remidial/addPartialRepayPage.vue"),
+      },
+      {
         path: "penarikan_sebagian",
         name: "penarikan sebagian",
         component: () =>
