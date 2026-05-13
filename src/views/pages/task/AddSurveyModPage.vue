@@ -160,6 +160,9 @@
             </n-form>
         </div>
         <div v-show="current === 2">
+            <n-alert title="info" class="mb-2" type="warning" v-if="bl_pesan">NO KTP ini termasuk dalam daftar BLACKLIST
+                !
+                <b>(note: {{ bl_pesan }})</b></n-alert>
             <n-form ref="formPelanggan" :model="pelanggan" :rules="rulesPelanggan"
                 require-mark-placement="right-hanging">
                 <div class="md:flex gap-2">

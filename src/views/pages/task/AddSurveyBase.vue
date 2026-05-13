@@ -13,7 +13,7 @@
         <!-- card -->
         <n-alert type="warning" v-if="sumJaminan != 0 && order.plafond > sumJaminan / 2">Nilai Plafon <b>{{
             order.plafond.toLocaleString()
-        }}</b> > Nilai Jaminan {{ (sumJaminan / 2).toLocaleString() }}
+                }}</b> > Nilai Jaminan {{ (sumJaminan / 2).toLocaleString() }}
             (50%)
         </n-alert>
         <n-card :class="`shadow-lg`" :bordered="true" :title="`${current}. ${steps[current - 1]}`" :segmented="{
@@ -622,9 +622,9 @@ const handleKtp = async (e) => {
         let data = response.data;
         if (data.length > 0) {
             console.log(data);
-            jaminanStore.filledJaminan(data[0].jaminan);
+            jaminanStore.filledJaminan(data.jaminan);
             order.category = "RO";
-            Object.assign(pelanggan, data[0]);
+            Object.assign(pelanggan, data);
         } else {
             order.category = "Baru";
             loadingKTP.value = false;
