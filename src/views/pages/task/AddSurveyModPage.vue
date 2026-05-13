@@ -160,9 +160,7 @@
             </n-form>
         </div>
         <div v-show="current === 2">
-            <n-alert title="info" class="mb-2" type="warning" v-if="bl_pesan">NO KTP ini termasuk dalam daftar BLACKLIST
-                !
-                <b>(note: {{ bl_pesan }})</b></n-alert>
+            <n-alert title="info" class="mb-2" type="warning" v-if="bl_pesan">{{ bl_pesan }}</n-alert>
             <n-form ref="formPelanggan" :model="pelanggan" :rules="rulesPelanggan"
                 require-mark-placement="right-hanging">
                 <div class="md:flex gap-2">
@@ -177,7 +175,7 @@
                     </n-form-item>
                     <n-form-item label="No KK" path="no_kk" class="w-full">
                         <n-input :allow-input="onlyAllowNumber" placeholder="No Kartu Keluarga"
-                            v-model:value="pelanggan.no_kk" maxlength="16" />
+                            v-model:value="pelanggan.no_kk" maxlength="16" @change="handleKK" />
                     </n-form-item>
                 </div>
                 <div class="md:flex gap-2">
@@ -763,11 +761,15 @@ const bl_pesan = ref();
 
 const dataRo = ref();
 const handleKtp = async (e) => {
+    bl_pesan.value = null;
     loadingKTP.value = true;
     const bodyForm = {
         no_ktp: e,
     };
-    bl_pesan.value = await useBlacklist(e);
+    const messageBlacklist = await useBlacklist(e);
+    if (messageBlacklist) {
+        bl_pesan.value = `No KTP termasuk kedalam daftar BLACKLIST note: (${messageBlacklist})`
+    }
     const response = await useApi({
         method: "POST",
         api: "check_ro",
@@ -792,6 +794,16 @@ const handleKtp = async (e) => {
         loadingKTP.value = false;
     }
 };
+const loadingKK = ref(false);
+const handleKK = async (e) => {
+    bl_pesan.value = null;
+    loadingKK.value = true;
+    const messageBlacklist = await useBlacklist(e);
+    if (messageBlacklist) {
+        bl_pesan.value = `No KK termasuk kedalam daftar BLACKLIST note: (${messageBlacklist})`
+    }
+    loadingKTP.value = false
+}
 
 const findDocByType = (c, e) => {
     const docPath = ref(_.find(c, { TYPE: e }));
