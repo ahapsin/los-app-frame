@@ -142,6 +142,7 @@ const handleUpdateBulk = async () => {
     });
     if (!response.ok) {
         console.error(response.error);
+        message.error("gagal mengubah data");
     } else {
         message.success("update berhasil");
         modalUpdateBatch.value = false;
