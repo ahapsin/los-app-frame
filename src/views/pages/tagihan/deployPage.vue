@@ -197,6 +197,9 @@ const handleSuccessEdit = () => {
     modalEdit.value = false;
     getList();
 }
+const handleCancel = () => {
+    modalEdit.value = false;
+}
 const filterValue = reactive({
     NBOT: [],
     KECAMATAN: [],

@@ -1,7 +1,6 @@
 <template>
     <n-card :class="`shadow-lg`" title="Edit PIC Tagihan" :segmented="true" size="small">
-
-        <template #header-extra>
+        <template #header-extra v-if="data.no_lkp === ''">
 
             <n-popconfirm @positive-click="handlePositiveDelete(props.data)" @negative-click="handleNegativeClick"
                 positive-text="Ya" negative-text="batal">
@@ -104,10 +103,9 @@
             </n-card>
             <n-space vertical>
                 <n-form-item label="Petugas asal">
-
                     <n-input v-model:value="props.data.nama_pic" disabled />
                 </n-form-item>
-                <n-form-item label="Ganti Petugas Ke">
+                <n-form-item label="Ganti Petugas Ke" v-if="data.no_lkp === ''">
                     <n-select v-model:value="assignTo" placeholder="pilih petugas"
                         :options="_.filter(dataUser, { cabang_nama: me.me.cabang_nama })" value-field="username"
                         label-field="nama" filterable :render-tag="renderSingleSelectTag" :render-label="renderLabel" />
@@ -116,6 +114,8 @@
         </div>
         <template #footer>
             <n-space vertical>
+                <n-alert title="info" v-if="data.no_lkp !== ''" type="error">Tidak dapat mengubah pic terdapat LKP
+                    aktif</n-alert>
                 <n-alert type="info" v-if="assignTo === null">Pilih petugas</n-alert>
                 <n-space v-else>
                     <n-button type="primary" @click="assignTagihan">
@@ -132,7 +132,7 @@
 <script setup>
 import _ from "lodash";
 import { NAvatar, NText, useLoadingBar, useMessage } from 'naive-ui';
-import { onMounted, reactive, ref } from "vue";
+import { onMounted, reactive, ref, toRefs } from "vue";
 import { useApi } from "../../../helpers/axios.js";
 import { useMeStore } from "../../../stores/me";
 
@@ -152,6 +152,8 @@ const props = defineProps({
     data: Object,
     default: {}
 })
+
+const { data } = toRefs(props);
 
 const columnBebanTagih = reactive([
     { type: "selection" },
