@@ -15,8 +15,8 @@
                     <n-button @click="handleSubmit" type="primary">
                         Cari
                     </n-button>
-                    <json-excel :data="dataArusKas.datas" :name="`LAP_LKBH`">
-                        <n-button type="primary" secondary>Download</n-button>
+                    <json-excel :data="dataDownload" :name="`LAP_LKBH`">
+                        <n-button type="primary" secondary v-if="dataDownload">Download</n-button>
                     </json-excel>
 
                 </n-space>
@@ -46,7 +46,7 @@
                         </thead>
                         <tbody v-for="body in dataArusKas.Result" :key="body.title">
                             <tr>
-                                <th colspan="9">
+                                <th :colspan="body.colspan + 1">
                                     <n-divider title-placement="left">
                                         {{ body.title }}
                                     </n-divider>
@@ -56,7 +56,7 @@
                                 <td v-for="td in cashin">{{ td }}</td>
                             </tr>
                             <tr class="border-b border-black">
-                                <th :colspan="body.colspan - 1" align="left" class="pt-4">JUMLAH</th>
+                                <th :colspan="body.colspan" align="left" class="pt-4">JUMLAH</th>
                                 <th align="left" class="pt-2">{{ body.jumlah }}</th>
                             </tr>
                         </tbody>
@@ -103,6 +103,7 @@ const cashOut = ref([]);
 const cashIn = ref([]);
 const pelunasan = ref([]);
 const cashInTrf = ref([]);
+const dataDownload = ref([]);
 const getArusKas = async (e) => {
     message.loading('memuat data LKBH');
     loadData.value = true;
@@ -115,7 +116,7 @@ const getArusKas = async (e) => {
         token: userToken,
     });
     if (!response.ok) {
-        console.log(reponse.error);
+        console.log(response.error);
     } else {
         loadData.value = false;
         dataArusKas.value = response.data;
@@ -125,8 +126,16 @@ const getArusKas = async (e) => {
         cashIn.value = _.filter(response.data.datas, { 'type': "CASH_IN", "metode_pembayaran": "cash" });
         cashInTrf.value = _.filter(response.data.datas, { "type": "CASH_IN", "metode_pembayaran": "transfer" });
     }
+    const resDownload = await useApi({
+        method: "POST",
+        api: "LkbhReport/download",
+        data: e,
+        token: userToken,
+    });
+    if (resDownload.ok) {
+        dataDownload.value = resDownload.data;
+    }
 }
-
 function sumRupiahStrings(arr) {
     // fungsi konversi string ke number
     const toNumber = (str) => {
